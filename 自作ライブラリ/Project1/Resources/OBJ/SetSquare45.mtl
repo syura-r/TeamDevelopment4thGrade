@@ -1,0 +1,24 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl lambert2SG.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.150000 0.150000 0.150000
+Ks 0.050000 0.050000 0.050000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd RightAngleRulerMap.png
+
+newmtl pasted__lambert5SG.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.150000 0.150000 0.150000
+Ks 0.050000 0.050000 0.050000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd sin.png
