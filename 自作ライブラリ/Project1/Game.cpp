@@ -66,113 +66,25 @@ void Game::RoadAsset()
 		Texture::LoadTexture("shock", "shock.png");
 		Texture::LoadTexture("dust", "dust.png");
 		Texture::LoadTexture("white1x1", "white1x1.png");
-		Texture::LoadTexture("SampleNormalMap", "SampleNormalMap.png");
-		Texture::LoadTexture("StainedGlass", "StainedGlass.png");
-		Texture::LoadTexture("StainedGlassNormal", "StainedGlassNormal.png");
-		Texture::LoadTexture("menuUI", "menuUI.png");
-		Texture::LoadTexture("end", "end.png");
-		Texture::LoadTexture("setting", "setting.png");
-		Texture::LoadTexture("restart", "restart.png");
-		Texture::LoadTexture("no", "no.png");
-		Texture::LoadTexture("yes", "yes.png");
-		Texture::LoadTexture("endCheck", "endCheck.png");
-		Texture::LoadTexture("operateSetting", "operateSetting.png");
-		Texture::LoadTexture("dot", "dot.png");
-		Texture::LoadTexture("restartCheck", "restartCheck.png");
 		Texture::LoadTexture("number", "number.png");
-		Texture::LoadTexture("resultNumber", "resultNumber.png");
-
-		Texture::LoadTexture("sensitiveSettingBar", "sensitiveSettingBar.png");
-		Texture::LoadTexture("sensitiveSetting", "sensitiveSetting.png");
-
-		Texture::LoadTexture("check", "check.png");
-		Texture::LoadTexture("jump", "jump.png");
-		Texture::LoadTexture("cameraReset", "cameraReset.png");
-		Texture::LoadTexture("action", "action.png");
-		Texture::LoadTexture("upsideDown", "upsideDown.png");
-		Texture::LoadTexture("changeRun", "changeRun.png");
-		Texture::LoadTexture("flipLeftRight", "flipLeftRight.png");
-		Texture::LoadTexture("x", "x.png");
-		Texture::LoadTexture("b", "b.png");
-		Texture::LoadTexture("y", "y.png");
-		Texture::LoadTexture("a", "a.png");
-		Texture::LoadTexture("LB", "LB.png");
-		Texture::LoadTexture("RT", "RT.png");
-		Texture::LoadTexture("LT", "LT.png");
-		Texture::LoadTexture("RB", "RB.png");
-		Texture::LoadTexture("selectFrame", "selectFrame.png"); 
-		Texture::LoadTexture("viewCollision", "viewCollision.png");
-		Texture::LoadTexture("SSAO", "SSAO.png");
-		Texture::LoadTexture("screenSetting", "ScreenSetting.png");
-		Texture::LoadTexture("colon", "colon.png");
-		Texture::LoadTexture("resultColon", "resultColon.png");
-
-		Texture::LoadTexture("star", "star.png"); 
-		Texture::LoadTexture("achieve", "achieve.png");
-		Texture::LoadTexture("resultNumber", "resultNumber.png");
-		Texture::LoadTexture("result", "result.png");
-		Texture::LoadTexture("half", "half.png");
-		Texture::LoadTexture("retry", "retry.png");
-		Texture::LoadTexture("returnTitle", "returnTitle.png");
-		Texture::LoadTexture("1MinuteClear", "1MinuteClear.png");
-		Texture::LoadTexture("clearTime", "clearTime.png");
-
 		Texture::LoadTexture("wind", "wind.png");
-		Texture::LoadTexture("starEffect", "starEffect.png");
 
-		Texture::LoadTexture("titleStart", "titleStart.png");
-		Texture::LoadTexture("titleEnd", "titleEnd.png");
 
-		//Texture::LoadTexture("particle2", "Particle_Soft.png");
-
-		
+	
 		break; 
 	case 2:
 		//Objモデルの読み込み
 		OBJLoader::LoadModelFile("box", "box.obj", false);
 		OBJLoader::LoadModelFile("sphere", "sphere.obj", true);
-		OBJLoader::LoadModelFile("ground", "ground.obj", false);
-		OBJLoader::LoadModelFile("barrier", "Barrier.obj", false);
-		OBJLoader::LoadModelFile("plain", "plain.obj", false);
-		OBJLoader::LoadModelFile("chr_sword", "chr_sword.obj", true);
 		break;
 	case 3:
 		//Objモデルの読み込み
-		//OBJLoader::LoadModelFile("wall", "Wall.obj", false);
-		OBJLoader::LoadModelFile("backWall", "BackWall.obj", false);
-		OBJLoader::LoadModelFile("leftWall", "LeftWall.obj", false);
-		OBJLoader::LoadModelFile("rightWall", "RightWall.obj", false);
-		OBJLoader::LoadModelFile("frontWall", "FrontWall.obj", false);
-		OBJLoader::LoadModelFile("blackBoard", "BlackBoard.obj", false);
-		OBJLoader::LoadModelFile("book1", "book1.obj", false);
-		OBJLoader::LoadModelFile("book2", "book2.obj", false);
-		OBJLoader::LoadModelFile("book3", "book3.obj", false);
 
-
-		OBJLoader::LoadModelFile("ceiling", "Ceiling.obj", false);
-		OBJLoader::LoadModelFile("locker", "Rocker.obj", false);
-		OBJLoader::LoadModelFile("cleaningToolStorage", "cleaningToolStorage.obj", false);
-		OBJLoader::LoadModelFile("setSquare30", "SetSquare30.obj", false);
-		OBJLoader::LoadModelFile("setSquare45", "SetSquare45.obj", false);
-		OBJLoader::LoadModelFile("protractor", "Protractor.obj", false);
-		OBJLoader::LoadModelFile("Fluorescent", "light.obj", false);
-
-		OBJLoader::LoadModelFile("chair", "chair.obj", false);
-		OBJLoader::LoadModelFile("desk", "desk.obj", false);
-		OBJLoader::LoadModelFile("eraser", "eraser.obj", true);
-		OBJLoader::LoadModelFile("pencil", "pencil.obj", true);
-		OBJLoader::LoadModelFile("teacherDesk", "teachingTable.obj", false);
 		OBJLoader::LoadModelFile("floor", "floor.obj", true);
-		OBJLoader::LoadModelFile("sky", "sky.obj", true);
-		OBJLoader::LoadModelFile("sun", "sun.obj", true);
-		OBJLoader::LoadModelFile("Area", "Area.obj", true);
-
-
 		break;
 	case 4:
 		//FBXファイルの読み込み
 		FBXManager::LoadModelFile("player", "player", false);
-		FBXManager::LoadModelFile("cleaningToolStorage", "cleanbox", false);
 		//WAVファイルの読み込み
 		//Audio::LoadFile("test", "51e7ff6cc6b93897.wav");
 		break;
@@ -184,7 +96,6 @@ void Game::RoadAsset()
 		FBXManager::AddAnimationList("player", "jump", 122, 152);
 		FBXManager::AddAnimationList("player", "secondJump", 153, 180);
 		FBXManager::AddAnimationList("player", "airSlide", 181, 190);
-		FBXManager::AddAnimationList("cleaningToolStorage", "open", 0,60);
 
 		break;
 	default:
@@ -209,58 +120,36 @@ void Game::CreatePipeline()
 		break;
 	case 2:
 		PipelineState::CreatePipeline("Particle", PARTICLE, ADD);
-		//PipelineState::CreatePipeline("Bloom", BasePostEffect);
 		PipelineState::CreatePipeline("FBXPolygonBreak", FBXPolygonBreak);
-
-		
 		break;
 	case 3:
-		PipelineState::CreatePipeline("Bloom", Bloom);
 		PipelineState::CreatePipeline("NoShade", NoShade);
 		break;
 	case 4:
 		PipelineState::CreatePipeline("CollisionBox", ViewCollisionBox);
 		PipelineState::CreatePipeline("CollisionSphere", ViewCollisionSphere);
-		//PipelineState::CreatePipeline("NormalMap", NormalMap);
 		break;
 	case 5:
 		PipelineState::CreatePipeline("PolygonBreak", PolygonBreak);
-		PipelineState::CreatePipeline("BloomObj", BloomObj);
-
 		break;
 	case 6:
 		PipelineState::CreatePipeline("FBXShadowMap", FBXShadowMap);
-		PipelineState::CreatePipeline("Sky", SkyDome);
-
 		break;
 	case 7:
 		PipelineState::CreatePipeline("ShadowMap", NormalShadowMap);
-		PipelineState::CreatePipeline("AreaEffect", AreaEffect, ADD);
-		//PipelineState::CreatePipeline("PBShadowMap", PBShadowMap);
-		//PipelineState::CreatePipeline("GrassShadowMap", GrassShadowMap);
 		break;
 	case 8:
 		PipelineState::CreatePipeline("DrawShadowOBJ", DrawShadowOBJ);
-		PipelineState::CreatePipeline("Blur", Blur);
-
-		//PipelineState::CreatePipeline("Grass", GRASS);
 		break;
 	case 9:
-		PipelineState::CreatePipeline("SSAO", Ssao);
-		PipelineState::CreatePipeline("SSAOCombine", SsaoCombine);
-
 		break; 
 	case 10:
-		PipelineState::CreatePipeline("FisheyeLens", FisheyeLens);
 		PipelineState::CreatePipeline("NoAlphaToCoverageSprite", NoAlphaToCoverageSprite, ADD);
-
-		
 		break;
 	case 11:
 		PipelineState::CreatePipeline("NoAlphaToCoverageSprite", NoAlphaToCoverageSprite);
 		PipelineState::CreatePipeline("Migrate", Migrate);
 
-		
 		break;
 	//case 12:
 	//	break;

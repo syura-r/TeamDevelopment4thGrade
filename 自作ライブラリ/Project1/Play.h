@@ -33,29 +33,9 @@ private:
 	bool targetSphere = false;
 	CollisionManager* collisionManager = nullptr;
 	ObjectManager* objectManager = nullptr;
-	std::unique_ptr<NumberSprite> secondTimeSprite;
-	std::unique_ptr<NumberSprite> minuteTimeSprite;
 	Player* player =nullptr;
 	std::unique_ptr<Menu> menu;
-	//ポーズ中
-	bool pause = false;
-	//ポーズボタンを押したフレーム（背景を別のリソースに描画させるフレーム）
-	bool pauseFrame = false;
-	std::unique_ptr<TextureResource> resource;
-	std::unique_ptr<TextureResource> halfResource;
-	std::unique_ptr<TextureResource> quarterResource;
-	
-	//ポーズ中の背景
-	std::unique_ptr<Sprite> pauseBackTex;
-	std::unique_ptr<Sprite> halfPauseBackTex;
-	std::unique_ptr<Sprite> quarterPauseBackTex;
-	std::unique_ptr<Sprite> colon;
-	
-	float minuteTime = 0;
-	float secondTime = 0;
-	int frameCounter = 0;;
-	int getAchieve = 0;
-	bool onResult = false;
+		
 	std::unique_ptr<Result> result;
 	std::unique_ptr<DebugCamera> camera;
 	std::array<std::array<float,3>,9>lightPos = 
