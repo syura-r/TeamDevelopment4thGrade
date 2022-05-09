@@ -1,2 +1,0 @@
-C:\Users\K019G1576\Documents\TechnicalResearch\自作ライブラリ\DirectXTex\Bin\Desktop_2017_Win10\x64\Debug\DirectXTex.lib
-C:\Users\K019G1576\Desktop\自作ライブラリ\DirectXTex\Bin\Desktop_2017_Win10\x64\Debug\DirectXTex.lib
