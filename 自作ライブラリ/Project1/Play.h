@@ -11,6 +11,9 @@
 #include "Player.h"
 #include "Result.h"
 #include "Sprite.h"
+
+#include "Line.h"
+
 class TouchAbleObject;
 class Play :public Scene
 {
@@ -35,6 +38,8 @@ private:
 	ObjectManager* objectManager = nullptr;
 	Player* player =nullptr;
 	std::unique_ptr<Menu> menu;
+
+	Line* line = nullptr;
 		
 	std::unique_ptr<Result> result;
 	std::unique_ptr<DebugCamera> camera;

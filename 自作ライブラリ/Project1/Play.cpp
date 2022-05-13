@@ -35,6 +35,10 @@ Play::Play()
 	player = new Player();
 	objectManager->Add(player);
 
+	line = new Line({ 0,0,0 }, 0, 1, {1,1,0,1});
+
+	objectManager->Add(line);
+
 	result = std::make_unique<Result>();
 //---------------------------------‰¼ŽÀ‘•------------------------------------------
 	std::string filepath = "Resources/Map/Report" + std::to_string(0) + ".txt";

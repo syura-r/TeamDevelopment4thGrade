@@ -76,6 +76,7 @@ void Game::RoadAsset()
 		//Objƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
 		OBJLoader::LoadModelFile("box", "box.obj", false);
 		OBJLoader::LoadModelFile("sphere", "sphere.obj", true);
+		OBJLoader::LoadModelFile("obBox", "bottomOriginBox.obj", false);
 		break;
 	case 3:
 		//Objƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ

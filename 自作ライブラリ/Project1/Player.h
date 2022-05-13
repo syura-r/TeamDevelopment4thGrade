@@ -5,6 +5,8 @@
 #include "DebugCamera.h"
 #include "FBXModel.h"
 #include "Object.h"
+#include "Line.h"
+
 class Player :
 	public Object
 {
@@ -17,6 +19,8 @@ public:
 	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }
 	void Reset();
 	bool GetReset() { return reset; }
+
+	
 private:
 	struct ConstBuffData
 	{
@@ -60,37 +64,27 @@ private:
 	
 	//初期位置
 	const Vector3 StartPos = { 23,2,-20 };
-
 	//移動処理
 	void Move();
 	//当たり判定
 	void CheckHit();
-	//壁ジャンプ処理
-	void WallJump();
-	//エアスライド処理
-	void AirSlide();
 	//カメラの制御
 	void MoveCamera();
 	//出現消滅時の演出処理
 	void ResetPerform();
-	//壁ジャンプフラグ
-	bool wallJump = false;
-	int wallJumpCounter;
-	//壁ジャンプ用
-	Vector3 wallRejectVec = {};
-	Vector3 wallJumpVel;
-	Vector3 wallJumAccel;
-	//エアスライドフラグ
-	bool airSlide = false;
-	int airSlideCounter;
-	Vector3 airSlideVel;
-	Vector3 airSlideAccel;
+	
+	//線を生成
+	void CreateLine();
+	//線を書く
+	void WriteLine();
+	//変換
+	float Vector2ToAngle(DirectX::XMFLOAT3 vector);
+	
+
+	Line* pNowWriteLine = nullptr;
+
 	//接地フラグ
 	bool onGround = true;
-	//ジャンプフラグ
-	bool jump = false;
-	//二段ジャンプフラグ
-	bool secondJump = false;
 	//落下ベクトル
 	XMVECTOR fallV;
 	//現在向いてる方向
@@ -102,7 +96,7 @@ private:
 	//走りフラグ
 	bool run = false;
 	//回転速度
-	float rotateSpeed = 7.5f;
+	float rotateSpeed = 17.5f;
 	Vector3 prePos;
 	//カメラ回転中
 	bool rotCamera;

@@ -11,6 +11,7 @@
 #include "FBXManager.h"
 #include "GameSettingParam.h"
 #include "ParticleEmitter.h"
+#include "ObjectManager.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -74,7 +75,6 @@ Player::Player()
 void Player::Initialize()
 {
 	name = typeid(*this).name();
-	secondJump = true;
 	onGround = true;
 	scale = { 0.3f };
 	position = StartPos;
@@ -136,39 +136,45 @@ void Player::Update()
 	Move();
 	//カメラのリセット処理
 	MoveCamera();
-	//壁ジャンプ処理
-	WallJump();
-	//エアスライド処理
-	AirSlide();
-	//二段ジャンプ処理
-	if (!onGround && !secondJump && !wallJump &&(Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())))
+
+
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
-		secondJump = true;
-		fallV = { 0,secondJumpVYFist,0,0 };
-		ParticleEmitter::CreateShock(position);
+		//線の生成
+		CreateLine();
 	}
+	WriteLine();
+
+	////壁ジャンプ処理
+	//WallJump();
+	////エアスライド処理
+	//AirSlide();
+	////二段ジャンプ処理
+	//if (!onGround && !secondJump && !wallJump &&(Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())))
+	//{
+	//	secondJump = true;
+	//	fallV = { 0,secondJumpVYFist,0,0 };
+	//	ParticleEmitter::CreateShock(position);
+	//}
 	//落下処理
 	if (!onGround)
 	{
-		//エアスライド中は落下しない
-		if (airSlideCounter<=0)
-		{
-			//加速
-			fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
-			//移動
-			position.x += fallV.m128_f32[0];
-			position.y += fallV.m128_f32[1];
-			position.z += fallV.m128_f32[2];
-		}
+		//加速
+		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
+		//移動
+		position.x += fallV.m128_f32[0];
+		position.y += fallV.m128_f32[1];
+		position.z += fallV.m128_f32[2];		
+		
 	}
-	//ジャンプ動作
-	else if ((Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())) &&!jump)
-	{
-		//jump = true;
-		//onGround = false;
-		//fallV = { 0,jumpVYFist,0,0 };
-		ParticleEmitter::CreateShock(position);
-	}
+	////ジャンプ動作
+	//else if ((Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())) &&!jump)
+	//{
+	//	//jump = true;
+	//	//onGround = false;
+	//	//fallV = { 0,jumpVYFist,0,0 };
+	//	ParticleEmitter::CreateShock(position);
+	//}
 	//他のオブジェクトとのヒットチェック
 	CheckHit();
 
@@ -176,12 +182,6 @@ void Player::Update()
 	{
 		camera->SetTarget(position + Vector3{0, 1, 0});
 	}
-	if (airSlideCounter>0)
-		myModel->PlayAnimation("airSlide", false, 1, false);
-	else if(secondJump||wallJump)
-		myModel->PlayAnimation("secondJump", false,1,false);
-	else if(jump)
-		myModel->PlayAnimation("jump", false,1,false);
 
 }
 
@@ -229,6 +229,7 @@ void Player::DrawReady()
 		ImGui::Text("CameraDirection : {%f, %f, %f }\n", cameraDirectionZ.x, cameraDirectionZ.y, cameraDirectionZ.z);
 		ImGui::Text("Direction : {%f, %f, %f }\n", direction.x, direction.y, direction.z);
 		ImGui::Text("Position : {%f, %f, %f }\n", position.x, position.y, position.z);
+		ImGui::Text("Rot : {%f, %f, %f }\n", rotation.x, rotation.y, rotation.z);
 		ImGui::SliderFloat("destruction", &sendData._Destruction, 0, 1.0f);
 		ImGui::SliderFloat("scaleFactor", &sendData._ScaleFactor, 0, 1.0f);
 		ImGui::SliderFloat("positionFactor", &sendData._PositionFactor, 0, 2.0f);
@@ -282,16 +283,11 @@ void Player::Move()
 			run = true;
 		}
 	}
-	//エアスライドの残り時間が10より上なら移動操作せず終了
-	if(airSlideCounter>10)
-		return;
 	
 	//移動処理
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
 		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 	{
-		if(wallJump && wallJumpCounter<13)
-			return;
 		if (onGround)
 		{
 			walkDustCounter++;
@@ -354,17 +350,13 @@ void Player::Move()
 		dir = XMVector3TransformNormal(dir, matRot);
 		direction = dir;
 
-		if (!jump&&!secondJump&&!wallJump&&airSlideCounter<=0)
-		{
-			if (run)
-				myModel->PlayAnimation("run", true);
-			else
-				myModel->PlayAnimation("walk", true);
-		}
+		if (run)
+			myModel->PlayAnimation("run", true);
+		else
+			myModel->PlayAnimation("walk", true);
 	}
 	else
 	{
-		if (!jump && !secondJump && !wallJump && airSlideCounter <= 0)
 			myModel->PlayAnimation("stand", true);
 	}
 }
@@ -428,9 +420,6 @@ void Player::CheckHit()
 			&downRayCastHit, boxCollider->GetScale().y * 2.0f + absDistance))
 		{
 			onGround = true;
-			jump = false;
-			secondJump = false;
-			airSlide = false;
 			position.y -= (downRayCastHit.distance - boxCollider->GetScale().y * 2.0f);
 			//行列更新など
 			Object::Update();
@@ -449,9 +438,6 @@ void Player::CheckHit()
 		{
 			//着地
 			onGround = true;
-			secondJump = false;
-			jump = false;
-			airSlide = false;
 			position.y -= (downRayCastHit.distance - boxCollider->GetScale().y * 2.0f);
 			//行列更新など
 			Object::Update();
@@ -489,11 +475,11 @@ void Player::CheckHit()
 	CollisionManager::GetInstance()->QueryBox(*boxCollider, &callback, COLLISION_ATTR_LANDSHAPE);
 	Vector3 rejectVec = callback.move;
 	rejectVec.Normalize();
-	if (airSlide && rejectVec.Length() != 0)
+	if (rejectVec.Length() != 0)
 	{
 		BoxCollider coll = *(BoxCollider*)collider;
 		BoxCollider* preCollider = &coll;
-		preCollider->SetOffset(preCollider->GetOffset() - airSlideVel.ConvertXMVECTOR());
+		//preCollider->SetOffset(preCollider->GetOffset() - airSlideVel.ConvertXMVECTOR());
 		preCollider->Update();
 		if (callback.collider->GetMax().x > preCollider->GetMax().x && callback.collider->GetMax().x < boxCollider->GetMax().x ||
 			callback.collider->GetMax().x < preCollider->GetMax().x && callback.collider->GetMax().x > boxCollider->GetMax().x)
@@ -525,9 +511,6 @@ void Player::CheckHit()
 	position.y += callback.move.m128_f32[1];
 	position.z += callback.move.m128_f32[2];
 
-	wallRejectVec = callback.move.m128_f32;
-
-	wallRejectVec.y = 0;
 
 	if (callback.move.m128_f32[1] < 0 && fallV.m128_f32[1]>0)
 		fallV.m128_f32[1] = 0;
@@ -536,92 +519,6 @@ void Player::CheckHit()
 
 }
 
-void Player::WallJump()
-{
-	const int WallJumpFrame = 20;//何フレームで終了するか
-	if (!onGround && wallRejectVec.Length() != 0 && (Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())))
-	{
-		wallRejectVec.Normalize();
-		Vector3 BaseDir = { 0,0,1 };
-		if (wallRejectVec.Dot({ 1,0,0 }) < 0)
-			BaseDir = { 0,0,-1 };
-		const float effectRotY = acosf(wallRejectVec.Dot(BaseDir));
-		Vector3 effectPos = position - wallRejectVec * ((BoxCollider*)collider)->GetScale().z;
-		ParticleEmitter::CreateShock(effectPos, { 0,effectRotY,0 });
-
-		myModel->PlayAnimation("stand", false, 1, false);
-		wallJump = true;
-		wallJumpCounter = 0;
-		wallJumpVel = wallRejectVec / 3.0f;
-		wallJumAccel = wallJumpVel / WallJumpFrame;
-		fallV = { 0,wallJumpVYFist,0,0 };
-		//-----------------回転角度の計算----------------------------
-
-		float cosA = direction.Dot(wallRejectVec);
-		if (cosA > 1.0f)
-			cosA = 1.0f;
-		else if (cosA < -1.0f)
-			cosA = -1.0f;
-		float rotY = acos(cosA);
-		const Vector3 CrossVec = direction.Cross(wallRejectVec);
-		if (CrossVec.y < 0)
-			rotY *= -1;
-		//-----------------------------------------------------------
-			//進行方向を壁ジャンプの方向に変更
-		direction = wallRejectVec;
-		//オブジェクトの向きを回転
-		rotation.y += rotY * 180 / 3.1415926535f;//ライアン角から度数法に直す
-	}
-	if (!wallJump)
-		return;
-	if (wallJumpCounter >= WallJumpFrame)
-	{
-		wallJumpCounter = 0;
-		wallJump = false;
-		return;
-	}
-
-	wallJumpVel -= wallJumAccel;
-
-	position += wallJumpVel;
-
-	wallJumpCounter++;
-}
-
-void Player::AirSlide()
-{
-	const int AirSlideFrame = 20;//何フレームで終了するか
-	if (!onGround  &&!airSlide&& (Input::TriggerKey(DIK_F) || Input::TriggerPadButton(SettingParam::GetAirSlideButton())))
-	{
-		Vector3 BaseDir = { 0,0,1 };
-		if (direction.Dot({ 1,0,0 }) < 0)
-			BaseDir = { 0,0,-1 };
-		const float effectRotY = acosf(direction.Dot(BaseDir));
-		Vector3 effectPos = position - direction * ((BoxCollider*)collider)->GetScale().z;
-		ParticleEmitter::CreateShock(effectPos,{0,effectRotY,0});
-
-		myModel->PlayAnimation("stand", false, 1, false);
-		airSlide = true;
-		airSlideCounter = AirSlideFrame;
-		airSlideVel = direction / 3.0f;
-		airSlideAccel = airSlideVel / AirSlideFrame;
-		fallV = { 0,0,0,0 };
-	}
-	if (airSlideCounter <= 0)
-		return;
-
-	if (airSlideCounter >= 15)
-	{
-		Vector3 effectPos = position + direction *3 + Vector3{ 0,1,0 }*((BoxCollider*)collider)->GetScale().y / 2;
-		ParticleEmitter::CreateAir(effectPos, direction);
-	}
-	airSlideVel -= airSlideAccel;
-
-	position = prePos + airSlideVel;
-
-	airSlideCounter--;
-
-}
 
 void Player::MoveCamera()
 {
@@ -729,4 +626,33 @@ void Player::ResetPerform()
 		Initialize();
 	}
 
+}
+
+void Player::CreateLine()
+{
+	pNowWriteLine = new Line(position, Vector2ToAngle(direction), 0, { 1,1,1,1 });
+	ObjectManager::GetInstance()->Add(pNowWriteLine, false);
+}
+
+void Player::WriteLine()
+{
+	if (pNowWriteLine != nullptr)
+	{
+		//ボタンを押しているかつ移動中は線を伸ばす
+		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
+			Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()))
+		{
+			pNowWriteLine->AddLength();
+		}
+	}
+}
+
+float Player::Vector2ToAngle(DirectX::XMFLOAT3 vector)
+{	
+	float angle;
+	angle = acos(vector.z / sqrt(vector.z * vector.z + vector.x * vector.x));
+	angle = angle * 180.0 / 3.14159265f;
+	if (vector.x < 0) angle = 360.0f - angle;
+	if (std::isnan(angle)) angle = 0;
+	return angle - 90;
 }
