@@ -5,7 +5,7 @@
 class TestStar : public Object
 {
 public:
-	TestStar(const Vector3& arg_pos, const float angle);
+	TestStar(const Vector3& arg_pos, const float arg_angle);
 	~TestStar();
 
 	void Initialize()override;

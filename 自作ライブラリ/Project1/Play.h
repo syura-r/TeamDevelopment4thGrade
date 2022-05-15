@@ -13,6 +13,7 @@
 #include "Sprite.h"
 
 #include "Line.h"
+#include "TestStar.h"
 
 class TouchAbleObject;
 class Play :public Scene
@@ -40,6 +41,7 @@ private:
 	std::unique_ptr<Menu> menu;
 
 	Line* line = nullptr;
+	TestStar* testStar = nullptr;
 		
 	std::unique_ptr<Result> result;
 	std::unique_ptr<DebugCamera> camera;

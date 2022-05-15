@@ -39,6 +39,9 @@ Play::Play()
 
 	objectManager->Add(line);
 
+	testStar = new TestStar(Vector3(20, 0, 20), 90);
+	objectManager->Add(testStar);
+
 	result = std::make_unique<Result>();
 //---------------------------------‰¼ŽÀ‘•------------------------------------------
 	std::string filepath = "Resources/Map/Report" + std::to_string(0) + ".txt";
