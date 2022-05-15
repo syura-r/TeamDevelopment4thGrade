@@ -5,13 +5,16 @@
 #include "DebugCamera.h"
 #include "FBXModel.h"
 #include "Object.h"
+#include "ObjectManager.h"
 #include "Line.h"
+#include "TestStar.h"
 
 class Player :
 	public Object
 {
 public:
 	Player();
+	~Player();
 	void Initialize()override;
 	void Update()override;
 	void Draw() override;
@@ -63,7 +66,7 @@ private:
 	int walkDustCounter = 0;
 	
 	//初期位置
-	const Vector3 StartPos = { 23,2,-20 };
+	const Vector3 StartPos = { 0,-4,0 };
 	//移動処理
 	void Move();
 	//当たり判定
@@ -80,8 +83,14 @@ private:
 	//変換
 	float Vector2ToAngle(DirectX::XMFLOAT3 vector);
 	
+	ObjectManager* pObjectManager = nullptr;
 
 	Line* pNowWriteLine = nullptr;
+
+	TestStar* testPstar = nullptr;
+
+	//書くフラグ
+	bool isWriteing = false;
 
 	//接地フラグ
 	bool onGround = true;

@@ -11,7 +11,7 @@
 #include "FBXManager.h"
 #include "GameSettingParam.h"
 #include "ParticleEmitter.h"
-#include "ObjectManager.h"
+
 
 DebugCamera* Player::camera = nullptr;
 
@@ -29,6 +29,12 @@ Player::Player()
 	SetCollider(boxCollider);
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 	collider->SetMove(true);
+
+	pObjectManager = ObjectManager::GetInstance();
+
+	testPstar = new TestStar(Vector3(0, -5, 0), 90);
+	pObjectManager->Add(testPstar);
+
 	Initialize();
 
 	//定数バッファの作成
@@ -70,6 +76,11 @@ Player::Player()
 	constMap2->viewProjection = XMMatrixLookAtLH(Vector3(Object3D::GetLightCamera()->GetEye()).ConvertXMVECTOR(), Vector3(Object3D::GetLightCamera()->GetTarget()).ConvertXMVECTOR(), Vector3(Object3D::GetLightCamera()->GetUp()).ConvertXMVECTOR()) * XMMatrixOrthographicLH(100, 100, 1.0f, 1000.0f);
 	constCameraBuff->Unmap(0, nullptr);
 
+	
+}
+
+Player::~Player()
+{
 }
 
 void Player::Initialize()
@@ -107,6 +118,8 @@ void Player::Initialize()
 	//-----------------------------------------------
 	//カメラの回転
 	camera->AddPhi(rad);
+
+
 }
 
 void Player::Update()
@@ -134,16 +147,16 @@ void Player::Update()
 	}
 	//移動処理
 	Move();
-	//カメラのリセット処理
-	MoveCamera();
-
-
+	
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
 		//線の生成
 		CreateLine();
 	}
 	WriteLine();
+
+	//カメラのリセット処理
+	MoveCamera();
 
 	////壁ジャンプ処理
 	//WallJump();
@@ -183,6 +196,11 @@ void Player::Update()
 		camera->SetTarget(position + Vector3{0, 1, 0});
 	}
 
+	if (!isWriteing)
+	{
+		testPstar->Move(position, Vector2ToAngle(direction));
+	}
+	
 }
 
 void Player::Draw()
@@ -269,20 +287,20 @@ void Player::Move()
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 
-	//走りと歩きの切り替え処理
-	if(Input::TriggerKey(DIK_X)||Input::TriggerPadButton(SettingParam::GetRunButton()))
-	{
-		if (run)
-		{
-			run = false;
-			speed = walkSpeed;
-		}
-		else
-		{
-			speed = runSpeed;
-			run = true;
-		}
-	}
+	////走りと歩きの切り替え処理
+	//if(Input::TriggerKey(DIK_X)||Input::TriggerPadButton(SettingParam::GetRunButton()))
+	//{
+	//	if (run)
+	//	{
+	//		run = false;
+	//		speed = walkSpeed;
+	//	}
+	//	else
+	//	{
+	//		speed = runSpeed;
+	//		run = true;
+	//	}
+	//}
 	
 	//移動処理
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
@@ -314,13 +332,19 @@ void Player::Move()
 			moveDirection += cameraDirectionZ * -1;
 		if (Input::DownKey(DIK_W))
 			moveDirection += cameraDirectionZ;
-		if(Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+		if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 		{
 			auto vec = Input::GetLStickDirection();
 
 			moveDirection = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
 		}
 		moveDirection.Normalize();
+
+		if (!isWriteing)
+		{	
+			//昼間やる
+		}
+		
 
 	//回転処理
 		//現在の進行方向とカメラの正面と角度を求める
@@ -643,6 +667,11 @@ void Player::WriteLine()
 			Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()))
 		{
 			pNowWriteLine->AddLength();
+			isWriteing = true;
+		}
+		else
+		{
+			isWriteing = false;
 		}
 	}
 }

@@ -6,9 +6,10 @@
 
 Line::Line(Vector3 arg_startPos, float arg_angle, float arg_length,Vector4 arg_color)
 {
-	this->position = arg_startPos;
+	
 	this->angle = arg_angle;
 	this->length = arg_length;
+	position = arg_startPos;
 
 	Create(OBJLoader::GetModel("obBox"));
 	color = arg_color;
@@ -34,6 +35,8 @@ void Line::Update()
 {
 	scale = { length,0.1f,0.1f };
 	rotation = { 0,angle,0 };
+	/*DirectX::XMStoreFloat3(&velocity, AngleToVector2(angle));
+	endPos = position + velocity * length;*/
 	Object::Update();
 }
 
@@ -49,7 +52,7 @@ void Line::AddLength()
 void Line::Move(Vector3 arg_movePos, float arg_angle)
 {
 	position = arg_movePos;
-	angle += arg_angle;
+	angle = arg_angle;
 }
 
 DirectX::XMVECTOR Line::AngleToVector2(float arg_angle)
@@ -69,4 +72,9 @@ Vector3 Line::GetStartPos()
 Vector3 Line::GetEndPos()
 {
 	return endPos;
+}
+
+Vector3 Line::GetVelocity()
+{
+	return velocity;
 }

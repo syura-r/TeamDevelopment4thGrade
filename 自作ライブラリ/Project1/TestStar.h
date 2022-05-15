@@ -12,6 +12,9 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	void Move(const Vector3 arg_movePos, const float arg_angle);
+
+	Line* GetLine(const int arg_num);
 
 private:
 	//この図形のデフォルトの情報

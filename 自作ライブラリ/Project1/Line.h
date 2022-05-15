@@ -25,6 +25,8 @@ public:
 
 	Vector3 GetEndPos();
 
+	Vector3 GetVelocity();
+
 private:
 
 	OBJModel lineBox;

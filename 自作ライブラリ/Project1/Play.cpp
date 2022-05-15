@@ -39,8 +39,8 @@ Play::Play()
 
 	objectManager->Add(line);
 
-	testStar = new TestStar(Vector3(20, 0, 20), 90);
-	objectManager->Add(testStar);
+	/*testStar = new TestStar(Vector3(20, 0, 20), 90);
+	objectManager->Add(testStar);*/
 
 	result = std::make_unique<Result>();
 //---------------------------------‰¼ŽÀ‘•------------------------------------------

@@ -24,7 +24,7 @@ TestStar::TestStar(const Vector3& arg_pos, const float arg_angle)
 		rotatedPos.x = posMat.r[0].m128_f32[0];
 		rotatedPos.y = posMat.r[0].m128_f32[1];
 		rotatedPos.z = posMat.r[0].m128_f32[2];
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length * 0.25f, Vector4(1, 1, 0, 1));
+		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length * 0.25f, Vector4(1, 1, 0, 0.3f));
 		lines.push_back(line);
 		oManager->Add(line, false);
 	}
@@ -47,6 +47,32 @@ void TestStar::Update()
 void TestStar::Draw()
 {
 }
+
+void TestStar::Move(const Vector3 arg_movePos, const float arg_angle)
+{
+	position = arg_movePos;
+	angle = arg_angle;
+	//ˆø”‚Å‚à‚ç‚Á‚½À•WAŠp“x‚É•ÏŠ·‚µ‚ÄLine‚ğ¶¬
+	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));
+	for (int i = 0; i < baseInfo.size(); i++)
+	{
+		XMVECTOR pos = baseInfo[i].startPos.ConvertXMVECTOR();
+		XMMATRIX posMat = XMMATRIX(pos, XMVECTOR(), XMVECTOR(), XMVECTOR());
+		posMat *= rotMat;
+		Vector3 rotatedPos;
+		rotatedPos.x = posMat.r[0].m128_f32[0];
+		//rotatedPos.y = posMat.r[0].m128_f32[1];
+		rotatedPos.z = posMat.r[0].m128_f32[2];
+		//Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length * 0.25f, Vector4(1, 1, 0, 1));
+		lines[i]->Move(rotatedPos + position, angle + baseInfo[i].angle);
+	}
+}
+
+Line* TestStar::GetLine(const int arg_num)
+{
+	return lines[arg_num];
+}
+
 
 void TestStar::PointSetting()
 {
