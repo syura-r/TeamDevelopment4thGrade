@@ -13,8 +13,8 @@ TestStar::TestStar(const Vector3& arg_pos, const float arg_angle)
 
 	ObjectManager* oManager = ObjectManager::GetInstance();
 
+	//引数でもらった座標、角度に変換してLineを生成
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));
-
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		XMVECTOR pos = baseInfo[i].startPos.ConvertXMVECTOR();
@@ -60,12 +60,12 @@ void TestStar::PointSetting()
 	points.push_back(Vector3(0.6910f, 0.0f, 0.9511f));
 	points.push_back(Vector3(1.8090f, 0.0f, -0.5878f));
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
-
 	for (int i = 0; i < points.size(); i++)
 	{
 		points[i] *= 10.0f;
 	}
 
+	//ワールドX軸とのなす角の計算
 	float angle = 0;
 	Vector3 vecX = Vector3(1.0f, 0.0f, 0.0f);
 

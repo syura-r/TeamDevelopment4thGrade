@@ -14,11 +14,13 @@ public:
 
 
 private:
+	//この図形のデフォルトの情報
 	static std::vector<LocusPointInfo> baseInfo;
 
 	Vector3 position;
 	float angle;
 	std::vector<Line*> lines;
 
+	//デフォルトの図形情報を一回だけ計算
 	void PointSetting();
 };
