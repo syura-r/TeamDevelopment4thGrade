@@ -18,4 +18,6 @@ protected:
 
 	//デフォルトの図形情報を一回だけ計算
 	virtual void PointSetting() = 0;
+	//座標の変換計算用
+	virtual const Vector3 CalcPointTransform(const DirectX::XMVECTOR& arg_point, const DirectX::XMMATRIX& arg_rotMat);
 };
