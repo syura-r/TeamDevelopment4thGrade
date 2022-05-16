@@ -96,7 +96,8 @@ private:
 	//図形の線の番号
 	int currentLineNum = 0;
 
-	
+	//線の向きとスティック入力の正確さ 0～1 speedにかける
+	float inputAccuracy = 0;
 
 
 	//接地フラグ
@@ -108,7 +109,7 @@ private:
 	//移動速度
 	float speed = 0.09f;
 	const float walkSpeed = 0.09f;
-	const float drawingSpeed = 0.4f;
+	const float drawingSpeed = 0.18f;
 	//走りフラグ
 	bool run = false;
 	//回転速度

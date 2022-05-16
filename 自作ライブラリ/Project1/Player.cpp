@@ -253,6 +253,7 @@ void Player::DrawReady()
 		ImGui::Text("Direction : {%f, %f, %f }\n", direction.x, direction.y, direction.z);
 		ImGui::Text("Position : {%f, %f, %f }\n", position.x, position.y, position.z);
 		ImGui::Text("Rot : {%f, %f, %f }\n", rotation.x, rotation.y, rotation.z);
+		ImGui::Text("inputAccuracy : {%f}\n", inputAccuracy);
 
 		ImGui::SliderFloat("destruction", &sendData._Destruction, 0, 1.0f);
 		ImGui::SliderFloat("scaleFactor", &sendData._ScaleFactor, 0, 1.0f);
@@ -327,6 +328,9 @@ void Player::Move()
 		}
 		//移動方向
 		Vector3 moveDirection = {};
+		Vector2 stickDirection = {};
+		Vector2 lineDirection = {};
+		
 		if (!isDrawing)
 		{	
 			//昼間やる
@@ -345,18 +349,44 @@ void Player::Move()
 
 				moveDirection = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
 			}
+			inputAccuracy = 1;
 			moveDirection.Normalize();
 		}
 		else
 		{
 			if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 			{
-				//auto vec = Input::GetLStickDirection();
+				moveDirection = testPstar->GetLine(currentLineNum)->GetVelocity();		
 
-				//moveDirection = cameraDirectionX * testPstar->GetLine(0)->GetVelocity().x + cameraDirectionZ * testPstar->GetLine(0)->GetVelocity().z;
+				//スティックの向き
+				auto vec = Input::GetLStickDirection();
+				stickDirection.x = (cameraDirectionX * vec.x).x;
+				stickDirection.y = (cameraDirectionZ * vec.y).z;
+				stickDirection = Vector2::Normalize(stickDirection);
 
-				moveDirection = testPstar->GetLine(currentLineNum)->GetVelocity();				
+				//線の向き
+				auto lineVec = testPstar->GetLine(currentLineNum)->GetVelocity();
+				lineDirection.x = lineVec.x;
+				lineDirection.y = lineVec.z;
+				lineDirection = Vector2::Normalize(lineDirection);
+
+				inputAccuracy = Vector2::Dot(stickDirection, lineDirection);
+
+				if (inputAccuracy <= 0)
+				{
+					inputAccuracy = 0;
+				}
+
+				inputAccuracy = Easing::EaseOutCirc(0, 1, 1, inputAccuracy);
+
 			}
+			else
+			{
+				inputAccuracy = 0; //スティック入力がないから動かない
+			}
+
+			
+
 			moveDirection.Normalize();
 		}
 		
@@ -376,7 +406,7 @@ void Player::Move()
 		float rotSpeed = rotateSpeed;
 		if (abs(rotY) < 55)
 		{
-			position += moveDirection * speed;
+			position += moveDirection * (speed * inputAccuracy);
 			isExtendLine = true;
 		}
 		else
@@ -696,7 +726,7 @@ void Player::DrawingLine()
 			if (isExtendLine && (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
 				Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()))
 			{		
-				pNowDrawingLine->AddLength(speed);
+				pNowDrawingLine->AddLength(speed * inputAccuracy);
 			}
 
 			Vector3 endPos = testPstar->GetLine(currentLineNum)->GetEndPos();
@@ -709,6 +739,7 @@ void Player::DrawingLine()
 				{
 					isDrawing = false;
 					currentLineNum = 0;
+					//ここで図形として保存する処理
 					return;
 				}
 				CreateLine();

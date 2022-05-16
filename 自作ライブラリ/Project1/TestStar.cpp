@@ -84,7 +84,7 @@ void TestStar::Move(const Vector3 arg_movePos, const float arg_angle)
 		posMat *= rotMat;
 		Vector3 rotatedPos;
 		rotatedPos.x = posMat.r[0].m128_f32[0];
-		//rotatedPos.y = posMat.r[0].m128_f32[1];
+		rotatedPos.y = posMat.r[0].m128_f32[1];
 		rotatedPos.z = posMat.r[0].m128_f32[2];
 		//Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length * 0.25f, Vector4(1, 1, 0, 1));
 		lines[i]->Move(rotatedPos + position, angle + baseInfo[i].angle);
