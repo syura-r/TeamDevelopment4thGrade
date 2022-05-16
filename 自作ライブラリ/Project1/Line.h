@@ -15,7 +15,7 @@ public:
 
 	void Reset();
 
-	void AddLength();
+	void AddLength(float arg_addSpeed);
 
 	void Move(Vector3 arg_movePos, float arg_angle);
 

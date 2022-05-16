@@ -125,6 +125,10 @@ struct Vector3:public DirectX::XMFLOAT3
 	//“àÏ
 	static float Dot(Vector3 vector1, Vector3 vector2);
 
+	//‹——£‚ğæ“¾
+	static float Distance(Vector3 vector1, Vector3 vector2);
+	
+
 	//XMFLOAT3‚É•ÏŠ·
 	static DirectX::XMFLOAT3 ConvertFLOAT3(const Vector3& vector);
 };

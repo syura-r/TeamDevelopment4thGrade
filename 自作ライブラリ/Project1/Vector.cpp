@@ -409,6 +409,13 @@ float Vector3::Dot(Vector3 vector1, Vector3 vector2)
 	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 }
 
+float Vector3::Distance(Vector3 vector1, Vector3 vector2)
+{
+	float value = (vector1.x - vector2.x) * (vector1.x - vector2.x) + (vector1.y - vector2.y) * (vector1.y - vector2.y) + (vector1.z - vector2.z) * (vector1.z - vector2.z);
+	return value;
+
+}
+
 DirectX::XMFLOAT3 Vector3::ConvertFLOAT3(const Vector3 & vector)
 {
 	DirectX::XMFLOAT3 convert = { vector.x,vector.y,vector.z };

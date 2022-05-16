@@ -145,15 +145,20 @@ void Player::Update()
 		Object::Update();
 		return;//やり直し時はここまで
 	}
-	//移動処理
-	Move();
-	
+
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
+		isDrawing = true;
 		//線の生成
 		CreateLine();
 	}
-	WriteLine();
+
+	//移動処理
+	Move();
+	
+	//ドローイングの処理
+	DrawingLine();
+	
 
 	//カメラのリセット処理
 	MoveCamera();
@@ -196,7 +201,7 @@ void Player::Update()
 		camera->SetTarget(position + Vector3{0, 1, 0});
 	}
 
-	if (!isWriteing)
+	if (!isDrawing)
 	{
 		testPstar->Move(position, Vector2ToAngle(direction));
 	}
@@ -248,6 +253,7 @@ void Player::DrawReady()
 		ImGui::Text("Direction : {%f, %f, %f }\n", direction.x, direction.y, direction.z);
 		ImGui::Text("Position : {%f, %f, %f }\n", position.x, position.y, position.z);
 		ImGui::Text("Rot : {%f, %f, %f }\n", rotation.x, rotation.y, rotation.z);
+
 		ImGui::SliderFloat("destruction", &sendData._Destruction, 0, 1.0f);
 		ImGui::SliderFloat("scaleFactor", &sendData._ScaleFactor, 0, 1.0f);
 		ImGui::SliderFloat("positionFactor", &sendData._PositionFactor, 0, 2.0f);
@@ -287,20 +293,17 @@ void Player::Move()
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 
-	////走りと歩きの切り替え処理
-	//if(Input::TriggerKey(DIK_X)||Input::TriggerPadButton(SettingParam::GetRunButton()))
-	//{
-	//	if (run)
-	//	{
-	//		run = false;
-	//		speed = walkSpeed;
-	//	}
-	//	else
-	//	{
-	//		speed = runSpeed;
-	//		run = true;
-	//	}
-	//}
+	//走りと歩きの切り替え処理
+	
+	if (isDrawing)
+	{
+		speed = drawingSpeed;
+	}
+	else
+	{
+		
+		speed = walkSpeed;
+	}
 	
 	//移動処理
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
@@ -324,7 +327,7 @@ void Player::Move()
 		}
 		//移動方向
 		Vector3 moveDirection = {};
-		if (!isWriteing)
+		if (!isDrawing)
 		{	
 			//昼間やる
 			
@@ -351,7 +354,8 @@ void Player::Move()
 				//auto vec = Input::GetLStickDirection();
 
 				//moveDirection = cameraDirectionX * testPstar->GetLine(0)->GetVelocity().x + cameraDirectionZ * testPstar->GetLine(0)->GetVelocity().z;
-				moveDirection = testPstar->GetLine(0)->GetVelocity();				
+
+				moveDirection = testPstar->GetLine(currentLineNum)->GetVelocity();				
 			}
 			moveDirection.Normalize();
 		}
@@ -370,8 +374,16 @@ void Player::Move()
 		const Vector3 CrossVec = direction.Cross(moveDirection);
 
 		float rotSpeed = rotateSpeed;
-		if(abs(rotY) < 55)
+		if (abs(rotY) < 55)
+		{
 			position += moveDirection * speed;
+			isExtendLine = true;
+		}
+		else
+		{
+			isExtendLine = false;
+		}
+			
 
 		if (rotSpeed > abs(rotY))
 		{
@@ -385,7 +397,7 @@ void Player::Move()
 		dir = XMVector3TransformNormal(dir, matRot);
 		direction = dir;
 
-		if (run)
+		if (isDrawing)
 			myModel->PlayAnimation("run", true);
 		else
 			myModel->PlayAnimation("walk", true);
@@ -665,26 +677,50 @@ void Player::ResetPerform()
 
 void Player::CreateLine()
 {
-	pNowWriteLine = new Line(position, Vector2ToAngle(direction), 0, { 1,1,1,1 });
-	ObjectManager::GetInstance()->Add(pNowWriteLine, false);
+	if (currentLineNum < testPstar->GetMaxNumLine())
+	{
+		Vector3 nowLineVel = testPstar->GetLine(currentLineNum)->GetVelocity(); //kokokokoko
+		pNowDrawingLine = new Line(position, Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 });
+		ObjectManager::GetInstance()->Add(pNowDrawingLine, false);
+	}
+	
 }
 
-void Player::WriteLine()
+void Player::DrawingLine()
 {
-	if (pNowWriteLine != nullptr)
+	if (pNowDrawingLine != nullptr)
 	{
-		//ボタンを押しているかつ移動中は線を伸ばす
-		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
-			Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()))
-		{
-			pNowWriteLine->AddLength();
-			isWriteing = true;
+		//ボタンを押しているかつドローイング中は線を伸ばす
+		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && isDrawing)
+		{	
+			if (isExtendLine && (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
+				Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()))
+			{		
+				pNowDrawingLine->AddLength(speed);
+			}
+
+			Vector3 endPos = testPstar->GetLine(currentLineNum)->GetEndPos();
+			Vector3 pPos = position;
+
+			if (0.1f > Vector3::Distance(pPos, endPos)) //マジックサイコー
+			{
+				currentLineNum++;
+				if (currentLineNum >= testPstar->GetMaxNumLine())
+				{
+					isDrawing = false;
+					currentLineNum = 0;
+					return;
+				}
+				CreateLine();
+			}
 		}
 		else
 		{
-			isWriteing = false;
+			isDrawing = false;
+			currentLineNum = 0;
 		}
 	}
+
 }
 
 float Player::Vector2ToAngle(DirectX::XMFLOAT3 vector)

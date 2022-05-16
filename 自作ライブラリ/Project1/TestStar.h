@@ -17,6 +17,8 @@ public:
 
 	Line* GetLine(const int arg_num);
 
+	int GetMaxNumLine();
+
 private:
 	//この図形のデフォルトの情報
 	static std::vector<LocusPointInfo> baseInfo;

@@ -33,7 +33,7 @@ void Line::Initialize()
 
 void Line::Update()
 {
-	scale = { length,0.1f,0.1f };
+	scale = { length,0.5,0.5 };
 	rotation = { 0,angle,0 };
 	DirectX::XMStoreFloat3(&velocity, AngleToVector2(angle));
 	endPos = position + velocity * length;
@@ -44,9 +44,9 @@ void Line::Reset()
 {
 }
 
-void Line::AddLength()
+void Line::AddLength(float arg_addSpeed)
 {
-	length += 0.022f;
+	length += arg_addSpeed;
 }
 
 void Line::Move(Vector3 arg_movePos, float arg_angle)

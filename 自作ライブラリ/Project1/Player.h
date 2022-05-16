@@ -79,18 +79,25 @@ private:
 	//線を生成
 	void CreateLine();
 	//線を書く
-	void WriteLine();
+	void DrawingLine();
 	//変換
 	float Vector2ToAngle(DirectX::XMFLOAT3 vector);
 	
 	ObjectManager* pObjectManager = nullptr;
 
-	Line* pNowWriteLine = nullptr;
+	Line* pNowDrawingLine = nullptr;
 
 	TestStar* testPstar = nullptr;
 
 	//書くフラグ
-	bool isWriteing = false;
+	bool isDrawing = false;
+	//線を伸ばすフラグ
+	bool isExtendLine = true;
+	//図形の線の番号
+	int currentLineNum = 0;
+
+	
+
 
 	//接地フラグ
 	bool onGround = true;
@@ -101,7 +108,7 @@ private:
 	//移動速度
 	float speed = 0.09f;
 	const float walkSpeed = 0.09f;
-	const float runSpeed = 0.125f;
+	const float drawingSpeed = 0.4f;
 	//走りフラグ
 	bool run = false;
 	//回転速度
