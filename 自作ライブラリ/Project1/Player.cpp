@@ -324,25 +324,36 @@ void Player::Move()
 		}
 		//ˆÚ“®•ûŒü
 		Vector3 moveDirection = {};
-		if (Input::DownKey(DIK_A))
-			moveDirection += cameraDirectionX * -1;
-		if (Input::DownKey(DIK_D))
-			moveDirection += cameraDirectionX;
-		if (Input::DownKey(DIK_S))
-			moveDirection += cameraDirectionZ * -1;
-		if (Input::DownKey(DIK_W))
-			moveDirection += cameraDirectionZ;
-		if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
-		{
-			auto vec = Input::GetLStickDirection();
-
-			moveDirection = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
-		}
-		moveDirection.Normalize();
-
 		if (!isWriteing)
 		{	
 			//’‹ŠÔ‚â‚é
+			
+			if (Input::DownKey(DIK_A))
+				moveDirection += cameraDirectionX * -1;
+			if (Input::DownKey(DIK_D))
+				moveDirection += cameraDirectionX;
+			if (Input::DownKey(DIK_S))
+				moveDirection += cameraDirectionZ * -1;
+			if (Input::DownKey(DIK_W))
+				moveDirection += cameraDirectionZ;
+			if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+			{
+				auto vec = Input::GetLStickDirection();
+
+				moveDirection = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
+			}
+			moveDirection.Normalize();
+		}
+		else
+		{
+			if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+			{
+				//auto vec = Input::GetLStickDirection();
+
+				//moveDirection = cameraDirectionX * testPstar->GetLine(0)->GetVelocity().x + cameraDirectionZ * testPstar->GetLine(0)->GetVelocity().z;
+				moveDirection = testPstar->GetLine(0)->GetVelocity();				
+			}
+			moveDirection.Normalize();
 		}
 		
 
@@ -679,9 +690,9 @@ void Player::WriteLine()
 float Player::Vector2ToAngle(DirectX::XMFLOAT3 vector)
 {	
 	float angle;
-	angle = acos(vector.z / sqrt(vector.z * vector.z + vector.x * vector.x));
+	angle = acos(vector.x / sqrt(vector.x * vector.x + vector.z * vector.z));
 	angle = angle * 180.0 / 3.14159265f;
-	if (vector.x < 0) angle = 360.0f - angle;
+	if (vector.z > 0) angle = 360.0f - angle;
 	if (std::isnan(angle)) angle = 0;
-	return angle - 90;
+	return angle;
 }

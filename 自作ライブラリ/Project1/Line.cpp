@@ -35,8 +35,8 @@ void Line::Update()
 {
 	scale = { length,0.1f,0.1f };
 	rotation = { 0,angle,0 };
-	/*DirectX::XMStoreFloat3(&velocity, AngleToVector2(angle));
-	endPos = position + velocity * length;*/
+	DirectX::XMStoreFloat3(&velocity, AngleToVector2(angle));
+	endPos = position + velocity * length;
 	Object::Update();
 }
 
@@ -59,7 +59,7 @@ DirectX::XMVECTOR Line::AngleToVector2(float arg_angle)
 {
 	DirectX::XMVECTOR result;
 	float radian = arg_angle * (PI / 180);
-	result = { cos(radian), 0,sin(radian) };
+	result = { cos(radian), 0, -sin(radian) };
 	DirectX::XMVector3Normalize(result);
 	return result;
 }
@@ -77,4 +77,9 @@ Vector3 Line::GetEndPos()
 Vector3 Line::GetVelocity()
 {
 	return velocity;
+}
+
+float Line::GetAngle() const
+{
+	return angle;
 }

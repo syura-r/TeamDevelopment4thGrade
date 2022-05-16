@@ -1,5 +1,6 @@
 #include "TestStar.h"
 #include "ObjectManager.h"
+#include "DrawMode.h"
 std::vector<LocusPointInfo> TestStar::baseInfo = std::vector<LocusPointInfo>();
 
 TestStar::TestStar(const Vector3& arg_pos, const float arg_angle)
@@ -42,6 +43,28 @@ void TestStar::Initialize()
 
 void TestStar::Update()
 {
+}
+
+void TestStar::DrawReady()
+{
+#ifdef _DEBUG
+	if (!Object3D::GetDrawShadow() && DrawMode::GetDrawImGui())
+	{		
+		ImGui::Begin("TestStar");
+		ImGui::Text("[0].startPos : {%f, %f, %f }\n", lines[0]->GetStartPos().x, lines[0]->GetStartPos().y, lines[0]->GetStartPos().z);
+		ImGui::Text("[0].velocity : {%f, %f, %f }\n", lines[0]->GetVelocity().x, lines[0]->GetVelocity().y, lines[0]->GetVelocity().z);
+		ImGui::Text("[0].endPos : {%f, %f, %f }\n", lines[0]->GetEndPos().x, lines[0]->GetEndPos().y, lines[0]->GetEndPos().z);
+		ImGui::Text("[0].angle : {%f}\n", lines[0]->GetAngle());
+		ImGui::End();
+	}
+#endif
+
+	if (Object3D::GetDrawShadow())
+		pipelineName = "ShadowMap";
+	else
+	{
+		pipelineName = "DrawShadowOBJ";
+	}
 }
 
 void TestStar::Draw()

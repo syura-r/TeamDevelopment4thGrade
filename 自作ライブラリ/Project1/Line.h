@@ -27,6 +27,8 @@ public:
 
 	Vector3 GetVelocity();
 
+	float GetAngle()const;
+
 private:
 
 	OBJModel lineBox;

@@ -10,6 +10,7 @@ public:
 
 	void Initialize()override;
 	void Update()override;
+	void DrawReady()override;
 	void Draw()override;
 
 	void Move(const Vector3 arg_movePos, const float arg_angle);
