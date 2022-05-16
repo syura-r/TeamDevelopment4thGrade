@@ -102,6 +102,7 @@ void TestStar::PointSetting()
 
 		baseInfo.push_back(LocusPointInfo());
 		baseInfo[i].startPos = points[i];
+		baseInfo[i].endPos = points[i + 1];
 		baseInfo[i].length = Vector3::Length(line);
 
 		float cos = vecX.Dot(line) / (vecX.Length() * line.Length());
