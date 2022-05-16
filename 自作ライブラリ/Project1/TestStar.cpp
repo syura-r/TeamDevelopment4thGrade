@@ -4,9 +4,9 @@
 std::vector<LocusPointInfo> TestStar::baseInfo = std::vector<LocusPointInfo>();
 
 TestStar::TestStar(const Vector3& arg_pos, const float arg_angle)
-	:position(arg_pos),
-	 angle(arg_angle)
+	:BaseLocus(arg_angle)
 {
+	position = arg_pos;
 	if (baseInfo.empty())
 	{
 		PointSetting();
@@ -33,8 +33,6 @@ TestStar::TestStar(const Vector3& arg_pos, const float arg_angle)
 
 TestStar::~TestStar()
 {
-	int a = 5;
-	a++;
 }
 
 void TestStar::Initialize()
@@ -86,21 +84,9 @@ void TestStar::Move(const Vector3 arg_movePos, const float arg_angle)
 		rotatedPos.x = posMat.r[0].m128_f32[0];
 		//rotatedPos.y = posMat.r[0].m128_f32[1];
 		rotatedPos.z = posMat.r[0].m128_f32[2];
-		//Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length * 0.25f, Vector4(1, 1, 0, 1));
 		lines[i]->Move(rotatedPos + position, angle + baseInfo[i].angle);
 	}
 }
-
-Line* TestStar::GetLine(const int arg_num)
-{
-	return lines[arg_num];
-}
-
-int TestStar::GetMaxNumLine()
-{
-	return lines.size();
-}
-
 
 void TestStar::PointSetting()
 {

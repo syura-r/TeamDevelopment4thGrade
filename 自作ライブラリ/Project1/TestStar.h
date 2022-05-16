@@ -1,8 +1,9 @@
 #pragma once
 #include "Line.h"
 #include "LocusDef.h"
+#include "BaseLocus.h"
 
-class TestStar : public Object
+class TestStar : public Object, public BaseLocus
 {
 public:
 	TestStar(const Vector3& arg_pos, const float arg_angle);
@@ -13,20 +14,12 @@ public:
 	void DrawReady()override;
 	void Draw()override;
 
-	void Move(const Vector3 arg_movePos, const float arg_angle);
-
-	Line* GetLine(const int arg_num);
-
-	int GetMaxNumLine();
+	void Move(const Vector3 arg_movePos, const float arg_angle)override;	
 
 private:
 	//この図形のデフォルトの情報
-	static std::vector<LocusPointInfo> baseInfo;
-
-	Vector3 position;
-	float angle;
-	std::vector<Line*> lines;
+	static std::vector<LocusPointInfo> baseInfo;	
 
 	//デフォルトの図形情報を一回だけ計算
-	void PointSetting();
+	void PointSetting()override;
 };
