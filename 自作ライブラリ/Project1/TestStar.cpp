@@ -83,8 +83,6 @@ const LocusType TestStar::GetType() const
 
 void TestStar::PointSetting()
 {
-	const double PI = 3.14159265f;
-
 	//図形を構成する座標　終点まで
 	std::vector<Vector3> points;
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
@@ -98,27 +96,5 @@ void TestStar::PointSetting()
 		points[i] *= 10.0f;
 	}
 
-	//ワールドX軸とのなす角の計算
-	float angle = 0;
-	Vector3 vecX = Vector3(1.0f, 0.0f, 0.0f);
-
-	for (int i = 0; i < points.size() - 1; i++)
-	{
-		angle = 0;
-		Vector3 line = points[i + 1] - points[i];
-
-		baseInfo.push_back(LocusPointInfo());
-		baseInfo[i].startPos = points[i];
-		baseInfo[i].endPos = points[i + 1];
-		baseInfo[i].length = Vector3::Length(line);
-
-		float cos = vecX.Dot(line) / (vecX.Length() * line.Length());
-		angle = acosf(cos) * 180.0f / PI;
-		Vector3 cross = vecX.Cross(line);
-		if (cross.y < 0)
-		{
-			angle = 360.0f - angle;
-		}
-		baseInfo[i].angle = angle;
-	}
+	CalcBaseInfo(points, baseInfo);
 }

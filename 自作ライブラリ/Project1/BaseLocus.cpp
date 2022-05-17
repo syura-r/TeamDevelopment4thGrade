@@ -22,6 +22,35 @@ int BaseLocus::GetMaxNumLine()
 	return lines.size();
 }
 
+void BaseLocus::CalcBaseInfo(const std::vector<Vector3>& arg_points, std::vector<LocusPointInfo>& arg_infoList)
+{
+	const double PI = 3.14159265f;
+
+	//ƒ[ƒ‹ƒhX²‚Æ‚Ì‚È‚·Šp‚ÌŒvZ
+	float angle = 0;
+	Vector3 vecX = Vector3(1.0f, 0.0f, 0.0f);
+
+	for (int i = 0; i < arg_points.size() - 1; i++)
+	{
+		angle = 0;
+		Vector3 line = arg_points[i + 1] - arg_points[i];
+
+		arg_infoList.push_back(LocusPointInfo());
+		arg_infoList[i].startPos = arg_points[i];
+		arg_infoList[i].endPos = arg_points[i + 1];
+		arg_infoList[i].length = Vector3::Length(line);
+
+		float cos = vecX.Dot(line) / (vecX.Length() * line.Length());
+		angle = acosf(cos) * 180.0f / PI;
+		Vector3 cross = vecX.Cross(line);
+		if (cross.y < 0)
+		{
+			angle = 360.0f - angle;
+		}
+		arg_infoList[i].angle = angle;
+	}
+}
+
 const Vector3 BaseLocus::CalcPointTransform(const DirectX::XMVECTOR& arg_point, const DirectX::XMMATRIX& arg_rotMat)
 {	
 	XMMATRIX posMat = XMMATRIX(arg_point, XMVECTOR(), XMVECTOR(), XMVECTOR());
