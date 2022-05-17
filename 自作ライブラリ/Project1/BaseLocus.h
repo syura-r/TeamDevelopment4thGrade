@@ -8,7 +8,7 @@ enum class LocusType
 	STAR,
 };
 
-class BaseLocus
+class BaseLocus : public virtual Object
 {
 public:
 	BaseLocus(const float arg_angle);

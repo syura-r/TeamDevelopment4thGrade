@@ -3,7 +3,7 @@
 #include "LocusDef.h"
 #include "BaseLocus.h"
 
-class TestStar : public Object, public BaseLocus
+class TestStar : public virtual Object, public virtual BaseLocus
 {
 public:
 	TestStar(const Vector3& arg_pos, const float arg_angle);
