@@ -14,6 +14,7 @@ class BaseLocus : public virtual Object
 {
 public:
 	BaseLocus(const float arg_angle);
+	BaseLocus(const BaseLocus& arg_baseLocus);
 	virtual ~BaseLocus();
 
 	virtual void Move(const Vector3 arg_movePos, const float arg_angle) = 0;

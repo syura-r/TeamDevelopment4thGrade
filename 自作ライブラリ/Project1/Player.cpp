@@ -33,6 +33,8 @@ Player::Player()
 	pObjectManager = ObjectManager::GetInstance();
 
 	testPstar = new TestStar(Vector3(0, -5, 0), 90);
+
+	
 	//testPtriforce = new TestTriforce(Vector3(0, -5, 0), 90);
 	//testPribbon = new TestRibbon(Vector3(0, -5, 0), 90);
 	pObjectManager->Add(testPstar);
@@ -164,6 +166,14 @@ void Player::Update()
 
 	//カメラのリセット処理
 	MoveCamera();
+
+	if (!isDrawing)
+	{
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		{
+			DeleteLocuss();
+		}
+	}
 
 	////壁ジャンプ処理
 	//WallJump();
@@ -605,21 +615,21 @@ void Player::MoveCamera()
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 
 	//カメラのリセット処理
-	if ((Input::TriggerKey(DIK_C) || Input::TriggerPadButton(SettingParam::GetResetButton())) && !rotCamera)
-	{
-		rotCamera = true;
-		float cosA = direction.Dot(cameraDirectionZ);
-		if (cosA > 1.0f)
-			cosA = 1.0f;
-		else if (cosA < -1.0f)
-			cosA = -1.0f;
-		radY = acos(cosA);
-		const Vector3 CrossVec = direction.Cross(cameraDirectionZ);
-		if (CrossVec.y < 0)
-			radY *= -1;
-		cameraRotCount = 0;
-		//camera->AddPhi(radY);
-	}
+	//if ((Input::TriggerKey(DIK_C) || Input::TriggerPadButton(SettingParam::GetResetButton())) && !rotCamera)
+	//{
+	//	rotCamera = true;
+	//	float cosA = direction.Dot(cameraDirectionZ);
+	//	if (cosA > 1.0f)
+	//		cosA = 1.0f;
+	//	else if (cosA < -1.0f)
+	//		cosA = -1.0f;
+	//	radY = acos(cosA);
+	//	const Vector3 CrossVec = direction.Cross(cameraDirectionZ);
+	//	if (CrossVec.y < 0)
+	//		radY *= -1;
+	//	cameraRotCount = 0;
+	//	//camera->AddPhi(radY);
+	//}
 	
 	//カメラの回転処理
 	if (rotCamera)
@@ -714,6 +724,7 @@ void Player::CreateLine()
 		Vector3 nowLineVel = testPstar->GetLine(currentLineNum)->GetVelocity(); //kokokokoko
 		pNowDrawingLine = new Line(position, Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 });
 		ObjectManager::GetInstance()->Add(pNowDrawingLine, false);
+		vecDrawingLines.push_back(pNowDrawingLine);
 	}
 	
 }
@@ -742,6 +753,9 @@ void Player::DrawingLine()
 					isDrawing = false;
 					currentLineNum = 0;
 					//ここで図形として保存する処理
+					TestStar* testPstarCopy = new TestStar(*testPstar);
+					vecLocuss.push_back(testPstarCopy);
+					DeleteDrawingLine();
 					return;
 				}
 				CreateLine();
@@ -751,9 +765,36 @@ void Player::DrawingLine()
 		{
 			isDrawing = false;
 			currentLineNum = 0;
+			DeleteDrawingLine();
 		}
 	}
 
+}
+
+void Player::DeleteDrawingLine()
+{
+	for (int i = 0; i < vecDrawingLines.size(); i++)
+	{
+		ObjectManager::GetInstance()->Remove(vecDrawingLines[i]);
+	}
+	vecDrawingLines.clear();
+}
+
+void Player::DeleteLocuss()
+{
+	//end max きもい
+	//そもそもここごみ
+	//眠くて頭回ってないからコピー先のLocusってdeleteとしないとだめか？あいうえお
+	auto end = vecLocuss.size();
+	for (int i = 0; i < end; i++)
+	{
+		auto max = vecLocuss[i]->GetMaxNumLine();
+		for (int j = 0; j < max; j++)
+		{
+			ObjectManager::GetInstance()->Remove(vecLocuss[i]->GetLine(j));
+		}
+	}
+	vecLocuss.clear();
 }
 
 float Player::Vector2ToAngle(DirectX::XMFLOAT3 vector)

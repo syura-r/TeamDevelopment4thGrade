@@ -7,6 +7,8 @@ class TestStar : public virtual Object, public virtual BaseLocus
 {
 public:
 	TestStar(const Vector3& arg_pos, const float arg_angle);
+	//コピーコンストラクタ
+	TestStar(const TestStar& arg_testStar);
 	~TestStar();
 
 	void Initialize()override;

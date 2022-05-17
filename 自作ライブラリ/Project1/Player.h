@@ -10,6 +10,8 @@
 #include "TestStar.h"
 #include "TestRibbon.h"
 #include "TestTriforce.h"
+#include "BaseLocus.h"
+
 
 class Player :
 	public Object
@@ -82,6 +84,10 @@ private:
 	void CreateLine();
 	//線を書く
 	void DrawingLine();
+	//書き終わった線を消す
+	void DeleteDrawingLine();
+	//書いた図形を一気に消す ブレイクと名付けたい※関数名要相談
+	void DeleteLocuss();
 	//変換
 	float Vector2ToAngle(DirectX::XMFLOAT3 vector);
 	
@@ -99,9 +105,12 @@ private:
 	bool isExtendLine = true;
 	//図形の線の番号
 	int currentLineNum = 0;
-
 	//線の向きとスティック入力の正確さ 0～1 speedにかける
 	float inputAccuracy = 0;
+	//ドローイングし終わった図形
+	std::vector<BaseLocus*> vecLocuss;
+	//線を一時的に保存しておくvector
+	std::vector<Line*> vecDrawingLines;
 
 
 	//接地フラグ

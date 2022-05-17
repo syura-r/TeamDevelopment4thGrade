@@ -8,6 +8,10 @@ BaseLocus::BaseLocus(const float arg_angle)
 	lines.clear();
 }
 
+BaseLocus::BaseLocus(const BaseLocus& arg_baseLocus)
+{
+}
+
 BaseLocus::~BaseLocus()
 {
 }
