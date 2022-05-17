@@ -14,7 +14,8 @@ public:
 	void DrawReady()override;
 	void Draw()override;
 
-	void Move(const Vector3 arg_movePos, const float arg_angle)override;	
+	void Move(const Vector3 arg_movePos, const float arg_angle)override;
+	const LocusType GetType()const override;
 
 private:
 	//この図形のデフォルトの情報

@@ -76,6 +76,11 @@ void TestStar::Move(const Vector3 arg_movePos, const float arg_angle)
 	}
 }
 
+const LocusType TestStar::GetType() const
+{
+	return LocusType::STAR;
+}
+
 void TestStar::PointSetting()
 {
 	const double PI = 3.14159265f;

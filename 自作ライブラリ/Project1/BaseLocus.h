@@ -2,6 +2,12 @@
 #include "Line.h"
 #include "LocusDef.h"
 
+enum class LocusType
+{
+	UNDIFINED = -1,
+	STAR,
+};
+
 class BaseLocus
 {
 public:
@@ -9,10 +15,11 @@ public:
 	virtual ~BaseLocus();
 
 	virtual void Move(const Vector3 arg_movePos, const float arg_angle) = 0;
+	virtual const LocusType GetType()const = 0;
 	virtual Line* GetLine(const int arg_num);
 	virtual int GetMaxNumLine();
 
-protected:
+protected:	
 	float angle;
 	std::vector<Line*> lines;
 
