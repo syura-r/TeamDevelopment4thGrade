@@ -232,7 +232,9 @@
     <ClCompile Include="SmartPtr.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="TestRibbon.cpp" />
     <ClCompile Include="TestStar.cpp" />
+    <ClCompile Include="TestTriforce.cpp" />
     <ClCompile Include="TextureResource.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -327,7 +329,9 @@
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="TestRibbon.h" />
     <ClInclude Include="TestStar.h" />
+    <ClInclude Include="TestTriforce.h" />
     <ClInclude Include="TextureResource.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />

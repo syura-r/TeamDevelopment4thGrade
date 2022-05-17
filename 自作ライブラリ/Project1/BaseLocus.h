@@ -6,6 +6,8 @@ enum class LocusType
 {
 	UNDIFINED = -1,
 	STAR,
+	RIBBON,
+	TRIFORCE,
 };
 
 class BaseLocus : public virtual Object

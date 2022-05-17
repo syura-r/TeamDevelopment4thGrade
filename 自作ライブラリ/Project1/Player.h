@@ -8,6 +8,8 @@
 #include "ObjectManager.h"
 #include "Line.h"
 #include "TestStar.h"
+#include "TestRibbon.h"
+#include "TestTriforce.h"
 
 class Player :
 	public Object
@@ -88,6 +90,8 @@ private:
 	Line* pNowDrawingLine = nullptr;
 
 	TestStar* testPstar = nullptr;
+	//TestTriforce* testPtriforce = nullptr;
+	//TestRibbon* testPribbon = nullptr;
 
 	//èëÇ≠ÉtÉâÉO
 	bool isDrawing = false;

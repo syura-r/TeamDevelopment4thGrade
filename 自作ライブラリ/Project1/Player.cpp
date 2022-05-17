@@ -33,6 +33,8 @@ Player::Player()
 	pObjectManager = ObjectManager::GetInstance();
 
 	testPstar = new TestStar(Vector3(0, -5, 0), 90);
+	//testPtriforce = new TestTriforce(Vector3(0, -5, 0), 90);
+	//testPribbon = new TestRibbon(Vector3(0, -5, 0), 90);
 	pObjectManager->Add(testPstar);
 
 	Initialize();
@@ -356,7 +358,7 @@ void Player::Move()
 		{
 			if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 			{
-				moveDirection = testPstar->GetLine(currentLineNum)->GetVelocity();		
+				moveDirection = testPstar->GetLine(currentLineNum)->GetVelocity();
 
 				//スティックの向き
 				auto vec = Input::GetLStickDirection();
