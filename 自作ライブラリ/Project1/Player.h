@@ -80,6 +80,8 @@ private:
 	//出現消滅時の演出処理
 	void ResetPerform();
 	
+	//ドローイングする図形を選択
+	void SelectLocus();
 	//線を生成
 	void CreateLine();
 	//線を書く
@@ -95,9 +97,11 @@ private:
 
 	Line* pNowDrawingLine = nullptr;
 
-	TestStar* testPstar = nullptr;
-	//TestTriforce* testPtriforce = nullptr;
-	//TestRibbon* testPribbon = nullptr;
+	BaseLocus* nowDrawingLocus = nullptr;
+
+	TestStar* predictStar = nullptr;
+	TestTriforce* predictTriforce = nullptr;
+	TestRibbon* predictRibbon = nullptr;
 
 	//書くフラグ
 	bool isDrawing = false;

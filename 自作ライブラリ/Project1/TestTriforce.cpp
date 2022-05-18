@@ -25,6 +25,11 @@ TestTriforce::TestTriforce(const Vector3& arg_pos, const float arg_angle)
 	}
 }
 
+TestTriforce::TestTriforce(const TestTriforce& arg_testTriforce)
+	:TestTriforce(arg_testTriforce.position, arg_testTriforce.angle)
+{
+}
+
 TestTriforce::~TestTriforce()
 {
 }

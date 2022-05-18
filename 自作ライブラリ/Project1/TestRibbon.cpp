@@ -25,6 +25,11 @@ TestRibbon::TestRibbon(const Vector3& arg_pos, const float arg_angle)
 	}
 }
 
+TestRibbon::TestRibbon(const TestRibbon& arg_testRibbon)
+	:TestRibbon(arg_testRibbon.position, arg_testRibbon.angle)
+{
+}
+
 TestRibbon::~TestRibbon()
 {
 }

@@ -7,6 +7,8 @@ class TestRibbon : public virtual Object, public virtual BaseLocus
 {
 public:
 	TestRibbon(const Vector3& arg_pos, const float arg_angle);
+	//コピーコンストラクタ
+	TestRibbon(const TestRibbon& arg_testRibbon);
 	~TestRibbon();
 
 	void Initialize()override;

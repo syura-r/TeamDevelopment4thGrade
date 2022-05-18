@@ -7,6 +7,8 @@ class TestTriforce : public virtual Object, public virtual BaseLocus
 {
 public:
 	TestTriforce(const Vector3& arg_pos, const float arg_angle);
+	//コピーコンストラクタ
+	TestTriforce(const TestTriforce& arg_testTriforce);
 	~TestTriforce();
 
 	void Initialize()override;

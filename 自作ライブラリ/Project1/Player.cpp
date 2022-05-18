@@ -32,11 +32,9 @@ Player::Player()
 
 	pObjectManager = ObjectManager::GetInstance();
 
-	testPstar = new TestStar(Vector3(0, -5, 0), 90);
-
-	
-	//testPtriforce = new TestTriforce(Vector3(0, -5, 0), 90);
-	//testPribbon = new TestRibbon(Vector3(0, -5, 0), 90);
+	predictStar = new TestStar(Vector3(0, -5, 0), 90);
+	predictTriforce = new TestTriforce(Vector3(0, -5, 0), 90);
+	predictRibbon = new TestRibbon(Vector3(0, -5, 0), 90);
 	//pObjectManager->Add(testPstar);
 
 	Initialize();
@@ -123,7 +121,7 @@ void Player::Initialize()
 	//カメラの回転
 	camera->AddPhi(rad);
 
-
+	nowDrawingLocus = predictStar;
 }
 
 void Player::Update()
@@ -149,6 +147,8 @@ void Player::Update()
 		Object::Update();
 		return;//やり直し時はここまで
 	}
+	
+	SelectLocus();
 
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
@@ -215,7 +215,7 @@ void Player::Update()
 
 	if (!isDrawing)
 	{
-		testPstar->Move(position, Vector2ToAngle(direction));
+		nowDrawingLocus->Move(position, Vector2ToAngle(direction));
 	}
 	
 }
@@ -368,7 +368,7 @@ void Player::Move()
 		{
 			if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 			{
-				moveDirection = testPstar->GetLine(currentLineNum)->GetVelocity();
+				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity();
 
 				//スティックの向き
 				auto vec = Input::GetLStickDirection();
@@ -377,7 +377,7 @@ void Player::Move()
 				stickDirection = Vector2::Normalize(stickDirection);
 
 				//線の向き
-				auto lineVec = testPstar->GetLine(currentLineNum)->GetVelocity();
+				auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity();
 				lineDirection.x = lineVec.x;
 				lineDirection.y = lineVec.z;
 				lineDirection = Vector2::Normalize(lineDirection);
@@ -717,11 +717,30 @@ void Player::ResetPerform()
 
 }
 
+void Player::SelectLocus()
+{
+	if (!isDrawing)
+	{
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
+		{
+			nowDrawingLocus = predictStar;//ここは汎用化せんとあかん今は試し
+		}
+		else if (Input::TriggerPadButton(XINPUT_GAMEPAD_X))
+		{
+			nowDrawingLocus = predictRibbon;//ここは汎用化せんとあかん今は試し
+		}
+		else if (Input::TriggerPadButton(XINPUT_GAMEPAD_Y))
+		{
+			nowDrawingLocus = predictTriforce;//ここは汎用化せんとあかん今は試し
+		}
+	}
+}
+
 void Player::CreateLine()
 {
-	if (currentLineNum < testPstar->GetMaxNumLine())
+	if (currentLineNum < nowDrawingLocus->GetMaxNumLine())
 	{
-		Vector3 nowLineVel = testPstar->GetLine(currentLineNum)->GetVelocity(); //kokokokoko
+		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity(); //kokokokoko
 		pNowDrawingLine = new Line(position, Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 });
 		ObjectManager::GetInstance()->Add(pNowDrawingLine, false);
 		vecDrawingLines.push_back(pNowDrawingLine);
@@ -742,19 +761,36 @@ void Player::DrawingLine()
 				pNowDrawingLine->AddLength(speed * inputAccuracy);
 			}
 
-			Vector3 endPos = testPstar->GetLine(currentLineNum)->GetEndPos();
+			Vector3 endPos = nowDrawingLocus->GetLine(currentLineNum)->GetEndPos();
 			Vector3 pPos = position;
 
 			if (0.1f > Vector3::Distance(pPos, endPos)) //マジックサイコー
 			{
 				currentLineNum++;
-				if (currentLineNum >= testPstar->GetMaxNumLine())
+				if (currentLineNum >= nowDrawingLocus->GetMaxNumLine())
 				{
 					isDrawing = false;
 					currentLineNum = 0;
 					//ここで図形として保存する処理
-					TestStar* testPstarCopy = new TestStar(*testPstar);
-					vecLocuss.push_back(testPstarCopy);
+					BaseLocus* copyLocus = nullptr;
+					switch (nowDrawingLocus->GetType())
+					{
+					case LocusType::UNDIFINED:
+						break;
+					case LocusType::STAR:
+						copyLocus = new TestStar(*predictStar);
+						break;
+					case LocusType::RIBBON:
+						copyLocus = new TestRibbon(*predictRibbon);
+						break;
+					case LocusType::TRIFORCE:
+						copyLocus = new TestTriforce(*predictTriforce);
+						break;
+					default:
+						break;
+					}
+					 
+					vecLocuss.push_back(copyLocus);
 					DeleteDrawingLine();
 					return;
 				}
@@ -782,9 +818,6 @@ void Player::DeleteDrawingLine()
 
 void Player::DeleteLocuss()
 {
-	//end max きもい
-	//そもそもここごみ
-	//眠くて頭回ってないからコピー先のLocusってdeleteとしないとだめか？あいうえお
 	auto end = vecLocuss.size();
 	for (int i = 0; i < end; i++)
 	{
