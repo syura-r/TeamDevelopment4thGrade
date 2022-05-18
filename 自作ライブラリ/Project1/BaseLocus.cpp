@@ -9,11 +9,20 @@ BaseLocus::BaseLocus(const float arg_angle)
 }
 
 BaseLocus::BaseLocus(const BaseLocus& arg_baseLocus)
+	:BaseLocus(arg_baseLocus.angle)
 {
 }
 
 BaseLocus::~BaseLocus()
 {
+	ObjectManager* oManager = ObjectManager::GetInstance();
+	for (int i = 0; i < lines.size(); i++)
+	{
+		if (lines[i])
+		{
+			oManager->Remove(lines[i]);
+		}
+	}
 }
 
 Line* BaseLocus::GetLine(const int arg_num)

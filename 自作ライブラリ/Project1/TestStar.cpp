@@ -26,25 +26,8 @@ TestStar::TestStar(const Vector3& arg_pos, const float arg_angle)
 }
 
 TestStar::TestStar(const TestStar& arg_testStar)
-	:BaseLocus(arg_testStar)
+	:TestStar(arg_testStar.position, arg_testStar.angle)
 {
-	position = arg_testStar.position;
-	if (baseInfo.empty())
-	{
-		PointSetting();
-	}
-
-	ObjectManager* oManager = ObjectManager::GetInstance();
-
-	//ˆø”‚Å‚à‚ç‚Á‚½À•WAŠp“x‚É•ÏŠ·‚µ‚ÄLine‚ğ¶¬
-	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(arg_testStar.angle));
-	for (int i = 0; i < baseInfo.size(); i++)
-	{
-		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, arg_testStar.angle + baseInfo[i].angle, baseInfo[i].length, Vector4(1, 1, 0, 0.3f));
-		lines.push_back(line);
-		oManager->Add(line, false);
-	}
 }
 
 TestStar::~TestStar()

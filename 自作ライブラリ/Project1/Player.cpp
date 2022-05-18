@@ -37,7 +37,7 @@ Player::Player()
 	
 	//testPtriforce = new TestTriforce(Vector3(0, -5, 0), 90);
 	//testPribbon = new TestRibbon(Vector3(0, -5, 0), 90);
-	pObjectManager->Add(testPstar);
+	//pObjectManager->Add(testPstar);
 
 	Initialize();
 
@@ -788,11 +788,13 @@ void Player::DeleteLocuss()
 	auto end = vecLocuss.size();
 	for (int i = 0; i < end; i++)
 	{
-		auto max = vecLocuss[i]->GetMaxNumLine();
+		/*auto max = vecLocuss[i]->GetMaxNumLine();
 		for (int j = 0; j < max; j++)
 		{
 			ObjectManager::GetInstance()->Remove(vecLocuss[i]->GetLine(j));
-		}
+		}*/
+		delete vecLocuss[i];
+		vecLocuss[i] = nullptr;
 	}
 	vecLocuss.clear();
 }
