@@ -168,7 +168,7 @@ void Game::LoadFinish()
 	//DirectInputオブジェクトの生成
 	Input::Initialize(win->GetHwnd());
 
-	CollisionManager::GetInstance()->Initialize(Vector3{ -70.0f,-10.0f,-70.0f }+100, Vector3{ 70.0f,50.0f,70.0f }+100);
+	CollisionManager::GetInstance()->Initialize(Vector3{ -370.0f,-310.0f,-370.0f }+100, Vector3{ 370.0f,350.0f,370.0f }+100);
 	
 
 	lightCamera = std::make_unique<LightCamera>();

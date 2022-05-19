@@ -91,7 +91,7 @@ void Player::Initialize()
 {
 	name = typeid(*this).name();
 	onGround = true;
-	scale = { 0.3f };
+	scale = { 0.9f };
 	position = StartPos;
 	rotation = 0;
 	prePos = position;
@@ -106,6 +106,7 @@ void Player::Initialize()
 	disappearCounter = 0;
 	resetMoveCounter = 0;
 	camera->SetTarget(position + Vector3{ 0, 1, 0 });
+
 	camera->Update();
 	//----------ƒJƒƒ‰‚Ì‰ñ“]Šp“x‚ðŽZo---------------
 	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
@@ -121,7 +122,11 @@ void Player::Initialize()
 		rad *= -1;
 	//-----------------------------------------------
 	//ƒJƒƒ‰‚Ì‰ñ“]
-	camera->AddPhi(rad);
+	//camera->AddPhi(rad);
+	camera->SetTheta(120);
+	
+
+	camera->SetDistance(100);
 
 	nowDrawingLocus = predictStar;
 	predictStar->ChangeIsDraw(true);
@@ -213,7 +218,7 @@ void Player::Update()
 
 	if (prePos != position)
 	{
-		camera->SetTarget(position + Vector3{0, 1, 0});
+		//camera->SetTarget(position + Vector3{0, 1, 0});
 	}
 
 	if (!isDrawing)
@@ -614,8 +619,8 @@ void Player::CheckHit()
 
 void Player::MoveCamera()
 {
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	/*XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
+	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();*/
 
 	//ƒJƒƒ‰‚ÌƒŠƒZƒbƒgˆ—
 	//if ((Input::TriggerKey(DIK_C) || Input::TriggerPadButton(SettingParam::GetResetButton())) && !rotCamera)
@@ -635,14 +640,14 @@ void Player::MoveCamera()
 	//}
 	
 	//ƒJƒƒ‰‚Ì‰ñ“]ˆ—
-	if (rotCamera)
+	/*if (rotCamera)
 	{
 		cameraRotCount++;
 		float rad = radY / RotTime;
 		camera->AddPhi(rad);
 		if (cameraRotCount >= RotTime)
 			rotCamera = false;
-	}
+	}*/
 }
 
 void Player::ResetPerform()
