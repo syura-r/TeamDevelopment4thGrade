@@ -27,6 +27,8 @@ public:
 	void Reset();
 	bool GetReset() { return reset; }
 
+	//フィーバーかどうか　仮置き
+	bool IsInFever();
 	
 private:
 	struct ConstBuffData
@@ -118,7 +120,6 @@ private:
 	std::vector<BaseLocus*> vecLocuss;
 	//線を一時的に保存しておくvector
 	std::vector<Line*> vecDrawingLines;
-
 
 	//接地フラグ
 	bool onGround = true;

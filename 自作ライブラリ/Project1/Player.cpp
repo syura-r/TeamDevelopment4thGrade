@@ -333,7 +333,8 @@ void Player::Move()
 
 	//移動処理
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
-		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft() ||
+		IsInFever())
 	{
 		if (onGround)
 		{
@@ -411,10 +412,10 @@ void Player::Move()
 			}
 
 			//フィーバー時挙動試し
-			if (Input::CheckPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) && Input::CheckPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+			if (IsInFever())
 			{
 				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity();
-				inputAccuracy = 10.0f;
+				inputAccuracy = 30.0f;
 			}
 
 			moveDirection.Normalize();
@@ -781,7 +782,7 @@ void Player::DrawingLine()
 		{	
 			if (isExtendLine)
 			{	
-				if (inputAccuracy >= 10.0f)
+				if (IsInFever())
 				{
 					pNowDrawingLine->AddLength(speed * inputAccuracy);
 				}
@@ -921,4 +922,9 @@ void Player::HitLoci(Line* arg_line)
 		currentLineNum = 0;
 		DeleteDrawingLine();
 	}
+}
+
+bool Player::IsInFever()
+{
+	return isDrawing && Input::CheckPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) && Input::CheckPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER);
 }
