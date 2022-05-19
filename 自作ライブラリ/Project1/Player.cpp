@@ -223,7 +223,10 @@ void Player::Update()
 
 	if (!isDrawing)
 	{
-		nowDrawingLocus->Move(position, Vector2ToAngle(direction));
+		//nowDrawingLocus->Move(position, Vector2ToAngle(direction));
+		predictStar->Move(position, Vector2ToAngle(direction));
+		predictRibbon->Move(position, Vector2ToAngle(direction));
+		predictTriforce->Move(position, Vector2ToAngle(direction));
 	}
 	
 }
