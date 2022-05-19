@@ -2,14 +2,6 @@
 #include "Line.h"
 #include "LocusDef.h"
 
-enum class LocusType
-{
-	UNDIFINED = -1,
-	STAR,
-	RIBBON,
-	TRIFORCE,
-};
-
 class BaseLocus : public virtual Object
 {
 public:
@@ -19,6 +11,7 @@ public:
 
 	virtual void Move(const Vector3 arg_movePos, const float arg_angle) = 0;
 	virtual const LocusType GetType()const = 0;
+	float GetAngle()const;
 	Line* GetLine(const int arg_num);
 	int GetMaxNumLine();
 	bool IsDraw()const;

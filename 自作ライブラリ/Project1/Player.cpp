@@ -223,10 +223,10 @@ void Player::Update()
 
 	if (!isDrawing)
 	{
-		//nowDrawingLocus->Move(position, Vector2ToAngle(direction));
-		predictStar->Move(position, Vector2ToAngle(direction));
-		predictRibbon->Move(position, Vector2ToAngle(direction));
-		predictTriforce->Move(position, Vector2ToAngle(direction));
+		//nowDrawingLocus->Move(position, LocusUtility::Vector2ToAngle(direction));
+		predictStar->Move(position, LocusUtility::Vector2ToAngle(direction));
+		predictRibbon->Move(position, LocusUtility::Vector2ToAngle(direction));
+		predictTriforce->Move(position, LocusUtility::Vector2ToAngle(direction));
 	}
 	
 }
@@ -758,7 +758,7 @@ void Player::CreateLine()
 	if (currentLineNum < nowDrawingLocus->GetMaxNumLine())
 	{
 		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity(); //kokokokoko
-		pNowDrawingLine = new Line(position, Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 });
+		pNowDrawingLine = new Line(position, LocusUtility::Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 });
 		ObjectManager::GetInstance()->Add(pNowDrawingLine, false);
 		vecDrawingLines.push_back(pNowDrawingLine);
 	}
@@ -808,6 +808,8 @@ void Player::DrawingLine()
 					}
 					 
 					vecLocuss.push_back(copyLocus);
+					
+					MoveEndDrawing(copyLocus);
 					DeleteDrawingLine();
 					return;
 				}
@@ -838,23 +840,14 @@ void Player::DeleteLocuss()
 	auto end = vecLocuss.size();
 	for (int i = 0; i < end; i++)
 	{
-		/*auto max = vecLocuss[i]->GetMaxNumLine();
-		for (int j = 0; j < max; j++)
-		{
-			ObjectManager::GetInstance()->Remove(vecLocuss[i]->GetLine(j));
-		}*/
 		delete vecLocuss[i];
 		vecLocuss[i] = nullptr;
 	}
 	vecLocuss.clear();
 }
 
-float Player::Vector2ToAngle(DirectX::XMFLOAT3 vector)
-{	
-	float angle;
-	angle = acos(vector.x / sqrt(vector.x * vector.x + vector.z * vector.z));
-	angle = angle * 180.0 / 3.14159265f;
-	if (vector.z > 0) angle = 360.0f - angle;
-	if (std::isnan(angle)) angle = 0;
-	return angle;
+void Player::MoveEndDrawing(BaseLocus* arg_locus)
+{
+	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
+	position += vec * 2.0f;
 }

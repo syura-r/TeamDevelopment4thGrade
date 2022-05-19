@@ -21,8 +21,6 @@ public:
 
 	void Move(Vector3 arg_movePos, float arg_angle);
 
-	DirectX::XMVECTOR AngleToVector2(float arg_angle);
-
 	Vector3 GetStartPos();
 
 	Vector3 GetEndPos();
@@ -47,7 +45,5 @@ private:
 	float length;		//スケールの値
 
 	bool isDraw;
-
-	double PI = 3.14159265f;
 };
 

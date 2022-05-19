@@ -26,6 +26,11 @@ BaseLocus::~BaseLocus()
 	}
 }
 
+float BaseLocus::GetAngle() const
+{
+	return angle;
+}
+
 Line* BaseLocus::GetLine(const int arg_num)
 {
 	return lines[arg_num];
@@ -52,8 +57,6 @@ void BaseLocus::ChangeIsDraw(const bool arg_isDraw)
 
 void BaseLocus::CalcBaseInfo(const std::vector<Vector3>& arg_points, std::vector<LocusPointInfo>& arg_infoList)
 {
-	const double PI = 3.14159265f;
-
 	//ƒ[ƒ‹ƒhX²‚Æ‚Ì‚È‚·Šp‚ÌŒvZ
 	float angle = 0;
 	Vector3 vecX = Vector3(1.0f, 0.0f, 0.0f);

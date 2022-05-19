@@ -90,8 +90,8 @@ private:
 	void DeleteDrawingLine();
 	//書いた図形を一気に消す ブレイクと名付けたい※関数名要相談
 	void DeleteLocuss();
-	//変換
-	float Vector2ToAngle(DirectX::XMFLOAT3 vector);
+	//図形を描いた後に瞬間移動させる
+	void MoveEndDrawing(BaseLocus* arg_locus);
 	
 	ObjectManager* pObjectManager = nullptr;
 
