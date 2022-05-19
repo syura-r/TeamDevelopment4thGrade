@@ -47,4 +47,14 @@ public:
 		DirectX::XMVector3Normalize(result);
 		return result;
 	}
+
+	static Vector2 Dim3ToDim2XZ(const Vector3& arg_vec3)
+	{
+		return Vector2(arg_vec3.x, arg_vec3.z);
+	}
+
+	static Vector3 Dim2XZToDim3(const Vector3& arg_vec2, const float arg_y = 0.0f)
+	{
+		return Vector3(arg_vec2.x, arg_y, arg_vec2.y);
+	}
 };

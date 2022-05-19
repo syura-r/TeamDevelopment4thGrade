@@ -92,6 +92,9 @@ private:
 	void DeleteLocuss();
 	//}Œ`‚ğ•`‚¢‚½Œã‚ÉuŠÔˆÚ“®‚³‚¹‚é
 	void MoveEndDrawing(BaseLocus* arg_locus);
+	//Šù‘¶‚Ì}Œ`‚Æ‚Ì“–‚½‚è”»’è
+	void HitCheckLoci();
+	void HitLoci(Line* arg_line);
 	
 	ObjectManager* pObjectManager = nullptr;
 
@@ -102,6 +105,8 @@ private:
 	TestStar* predictStar = nullptr;
 	TestTriforce* predictTriforce = nullptr;
 	TestRibbon* predictRibbon = nullptr;
+
+	Vector3 prevPosition;
 
 	//‘‚­ƒtƒ‰ƒO
 	bool isDrawing = false;

@@ -93,6 +93,7 @@ void Player::Initialize()
 	onGround = true;
 	scale = { 0.9f };
 	position = StartPos;
+	prevPosition = StartPos;
 	rotation = 0;
 	prePos = position;
 	direction = { 0,0,1 };
@@ -183,6 +184,9 @@ void Player::Update()
 		}
 	}
 
+	//
+	HitCheckLoci();
+
 	////壁ジャンプ処理
 	//WallJump();
 	////エアスライド処理
@@ -228,7 +232,7 @@ void Player::Update()
 		predictRibbon->Move(position, LocusUtility::Vector2ToAngle(direction));
 		predictTriforce->Move(position, LocusUtility::Vector2ToAngle(direction));
 	}
-	
+	prevPosition = position;
 }
 
 void Player::Draw()
@@ -849,5 +853,56 @@ void Player::DeleteLocuss()
 void Player::MoveEndDrawing(BaseLocus* arg_locus)
 {
 	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-	position += vec * 2.0f;
+	position += vec * 4.0f;
+}
+
+void Player::HitCheckLoci()
+{
+	static const float radius = 1.0f;
+
+	if (position == prevPosition)
+	{
+		return;
+	}
+
+	for (auto locus : vecLocuss)
+	{
+		for (int i = 0; i < locus->GetMaxNumLine(); i++)
+		{
+			Line* line = locus->GetLine(i);
+			Vector2 AO = LocusUtility::Dim3ToDim2XZ(position - line->GetStartPos());
+			Vector2 BO = LocusUtility::Dim3ToDim2XZ(position - line->GetEndPos());
+			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetEndPos() - line->GetStartPos());
+			Vector2 normalAB = Vector2::Normalize(AB);
+
+			float cross = Vector2::Cross(AO, normalAB);
+			if (fabsf(cross) > radius)
+			{
+				continue;
+			}
+
+			float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
+			if (multiDot <= 0.0f)
+			{
+				HitLoci(line);
+			}
+
+			if (Vector2::Length(AO) < radius || Vector2::Length(BO) < radius)
+			{
+				HitLoci(line);
+			}
+		}
+	}
+}
+
+void Player::HitLoci(Line* arg_line)
+{
+	position = prevPosition;
+
+	if (isDrawing)
+	{
+		isDrawing = false;
+		currentLineNum = 0;
+		DeleteDrawingLine();
+	}
 }
