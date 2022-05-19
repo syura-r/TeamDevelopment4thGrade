@@ -34,6 +34,16 @@ public:
 			phi += 360 * XM_PI / 180.0f;
 		viewDirty = true;
 	}
+
+	void SetTheta(const float arg_theta)
+	{
+		theta = arg_theta;
+		if (theta > 40 * XM_PI / 180.0f)
+			theta = 40 * XM_PI / 180.0f;
+		else if (theta < -40 * XM_PI / 180.0f)
+			theta = -40 * XM_PI / 180.0f;
+		viewDirty = true;
+	}
 private:
 	//’Ž‹“_‚Ü‚Å‹——£
 	float distance = 10;
