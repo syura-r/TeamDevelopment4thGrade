@@ -14,6 +14,8 @@
 #include "LevelEditor.h"
 #include "Player.h"
 #include "Floor.h"
+#include "TestBoss.h"
+
 
 Play::Play()
 {
@@ -32,12 +34,17 @@ Play::Play()
 	menu = std::make_unique<Menu>();
 	collisionManager = CollisionManager::GetInstance();
 	objectManager = ObjectManager::GetInstance();
+	actorManager = ActorManager::GetInstance();
+	actorManager->Initialize();
+
 	player = new Player();
 	objectManager->Add(player);
+	actorManager->AddObject("player", player);
 
-	line = new Line({ 0,0,0 }, 0, 1, {1,1,0,1});
-
-	objectManager->Add(line);
+	TestBoss* testBoss = new TestBoss({ 0,5,50 }, 100);
+	objectManager->Add(testBoss);
+	actorManager->AddObject("boss", testBoss);
+	
 
 	/*testStar = new TestStar(Vector3(20, 0, 20), 90);
 	objectManager->Add(testStar);*/

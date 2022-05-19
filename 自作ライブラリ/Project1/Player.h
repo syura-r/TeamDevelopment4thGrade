@@ -97,6 +97,8 @@ private:
 	//Šù‘¶‚Ì}Œ`‚Æ‚Ì“–‚½‚è”»’è
 	void HitCheckLoci();
 	void HitLoci(Line* arg_line);
+	//UŒ‚
+	void Attack();
 	
 	ObjectManager* pObjectManager = nullptr;
 

@@ -11,6 +11,7 @@
 #include "FBXManager.h"
 #include "GameSettingParam.h"
 #include "ParticleEmitter.h"
+#include "ActorManager.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -179,6 +180,7 @@ void Player::Update()
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
 		{
+			Attack();
 			DeleteLocuss();
 		}
 	}
@@ -871,6 +873,12 @@ void Player::MoveEndDrawing(BaseLocus* arg_locus)
 	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
 	position = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetEndPos();
 	position += vec * 2.0f;
+}
+
+void Player::Attack()
+{
+	float value = 2 * vecLocuss.size();
+	ActorManager::GetInstance()->GetBoss()->Damage(value);
 }
 
 void Player::HitCheckLoci()
