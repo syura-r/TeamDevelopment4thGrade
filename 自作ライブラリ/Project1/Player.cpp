@@ -785,8 +785,12 @@ void Player::DrawingLine()
 			Vector3 endPos = nowDrawingLocus->GetLine(currentLineNum)->GetEndPos();
 			Vector3 pPos = position;
 
-			if (0.1f > Vector3::Distance(pPos, endPos)) //マジックサイコー
+			float lengthNowLine = pNowDrawingLine->GetLength();
+			float lengthLocusLine = nowDrawingLocus->GetLine(currentLineNum)->GetLength();
+
+			if (lengthLocusLine - lengthNowLine <= 0.05f) //マジックサイコー
 			{
+				pNowDrawingLine->SetLength(lengthLocusLine);
 				currentLineNum++;
 				if (currentLineNum >= nowDrawingLocus->GetMaxNumLine())
 				{
@@ -817,6 +821,7 @@ void Player::DrawingLine()
 					DeleteDrawingLine();
 					return;
 				}
+				position = nowDrawingLocus->GetLine(currentLineNum)->GetStartPos();
 				CreateLine();
 			}
 		}

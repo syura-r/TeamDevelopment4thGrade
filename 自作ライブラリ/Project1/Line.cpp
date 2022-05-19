@@ -80,6 +80,17 @@ Vector3 Line::GetVelocity()
 	return velocity;
 }
 
+float Line::GetLength() const
+{
+	return length;
+}
+
+void Line::SetLength(const float arg_length)
+{
+	length = arg_length;
+	endPos = position + velocity * length;
+}
+
 float Line::GetAngle() const
 {
 	return angle;

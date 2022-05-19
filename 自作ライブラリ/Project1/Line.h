@@ -27,6 +27,10 @@ public:
 
 	Vector3 GetVelocity();
 
+	float GetLength()const;
+
+	void SetLength(const float arg_length);
+
 	float GetAngle()const;
 
 	bool IsDraw()const;
