@@ -33,9 +33,11 @@ Player::Player()
 	pObjectManager = ObjectManager::GetInstance();
 
 	predictStar = new TestStar(Vector3(0, -5, 0), 90);
+	predictStar->ChangeIsDraw(false);
 	predictTriforce = new TestTriforce(Vector3(0, -5, 0), 90);
+	predictTriforce->ChangeIsDraw(false);
 	predictRibbon = new TestRibbon(Vector3(0, -5, 0), 90);
-	//pObjectManager->Add(testPstar);
+	predictRibbon->ChangeIsDraw(false);
 
 	Initialize();
 
@@ -122,6 +124,7 @@ void Player::Initialize()
 	camera->AddPhi(rad);
 
 	nowDrawingLocus = predictStar;
+	predictStar->ChangeIsDraw(true);
 }
 
 void Player::Update()
@@ -723,15 +726,21 @@ void Player::SelectLocus()
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
 		{
+			nowDrawingLocus->ChangeIsDraw(false);
 			nowDrawingLocus = predictStar;//‚±‚±‚Í”Ä—p‰»‚¹‚ñ‚Æ‚ ‚©‚ñ¡‚ÍŽŽ‚µ
+			nowDrawingLocus->ChangeIsDraw(true);
 		}
 		else if (Input::TriggerPadButton(XINPUT_GAMEPAD_X))
 		{
+			nowDrawingLocus->ChangeIsDraw(false);
 			nowDrawingLocus = predictRibbon;//‚±‚±‚Í”Ä—p‰»‚¹‚ñ‚Æ‚ ‚©‚ñ¡‚ÍŽŽ‚µ
+			nowDrawingLocus->ChangeIsDraw(true);
 		}
 		else if (Input::TriggerPadButton(XINPUT_GAMEPAD_Y))
 		{
+			nowDrawingLocus->ChangeIsDraw(false);
 			nowDrawingLocus = predictTriforce;//‚±‚±‚Í”Ä—p‰»‚¹‚ñ‚Æ‚ ‚©‚ñ¡‚ÍŽŽ‚µ
+			nowDrawingLocus->ChangeIsDraw(true);
 		}
 	}
 }

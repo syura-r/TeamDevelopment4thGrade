@@ -13,6 +13,8 @@ public:
 
 	void Update()override;
 
+	void Draw()override;
+
 	void Reset();
 
 	void AddLength(float arg_addSpeed);
@@ -29,6 +31,9 @@ public:
 
 	float GetAngle()const;
 
+	bool IsDraw()const;
+	void ChangeIsDraw(const bool arg_isDraw);
+
 private:
 
 	OBJModel lineBox;
@@ -40,6 +45,8 @@ private:
 	float angle;		//0で真横の線の予定
 
 	float length;		//スケールの値
+
+	bool isDraw;
 
 	double PI = 3.14159265f;
 };

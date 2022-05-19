@@ -3,7 +3,8 @@
 #include "DrawMode.h"
 
 BaseLocus::BaseLocus(const float arg_angle)
-	:angle(arg_angle)
+	:angle(arg_angle),
+	 isDraw(true)
 {
 	lines.clear();
 }
@@ -33,6 +34,20 @@ Line* BaseLocus::GetLine(const int arg_num)
 int BaseLocus::GetMaxNumLine()
 {
 	return lines.size();
+}
+
+bool BaseLocus::IsDraw() const
+{
+	return isDraw;
+}
+
+void BaseLocus::ChangeIsDraw(const bool arg_isDraw)
+{
+	isDraw = arg_isDraw;
+	for (auto l : lines)
+	{
+		l->ChangeIsDraw(isDraw);
+	}
 }
 
 void BaseLocus::CalcBaseInfo(const std::vector<Vector3>& arg_points, std::vector<LocusPointInfo>& arg_infoList)

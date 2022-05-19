@@ -21,10 +21,13 @@ public:
 	virtual const LocusType GetType()const = 0;
 	Line* GetLine(const int arg_num);
 	int GetMaxNumLine();
+	bool IsDraw()const;
+	void ChangeIsDraw(const bool arg_isDraw);
 
 protected:	
 	float angle;
 	std::vector<Line*> lines;
+	bool isDraw;
 
 	//デフォルトの図形情報を一回だけ計算
 	virtual void PointSetting() = 0;

@@ -10,6 +10,7 @@ Line::Line(Vector3 arg_startPos, float arg_angle, float arg_length,Vector4 arg_c
 	this->angle = arg_angle;
 	this->length = arg_length;
 	position = arg_startPos;
+	isDraw = true;
 
 	Create(OBJLoader::GetModel("obBox"));
 	color = arg_color;
@@ -38,6 +39,14 @@ void Line::Update()
 	DirectX::XMStoreFloat3(&velocity, AngleToVector2(angle));
 	endPos = position + velocity * length;
 	Object::Update();
+}
+
+void Line::Draw()
+{
+	if (isDraw)
+	{
+		Object::Draw();
+	}
 }
 
 void Line::Reset()
@@ -82,4 +91,14 @@ Vector3 Line::GetVelocity()
 float Line::GetAngle() const
 {
 	return angle;
+}
+
+bool Line::IsDraw() const
+{
+	return isDraw;
+}
+
+void Line::ChangeIsDraw(const bool arg_isDraw)
+{
+	isDraw = arg_isDraw;
 }
