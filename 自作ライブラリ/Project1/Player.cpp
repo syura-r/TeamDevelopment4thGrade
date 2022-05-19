@@ -92,8 +92,7 @@ void Player::Initialize()
 	name = typeid(*this).name();
 	onGround = true;
 	scale = { 0.9f };
-	position = StartPos;
-	prevPosition = StartPos;
+	position = StartPos;	
 	rotation = 0;
 	prePos = position;
 	direction = { 0,0,1 };
@@ -231,8 +230,7 @@ void Player::Update()
 		predictStar->Move(position, LocusUtility::Vector2ToAngle(direction));
 		predictRibbon->Move(position, LocusUtility::Vector2ToAngle(direction));
 		predictTriforce->Move(position, LocusUtility::Vector2ToAngle(direction));
-	}
-	prevPosition = position;
+	}	
 }
 
 void Player::Draw()
@@ -332,7 +330,7 @@ void Player::Move()
 		
 		speed = walkSpeed;
 	}
-	
+
 	//移動処理
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
 		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
@@ -412,7 +410,12 @@ void Player::Move()
 				inputAccuracy = 0; //スティック入力がないから動かない
 			}
 
-			
+			//フィーバー時挙動試し
+			if (Input::CheckPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) && Input::CheckPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+			{
+				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity();
+				inputAccuracy = 10.0f;
+			}
 
 			moveDirection.Normalize();
 		}
@@ -776,10 +779,17 @@ void Player::DrawingLine()
 		//ボタンを押しているかつドローイング中は線を伸ばす
 		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && isDrawing)
 		{	
-			if (isExtendLine && (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
-				Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()))
-			{		
-				pNowDrawingLine->AddLength(speed * inputAccuracy);
+			if (isExtendLine)
+			{	
+				if (inputAccuracy >= 10.0f)
+				{
+					pNowDrawingLine->AddLength(speed * inputAccuracy);
+				}
+				else if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
+					Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+				{
+					pNowDrawingLine->AddLength(speed * inputAccuracy);
+				}
 			}
 
 			Vector3 endPos = nowDrawingLocus->GetLine(currentLineNum)->GetEndPos();
@@ -858,14 +868,15 @@ void Player::DeleteLocuss()
 void Player::MoveEndDrawing(BaseLocus* arg_locus)
 {
 	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-	position += vec * 4.0f;
+	position = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetEndPos();
+	position += vec * 2.0f;
 }
 
 void Player::HitCheckLoci()
 {
 	static const float radius = 1.0f;
 
-	if (position == prevPosition)
+	if (position == prePos)
 	{
 		return;
 	}
@@ -902,7 +913,7 @@ void Player::HitCheckLoci()
 
 void Player::HitLoci(Line* arg_line)
 {
-	position = prevPosition;
+	position = prePos;
 
 	if (isDrawing)
 	{

@@ -106,8 +106,6 @@ private:
 	TestTriforce* predictTriforce = nullptr;
 	TestRibbon* predictRibbon = nullptr;
 
-	Vector3 prevPosition;
-
 	//書くフラグ
 	bool isDrawing = false;
 	//線を伸ばすフラグ
