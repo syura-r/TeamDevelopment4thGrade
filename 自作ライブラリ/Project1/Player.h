@@ -90,6 +90,8 @@ private:
 	void DeleteDrawingLine();
 	//書いた図形を一気に消す ブレイクと名付けたい※関数名要相談
 	void DeleteLocuss();
+	//攻撃
+	void Attack();
 	//変換
 	float Vector2ToAngle(DirectX::XMFLOAT3 vector);
 	

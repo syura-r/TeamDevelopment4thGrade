@@ -171,6 +171,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActorManager.cpp" />
     <ClCompile Include="Alpha.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="BaseLocus.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="ComputeShade.cpp" />
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="GSShaderTestObj.cpp" />
+    <ClCompile Include="HitPointGauge.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
     <ClCompile Include="LightCamera.cpp" />
     <ClCompile Include="LightGroup.cpp" />
@@ -232,6 +234,7 @@
     <ClCompile Include="SmartPtr.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="TestBoss.cpp" />
     <ClCompile Include="TestRibbon.cpp" />
     <ClCompile Include="TestStar.cpp" />
     <ClCompile Include="TestTriforce.cpp" />
@@ -253,6 +256,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActorManager.h" />
     <ClInclude Include="Alpha.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="BaseCollider.h" />
@@ -285,6 +289,7 @@
     <ClInclude Include="GameSettingParam.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />
+    <ClInclude Include="HitPointGauge.h" />
     <ClInclude Include="LevelEditor.h" />
     <ClInclude Include="LightCamera.h" />
     <ClInclude Include="LightGroup.h" />
@@ -329,6 +334,7 @@
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="TestBoss.h" />
     <ClInclude Include="TestRibbon.h" />
     <ClInclude Include="TestStar.h" />
     <ClInclude Include="TestTriforce.h" />

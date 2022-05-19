@@ -12,8 +12,7 @@
 #include "Result.h"
 #include "Sprite.h"
 
-#include "Line.h"
-#include "TestStar.h"
+#include "ActorManager.h"
 
 class TouchAbleObject;
 class Play :public Scene
@@ -40,8 +39,7 @@ private:
 	Player* player =nullptr;
 	std::unique_ptr<Menu> menu;
 
-	Line* line = nullptr;
-	//TestStar* testStar = nullptr;
+	ActorManager* actorManager = nullptr;
 		
 	std::unique_ptr<Result> result;
 	std::unique_ptr<DebugCamera> camera;
