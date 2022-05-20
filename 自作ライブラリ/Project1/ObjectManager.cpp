@@ -11,6 +11,11 @@ ObjectManager* ObjectManager::GetInstance()
 
 void ObjectManager::Add(Object* object, bool preDraw)
 {
+	addScheduledObjects[preDraw].push_back(object);
+}
+
+void ObjectManager::AddExecute(Object* object, bool preDraw)
+{
 	std::unique_ptr<Object> obj(object);
 	objects[preDraw].push_back(std::move(obj));
 }
@@ -32,9 +37,15 @@ void ObjectManager::Update()
 	{
 		for (auto& itr : it.second)
 		{
-			itr->Update();
+			if (!itr->IsDead())
+			{
+				itr->Update();
+			}
 		}
 	}
+
+	AddObjectsAtOnce();
+	RemoveDeadObjects();
 }
 
 void ObjectManager::Remove(Object* object)
@@ -49,6 +60,39 @@ void ObjectManager::Remove(Object* object)
 			}
 			else
 				++it;
+		}
+	}
+}
+
+void ObjectManager::AddObjectsAtOnce()
+{
+	for (auto& vecObjects : addScheduledObjects)
+	{
+		for (auto itr = vecObjects.second.begin(); itr != vecObjects.second.end(); itr++)
+		{
+			if (!(*itr)->IsDead())
+			{
+				AddExecute(*itr, vecObjects.first);
+			}
+		}
+	}
+	addScheduledObjects.clear();
+}
+
+void ObjectManager::RemoveDeadObjects()
+{
+	for (auto& vecObjects : objects)
+	{
+		for (auto itr = vecObjects.second.begin(); itr != vecObjects.second.end();)
+		{
+			if ((*itr)->IsDead())
+			{
+				itr = vecObjects.second.erase(itr);
+			}
+			else
+			{
+				itr++;
+			}
 		}
 	}
 }

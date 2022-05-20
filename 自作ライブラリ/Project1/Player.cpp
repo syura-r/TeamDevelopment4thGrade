@@ -787,7 +787,7 @@ void Player::CreateLine()
 	{
 		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity(); //kokokokoko
 		pNowDrawingLine = new Line(position, LocusUtility::Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
-		ObjectManager::GetInstance()->Add(pNowDrawingLine, false);
+		ObjectManager::GetInstance()->Add(pNowDrawingLine, true);
 		vecDrawingLines.push_back(pNowDrawingLine);
 	}
 	
@@ -871,7 +871,7 @@ void Player::DeleteDrawingLine()
 {
 	for (int i = 0; i < vecDrawingLines.size(); i++)
 	{
-		ObjectManager::GetInstance()->Remove(vecDrawingLines[i]);
+		vecDrawingLines[i]->Dead();
 	}
 	vecDrawingLines.clear();
 }

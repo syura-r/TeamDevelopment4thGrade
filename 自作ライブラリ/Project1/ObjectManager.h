@@ -7,10 +7,14 @@ class ObjectManager
 {
 public:
 	static ObjectManager* GetInstance();
-	void Add( Object* object = nullptr,bool preDraw = true);
+	void Add(Object* object = nullptr, bool preDraw = true);
+	void AddExecute(Object* object = nullptr, bool preDraw = true);
 	void Initialize();
 	void Update();
 	void Remove(Object* object);
+	//
+	void AddObjectsAtOnce();
+	void RemoveDeadObjects();
 	//ï`âÊèÄîı
 	void DrawReady();
 	void PreDraw();
@@ -24,5 +28,6 @@ private:
 	std::unordered_map<bool,std::vector<std::unique_ptr<Object>>>objects;
 	std::unordered_map<bool, std::unordered_map<std::string, std::vector<Object*>>>drawObjects;
 
+	std::unordered_map<bool, std::vector<Object*>> addScheduledObjects;
 };
 

@@ -21,7 +21,7 @@ BaseLocus::~BaseLocus()
 	{
 		if (lines[i])
 		{
-			oManager->Remove(lines[i]);
+			lines[i]->Dead();
 		}
 	}
 }

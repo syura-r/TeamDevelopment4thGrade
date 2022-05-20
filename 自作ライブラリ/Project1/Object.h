@@ -63,6 +63,7 @@ public:
 	void SetColor(const XMFLOAT4& color) { this->color = color; }
 	inline const XMFLOAT4& GetColor() { return color; }
 	inline const bool IsDead() { return dead; }
+	inline const void Dead() { dead = true; }
 protected:
 	std::unique_ptr<Object3D> object;
 	Vector3 position = { 0,0,0 };
