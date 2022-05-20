@@ -5,6 +5,8 @@
 #include<synchapi.h>
 #include<stdio.h>
 
+#include "Timer.h"
+
 float FPS::fps = 60;
 //int FPS::count = 0;
 //DWORD FPS::startProsessTime = 0;
@@ -26,6 +28,8 @@ void FPS::Initialize(const float & fps)
 	FPS::fps = fps;
 	//startProsessTime = timeGetTime();
 	//nowTime = timeGetTime();
+
+	Timer::SetFPS(fps);
 }
 
 void FPS::StartMeasure()

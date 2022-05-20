@@ -11,6 +11,7 @@
 #include "TestRibbon.h"
 #include "TestTriforce.h"
 #include "BaseLocus.h"
+#include "Timer.h"
 
 
 class Player :
@@ -108,7 +109,7 @@ private:
 
 	TestStar* predictStar = nullptr;
 	TestTriforce* predictTriforce = nullptr;
-	TestRibbon* predictRibbon = nullptr;
+	TestRibbon* predictRibbon = nullptr;	
 
 	//èëÇ≠ÉtÉâÉO
 	bool isDrawing = false;

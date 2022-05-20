@@ -240,6 +240,7 @@
     <ClCompile Include="TestTriforce.cpp" />
     <ClCompile Include="TextureResource.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="TouchAbleObject.cpp" />
@@ -340,6 +341,7 @@
     <ClInclude Include="TestTriforce.h" />
     <ClInclude Include="TextureResource.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="TitleText.h" />
     <ClInclude Include="TouchAbleObject.h" />
