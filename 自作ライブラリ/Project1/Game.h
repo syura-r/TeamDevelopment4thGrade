@@ -39,7 +39,7 @@ private:
 	Vector3 cameraPos;
 	//Bloom* postEffect = nullptr;
 	std::unique_ptr <LightCamera> lightCamera = nullptr;
-	std::unique_ptr <TextureResource> shadowMap = nullptr;
+	//std::unique_ptr <TextureResource> shadowMap = nullptr;
 
 	float dir[3] = { 1.0f,-0.60f,0.0f };
 

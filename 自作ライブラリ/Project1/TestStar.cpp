@@ -60,7 +60,7 @@ void TestStar::DrawReady()
 		pipelineName = "ShadowMap";
 	else
 	{
-		pipelineName = "DrawShadowOBJ";
+		pipelineName = "BasicObj";
 	}
 }
 

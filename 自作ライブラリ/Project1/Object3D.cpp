@@ -221,8 +221,8 @@ void Object3D::Draw(const bool fbx, const bool shade, BLENDTYPE type, const bool
 	}
 	if (!fbx && !customPipeline && !drawShadow && shade)
 	{
-		cmdList->SetGraphicsRootConstantBufferView(4, constCameraBuff[bbIndex]->GetGPUVirtualAddress());
-		cmdList->SetGraphicsRootDescriptorTable(5, Texture::GetGpuDescHandleSRV("shadowMap" + std::to_string(bbIndex)));  //ヒープの先頭が定数バッファ
+		//cmdList->SetGraphicsRootConstantBufferView(4, constCameraBuff[bbIndex]->GetGPUVirtualAddress());
+		//cmdList->SetGraphicsRootDescriptorTable(5, Texture::GetGpuDescHandleSRV("shadowMap" + std::to_string(bbIndex)));  //ヒープの先頭が定数バッファ
 	}
 
 	if (drawShadow)

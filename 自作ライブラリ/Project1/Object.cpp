@@ -37,7 +37,9 @@ void Object::DrawReady()
 		pipelineName = "ShadowMap";
 	else
 	{
-		pipelineName = "DrawShadowOBJ";
+		pipelineName = "BasicObj";
+		//pipelineName = "NoShade";
+
 	}
 }
 

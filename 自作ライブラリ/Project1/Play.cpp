@@ -29,7 +29,7 @@ Play::Play()
 	//3Dオブジェクトにライトをセット
 	Object3D::SetLightGroup(lightGroup.get());
 	//ライト色を設定
-	lightGroup->SetDirLightActive(0, false);
+	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, XMFLOAT3(color0));
 	menu = std::make_unique<Menu>();
 	collisionManager = CollisionManager::GetInstance();
@@ -62,11 +62,11 @@ Play::Play()
 	std::vector<Vector3>rotations;
 	std::vector<Object*>loadObjects;
 	objectManager->Add(new Floor());
-	for (int i = 0; i < 9; i++)
-	{
-		lightGroup->SetPointLightActive(i, true);
-		lightGroup->SetPointLightPos(i, lightPos[i].data() - Vector3{ 0,3,0 });
-	}
+	//for (int i = 0; i < 9; i++)
+	//{
+	//	lightGroup->SetPointLightActive(i, true);
+	//	lightGroup->SetPointLightPos(i, lightPos[i].data() - Vector3{ 0,3,0 });
+	//}
 
 	while (getline(file, line))
 	{
@@ -158,7 +158,7 @@ void Play::PreDraw()
 {
 		objectManager->DrawReady();
 #ifdef _DEBUG
-		if (DrawMode::GetDrawImGui() && Object3D::GetDrawShadow())
+		if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
 		{
 			ImGui::Begin("Light");
 			ImGui::SliderFloat3("LightDir", lightDir, -1.0f, 1.0f);

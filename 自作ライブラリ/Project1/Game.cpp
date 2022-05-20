@@ -182,7 +182,7 @@ void Game::LoadFinish()
 	//sceneManeger->Add(Scene::SCENE::Ending, new Ending());
 	sceneManeger->Change(Scene::SCENE::Play);
 	
-	shadowMap.reset(new TextureResource("shadowMap",{1920,1080}, DXGI_FORMAT_R32_FLOAT,{0,0,0,0}));
+	//shadowMap.reset(new TextureResource("shadowMap",{1920,1080}, DXGI_FORMAT_R32_FLOAT,{0,0,0,0}));
 	nowLoading = false;
 }
 
@@ -282,16 +282,18 @@ void Game::Run()
 			ParticleEmitter::Update();
 			directX->ComputeBegin();
 			//2.画面クリアコマンドここまで
-			Object3D::SetDrawShadow(true);
-			shadowMap->PreDraw();
-			directX->ImguiDraw();
-			sceneManeger->PreDraw();
-			//directX->DepthClear();
-			shadowMap->PostDraw(false);
+			//Object3D::SetDrawShadow(true);
+			//shadowMap->PreDraw();
+			//directX->ImguiDraw();
+			//sceneManeger->PreDraw();
+			////directX->DepthClear();
+			//shadowMap->PostDraw(false);
 			Object3D::SetDrawShadow(false);
 
 			//3.描画コマンドここから
 			directX->BeginDraw();
+			directX->ImguiDraw();
+
 			sceneManeger->PreDraw();
 			CollisionManager::GetInstance()->DrawCollider();
 			directX->DepthClear();

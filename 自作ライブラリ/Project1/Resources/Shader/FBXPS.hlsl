@@ -1,10 +1,10 @@
 #include"FBX.hlsli"
 
 Texture2D<float4> tex0 : register(t0); // 0番スロットに設定されたテクスチャ
-Texture2D<float> tex1 : register(t1); // 1番スロットに設定されたテクスチャ
+//Texture2D<float> tex1 : register(t1); // 1番スロットに設定されたテクスチャ
 
 SamplerState smp0 : register(s0); // 0番スロットに設定されたサンプラー
-SamplerComparisonState smp1 : register(s1); // 1番スロットに設定されたサンプラー
+//SamplerComparisonState smp1 : register(s1); // 1番スロットに設定されたサンプラー
 
 
 PSOutPut PSmain(VSOutput input) : SV_TARGET
@@ -14,17 +14,17 @@ PSOutPut PSmain(VSOutput input) : SV_TARGET
     float4 colorSRGB = tex0.Sample(smp0, input.uv);
     float4 texcolor = pow(colorSRGB, 2.2);
 
-    const float zlnLVP = input.shadowPos.z / input.shadowPos.w;
+    //const float zlnLVP = input.shadowPos.z / input.shadowPos.w;
 	
-    float2 shadowMapUV = input.shadowPos.xy / input.shadowPos.w;
-    shadowMapUV *= float2(0.5f, -0.5f);
-    shadowMapUV += 0.5f;
+    //float2 shadowMapUV = input.shadowPos.xy / input.shadowPos.w;
+    //shadowMapUV *= float2(0.5f, -0.5f);
+    //shadowMapUV += 0.5f;
 	
-    float shadow = tex1.SampleCmpLevelZero(smp1, shadowMapUV, zlnLVP - 0.0001f);
-    //float shadowTex = tex1.Sample(smp1, shadowMapUV);
-    float3 shadowColor = texcolor.xyz * 0.3f;
+    //float shadow = tex1.SampleCmpLevelZero(smp1, shadowMapUV, zlnLVP - 0.0001f);
+    ////float shadowTex = tex1.Sample(smp1, shadowMapUV);
+    //float3 shadowColor = texcolor.xyz * 0.3f;
 	
-    texcolor.xyz = lerp(shadowColor, texcolor.xyz, shadow);
+    //texcolor.xyz = lerp(shadowColor, texcolor.xyz, shadow);
 		// 光沢度
     const float shininess = 4.0f;
 	// 頂点から視点への方向ベクトル
