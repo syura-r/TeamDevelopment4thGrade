@@ -100,6 +100,9 @@ private:
 	void HitLoci(Line* arg_line);
 	//攻撃
 	void Attack();
+	//
+	void CheckIsInFever();
+	void InFever();
 	
 	ObjectManager* pObjectManager = nullptr;
 
@@ -123,6 +126,9 @@ private:
 	std::vector<BaseLocus*> vecLocuss;
 	//線を一時的に保存しておくvector
 	std::vector<Line*> vecDrawingLines;
+	//フィーバー中かどうか
+	bool isInFever;
+	Timer* inFeverTimer;
 
 	//接地フラグ
 	bool onGround = true;

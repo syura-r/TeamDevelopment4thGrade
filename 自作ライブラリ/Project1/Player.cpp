@@ -39,6 +39,7 @@ Player::Player()
 	predictTriforce->ChangeIsDraw(false);
 	predictRibbon = new TestRibbon(Vector3(0, -5, 0), 90);
 	predictRibbon->ChangeIsDraw(false);
+	inFeverTimer = new Timer(300);
 
 	Initialize();
 
@@ -131,6 +132,7 @@ void Player::Initialize()
 
 	nowDrawingLocus = predictStar;
 	predictStar->ChangeIsDraw(true);
+	isInFever = false;
 }
 
 void Player::Update()
@@ -158,6 +160,7 @@ void Player::Update()
 	}
 	
 	SelectLocus();
+	CheckIsInFever();
 
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
@@ -336,7 +339,7 @@ void Player::Move()
 	//移動処理
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
 		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft() ||
-		IsInFever())
+		isInFever)
 	{
 		if (onGround)
 		{
@@ -414,7 +417,7 @@ void Player::Move()
 			}
 
 			//フィーバー時挙動試し
-			if (IsInFever())
+			if (isInFever)
 			{
 				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity();
 				inputAccuracy = 30.0f;
@@ -784,7 +787,7 @@ void Player::DrawingLine()
 		{	
 			if (isExtendLine)
 			{	
-				if (IsInFever())
+				if (isInFever)
 				{
 					pNowDrawingLine->AddLength(speed * inputAccuracy);
 				}
@@ -860,6 +863,11 @@ void Player::DeleteDrawingLine()
 void Player::DeleteLocuss()
 {
 	auto end = vecLocuss.size();
+	if (end >= 5)
+	{
+		InFever();
+	}
+
 	for (int i = 0; i < end; i++)
 	{
 		delete vecLocuss[i];
@@ -879,6 +887,30 @@ void Player::Attack()
 {
 	float value = 2 * vecLocuss.size();
 	ActorManager::GetInstance()->GetBoss()->Damage(value);
+}
+
+void Player::CheckIsInFever()
+{
+	if (!isInFever)
+	{
+		return;
+	}
+
+	inFeverTimer->Update();
+
+	if (inFeverTimer->IsTime())
+	{
+		if (!isDrawing)
+		{
+			isInFever = false;
+		}
+	}
+}
+
+void Player::InFever()
+{
+	isInFever = true;
+	inFeverTimer->Reset();
 }
 
 void Player::HitCheckLoci()
@@ -934,5 +966,6 @@ void Player::HitLoci(Line* arg_line)
 
 bool Player::IsInFever()
 {
-	return isDrawing && Input::CheckPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) && Input::CheckPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+	//return isDrawing && Input::CheckPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) && Input::CheckPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+	return isInFever;
 }
