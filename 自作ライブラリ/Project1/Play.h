@@ -33,7 +33,7 @@ private:
 	float color0[3] = { 1,1,1 };
 	float color1[3] = { 1,1,1 };
 	float color2[3] = { 1,1,1 };
-	float lightDir[3] = {1.0f,-0.6f,0.0f};
+	float lightDir[3] = { 0.01f,-1.00f,0.0f };
 	bool targetSphere = false;
 	CollisionManager* collisionManager = nullptr;
 	ObjectManager* objectManager = nullptr;

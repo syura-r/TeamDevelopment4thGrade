@@ -796,9 +796,6 @@
     <FxCompile Include="Resources\Shader\SkyVS.hlsl">
       <Filter>シェーダファイル\Sky</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shader\BasePostEffectPS.hlsl">
-      <Filter>シェーダファイル\PostEffect</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\Shader\BlurPS.hlsl">
       <Filter>シェーダファイル\PostEffect</Filter>
     </FxCompile>

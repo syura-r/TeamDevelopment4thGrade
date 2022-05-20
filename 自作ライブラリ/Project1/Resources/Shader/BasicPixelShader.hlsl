@@ -59,26 +59,26 @@ float4 PSmain(VSOutput input) : SV_TARGET
 	//点光源
     for (int i = 0; i < POINTLIGHT_NUM; i++)
     {
-			//ライトのベクトル
-        float3 lightv = pointLights[i].lightpos - input.worldpos.xyz;
-			//ベクトルの長さ
-        float d = length(lightv);
-			//正規化し、単位ベクトルにする
-        lightv = normalize(lightv);
-			//距離減衰係数
-        float atten = 1.0f / (pointLights[i].lightatten.x + pointLights[i].lightatten.y * d +
-				pointLights[i].lightatten.z * d * d);
-			//ライトに向かうベクトルの内積
-        float3 dotlightnormal = dot(lightv, input.normal);
-			//反射光ベクトル
-        float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
-			//拡散反射光
-        float3 diffuse = dotlightnormal * m_diffuse;
-        float3 halfVec = normalize(lightv + eyedir);
-			//鏡面反射光
-        float3 specular = pow(saturate(dot(reflect, halfVec)), shininess) * m_specular;
-			//全て加算する
-        shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor * pointLights[i].active;
+			////ライトのベクトル
+   //     float3 lightv = pointLights[i].lightpos - input.worldpos.xyz;
+			////ベクトルの長さ
+   //     float d = length(lightv);
+			////正規化し、単位ベクトルにする
+   //     lightv = normalize(lightv);
+			////距離減衰係数
+   //     float atten = 1.0f / (pointLights[i].lightatten.x + pointLights[i].lightatten.y * d +
+			//	pointLights[i].lightatten.z * d * d);
+			////ライトに向かうベクトルの内積
+   //     float3 dotlightnormal = dot(lightv, input.normal);
+			////反射光ベクトル
+   //     float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
+			////拡散反射光
+   //     float3 diffuse = dotlightnormal * m_diffuse;
+   //     float3 halfVec = normalize(lightv + eyedir);
+			////鏡面反射光
+   //     float3 specular = pow(saturate(dot(reflect, halfVec)), shininess) * m_specular;
+			////全て加算する
+   //     shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor * pointLights[i].active;
 
     }
 	//スポットライト
