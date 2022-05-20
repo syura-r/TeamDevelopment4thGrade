@@ -33,6 +33,8 @@ Player::Player()
 
 	pObjectManager = ObjectManager::GetInstance();
 
+	locusSelecter = new LocusSelecter();
+
 	predictStar = new TestStar(Vector3(0, -5, 0), 90);
 	predictStar->ChangeIsDraw(false);
 	predictTriforce = new TestTriforce(Vector3(0, -5, 0), 90);
@@ -89,6 +91,7 @@ Player::Player()
 Player::~Player()
 {
 	delete measurer;
+	delete locusSelecter;
 }
 
 void Player::Initialize()
@@ -136,6 +139,7 @@ void Player::Initialize()
 	predictStar->ChangeIsDraw(true);
 	isInFever = false;
 	measurer->Initialize();
+	locusSelecter->Initialize();
 }
 
 void Player::Update()
@@ -162,6 +166,8 @@ void Player::Update()
 		return;//‚â‚è’¼‚µŽž‚Í‚±‚±‚Ü‚Å
 	}
 	
+	locusSelecter->Update();
+
 	SelectLocus();
 	CheckIsInFever();
 
@@ -272,7 +278,11 @@ void Player::Draw()
 		}
 	}
 	CustomDraw(true, true);
-	if (!Object3D::GetDrawShadow()) measurer->Draw();
+	if (!Object3D::GetDrawShadow())
+	{
+		measurer->Draw();
+		locusSelecter->Draw();
+	}
 }
 
 void Player::DrawReady()
@@ -851,6 +861,7 @@ void Player::DrawingLine()
 			isDrawing = false;
 			currentLineNum = 0;
 			DeleteDrawingLine();
+			pNowDrawingLine = nullptr;
 		}
 	}
 

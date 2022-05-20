@@ -14,6 +14,7 @@
 
 #include "ActorManager.h"
 
+
 class TouchAbleObject;
 class Play :public Scene
 {

@@ -13,6 +13,7 @@
 #include "BaseLocus.h"
 #include "Timer.h"
 #include "NormalWaveMeasurer.h"
+#include "LocusSelecter.h"
 
 class Player :
 	public Object
@@ -105,6 +106,8 @@ private:
 	void InFever();
 	
 	ObjectManager* pObjectManager = nullptr;
+
+	LocusSelecter* locusSelecter = nullptr;
 
 	Line* pNowDrawingLine = nullptr;
 
