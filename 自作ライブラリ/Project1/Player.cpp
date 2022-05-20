@@ -786,7 +786,7 @@ void Player::CreateLine()
 	if (currentLineNum < nowDrawingLocus->GetMaxNumLine())
 	{
 		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity(); //kokokokoko
-		pNowDrawingLine = new Line(position, LocusUtility::Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 });
+		pNowDrawingLine = new Line(position, LocusUtility::Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
 		ObjectManager::GetInstance()->Add(pNowDrawingLine, false);
 		vecDrawingLines.push_back(pNowDrawingLine);
 	}

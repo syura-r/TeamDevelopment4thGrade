@@ -6,7 +6,7 @@ class Line : public Object
 {
 public:
 
-	Line(Vector3 arg_startPos, float arg_angle, float arg_length, Vector4 arg_color);
+	Line(Vector3 arg_startPos, float arg_angle, float arg_length, Vector4 arg_color, const Vector3& arg_scale);
 
 	~Line();
 	void Initialize()override;

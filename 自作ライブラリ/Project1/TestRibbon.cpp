@@ -19,7 +19,7 @@ TestRibbon::TestRibbon(const Vector3& arg_pos, const float arg_angle)
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, Vector4(1, 1, 0, 0.3f));
+		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, Vector4(1, 1, 0, 0.3f), Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, false);
 	}

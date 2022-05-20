@@ -5,7 +5,7 @@
 #include "BoxCollider.h"
 #include "LocusDef.h"
 
-Line::Line(Vector3 arg_startPos, float arg_angle, float arg_length,Vector4 arg_color)
+Line::Line(Vector3 arg_startPos, float arg_angle, float arg_length,Vector4 arg_color, const Vector3& arg_scale)
 {
 	
 	this->angle = arg_angle;
@@ -16,6 +16,7 @@ Line::Line(Vector3 arg_startPos, float arg_angle, float arg_length,Vector4 arg_c
 	Create(OBJLoader::GetModel("obBox"));
 	color = arg_color;
 	rotation = { 0,angle,0 };
+	scale = arg_scale;
 	Object::Update();
 
 	Initialize();
@@ -35,7 +36,8 @@ void Line::Initialize()
 
 void Line::Update()
 {
-	scale = { length,0.5,0.5 };
+	//scale = { length,0.5,0.5 };
+	scale.x = length;
 	rotation = { 0,angle,0 };
 	DirectX::XMStoreFloat3(&velocity, LocusUtility::AngleToVector2(angle));
 	endPos = position + velocity * length;

@@ -12,6 +12,7 @@ Floor::Floor()
 	Create(OBJLoader::GetModel("floor"));
 	position = { 0,-5,0 };
 	scale = { 5,1,5 };
+	color = { 0,1,0,1 };
 	Object::Update();
 	std::unique_ptr<BoxCollider> collider(new BoxCollider({ -25,-1,-15,0 },{20,1,23} ));
 	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
