@@ -12,7 +12,7 @@
 #include "TestTriforce.h"
 #include "BaseLocus.h"
 #include "Timer.h"
-
+#include "NormalWaveMeasurer.h"
 
 class Player :
 	public Object
@@ -113,6 +113,7 @@ private:
 	TestStar* predictStar = nullptr;
 	TestTriforce* predictTriforce = nullptr;
 	TestRibbon* predictRibbon = nullptr;	
+	NormalWaveMeasurer* measurer;
 
 	//‘‚­ƒtƒ‰ƒO
 	bool isDrawing = false;

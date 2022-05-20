@@ -40,6 +40,7 @@ Player::Player()
 	predictRibbon = new TestRibbon(Vector3(0, -5, 0), 90);
 	predictRibbon->ChangeIsDraw(false);
 	inFeverTimer = new Timer(300);
+	measurer = new NormalWaveMeasurer();
 
 	Initialize();
 
@@ -87,6 +88,7 @@ Player::Player()
 
 Player::~Player()
 {
+	delete measurer;
 }
 
 void Player::Initialize()
@@ -133,6 +135,7 @@ void Player::Initialize()
 	nowDrawingLocus = predictStar;
 	predictStar->ChangeIsDraw(true);
 	isInFever = false;
+	measurer->Initialize();
 }
 
 void Player::Update()
@@ -188,6 +191,7 @@ void Player::Update()
 		}
 	}
 
+	measurer->Update();
 	//
 	HitCheckLoci();
 
@@ -268,6 +272,7 @@ void Player::Draw()
 		}
 	}
 	CustomDraw(true, true);
+	if (!Object3D::GetDrawShadow()) measurer->Draw();
 }
 
 void Player::DrawReady()
