@@ -33,6 +33,8 @@ Player::Player()
 
 	pObjectManager = ObjectManager::GetInstance();
 
+	locusSelecter = new LocusSelecter();
+
 	predictStar = new TestStar(Vector3(0, -5, 0), 90);
 	predictStar->ChangeIsDraw(false);
 	predictTriforce = new TestTriforce(Vector3(0, -5, 0), 90);
@@ -86,6 +88,7 @@ Player::Player()
 
 Player::~Player()
 {
+	delete locusSelecter;
 }
 
 void Player::Initialize()
@@ -131,6 +134,8 @@ void Player::Initialize()
 
 	nowDrawingLocus = predictStar;
 	predictStar->ChangeIsDraw(true);
+
+	locusSelecter->Initialize();
 }
 
 void Player::Update()
@@ -157,6 +162,8 @@ void Player::Update()
 		return;//‚â‚è’¼‚µŽž‚Í‚±‚±‚Ü‚Å
 	}
 	
+	locusSelecter->Update();
+
 	SelectLocus();
 
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
@@ -265,6 +272,7 @@ void Player::Draw()
 		}
 	}
 	CustomDraw(true, true);
+	locusSelecter->Draw();
 }
 
 void Player::DrawReady()
@@ -843,6 +851,7 @@ void Player::DrawingLine()
 			isDrawing = false;
 			currentLineNum = 0;
 			DeleteDrawingLine();
+			pNowDrawingLine = nullptr;
 		}
 	}
 

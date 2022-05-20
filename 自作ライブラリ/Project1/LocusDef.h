@@ -1,7 +1,8 @@
 #pragma once
 #include "Vector.h"
+#include <cstdlib>
 
-enum class LocusType
+ enum class LocusType
 {
 	UNDIFINED = -1,
 	STAR,

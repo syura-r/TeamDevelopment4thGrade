@@ -203,6 +203,7 @@
     <ClCompile Include="LightCamera.cpp" />
     <ClCompile Include="LightGroup.cpp" />
     <ClCompile Include="Line.cpp" />
+    <ClCompile Include="LocusSelecter.cpp" />
     <ClCompile Include="MapBox.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Matrix4.cpp" />
@@ -295,6 +296,7 @@
     <ClInclude Include="LightGroup.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="LocusDef.h" />
+    <ClInclude Include="LocusSelecter.h" />
     <ClInclude Include="MapBox.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Matrix4.h" />

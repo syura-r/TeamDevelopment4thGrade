@@ -68,7 +68,15 @@ void Game::RoadAsset()
 		Texture::LoadTexture("white1x1", "white1x1.png");
 		Texture::LoadTexture("number", "number.png");
 		Texture::LoadTexture("wind", "wind.png");
-
+		Texture::LoadTexture("frame_B", "frame_B.png");
+		Texture::LoadTexture("frame_X", "frame_X.png");
+		Texture::LoadTexture("frame_Y", "frame_Y.png");
+		Texture::LoadTexture("frame_next", "frame_next.png");
+		Texture::LoadTexture("shape_star", "shape_star.png");
+		Texture::LoadTexture("shape_triforce", "shape_triforce.png");
+		Texture::LoadTexture("shape_ribbon", "shape_ribbon.png");
+		Texture::LoadTexture("frame_blank", "frame_blank.png");
+		
 
 	
 		break; 

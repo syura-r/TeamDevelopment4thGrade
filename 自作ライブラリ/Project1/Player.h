@@ -11,6 +11,7 @@
 #include "TestRibbon.h"
 #include "TestTriforce.h"
 #include "BaseLocus.h"
+#include "LocusSelecter.h"
 
 
 class Player :
@@ -101,6 +102,8 @@ private:
 	void Attack();
 	
 	ObjectManager* pObjectManager = nullptr;
+
+	LocusSelecter* locusSelecter = nullptr;
 
 	Line* pNowDrawingLine = nullptr;
 
