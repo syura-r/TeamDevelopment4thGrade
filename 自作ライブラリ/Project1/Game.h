@@ -41,7 +41,7 @@ private:
 	std::unique_ptr <LightCamera> lightCamera = nullptr;
 	//std::unique_ptr <TextureResource> shadowMap = nullptr;
 
-	float dir[3] = { 1.0f,-0.60f,0.0f };
+	float dir[3] = { 0.01f,-1.00f,0.0f };
 
 	float distance = 150;
 

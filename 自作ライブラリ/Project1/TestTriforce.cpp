@@ -21,7 +21,7 @@ TestTriforce::TestTriforce(const Vector3& arg_pos, const float arg_angle)
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
 		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, Vector4(1, 1, 0, 0.3f));
 		lines.push_back(line);
-		oManager->Add(line, false);
+		oManager->Add(line, true);
 	}
 }
 
