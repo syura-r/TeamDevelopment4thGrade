@@ -21,7 +21,7 @@ Floor::Floor()
 	collider->Update();
 	CollisionManager::GetInstance()->AddCollider(collider.get());
 	colliders.push_back(std::move(collider));
-	std::unique_ptr<BoxCollider> collider2(new BoxCollider({ 15,-1,-15,0 }, { 20,1,23 }));
+	std::unique_ptr<BoxCollider> collider2(new BoxCollider({ 20,-1,-15,0 }, { 30,1,23 }));
 	collider2->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 	collider2->SetMove(true);
 	collider2->SetObject(this);
@@ -35,7 +35,7 @@ Floor::Floor()
 	collider3->Update();
 	CollisionManager::GetInstance()->AddCollider(collider3.get());
 	colliders.push_back(std::move(collider3));
-	std::unique_ptr<BoxCollider> collider4(new BoxCollider({ 15,-1,25,0 }, { 20,1,23}));
+	std::unique_ptr<BoxCollider> collider4(new BoxCollider({ 20,-1,25,0 }, { 30,1,23}));
 	collider4->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 	collider4->SetMove(true);
 	collider4->SetObject(this);
