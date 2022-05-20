@@ -26,6 +26,9 @@
 #include"SceneManager.h"
 #include "Sprite.h"
 #include "TextureResource.h"
+
+#include "ParticleTestScene.h"
+
 DrawMode::MODE DrawMode::mode = DrawMode::None;
 bool DrawMode::drawImGui = true;
 TextureResource* TextureResource::mainResource = nullptr;
@@ -180,7 +183,8 @@ void Game::LoadFinish()
 	sceneManeger->Add(Scene::SCENE::Title, new Title());
 	sceneManeger->Add(Scene::SCENE::Play, new Play());
 	//sceneManeger->Add(Scene::SCENE::Ending, new Ending());
-	sceneManeger->Change(Scene::SCENE::Play);
+	sceneManeger->Add(Scene::SCENE::ParticleTestScene, new ParticleTestScene());
+	sceneManeger->Change(Scene::SCENE::ParticleTestScene);
 	
 	shadowMap.reset(new TextureResource("shadowMap",{1920,1080}, DXGI_FORMAT_R32_FLOAT,{0,0,0,0}));
 	nowLoading = false;
