@@ -1104,3 +1104,8 @@ bool Player::IsInFever()
 	//return isDrawing && Input::CheckPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) && Input::CheckPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER);
 	return isInFever;
 }
+
+const unsigned int Player::GetFeverQuota() const
+{
+	return feverQuota;
+}

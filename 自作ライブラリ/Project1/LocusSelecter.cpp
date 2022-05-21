@@ -1,4 +1,6 @@
 #include "LocusSelecter.h"
+#include "ActorManager.h"
+#include "Player.h"
 
 LocusSelecter::LocusSelecter()
 {
@@ -37,6 +39,7 @@ void LocusSelecter::Initialize()
 
 void LocusSelecter::Update()
 {
+	int a = ActorManager::GetInstance()->GetPlayer()->GetFeverQuota();
 }
 
 void LocusSelecter::Draw()
@@ -60,25 +63,26 @@ void LocusSelecter::Draw()
 
 void LocusSelecter::Setting(int arg_waveNum)
 {
+	vecWaveLocuses.clear();
 	switch (arg_waveNum)
 	{
 	case 0:
-		vecWaveLocuses.resize(3);
-		vecWaveLocuses.push_back(LocusType::STAR); ///Ç±Ç±ï™Ç©ÇÁÇÒÅ@ÇΩÇ∑ÇØÇƒ
+		//vecWaveLocuses.resize(3);
+		vecWaveLocuses.push_back((LocusType)3); ///Ç±Ç±ï™Ç©ÇÁÇÒÅ@ÇΩÇ∑ÇØÇƒ
 		vecWaveLocuses.push_back(LocusType::RIBBON);
 		vecWaveLocuses.push_back(LocusType::TRIFORCE);
 		break;
 	case 1:
-		vecWaveLocuses.resize(4);
+		//vecWaveLocuses.resize(4);
 		break;
 	case 2:
-		vecWaveLocuses.resize(5);
+		//vecWaveLocuses.resize(5);
 		break;
 	case 3:
-		vecWaveLocuses.resize(6);
+		//vecWaveLocuses.resize(6);
 		break;
 	case 4:
-		vecWaveLocuses.resize(7);
+		//vecWaveLocuses.resize(7);
 		break;
 	default:
 		break;

@@ -34,6 +34,8 @@ public:
 
 	//フィーバーかどうか　仮置き
 	bool IsInFever();
+	//ノルマ達成に必要な図形個数
+	const unsigned int GetFeverQuota()const;
 	
 private:
 	struct ConstBuffData
