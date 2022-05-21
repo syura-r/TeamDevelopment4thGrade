@@ -7,6 +7,12 @@ class LocusSelecter
 {
 	
 public:
+	enum Button
+	{
+		xButton,
+		yButton,
+		bButton,
+	};
 	LocusSelecter();
 	~LocusSelecter();
 
@@ -14,12 +20,18 @@ public:
 	void Update();
 	void Draw();
 
+	void Setting(int arg_waveNum);
+
+	LocusType XbuttonLocusType();
+	LocusType YbuttonLocusType();
+	LocusType BbuttonLocusType();
+
 	std::string GetFileName(LocusType arg_locusType);
 
 private:
 	LocusType locusTypes[3]; //0 B ,1 Y ,2 X
 
-	LocusType nextLocusType;
+	std::vector<LocusType> vecWaveLocuses;
 
 	Sprite* frameXtex;
 	Sprite* frameYtex;
