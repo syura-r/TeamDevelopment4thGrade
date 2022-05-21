@@ -19,6 +19,7 @@
 #include "LocusSelecter.h"
 
 class BossMissile;
+class BossRangeAttack;
 
 class Player :
 	public Object
@@ -119,6 +120,7 @@ private:
 	//ƒ{ƒX‚ÌUŒ‚‚Æ‚Ì“–‚½‚è”»’è
 	void HitCheckBossAttack();
 	void HitBossMissile(BossMissile* arg_missile);
+	void HitBossRangeAttack(BossRangeAttack* arg_rangeAttack);
 	
 	ObjectManager* pObjectManager = nullptr;
 

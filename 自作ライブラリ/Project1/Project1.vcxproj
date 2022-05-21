@@ -176,6 +176,7 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="BaseLocus.cpp" />
     <ClCompile Include="BossMissile.cpp" />
+    <ClCompile Include="BossRangeAttack.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="ColliderEditor.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -269,6 +270,7 @@
     <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="BaseLocus.h" />
     <ClInclude Include="BossMissile.h" />
+    <ClInclude Include="BossRangeAttack.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="CircleShadow.h" />
     <ClInclude Include="Collision.h" />

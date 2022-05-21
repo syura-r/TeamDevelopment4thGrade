@@ -14,6 +14,7 @@
 #include "ActorManager.h"
 #include "TestBoss.h"
 #include "BossMissile.h"
+#include "BossRangeAttack.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -1112,6 +1113,7 @@ void Player::StayInTheField()
 
 void Player::HitCheckBossAttack()
 {
+	//É~ÉTÉCÉã
 	std::vector<BossMissile*>& missiles = ActorManager::GetInstance()->GetBoss()->GetMissiles();
 	for (int i = 0; i < missiles.size(); i++)
 	{
@@ -1121,7 +1123,6 @@ void Player::HitCheckBossAttack()
 			HitBossMissile(missiles[i]);
 		}
 	}
-
 	for (auto itr = missiles.begin(); itr != missiles.end();)
 	{
 		if ((*itr)->IsDead())
@@ -1133,11 +1134,48 @@ void Player::HitCheckBossAttack()
 			itr++;
 		}
 	}
+
+	//îÕàÕçUåÇ
+	std::vector<BossRangeAttack*>& rangeAttacks = ActorManager::GetInstance()->GetBoss()->GetRangeAttacks();
+	for (int i = 0; i < rangeAttacks.size(); i++)
+	{
+		if (!rangeAttacks[i]->IsActive())
+		{
+			continue;
+		}
+
+		Vector3 attackScale = rangeAttacks[i]->GetScale() / 2.0f;
+		Vector3 attackPos = rangeAttacks[i]->GetPosition();
+		if (position.x >= attackPos.x - attackScale.x - 1 &&
+			position.x <= attackPos.x + attackScale.x + 1 &&
+			position.z >= attackPos.z - attackScale.z - 1 &&
+			position.z <= attackPos.z + attackScale.z + 1)
+		{
+			HitBossRangeAttack(rangeAttacks[i]);
+		}
+	}
+	for (auto itr = rangeAttacks.begin(); itr != rangeAttacks.end();)
+	{
+		if ((*itr)->IsDead())
+		{
+			itr = rangeAttacks.erase(itr);
+		}
+		else
+		{
+			itr++;
+		}
+	}
 }
 
 void Player::HitBossMissile(BossMissile* arg_missile)
 {
 	arg_missile->Dead();
+}
+
+void Player::HitBossRangeAttack(BossRangeAttack* arg_rangeAttack)
+{
+	int a = 0;
+	a++;
 }
 
 void Player::HitCheckLoci()

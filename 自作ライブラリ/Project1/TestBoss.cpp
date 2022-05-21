@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "ActorManager.h"
 #include "BossMissile.h"
+#include "BossRangeAttack.h"
 
 TestBoss::TestBoss(Vector3 arg_position, float arg_hitPoint)
 {
@@ -28,13 +29,19 @@ TestBoss::~TestBoss()
 	{
 		missiles[i]->Dead();
 	}
+	for (int i = 0; i < rangeAttacks.size(); i++)
+	{
+		rangeAttacks[i]->Dead();
+	}
 }
 
 void TestBoss::Initialize()
 {
 	state = ActionState::Wait;
+	attackCount = 0;
 	actionTimer->Initialize();
 	missiles.clear();
+	rangeAttacks.clear();
 
 	color = { 1,0.1f,0.2f,1 };//
 	rotation = { 0,0,0 };//
@@ -51,10 +58,27 @@ void TestBoss::Update()
 		{
 		case ActionState::Wait:
 			actionTimer->Reset();
-			state = ActionState::Shot;
+			if (attackCount % 2 != 0)
+			{
+				state = ActionState::ShotMissile;
+			}
+			else
+			{
+				ExpandRangeAttack();
+				state = ActionState::ExpandRangeAttack;
+			}
+			attackCount++;
 			break;
-		case ActionState::Shot:
+		case ActionState::ShotMissile:
 			ShotMissile();
+			actionTimer->Reset();
+			state = ActionState::Wait;
+			break;
+		case ActionState::ExpandRangeAttack:
+			actionTimer->Reset();
+			state = ActionState::CoolAfterRangAttack;
+			break;
+		case ActionState::CoolAfterRangAttack:
 			actionTimer->Reset();
 			state = ActionState::Wait;
 			break;
@@ -65,13 +89,14 @@ void TestBoss::Update()
 		}
 	}
 
-	if (state == ActionState::Shot)
+	if (state == ActionState::ShotMissile)
 	{
 		Vector3 playerPos = ActorManager::GetInstance()->GetPlayer()->GetPosition();
 		float angle = LocusUtility::Vector2ToAngle(Vector3::Normalize(playerPos - position));
 		rotation = Vector3(0, angle, 0);
 	}
 	CheckMissilesDuration();
+	CheckRangeAttacksDuration();
 
 	Object::Update();
 }
@@ -94,6 +119,11 @@ void TestBoss::Damage(float arg_value)
 std::vector<BossMissile*>& TestBoss::GetMissiles()
 {
 	return missiles;
+}
+
+std::vector<BossRangeAttack*>& TestBoss::GetRangeAttacks()
+{
+	return rangeAttacks;
 }
 
 void TestBoss::ShotMissile()
@@ -125,6 +155,36 @@ void TestBoss::CheckMissilesDuration()
 		if ((*itr)->IsDead())
 		{
 			itr = missiles.erase(itr);
+		}
+		else
+		{
+			itr++;
+		}
+	}
+}
+
+void TestBoss::ExpandRangeAttack()
+{
+	BossRangeAttack* rangeAttack = new BossRangeAttack(Vector3(0, -5, 0), Vector3(10, 1, 94), 360);
+	rangeAttacks.push_back(rangeAttack);
+	ObjectManager::GetInstance()->Add(rangeAttack);
+}
+
+void TestBoss::CheckRangeAttacksDuration()
+{
+	for (int i = 0; i < rangeAttacks.size(); i++)
+	{		
+		if (rangeAttacks[i]->IsFinish())
+		{
+			rangeAttacks[i]->Dead();
+		}
+	}
+
+	for (auto itr = rangeAttacks.begin(); itr != rangeAttacks.end();)
+	{
+		if ((*itr)->IsDead())
+		{
+			itr = rangeAttacks.erase(itr);
 		}
 		else
 		{
