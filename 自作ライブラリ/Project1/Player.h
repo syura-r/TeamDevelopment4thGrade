@@ -93,6 +93,9 @@ private:
 	
 	//ドローイングする図形を選択
 	void SelectLocus();
+	//図形をセットする
+	void SetLocus(LocusType arg_LocusType);
+
 	//線を生成
 	void CreateLine();
 	//線を書く
@@ -132,6 +135,8 @@ private:
 	TestPentagon* predictPentagon = nullptr;
 	TestHexagram* predictHexagram = nullptr;
 	NormalWaveMeasurer* measurer;
+
+	LocusSelecter::Button pressedButton;
 
 	//書くフラグ
 	bool isDrawing = false;

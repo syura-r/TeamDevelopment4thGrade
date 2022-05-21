@@ -152,10 +152,12 @@ void Player::Initialize()
 	predictStar->ChangeIsDraw(true);
 	isInFever = false;
 	posFeverGauge = Vector2(250, 800);
-	feverQuota = 3;
+	feverQuota = 5;
 	measurer->Initialize();
 	measurer->Reset(20);
 	locusSelecter->Initialize();
+	locusSelecter->Setting(feverQuota);
+	pressedButton = LocusSelecter::Button::BBUTTON;
 }
 
 void Player::Update()
@@ -185,6 +187,7 @@ void Player::Update()
 	locusSelecter->Update();
 
 	SelectLocus();
+
 	CheckIsInFever();
 
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
@@ -208,7 +211,7 @@ void Player::Update()
 	if (!isInFever)
 	{
 		measurer->Update();
-
+		
 		if (measurer->IsTime())
 		{
 			isDrawing = false;
@@ -218,6 +221,7 @@ void Player::Update()
 
 			Attack();
 			DeleteLocuss();
+			
 		}
 	}
 
@@ -817,23 +821,66 @@ void Player::SelectLocus()
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
 		{
-			nowDrawingLocus->ChangeIsDraw(false);
-			nowDrawingLocus = predictStar;//‚±‚±‚Í”Ä—p‰»‚¹‚ñ‚Æ‚ ‚©‚ñ¡‚ÍŽŽ‚µ
-			nowDrawingLocus->ChangeIsDraw(true);
+			pressedButton = LocusSelecter::Button::BBUTTON;
 		}
 		else if (Input::TriggerPadButton(XINPUT_GAMEPAD_X))
 		{
-			nowDrawingLocus->ChangeIsDraw(false);
-			nowDrawingLocus = predictRibbon;//‚±‚±‚Í”Ä—p‰»‚¹‚ñ‚Æ‚ ‚©‚ñ¡‚ÍŽŽ‚µ
-			nowDrawingLocus->ChangeIsDraw(true);
+			pressedButton = LocusSelecter::Button::XBUTTON;
 		}
 		else if (Input::TriggerPadButton(XINPUT_GAMEPAD_Y))
 		{
-			nowDrawingLocus->ChangeIsDraw(false);
-			nowDrawingLocus = predictTriforce;//‚±‚±‚Í”Ä—p‰»‚¹‚ñ‚Æ‚ ‚©‚ñ¡‚ÍŽŽ‚µ
-			nowDrawingLocus->ChangeIsDraw(true);
+			pressedButton = LocusSelecter::Button::YBUTTON;
+		}
+
+		switch (pressedButton)
+		{
+		case LocusSelecter::UNDIFINED:
+			break;
+		case LocusSelecter::XBUTTON:
+			SetLocus(locusSelecter->XbuttonLocusType());
+			break;
+		case LocusSelecter::YBUTTON:
+			SetLocus(locusSelecter->YbuttonLocusType());
+			break;
+		case LocusSelecter::BBUTTON:
+			SetLocus(locusSelecter->BbuttonLocusType());
+			break;
+		default:
+			break;
 		}
 	}
+}
+
+void Player::SetLocus(LocusType arg_LocusType)
+{
+	nowDrawingLocus->ChangeIsDraw(false);
+	switch (arg_LocusType)
+	{
+	case LocusType::UNDIFINED:
+		
+		break;
+	case LocusType::TRIANGLE:
+		nowDrawingLocus = predictTriangle;
+		break;
+	case LocusType::RIBBON:
+		nowDrawingLocus = predictRibbon;
+		break;
+	case LocusType::PENTAGON:
+		nowDrawingLocus = predictPentagon;
+		break;
+	case LocusType::STAR:
+		nowDrawingLocus = predictStar;
+		break;
+	case LocusType::HEXAGRAM:
+		nowDrawingLocus = predictHexagram;
+		break;
+	case LocusType::TRIFORCE:
+		nowDrawingLocus = predictTriforce;
+		break;
+	default:
+		break;
+	}
+	nowDrawingLocus->ChangeIsDraw(true);
 }
 
 void Player::CreateLine()
@@ -914,6 +961,7 @@ void Player::DrawingLine()
 					
 					MoveEndDrawing(copyLocus);
 					DeleteDrawingLine();
+					locusSelecter->SetNextLocus(pressedButton);
 					return;
 				}
 				position = nowDrawingLocus->GetLine(currentLineNum)->GetStartPos();
@@ -961,6 +1009,7 @@ void Player::DeleteLocuss()
 		vecLocuss[i] = nullptr;
 	}
 	vecLocuss.clear();
+	locusSelecter->Setting(feverQuota);
 }
 
 void Player::MoveEndDrawing(BaseLocus* arg_locus)
@@ -991,13 +1040,16 @@ void Player::CheckIsInFever()
 		if (!isDrawing)
 		{
 			Attack();
-			DeleteLocuss();
-			measurer->Reset(20);
 
 			if (feverQuota < maxFeverQuota)
 			{
 				feverQuota++;
 			}
+
+			DeleteLocuss();
+			measurer->Reset(20);
+
+			
 			isInFever = false;
 		}
 	}

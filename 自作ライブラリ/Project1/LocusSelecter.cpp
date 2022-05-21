@@ -2,6 +2,9 @@
 #include "ActorManager.h"
 #include "Player.h"
 
+#include <random>
+#include <algorithm>
+
 LocusSelecter::LocusSelecter()
 {
 	frameBtex = new Sprite();
@@ -33,81 +36,125 @@ void LocusSelecter::Initialize()
 	yTexPos = { 1644,50 };
 	xTexPos = { 1516,50 }; 
 	nextTexPos = { 1644,250 };
-
-	Setting(0);
 }
 
 void LocusSelecter::Update()
 {
-	int a = ActorManager::GetInstance()->GetPlayer()->GetFeverQuota();
+	//int a = ActorManager::GetInstance()->GetPlayer()->GetFeverQuota();
 }
 
 void LocusSelecter::Draw()
 {
 	Vector2 scale = { 0.25f,0.25f };
 	//B
+	if (locusTypes[BBUTTON] != LocusType::UNDIFINED)
+	{
+		bFrameLocusTex->DrawSprite(GetFileName(locusTypes[BBUTTON]), bTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
+	}
 	frameBtex->DrawSprite("frame_B", bTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-	//bFrameLocusTex->DrawSprite(GetFileName(locusTypes[0]), bTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
 
 	//Y
+	if (locusTypes[YBUTTON] != LocusType::UNDIFINED)
+	{
+		yFrameLocusTex->DrawSprite(GetFileName(locusTypes[YBUTTON]), yTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
+	}
 	frameYtex->DrawSprite("frame_Y", yTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-	//yFrameLocusTex->DrawSprite(GetFileName(locusTypes[1]), yTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-
+	
 	//X
+	if (locusTypes[XBUTTON] != LocusType::UNDIFINED)
+	{
+		xFrameLocusTex->DrawSprite(GetFileName(locusTypes[XBUTTON]), xTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
+	}
 	frameXtex->DrawSprite("frame_X", xTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-	//xFrameLocusTex->DrawSprite(GetFileName(locusTypes[2]), xTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-
+	
+	//Next
+	if (nextLocusType != LocusType::UNDIFINED)
+	{
+		nextFrameLocusTex->DrawSprite(GetFileName(nextLocusType), nextTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
+	}
 	frameNextTex->DrawSprite("frame_next", nextTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-	//nextFrameLocusTex->DrawSprite(GetFileName(nextLocusType), nextTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
 }
 
-void LocusSelecter::Setting(int arg_waveNum)
+void LocusSelecter::Setting(unsigned int arg_feverQuota)
 {
 	vecWaveLocuses.clear();
-	switch (arg_waveNum)
+	nextLocusType = LocusType::UNDIFINED;
+	//int max = ActorManager::GetInstance()->GetPlayer()->GetFeverQuota();
+	unsigned int max = arg_feverQuota;
+	randMax = max - 1;
+
+	for (int i = 0; i < max; i++)
 	{
-	case 0:
-		//vecWaveLocuses.resize(3);
-		vecWaveLocuses.push_back((LocusType)3); ///‚±‚±•ª‚©‚ç‚ñ@‚½‚·‚¯‚Ä
-		vecWaveLocuses.push_back(LocusType::RIBBON);
-		vecWaveLocuses.push_back(LocusType::TRIFORCE);
-		break;
-	case 1:
-		//vecWaveLocuses.resize(4);
-		break;
-	case 2:
-		//vecWaveLocuses.resize(5);
-		break;
-	case 3:
-		//vecWaveLocuses.resize(6);
-		break;
-	case 4:
-		//vecWaveLocuses.resize(7);
-		break;
-	default:
-		break;
+		vecWaveLocuses.push_back((LocusType)i);
 	}
 
 	//random‚Å‚»‚ê‚¼‚ê“ü‚ê‚é
-	locusTypes[xButton] = vecWaveLocuses[0]; //‚ ‚¿‚á[
-	locusTypes[yButton] = vecWaveLocuses[0];
-	locusTypes[bButton] = vecWaveLocuses[0];
+
+	int rand = 0;
+	auto itr = vecWaveLocuses.begin();
+
+	rand = GetIntRand(0, randMax);
+	locusTypes[XBUTTON] = vecWaveLocuses.at(rand);
+	vecWaveLocuses.erase(itr + rand);
+	randMax--;
+
+	itr = vecWaveLocuses.begin();
+	rand = GetIntRand(0, randMax);
+	locusTypes[YBUTTON] = vecWaveLocuses.at(rand);
+	vecWaveLocuses.erase(itr + rand);
+	randMax--;
+
+	itr = vecWaveLocuses.begin();
+	rand = GetIntRand(0, randMax);
+	locusTypes[BBUTTON] = vecWaveLocuses.at(rand);
+	vecWaveLocuses.erase(itr + rand);
+	randMax--;
+
+	if (vecWaveLocuses.size() > 0)
+	{
+		itr = vecWaveLocuses.begin();
+		rand = GetIntRand(0, randMax);
+		nextLocusType = vecWaveLocuses.at(rand);
+		vecWaveLocuses.erase(itr + rand);
+		randMax--;
+	}
+	else
+	{
+		nextLocusType = LocusType::UNDIFINED;
+	}
 }
 
+void LocusSelecter::SetNextLocus(Button arg_pressedButton)
+{
+	locusTypes[arg_pressedButton] = nextLocusType;
+
+	if (vecWaveLocuses.size() > 0)
+	{
+		auto itr = vecWaveLocuses.begin();
+		int rand = GetIntRand(0, randMax);
+		nextLocusType = vecWaveLocuses.at(rand);
+		vecWaveLocuses.erase(itr + rand);
+		randMax--;
+	}
+	else
+	{
+		nextLocusType = LocusType::UNDIFINED;
+	}
+}
 
 LocusType LocusSelecter::XbuttonLocusType()
 {
-	return locusTypes[xButton];
+	return locusTypes[XBUTTON];
 }
 
 LocusType LocusSelecter::YbuttonLocusType()
 {
-	return locusTypes[yButton];
+	return locusTypes[YBUTTON];
 }
 
 LocusType LocusSelecter::BbuttonLocusType()
 {
-	return locusTypes[bButton];
+	return locusTypes[BBUTTON];
 }
 
 std::string LocusSelecter::GetFileName(LocusType arg_locusType)
@@ -116,13 +163,22 @@ std::string LocusSelecter::GetFileName(LocusType arg_locusType)
 	switch (arg_locusType)
 	{
 	case LocusType::UNDIFINED:
-		fileName = "";
+		fileName = "noLocusTypeError";
+		break;
+	case LocusType::TRIANGLE:
+		fileName = "shape_triangle";
+		break;
+	case LocusType::RIBBON:
+		fileName = "shape_ribbon";
+		break;
+	case LocusType::PENTAGON:
+		fileName = "shape_pentagon";
 		break;
 	case LocusType::STAR:
 		fileName = "shape_star";
 		break;
-	case LocusType::RIBBON:
-		fileName = "shape_ribbon";
+	case LocusType::HEXAGRAM:
+		fileName = "shape_hexagram";
 		break;
 	case LocusType::TRIFORCE:
 		fileName = "shape_triforce";
@@ -130,5 +186,14 @@ std::string LocusSelecter::GetFileName(LocusType arg_locusType)
 	default:
 		break;
 	}
+	
     return fileName;
+}
+
+int LocusSelecter::GetIntRand(int minValue, int maxValue)
+{
+	std::random_device rnd;
+	std::mt19937_64 mt64(rnd());
+	std::uniform_int_distribution<int> genRandFloat(minValue, maxValue);
+	return genRandFloat(mt64);
 }
