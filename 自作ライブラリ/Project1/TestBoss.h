@@ -28,6 +28,8 @@ public:
 
     void Damage(float arg_value);
 
+    std::vector<BossMissile*>& GetMissiles();
+
 private:
     void ShotMissile();
     void CheckMissilesDuration();

@@ -18,6 +18,8 @@
 #include "NormalWaveMeasurer.h"
 #include "LocusSelecter.h"
 
+class BossMissile;
+
 class Player :
 	public Object
 {
@@ -111,6 +113,9 @@ private:
 	void InFever();
 	//フィールドから落ちない処理
 	void StayInTheField();
+	//ボスの攻撃との当たり判定
+	void HitCheckBossAttack();
+	void HitBossMissile(BossMissile* arg_missile);
 	
 	ObjectManager* pObjectManager = nullptr;
 

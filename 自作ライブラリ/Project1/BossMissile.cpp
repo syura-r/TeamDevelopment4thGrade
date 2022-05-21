@@ -5,7 +5,7 @@ BossMissile::BossMissile(const Vector3& arg_position, const Vector3& arg_velocit
 {
 	position = arg_position;
 	velocity = arg_velocity;
-	speed = 1.0f;
+	speed = 2.0f;
 
 	Create(OBJLoader::GetModel("sphere"));
 

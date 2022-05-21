@@ -41,7 +41,7 @@ Play::Play()
 	objectManager->Add(player);
 	actorManager->AddObject("player", player);
 
-	TestBoss* testBoss = new TestBoss({ 0,5,50 }, 100);
+	TestBoss* testBoss = new TestBoss({ 0,0,50 }, 100);
 	objectManager->Add(testBoss);
 	actorManager->AddObject("boss", testBoss);
 	

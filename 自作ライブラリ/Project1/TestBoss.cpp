@@ -91,6 +91,11 @@ void TestBoss::Damage(float arg_value)
 	hpGauge->SetHitPoint(hitPoint);
 }
 
+std::vector<BossMissile*>& TestBoss::GetMissiles()
+{
+	return missiles;
+}
+
 void TestBoss::ShotMissile()
 {
 	Vector3 playerPos = ActorManager::GetInstance()->GetPlayer()->GetPosition();

@@ -13,6 +13,7 @@
 #include "ParticleEmitter.h"
 #include "ActorManager.h"
 #include "TestBoss.h"
+#include "BossMissile.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -232,8 +233,9 @@ void Player::Update()
 		}
 	}
 
-	//
+	//“–‚½‚è”»’èŒn
 	HitCheckLoci();
+	HitCheckBossAttack();
 
 	////•ÇƒWƒƒƒ“ƒvˆ—
 	//WallJump();
@@ -1046,6 +1048,36 @@ void Player::StayInTheField()
 		currentLineNum = 0;
 		DeleteDrawingLine();
 	}
+}
+
+void Player::HitCheckBossAttack()
+{
+	std::vector<BossMissile*>& missiles = ActorManager::GetInstance()->GetBoss()->GetMissiles();
+	for (int i = 0; i < missiles.size(); i++)
+	{
+		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(missiles[i]->GetPosition() - position));
+		if (length <= 4.0f)
+		{
+			HitBossMissile(missiles[i]);
+		}
+	}
+
+	for (auto itr = missiles.begin(); itr != missiles.end();)
+	{
+		if ((*itr)->IsDead())
+		{
+			itr = missiles.erase(itr);
+		}
+		else
+		{
+			itr++;
+		}
+	}
+}
+
+void Player::HitBossMissile(BossMissile* arg_missile)
+{
+	arg_missile->Dead();
 }
 
 void Player::HitCheckLoci()
