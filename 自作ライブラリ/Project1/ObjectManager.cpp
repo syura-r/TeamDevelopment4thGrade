@@ -74,6 +74,10 @@ void ObjectManager::AddObjectsAtOnce()
 			{
 				AddExecute(*itr, vecObjects.first);
 			}
+			else
+			{
+				delete* itr;
+			}
 		}
 	}
 	addScheduledObjects.clear();

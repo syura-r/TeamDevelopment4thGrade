@@ -467,6 +467,7 @@ void Player::Move()
 		if (abs(rotY) < 55)
 		{
 			position += moveDirection * (speed * inputAccuracy);
+			StayInTheField();
 			isExtendLine = true;
 		}
 		else
@@ -915,6 +916,7 @@ void Player::MoveEndDrawing(BaseLocus* arg_locus)
 	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
 	position = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetEndPos();
 	position += vec * 2.0f;
+	StayInTheField();
 }
 
 void Player::Attack()
@@ -945,6 +947,47 @@ void Player::InFever()
 {
 	isInFever = true;
 	inFeverTimer->Reset();
+}
+
+void Player::StayInTheField()
+{
+	bool b = false;
+
+	//XŽ²
+	if (position.x > fieldUpperLimit.x)
+	{
+		position.x = fieldUpperLimit.x;
+		b = true;
+	}
+	else if (position.x < fieldLowerLimit.x)
+	{
+		position.x = fieldLowerLimit.x;
+		b = true;
+	}
+	
+	//ZŽ²
+	if (position.z > fieldUpperLimit.y)
+	{
+		position.z = fieldUpperLimit.y;
+		b = true;
+	}
+	else if (position.z < fieldLowerLimit.y)
+	{
+		position.z = fieldLowerLimit.y;
+		b = true;
+	}
+
+	if (!b)
+	{
+		return;
+	}
+
+	if (isDrawing)
+	{
+		isDrawing = false;
+		currentLineNum = 0;
+		DeleteDrawingLine();
+	}
 }
 
 void Player::HitCheckLoci()

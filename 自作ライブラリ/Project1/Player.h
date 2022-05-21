@@ -104,9 +104,11 @@ private:
 	void HitLoci(Line* arg_line);
 	//攻撃
 	void Attack();
-	//
+	//フィーバー時処理
 	void CheckIsInFever();
 	void InFever();
+	//フィールドから落ちない処理
+	void StayInTheField();
 	
 	ObjectManager* pObjectManager = nullptr;
 
@@ -139,6 +141,10 @@ private:
 	//フィーバー中かどうか
 	bool isInFever;
 	Timer* inFeverTimer;
+
+	//フィールドの広さ
+	const Vector2 fieldLowerLimit = Vector2(-45, -45);
+	const Vector2 fieldUpperLimit = Vector2(45, 45);
 
 	//接地フラグ
 	bool onGround = true;
