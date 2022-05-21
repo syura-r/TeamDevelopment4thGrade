@@ -165,7 +165,8 @@ void TestBoss::CheckMissilesDuration()
 
 void TestBoss::ExpandRangeAttack()
 {
-	BossRangeAttack* rangeAttack = new BossRangeAttack(Vector3(0, -5, 0), Vector3(10, 1, 94), 360);
+	Vector3 playerPos = ActorManager::GetInstance()->GetPlayer()->GetPosition();
+	BossRangeAttack* rangeAttack = new BossRangeAttack(Vector3(playerPos.x, -5, 0), Vector3(10, 1, 94), 360);
 	rangeAttacks.push_back(rangeAttack);
 	ObjectManager::GetInstance()->Add(rangeAttack);
 }
