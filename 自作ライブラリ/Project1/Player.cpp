@@ -152,7 +152,7 @@ void Player::Initialize()
 	predictStar->ChangeIsDraw(true);
 	isInFever = false;
 	posFeverGauge = Vector2(250, 800);
-	feverQuota = 5;
+	feverQuota = 3;
 	measurer->Initialize();
 	measurer->Reset(20);
 	locusSelecter->Initialize();
@@ -190,7 +190,7 @@ void Player::Update()
 
 	CheckIsInFever();
 
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && nowDrawingLocus)
 	{
 		isDrawing = true;
 		//ü‚Ì¶¬
@@ -853,11 +853,15 @@ void Player::SelectLocus()
 
 void Player::SetLocus(LocusType arg_LocusType)
 {
-	nowDrawingLocus->ChangeIsDraw(false);
+	if (nowDrawingLocus)
+	{
+		nowDrawingLocus->ChangeIsDraw(false);
+	}
+
 	switch (arg_LocusType)
 	{
 	case LocusType::UNDIFINED:
-		
+		nowDrawingLocus = nullptr;
 		break;
 	case LocusType::TRIANGLE:
 		nowDrawingLocus = predictTriangle;
@@ -880,7 +884,11 @@ void Player::SetLocus(LocusType arg_LocusType)
 	default:
 		break;
 	}
-	nowDrawingLocus->ChangeIsDraw(true);
+
+	if (arg_LocusType != LocusType::UNDIFINED)
+	{
+		nowDrawingLocus->ChangeIsDraw(true);
+	}
 }
 
 void Player::CreateLine()
