@@ -9,9 +9,10 @@ class LocusSelecter
 public:
 	enum Button
 	{
-		xButton,
-		yButton,
-		bButton,
+		UNDIFINED = -1,
+		XBUTTON,
+		YBUTTON,
+		BBUTTON,
 	};
 	LocusSelecter();
 	~LocusSelecter();
@@ -20,7 +21,9 @@ public:
 	void Update();
 	void Draw();
 
-	void Setting(int arg_waveNum);
+	void Setting(unsigned int arg_feverQuota);
+
+	void SetNextLocus(Button arg_pressedButton);
 
 	LocusType XbuttonLocusType();
 	LocusType YbuttonLocusType();
@@ -29,7 +32,9 @@ public:
 	std::string GetFileName(LocusType arg_locusType);
 
 private:
-	LocusType locusTypes[3]; //0 B ,1 Y ,2 X
+	LocusType locusTypes[3]; //0 B ,1 Y ,2 X ,3 Next
+
+	LocusType nextLocusType;
 
 	std::vector<LocusType> vecWaveLocuses;
 
@@ -47,6 +52,9 @@ private:
 	Vector2 yTexPos;
 	Vector2 bTexPos;
 	Vector2 nextTexPos;
+
+	int randMax = 0;
+	int GetIntRand(int minValue, int maxValue);
 
 };
 
