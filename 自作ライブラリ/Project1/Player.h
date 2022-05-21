@@ -10,6 +10,9 @@
 #include "TestStar.h"
 #include "TestRibbon.h"
 #include "TestTriforce.h"
+#include "TestTriangle.h"
+#include "TestPentagon.h"
+#include "TestHexagram.h"
 #include "BaseLocus.h"
 #include "Timer.h"
 #include "NormalWaveMeasurer.h"
@@ -115,7 +118,10 @@ private:
 
 	TestStar* predictStar = nullptr;
 	TestTriforce* predictTriforce = nullptr;
-	TestRibbon* predictRibbon = nullptr;	
+	TestRibbon* predictRibbon = nullptr;
+	TestTriangle* predictTriangle = nullptr;
+	TestPentagon* predictPentagon = nullptr;
+	TestHexagram* predictHexagram = nullptr;
 	NormalWaveMeasurer* measurer;
 
 	//èëÇ≠ÉtÉâÉO

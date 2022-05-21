@@ -41,6 +41,12 @@ Player::Player()
 	predictTriforce->ChangeIsDraw(false);
 	predictRibbon = new TestRibbon(Vector3(0, -5, 0), 90);
 	predictRibbon->ChangeIsDraw(false);
+	predictTriangle = new TestTriangle(Vector3(0, -5, 0), 90);
+	predictTriangle->ChangeIsDraw(false);
+	predictPentagon = new TestPentagon(Vector3(0, -5, 0), 90);
+	predictPentagon->ChangeIsDraw(false);
+	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90);
+	predictHexagram->ChangeIsDraw(false);
 	inFeverTimer = new Timer(300);
 	measurer = new NormalWaveMeasurer();
 
@@ -245,6 +251,9 @@ void Player::Update()
 		predictStar->Move(position, LocusUtility::Vector2ToAngle(direction));
 		predictRibbon->Move(position, LocusUtility::Vector2ToAngle(direction));
 		predictTriforce->Move(position, LocusUtility::Vector2ToAngle(direction));
+		predictTriangle->Move(position, LocusUtility::Vector2ToAngle(direction));
+		predictPentagon->Move(position, LocusUtility::Vector2ToAngle(direction));
+		predictHexagram->Move(position, LocusUtility::Vector2ToAngle(direction));
 	}	
 }
 
@@ -833,11 +842,20 @@ void Player::DrawingLine()
 					{
 					case LocusType::UNDIFINED:
 						break;
-					case LocusType::STAR:
-						copyLocus = new TestStar(*predictStar);
+					case LocusType::TRIANGLE:
+						copyLocus = new TestTriangle(*predictTriangle);
 						break;
 					case LocusType::RIBBON:
 						copyLocus = new TestRibbon(*predictRibbon);
+						break;
+					case LocusType::PENTAGON:
+						copyLocus = new TestPentagon(*predictPentagon);
+						break;
+					case LocusType::STAR:
+						copyLocus = new TestStar(*predictStar);
+						break;
+					case LocusType::HEXAGRAM:
+						copyLocus = new TestHexagram(*predictHexagram);
 						break;
 					case LocusType::TRIFORCE:
 						copyLocus = new TestTriforce(*predictTriforce);

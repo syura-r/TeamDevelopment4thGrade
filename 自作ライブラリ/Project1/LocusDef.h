@@ -5,8 +5,11 @@
  enum class LocusType
 {
 	UNDIFINED = -1,
-	STAR,
+	TRIANGLE,
 	RIBBON,
+	PENTAGON,
+	STAR,
+	HEXAGRAM,
 	TRIFORCE,
 };
 

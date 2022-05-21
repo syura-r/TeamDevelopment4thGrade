@@ -237,8 +237,11 @@
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TestBoss.cpp" />
+    <ClCompile Include="TestHexagram.cpp" />
+    <ClCompile Include="TestPentagon.cpp" />
     <ClCompile Include="TestRibbon.cpp" />
     <ClCompile Include="TestStar.cpp" />
+    <ClCompile Include="TestTriangle.cpp" />
     <ClCompile Include="TestTriforce.cpp" />
     <ClCompile Include="TextureResource.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -340,8 +343,11 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TestBoss.h" />
+    <ClInclude Include="TestHexagram.h" />
+    <ClInclude Include="TestPentagon.h" />
     <ClInclude Include="TestRibbon.h" />
     <ClInclude Include="TestStar.h" />
+    <ClInclude Include="TestTriangle.h" />
     <ClInclude Include="TestTriforce.h" />
     <ClInclude Include="TextureResource.h" />
     <ClInclude Include="Texture.h" />
