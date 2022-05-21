@@ -12,6 +12,10 @@ public:
 	void Update();
 	void Draw();
 
+	bool IsTime();
+	void Reset();
+	void Reset(const float arg_sec);
+
 private:
 	Timer* timer;
 	Sprite* nowTimeSprite;

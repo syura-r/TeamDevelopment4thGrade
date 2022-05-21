@@ -12,6 +12,7 @@
 #include "GameSettingParam.h"
 #include "ParticleEmitter.h"
 #include "ActorManager.h"
+#include "TestBoss.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -48,6 +49,8 @@ Player::Player()
 	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90);
 	predictHexagram->ChangeIsDraw(false);
 	inFeverTimer = new Timer(300);
+	feverGaugeBaseSprite = new Sprite();
+	feverGaugeValueSprite = new Sprite();
 	measurer = new NormalWaveMeasurer();
 
 	Initialize();
@@ -96,6 +99,9 @@ Player::Player()
 
 Player::~Player()
 {
+	delete inFeverTimer;
+	delete feverGaugeBaseSprite;
+	delete feverGaugeValueSprite;
 	delete measurer;
 	delete locusSelecter;
 }
@@ -144,6 +150,8 @@ void Player::Initialize()
 	nowDrawingLocus = predictStar;
 	predictStar->ChangeIsDraw(true);
 	isInFever = false;
+	posFeverGauge = Vector2(250, 800);
+	feverQuota = 3;
 	measurer->Initialize();
 	locusSelecter->Initialize();
 }
@@ -289,6 +297,21 @@ void Player::Draw()
 	CustomDraw(true, true);
 	if (!Object3D::GetDrawShadow())
 	{
+		if (isInFever)
+		{
+			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * inFeverTimer->GetRate(TimerPerformance::Down)), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 1.0f));
+		}
+		else
+		{
+			int val = vecLocuss.size();
+			if (val > feverQuota)
+			{
+				val = feverQuota;
+			}
+			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * (val / (float)feverQuota)), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 1.0f));
+		}
+		feverGaugeBaseSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700), Vector4(0.4f, 0.4f, 0.4f, 1.0f), Vector2(0.0f, 1.0f));
+
 		measurer->Draw();
 		locusSelecter->Draw();
 	}
@@ -363,7 +386,7 @@ void Player::Move()
 	//ˆÚ“®ˆ—
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
 		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft() ||
-		isInFever)
+		(isInFever && isDrawing))
 	{
 		if (onGround)
 		{
@@ -898,7 +921,7 @@ void Player::DeleteDrawingLine()
 void Player::DeleteLocuss()
 {
 	auto end = vecLocuss.size();
-	if (end >= 5)
+	if (end >= feverQuota)
 	{
 		InFever();
 	}

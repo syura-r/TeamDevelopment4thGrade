@@ -3,7 +3,9 @@
 #include <string>
 
 #include "Object.h"
-#include "TestBoss.h"
+
+class Player;
+class TestBoss;
 
 class ActorManager
 {
@@ -17,6 +19,7 @@ public:
 
 	Object* GetGameObject(std::string arg_name);
 
+	Player* GetPlayer();
 	TestBoss* GetBoss();
 
 private:

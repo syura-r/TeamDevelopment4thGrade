@@ -1,4 +1,6 @@
 #include "ActorManager.h"
+#include "Player.h"
+#include "TestBoss.h"
 
 ActorManager* ActorManager::GetInstance()
 {
@@ -29,6 +31,17 @@ void ActorManager::AddObject(std::string arg_name, Object* arg_object)
 Object* ActorManager::GetGameObject(std::string arg_name)
 {
 	return mapGameObject[arg_name];
+}
+
+Player* ActorManager::GetPlayer()
+{
+	auto itr = mapGameObject.find("player");
+	if (itr != mapGameObject.end())
+	{
+		Player* player = static_cast<Player*>(itr->second);
+		return player;
+	}
+	return nullptr;
 }
 
 TestBoss* ActorManager::GetBoss()

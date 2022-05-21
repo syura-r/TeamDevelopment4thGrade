@@ -141,6 +141,12 @@ private:
 	//フィーバー中かどうか
 	bool isInFever;
 	Timer* inFeverTimer;
+	Sprite* feverGaugeBaseSprite;
+	Sprite* feverGaugeValueSprite;
+	Vector2 posFeverGauge;
+	unsigned int feverQuota;
+	//攻撃時間
+	Timer* AttackTimer;
 
 	//フィールドの広さ
 	const Vector2 fieldLowerLimit = Vector2(-45, -45);
