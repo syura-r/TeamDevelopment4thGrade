@@ -44,15 +44,15 @@ void LocusSelecter::Draw()
 	Vector2 scale = { 0.25f,0.25f };
 	//B
 	frameBtex->DrawSprite("frame_B", bTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-	bFrameLocusTex->DrawSprite(GetFileName(locusTypes[0]), bTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
+	//bFrameLocusTex->DrawSprite(GetFileName(locusTypes[0]), bTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
 
 	//Y
 	frameYtex->DrawSprite("frame_Y", yTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-	yFrameLocusTex->DrawSprite(GetFileName(locusTypes[1]), yTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
+	//yFrameLocusTex->DrawSprite(GetFileName(locusTypes[1]), yTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
 
 	//X
 	frameXtex->DrawSprite("frame_X", xTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
-	xFrameLocusTex->DrawSprite(GetFileName(locusTypes[2]), xTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
+	//xFrameLocusTex->DrawSprite(GetFileName(locusTypes[2]), xTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
 
 	frameNextTex->DrawSprite("frame_next", nextTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
 	//nextFrameLocusTex->DrawSprite(GetFileName(nextLocusType), nextTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
