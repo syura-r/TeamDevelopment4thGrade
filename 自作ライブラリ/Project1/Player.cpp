@@ -48,7 +48,7 @@ Player::Player()
 	predictPentagon->ChangeIsDraw(false);
 	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90);
 	predictHexagram->ChangeIsDraw(false);
-	inFeverTimer = new Timer(300);
+	inFeverTimer = new Timer(1200);
 	feverGaugeBaseSprite = new Sprite();
 	feverGaugeValueSprite = new Sprite();
 	measurer = new NormalWaveMeasurer();
@@ -153,6 +153,7 @@ void Player::Initialize()
 	posFeverGauge = Vector2(250, 800);
 	feverQuota = 3;
 	measurer->Initialize();
+	measurer->Reset(20);
 	locusSelecter->Initialize();
 }
 
@@ -202,16 +203,35 @@ void Player::Update()
 	//カメラのリセット処理
 	MoveCamera();
 
-	if (!isDrawing)
+	//通常時のタイマー
+	if (!isInFever)
 	{
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		measurer->Update();
+
+		if (measurer->IsTime())
 		{
+			isDrawing = false;
+			currentLineNum = 0;
+			DeleteDrawingLine();
+			pNowDrawingLine = nullptr;
+
 			Attack();
 			DeleteLocuss();
 		}
 	}
 
-	measurer->Update();
+	if (!isDrawing)
+	{
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		{
+			if (vecLocuss.size() >= feverQuota)
+			{
+				Attack();
+				DeleteLocuss();
+			}
+		}
+	}
+
 	//
 	HitCheckLoci();
 
@@ -921,9 +941,16 @@ void Player::DeleteDrawingLine()
 void Player::DeleteLocuss()
 {
 	auto end = vecLocuss.size();
-	if (end >= feverQuota)
+	if (!isInFever)
 	{
-		InFever();
+		if (end >= feverQuota)
+		{
+			InFever();
+		}
+		else
+		{
+			measurer->Reset(20);
+		}
 	}
 
 	for (int i = 0; i < end; i++)
@@ -961,6 +988,14 @@ void Player::CheckIsInFever()
 	{
 		if (!isDrawing)
 		{
+			Attack();
+			DeleteLocuss();
+			measurer->Reset(20);
+
+			if (feverQuota < maxFeverQuota)
+			{
+				feverQuota++;
+			}
 			isInFever = false;
 		}
 	}

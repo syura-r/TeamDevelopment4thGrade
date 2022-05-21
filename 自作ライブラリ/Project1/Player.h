@@ -145,6 +145,7 @@ private:
 	Sprite* feverGaugeValueSprite;
 	Vector2 posFeverGauge;
 	unsigned int feverQuota;
+	const unsigned int maxFeverQuota = 6;
 	//攻撃時間
 	Timer* AttackTimer;
 
@@ -160,8 +161,8 @@ private:
 	Vector3 direction;
 	//移動速度
 	float speed = 0.09f;
-	const float walkSpeed = 0.09f;
-	const float drawingSpeed = 0.18f;
+	const float walkSpeed = 0.18f;
+	const float drawingSpeed = 0.36f;
 	//走りフラグ
 	bool run = false;
 	//回転速度
