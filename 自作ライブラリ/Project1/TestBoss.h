@@ -1,6 +1,16 @@
 #pragma once
 #include "Object.h"
 #include "HitPointGauge.h"
+#include "Timer.h"
+
+enum class ActionState
+{
+    Wait,
+    Shot
+};
+
+class BossMissile;
+
 class TestBoss :
     public Object
 {
@@ -19,8 +29,15 @@ public:
     void Damage(float arg_value);
 
 private:
+    void ShotMissile();
+    void CheckMissilesDuration();
+
     float hitPoint = 0;
 
     HitPointGauge* hpGauge = nullptr;
+
+    ActionState state;
+    Timer* actionTimer;
+    std::vector<BossMissile*> missiles;
 };
 
