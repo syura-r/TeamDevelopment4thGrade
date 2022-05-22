@@ -31,6 +31,9 @@ public:
 
     void Damage(float arg_value);
 
+    //Žc‹@‚ªŽc‚Á‚Ä‚¢‚é‚©
+    bool IsAlive();
+
     std::vector<BossMissile*>& GetMissiles();
     std::vector<BossRangeAttack*>& GetRangeAttacks();
 
@@ -40,6 +43,7 @@ private:
     void ExpandRangeAttack();
     void CheckRangeAttacksDuration();
 
+    float maxHitPoint;
     float hitPoint = 0;
 
     HitPointGauge* hpGauge = nullptr;

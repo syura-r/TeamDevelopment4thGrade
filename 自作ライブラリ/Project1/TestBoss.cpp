@@ -9,6 +9,7 @@
 TestBoss::TestBoss(Vector3 arg_position, float arg_hitPoint)
 {
 	position = arg_position;
+	maxHitPoint = arg_hitPoint;
 	hitPoint = arg_hitPoint;
 
 	Create(OBJLoader::GetModel("box"));
@@ -38,8 +39,17 @@ TestBoss::~TestBoss()
 void TestBoss::Initialize()
 {
 	state = ActionState::Wait;
+	hitPoint = maxHitPoint;
 	attackCount = 0;
 	actionTimer->Initialize();
+	for (int i = 0; i < missiles.size(); i++)
+	{
+		missiles[i]->Dead();
+	}
+	for (int i = 0; i < rangeAttacks.size(); i++)
+	{
+		rangeAttacks[i]->Dead();
+	}
 	missiles.clear();
 	rangeAttacks.clear();
 
@@ -51,6 +61,11 @@ void TestBoss::Initialize()
 
 void TestBoss::Update()
 {
+	if (!IsAlive() || !ActorManager::GetInstance()->GetPlayer()->IsAlive())
+	{
+		return;
+	}
+
 	actionTimer->Update();
 	if (actionTimer->IsTime())
 	{
@@ -112,8 +127,13 @@ void TestBoss::Reset()
 
 void TestBoss::Damage(float arg_value)
 {
-	hitPoint -= arg_value;
+	hitPoint -= arg_value;	
 	hpGauge->SetHitPoint(hitPoint);
+}
+
+bool TestBoss::IsAlive()
+{
+	return hitPoint > 0;
 }
 
 std::vector<BossMissile*>& TestBoss::GetMissiles()
@@ -166,7 +186,7 @@ void TestBoss::CheckMissilesDuration()
 void TestBoss::ExpandRangeAttack()
 {
 	Vector3 playerPos = ActorManager::GetInstance()->GetPlayer()->GetPosition();
-	BossRangeAttack* rangeAttack = new BossRangeAttack(Vector3(playerPos.x, -5, 0), Vector3(10, 1, 94), 360);
+	BossRangeAttack* rangeAttack = new BossRangeAttack(Vector3(playerPos.x, -5, 0), Vector3(10, 0.2f, 94), 360);
 	rangeAttacks.push_back(rangeAttack);
 	ObjectManager::GetInstance()->Add(rangeAttack);
 }

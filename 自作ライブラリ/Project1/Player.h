@@ -40,6 +40,8 @@ public:
 	bool IsInFever();
 	//ノルマ達成に必要な図形個数
 	const unsigned int GetFeverQuota()const;
+	//残機が残っているか
+	bool IsAlive();
 	
 private:
 	struct ConstBuffData
@@ -128,8 +130,6 @@ private:
 	//無敵処理
 	void BeingInvincible();
 	bool IsInvincible();
-	//残機が残っているか
-	bool IsAlive();
 	
 	ObjectManager* pObjectManager = nullptr;
 

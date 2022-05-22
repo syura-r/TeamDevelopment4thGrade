@@ -161,6 +161,21 @@ void Player::Initialize()
 
 	camera->SetDistance(100);
 
+	isDrawing = false;
+	isExtendLine = false;
+	currentLineNum = 0;
+	predictTriforce->ChangeIsDraw(false);
+	predictRibbon->ChangeIsDraw(false);
+	predictTriangle->ChangeIsDraw(false);
+	predictPentagon->ChangeIsDraw(false);
+	predictHexagram->ChangeIsDraw(false);
+	DeleteDrawingLine();
+	for (int i = 0; i < vecLocuss.size(); i++)
+	{
+		delete vecLocuss[i];
+		vecLocuss[i] = nullptr;
+	}
+	vecLocuss.clear();
 	nowDrawingLocus = predictStar;
 	predictStar->ChangeIsDraw(true);
 	isInFever = false;
@@ -199,9 +214,15 @@ void Player::Update()
 		return;//‚â‚è’¼‚µŽž‚Í‚±‚±‚Ü‚Å
 	}
 
-	if (!IsAlive())
+	TestBoss* boss = ActorManager::GetInstance()->GetBoss();
+	if (!IsAlive() || !boss->IsAlive())
 	{
-		//return;
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
+		{
+			Initialize();
+			boss->Initialize();
+		}
+		return;
 	}
 	
 	locusSelecter->Update();
