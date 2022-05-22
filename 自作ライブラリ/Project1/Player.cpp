@@ -54,6 +54,12 @@ Player::Player()
 	feverGaugeBaseSprite = new Sprite();
 	feverGaugeValueSprite = new Sprite();
 	measurer = new NormalWaveMeasurer();
+	invincibleTimer = new Timer(120);
+	for (int i = 0; i < 5; i++)
+	{
+		Sprite* s = new Sprite();
+		lifeSprites.push_back(s);
+	}
 
 	Initialize();
 
@@ -106,6 +112,12 @@ Player::~Player()
 	delete feverGaugeValueSprite;
 	delete measurer;
 	delete locusSelecter;
+	for (auto s : lifeSprites)
+	{
+		delete s;
+	}
+	lifeSprites.clear();
+	delete invincibleTimer;
 }
 
 void Player::Initialize()
@@ -159,6 +171,8 @@ void Player::Initialize()
 	locusSelecter->Initialize();
 	locusSelecter->Setting(feverQuota);
 	pressedButton = LocusSelecter::Button::BBUTTON;
+	invincibleTimer->Reset();
+	life = lifeSprites.size();
 }
 
 void Player::Update()
@@ -183,6 +197,11 @@ void Player::Update()
 			myModel->PlayAnimation("stand", true, 1, false);
 		Object::Update();
 		return;//やり直し時はここまで
+	}
+
+	if (!IsAlive())
+	{
+		//return;
 	}
 	
 	locusSelecter->Update();
@@ -215,10 +234,7 @@ void Player::Update()
 		
 		if (measurer->IsTime())
 		{
-			isDrawing = false;
-			currentLineNum = 0;
-			DeleteDrawingLine();
-			pNowDrawingLine = nullptr;
+			SuspendDrawing();
 
 			Attack();
 			DeleteLocuss();
@@ -238,6 +254,7 @@ void Player::Update()
 		}
 	}
 
+	BeingInvincible();
 	//当たり判定系
 	HitCheckLoci();
 	HitCheckBossAttack();
@@ -341,6 +358,13 @@ void Player::Draw()
 
 		measurer->Draw();
 		locusSelecter->Draw();
+
+		Vector2 lifeSpritePos = Vector2(1560, 500);
+		for (int i = 0; i < life; i++)
+		{
+			lifeSprites[i]->DrawSprite("white1x1", lifeSpritePos, 0.0f, Vector2(50, 50), Vector4(1, 1, 1, 1), Vector2(0.0f, 0.0f));
+			lifeSpritePos.x += 60;
+		}
 	}
 }
 
@@ -909,7 +933,7 @@ void Player::DrawingLine()
 	if (pNowDrawingLine != nullptr)
 	{
 		//ボタンを押しているかつドローイング中は線を伸ばす
-		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && isDrawing)
+		if ((Input::CheckPadButton(XINPUT_GAMEPAD_A) || isInFever) && isDrawing)
 		{	
 			if (isExtendLine)
 			{	
@@ -979,10 +1003,7 @@ void Player::DrawingLine()
 		}
 		else
 		{
-			isDrawing = false;
-			currentLineNum = 0;
-			DeleteDrawingLine();
-			pNowDrawingLine = nullptr;
+			SuspendDrawing();
 		}
 	}
 
@@ -995,6 +1016,14 @@ void Player::DeleteDrawingLine()
 		vecDrawingLines[i]->Dead();
 	}
 	vecDrawingLines.clear();
+}
+
+void Player::SuspendDrawing()
+{
+	isDrawing = false;
+	currentLineNum = 0;
+	DeleteDrawingLine();
+	pNowDrawingLine = nullptr;
 }
 
 void Player::DeleteLocuss()
@@ -1105,9 +1134,7 @@ void Player::StayInTheField()
 
 	if (isDrawing)
 	{
-		isDrawing = false;
-		currentLineNum = 0;
-		DeleteDrawingLine();
+		SuspendDrawing();
 	}
 }
 
@@ -1170,12 +1197,54 @@ void Player::HitCheckBossAttack()
 void Player::HitBossMissile(BossMissile* arg_missile)
 {
 	arg_missile->Dead();
+	if (IsAlive() && !IsInvincible())
+	{
+		Damaged();
+	}
 }
 
 void Player::HitBossRangeAttack(BossRangeAttack* arg_rangeAttack)
 {
-	int a = 0;
-	a++;
+	if (IsAlive() && !IsInvincible())
+	{
+		Damaged();
+	}
+}
+
+void Player::Damaged()
+{
+	life--;
+	invincibleTimer->Update();
+
+	//ドローイング中なら動作中断
+	if (isDrawing)
+	{
+		SuspendDrawing();
+	}
+}
+
+void Player::BeingInvincible()
+{
+	if (!IsInvincible())
+	{
+		return;
+	}
+
+	invincibleTimer->Update();
+	if (invincibleTimer->IsTime())
+	{
+		invincibleTimer->Reset();
+	}
+}
+
+bool Player::IsInvincible()
+{
+	return invincibleTimer->GetTime(TimerPerformance::Up) != 0;
+}
+
+bool Player::IsAlive()
+{
+	return life > 0;
 }
 
 void Player::HitCheckLoci()
@@ -1223,9 +1292,7 @@ void Player::HitLoci(Line* arg_line)
 
 	if (isDrawing)
 	{
-		isDrawing = false;
-		currentLineNum = 0;
-		DeleteDrawingLine();
+		SuspendDrawing();
 	}
 }
 

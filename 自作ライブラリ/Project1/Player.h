@@ -17,6 +17,7 @@
 #include "Timer.h"
 #include "NormalWaveMeasurer.h"
 #include "LocusSelecter.h"
+#include "NumberSprite.h"
 
 class BossMissile;
 class BossRangeAttack;
@@ -103,6 +104,8 @@ private:
 	void DrawingLine();
 	//書き終わった線を消す
 	void DeleteDrawingLine();
+	//ドローイングの中断
+	void SuspendDrawing();
 	//書いた図形を一気に消す ブレイクと名付けたい※関数名要相談
 	void DeleteLocuss();
 	//図形を描いた後に瞬間移動させる
@@ -121,6 +124,12 @@ private:
 	void HitCheckBossAttack();
 	void HitBossMissile(BossMissile* arg_missile);
 	void HitBossRangeAttack(BossRangeAttack* arg_rangeAttack);
+	void Damaged();
+	//無敵処理
+	void BeingInvincible();
+	bool IsInvincible();
+	//残機が残っているか
+	bool IsAlive();
 	
 	ObjectManager* pObjectManager = nullptr;
 
@@ -162,6 +171,10 @@ private:
 	const unsigned int maxFeverQuota = 6;
 	//攻撃時間
 	Timer* AttackTimer;
+	//残機
+	int life;
+	Timer* invincibleTimer;
+	std::vector<Sprite*> lifeSprites;
 
 	//フィールドの広さ
 	const Vector2 fieldLowerLimit = Vector2(-45, -45);
