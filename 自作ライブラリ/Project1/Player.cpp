@@ -1099,7 +1099,7 @@ void Player::MoveEndDrawing(BaseLocus* arg_locus)
 
 void Player::Attack()
 {
-	float value = vecLocuss.size();
+	float value = 4.0f * vecLocuss.size();
 	ActorManager::GetInstance()->GetBoss()->Damage(value);
 }
 

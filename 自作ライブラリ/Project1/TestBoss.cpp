@@ -52,6 +52,7 @@ void TestBoss::Initialize()
 	}
 	missiles.clear();
 	rangeAttacks.clear();
+	hpGauge->Initialize();
 
 	color = { 1,0.1f,0.2f,1 };//
 	rotation = { 0,0,0 };//
@@ -118,6 +119,9 @@ void TestBoss::Update()
 
 void TestBoss::Draw()
 {
+	ImGui::Begin("boss");
+	ImGui::Text("%f", hitPoint);
+	ImGui::End();
 	Object::Draw();
 }
 
@@ -128,16 +132,18 @@ void TestBoss::Reset()
 void TestBoss::Damage(float arg_value)
 {
 	hitPoint -= arg_value;	
+
 	if (hitPoint < 0)
 	{
 		hitPoint = 0;
 	}
+	
 	hpGauge->SetHitPoint(hitPoint);
 }
 
 bool TestBoss::IsAlive()
 {
-	return hitPoint != 0;
+	return hitPoint > 0;
 }
 
 std::vector<BossMissile*>& TestBoss::GetMissiles()

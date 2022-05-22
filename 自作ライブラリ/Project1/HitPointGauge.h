@@ -19,5 +19,6 @@ private:
 
     float hitPoint = 0;
     float maxHitPoint = 0;
+    float maxScale;
 };
 

@@ -6,6 +6,8 @@ HitPointGauge::HitPointGauge(Vector3 arg_position, float arg_hitPoint, Vector3 a
 	position = arg_position;
 	hitPoint = arg_hitPoint;
 	scale = arg_scale;
+	maxHitPoint = arg_hitPoint;
+	maxScale = scale.x;
 
 	position.y += 7;
 
@@ -20,7 +22,8 @@ HitPointGauge::~HitPointGauge()
 
 void HitPointGauge::Initialize()
 {
-	maxHitPoint = hitPoint;
+	hitPoint = maxHitPoint;
+	scale.x = maxScale;
 
 	color = { 1,0.5f,0.2f,1 };
 	rotation = { 0,0,0 };
@@ -41,7 +44,7 @@ void HitPointGauge::Draw()
 void HitPointGauge::SetHitPoint(float arg_hitPoint)
 {
 	hitPoint = arg_hitPoint;
-	scale.x = scale.x * (hitPoint / maxHitPoint);
+	scale.x = maxScale * (hitPoint / maxHitPoint);
 }
 
 
