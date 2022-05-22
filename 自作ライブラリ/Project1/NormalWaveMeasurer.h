@@ -1,5 +1,6 @@
 #pragma once
 #include "Sprite.h"
+#include "NumberSprite.h"
 #include "Timer.h"
 
 class NormalWaveMeasurer
@@ -20,4 +21,6 @@ private:
 	Timer* timer;
 	Sprite* nowTimeSprite;
 	Sprite* baseSprite;
+	NumberSprite* nowSecSprite;
+	float nowSec;
 };

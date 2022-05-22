@@ -169,12 +169,15 @@ private:
 	Vector2 posFeverGauge;
 	unsigned int feverQuota;
 	const unsigned int maxFeverQuota = 6;
+	Sprite* attackSprite;
 	//攻撃時間
 	Timer* AttackTimer;
 	//残機
 	int life;
 	Timer* invincibleTimer;
 	std::vector<Sprite*> lifeSprites;
+	Sprite* lifeCharSprite;
+	Sprite* gameOverSprite;
 
 	//フィールドの広さ
 	const Vector2 fieldLowerLimit = Vector2(-45, -45);

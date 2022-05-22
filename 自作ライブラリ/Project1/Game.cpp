@@ -79,7 +79,10 @@ void Game::RoadAsset()
 		Texture::LoadTexture("shape_triangle", "shape_triangle.png");
 		Texture::LoadTexture("shape_pentagon", "shape_pentagon.png");
 		Texture::LoadTexture("shape_hexagram", "shape_hexagram.png");
-		
+		Texture::LoadTexture("s_LIFE", "s_LIFE.png");
+		Texture::LoadTexture("s_LBorRB", "s_LBorRB.png");
+		Texture::LoadTexture("s_GameOver", "s_GameOver.png");
+		Texture::LoadTexture("s_Fever", "s_Fever.png");
 
 	
 		break; 

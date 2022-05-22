@@ -53,6 +53,7 @@ Player::Player()
 	inFeverTimer = new Timer(1200);
 	feverGaugeBaseSprite = new Sprite();
 	feverGaugeValueSprite = new Sprite();
+	attackSprite = new Sprite();
 	measurer = new NormalWaveMeasurer();
 	invincibleTimer = new Timer(120);
 	for (int i = 0; i < 5; i++)
@@ -60,6 +61,8 @@ Player::Player()
 		Sprite* s = new Sprite();
 		lifeSprites.push_back(s);
 	}
+	lifeCharSprite = new Sprite();
+	gameOverSprite = new Sprite();
 
 	Initialize();
 
@@ -110,6 +113,7 @@ Player::~Player()
 	delete inFeverTimer;
 	delete feverGaugeBaseSprite;
 	delete feverGaugeValueSprite;
+	delete attackSprite;
 	delete measurer;
 	delete locusSelecter;
 	for (auto s : lifeSprites)
@@ -117,6 +121,8 @@ Player::~Player()
 		delete s;
 	}
 	lifeSprites.clear();
+	delete lifeCharSprite;
+	delete gameOverSprite;
 	delete invincibleTimer;
 }
 
@@ -182,7 +188,7 @@ void Player::Initialize()
 	posFeverGauge = Vector2(250, 800);
 	feverQuota = 3;
 	measurer->Initialize();
-	measurer->Reset(20);
+	measurer->Reset();
 	locusSelecter->Initialize();
 	locusSelecter->Setting(feverQuota);
 	pressedButton = LocusSelecter::Button::BBUTTON;
@@ -364,7 +370,7 @@ void Player::Draw()
 	{
 		if (isInFever)
 		{
-			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * inFeverTimer->GetRate(TimerPerformance::Down)), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 1.0f));
+			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * inFeverTimer->GetRate(TimerPerformance::Down)), Vector4(0.9f, 0.9f, 0.05f, 1.0f), Vector2(0.0f, 1.0f));
 		}
 		else
 		{
@@ -375,16 +381,28 @@ void Player::Draw()
 			}
 			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * (val / (float)feverQuota)), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 1.0f));
 		}
-		feverGaugeBaseSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700), Vector4(0.4f, 0.4f, 0.4f, 1.0f), Vector2(0.0f, 1.0f));
+		feverGaugeBaseSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700), Vector4(0.2f, 0.2f, 0.2f, 1.0f), Vector2(0.0f, 1.0f));
+
+		if (vecLocuss.size() >= feverQuota)
+		{
+			attackSprite->DrawSprite("s_LBorRB", Vector2(960, 150), 0.0f, Vector2(1.5f, 1.5f));
+		}
 
 		measurer->Draw();
 		locusSelecter->Draw();
 
+		lifeCharSprite->DrawSprite("s_LIFE", Vector2(1705, 430));
 		Vector2 lifeSpritePos = Vector2(1560, 500);
 		for (int i = 0; i < life; i++)
 		{
 			lifeSprites[i]->DrawSprite("white1x1", lifeSpritePos, 0.0f, Vector2(50, 50), Vector4(1, 1, 1, 1), Vector2(0.0f, 0.0f));
 			lifeSpritePos.x += 60;
+		}
+
+		TestBoss* boss = ActorManager::GetInstance()->GetBoss();
+		if (!IsAlive() || !boss->IsAlive())
+		{
+			gameOverSprite->DrawSprite("s_GameOver", Vector2(960, 64));
 		}
 	}
 }
@@ -1058,7 +1076,7 @@ void Player::DeleteLocuss()
 		}
 		else
 		{
-			measurer->Reset(20);
+			measurer->Reset();
 		}
 	}
 
@@ -1081,7 +1099,7 @@ void Player::MoveEndDrawing(BaseLocus* arg_locus)
 
 void Player::Attack()
 {
-	float value = 2 * vecLocuss.size();
+	float value = vecLocuss.size();
 	ActorManager::GetInstance()->GetBoss()->Damage(value);
 }
 
@@ -1106,7 +1124,7 @@ void Player::CheckIsInFever()
 			}
 
 			DeleteLocuss();
-			measurer->Reset(20);
+			measurer->Reset();
 
 			
 			isInFever = false;

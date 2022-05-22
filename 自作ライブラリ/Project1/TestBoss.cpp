@@ -128,12 +128,16 @@ void TestBoss::Reset()
 void TestBoss::Damage(float arg_value)
 {
 	hitPoint -= arg_value;	
+	if (hitPoint < 0)
+	{
+		hitPoint = 0;
+	}
 	hpGauge->SetHitPoint(hitPoint);
 }
 
 bool TestBoss::IsAlive()
 {
-	return hitPoint > 0;
+	return hitPoint != 0;
 }
 
 std::vector<BossMissile*>& TestBoss::GetMissiles()
