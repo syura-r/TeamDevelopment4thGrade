@@ -118,7 +118,7 @@ void TestBoss::Update()
 	if (state == ActionState::ShotMissile)
 	{
 		Vector3 playerPos = ActorManager::GetInstance()->GetPlayer()->GetPosition();
-		float angle = LocusUtility::Vector2ToAngle(Vector3::Normalize(playerPos - position));
+		float angle = LocusUtility::Vector3XZToAngle(Vector3::Normalize(playerPos - position));
 		rotation = Vector3(0, angle, 0);
 	}
 

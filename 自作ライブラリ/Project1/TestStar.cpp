@@ -49,7 +49,7 @@ void TestStar::DrawReady()
 	{		
 		ImGui::Begin("TestStar");
 		ImGui::Text("[0].startPos : {%f, %f, %f }\n", lines[0]->GetStartPos().x, lines[0]->GetStartPos().y, lines[0]->GetStartPos().z);
-		ImGui::Text("[0].velocity : {%f, %f, %f }\n", lines[0]->GetVelocity().x, lines[0]->GetVelocity().y, lines[0]->GetVelocity().z);
+		ImGui::Text("[0].velocity : {%f, %f, %f }\n", lines[0]->GetDirection().x, lines[0]->GetDirection().y, lines[0]->GetDirection().z);
 		ImGui::Text("[0].endPos : {%f, %f, %f }\n", lines[0]->GetEndPos().x, lines[0]->GetEndPos().y, lines[0]->GetEndPos().z);
 		ImGui::Text("[0].angle : {%f}\n", lines[0]->GetAngle());
 		ImGui::End();

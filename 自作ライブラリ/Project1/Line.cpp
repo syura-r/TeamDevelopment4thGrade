@@ -5,18 +5,19 @@
 #include "BoxCollider.h"
 #include "LocusDef.h"
 
-Line::Line(Vector3 arg_startPos, float arg_angle, float arg_length,Vector4 arg_color, const Vector3& arg_scale)
+Line::Line(const Vector3& arg_startPos, float arg_angle, float arg_length, const Vector4& arg_color, const Vector3& arg_scale)
+	:endPos(arg_startPos),
+	 direction(LocusUtility::AngleToVector2(arg_angle)),
+	 angle(arg_angle),
+	 length(arg_length),
+	 isDraw(true)
 {
-	
-	this->angle = arg_angle;
-	this->length = arg_length;
 	position = arg_startPos;
-	isDraw = true;
+	color = arg_color;
+	scale = arg_scale;
 
 	Create(OBJLoader::GetModel("obBox"));
-	color = arg_color;
 	rotation = { 0,angle,0 };
-	scale = arg_scale;
 	Object::Update();
 
 	Initialize();
@@ -24,23 +25,19 @@ Line::Line(Vector3 arg_startPos, float arg_angle, float arg_length,Vector4 arg_c
 
 Line::~Line()
 {
-	
 }
 
 void Line::Initialize()
-{
-	DirectX::XMStoreFloat3(&velocity, LocusUtility::AngleToVector2(angle));
-	endPos = position + velocity * length;
-
+{	
+	endPos = position + direction * length;
 }
 
 void Line::Update()
-{
-	//scale = { length,0.5,0.5 };
+{	
 	scale.x = length;
 	rotation = { 0,angle,0 };
-	DirectX::XMStoreFloat3(&velocity, LocusUtility::AngleToVector2(angle));
-	endPos = position + velocity * length;
+	direction = LocusUtility::AngleToVector2(angle);
+	endPos = position + direction * length;
 	Object::Update();
 }
 
@@ -50,10 +47,6 @@ void Line::Draw()
 	{
 		Object::Draw();
 	}
-}
-
-void Line::Reset()
-{
 }
 
 void Line::AddLength(float arg_addSpeed)
@@ -77,9 +70,9 @@ Vector3 Line::GetEndPos()
 	return endPos;
 }
 
-Vector3 Line::GetVelocity()
+Vector3 Line::GetDirection()
 {
-	return velocity;
+	return direction;
 }
 
 float Line::GetLength() const
@@ -90,7 +83,7 @@ float Line::GetLength() const
 void Line::SetLength(const float arg_length)
 {
 	length = arg_length;
-	endPos = position + velocity * length;
+	endPos = position + direction * length;
 }
 
 float Line::GetAngle() const

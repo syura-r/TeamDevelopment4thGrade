@@ -326,13 +326,13 @@ void Player::Update()
 
 	if (!isDrawing)
 	{
-		//nowDrawingLocus->Move(position, LocusUtility::Vector2ToAngle(direction));
-		predictStar->Move(position, LocusUtility::Vector2ToAngle(direction));
-		predictRibbon->Move(position, LocusUtility::Vector2ToAngle(direction));
-		predictTriforce->Move(position, LocusUtility::Vector2ToAngle(direction));
-		predictTriangle->Move(position, LocusUtility::Vector2ToAngle(direction));
-		predictPentagon->Move(position, LocusUtility::Vector2ToAngle(direction));
-		predictHexagram->Move(position, LocusUtility::Vector2ToAngle(direction));
+		//nowDrawingLocus->Move(position, LocusUtility::Vector3XZToAngle(direction));
+		predictStar->Move(position, LocusUtility::Vector3XZToAngle(direction));
+		predictRibbon->Move(position, LocusUtility::Vector3XZToAngle(direction));
+		predictTriforce->Move(position, LocusUtility::Vector3XZToAngle(direction));
+		predictTriangle->Move(position, LocusUtility::Vector3XZToAngle(direction));
+		predictPentagon->Move(position, LocusUtility::Vector3XZToAngle(direction));
+		predictHexagram->Move(position, LocusUtility::Vector3XZToAngle(direction));
 	}	
 }
 
@@ -524,7 +524,7 @@ void Player::Move()
 		{
 			if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 			{
-				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity();
+				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 
 				//スティックの向き
 				auto vec = Input::GetLStickDirection();
@@ -533,7 +533,7 @@ void Player::Move()
 				stickDirection = Vector2::Normalize(stickDirection);
 
 				//線の向き
-				auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity();
+				auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 				lineDirection.x = lineVec.x;
 				lineDirection.y = lineVec.z;
 				lineDirection = Vector2::Normalize(lineDirection);
@@ -556,7 +556,7 @@ void Player::Move()
 			//フィーバー時挙動試し
 			if (isInFever)
 			{
-				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity();
+				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 				inputAccuracy = 30.0f;
 			}
 
@@ -959,8 +959,8 @@ void Player::CreateLine()
 {
 	if (currentLineNum < nowDrawingLocus->GetMaxNumLine())
 	{
-		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetVelocity(); //kokokokoko
-		pNowDrawingLine = new Line(position, LocusUtility::Vector2ToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
+		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetDirection(); //kokokokoko
+		pNowDrawingLine = new Line(position, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
 		ObjectManager::GetInstance()->Add(pNowDrawingLine, true);
 		vecDrawingLines.push_back(pNowDrawingLine);
 	}
