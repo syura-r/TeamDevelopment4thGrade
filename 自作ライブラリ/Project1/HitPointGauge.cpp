@@ -1,15 +1,14 @@
 #include "HitPointGauge.h"
 #include "OBJLoader.h"
 
-HitPointGauge::HitPointGauge(Vector3 arg_position, float arg_hitPoint, Vector3 arg_scale)
+HitPointGauge::HitPointGauge(Vector3 arg_position, Vector3 arg_scale, float arg_hitPoint)
+	:hitPoint(arg_hitPoint),
+	 maxHitPoint(arg_hitPoint),
+	 maxScale(arg_scale.x)
 {
 	position = arg_position;
-	hitPoint = arg_hitPoint;
-	scale = arg_scale;
-	maxHitPoint = arg_hitPoint;
-	maxScale = scale.x;
-
 	position.y += 7;
+	scale = arg_scale;	
 
 	Create(OBJLoader::GetModel("box"));
 
@@ -27,12 +26,12 @@ void HitPointGauge::Initialize()
 
 	color = { 1,0.5f,0.2f,1 };
 	rotation = { 0,0,0 };
+
 	Object::Update();
 }
 
 void HitPointGauge::Update()
 {
-	
 	Object::Update();
 }
 

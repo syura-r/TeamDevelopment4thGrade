@@ -5,10 +5,10 @@
 
 enum class ActionState
 {
-    Wait,
-    ShotMissile,
-    ExpandRangeAttack,
-    CoolAfterRangAttack
+    Wait,                   //待機
+    ShotMissile,            //ミサイルを発射
+    ExpandRangeAttack,      //範囲攻撃を開始
+    CoolAfterRangeAttack    //範囲攻撃後の無行動時間
 };
 
 class BossMissile;
@@ -22,15 +22,11 @@ public:
     ~TestBoss();
 
     void Initialize()override;
-
     void Update()override;
-
     void Draw()override;
 
-    void Reset();
-
+    //Playerからのダメージ
     void Damage(float arg_value);
-
     //残機が残っているか
     bool IsAlive();
 
@@ -38,17 +34,22 @@ public:
     std::vector<BossRangeAttack*>& GetRangeAttacks();
 
 private:
+    //---ミサイル---
     void ShotMissile();
     void CheckMissilesDuration();
+    //---範囲攻撃---
     void ExpandRangeAttack();
     void CheckRangeAttacksDuration();
 
+    //---HP---
+    float hitPoint;
     float maxHitPoint;
-    float hitPoint = 0;
-
     HitPointGauge* hpGauge = nullptr;
 
+    //---攻撃---
+    //どんな行動をしているか
     ActionState state;
+    //何回攻撃したか
     unsigned int attackCount;
     Timer* actionTimer;
     std::vector<BossMissile*> missiles;

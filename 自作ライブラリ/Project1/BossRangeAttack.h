@@ -14,7 +14,9 @@ public:
 
     void Draw()override;
 
+    //”»’è‚ª”­¶‚µ‚Ä‚¢‚é‚©
     bool IsActive();
+    //UŒ‚‚ªI—¹‚µ‚½‚©
     bool IsFinish();
 
 private:

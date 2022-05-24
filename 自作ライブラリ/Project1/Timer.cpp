@@ -39,6 +39,11 @@ void Timer::Reset()
 	Initialize();
 }
 
+int Timer::GetLimit() const
+{
+	return limitCount;
+}
+
 void Timer::SetLimit(const unsigned int arg_limit, const bool arg_isReset)
 {
 	limitCount = arg_limit;

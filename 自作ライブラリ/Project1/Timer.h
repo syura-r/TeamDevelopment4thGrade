@@ -16,15 +16,19 @@ public:
 
 	void Initialize();
 	void Update();
-
-	void Reset();
+	
+	void Reset();	
+	int GetLimit()const;
 	void SetLimit(const unsigned int arg_limit, const bool arg_isReset = false);
+	//経過時間（フレーム）
 	int GetTime(const TimerPerformance arg_performance = TimerPerformance::Up)const;
+	//経過時間（秒）
 	float GetRealTime(const TimerPerformance arg_performance = TimerPerformance::Up)const;
+	//経過率
 	float GetRate(const TimerPerformance arg_performance = TimerPerformance::Up)const;
-
+	
 	bool IsTime()const;
-
+	
 	static void SetFPS(const float arg_fps);
 
 private:

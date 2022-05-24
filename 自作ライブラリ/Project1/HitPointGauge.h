@@ -4,7 +4,7 @@ class HitPointGauge :
     public Object
 {
 public:
-    HitPointGauge(Vector3 arg_position, float arg_hitPoint, Vector3 arg_scale);
+    HitPointGauge(Vector3 arg_position, Vector3 arg_scale, float arg_hitPoint);
     ~HitPointGauge();
 
     void Initialize()override;
@@ -17,8 +17,8 @@ public:
 
 private:
 
-    float hitPoint = 0;
-    float maxHitPoint = 0;
+    float hitPoint;
+    float maxHitPoint;
     float maxScale;
 };
 

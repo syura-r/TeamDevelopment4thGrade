@@ -2,10 +2,10 @@
 #include "OBJLoader.h"
 
 BossRangeAttack::BossRangeAttack(const Vector3& arg_position, const Vector3& arg_scale, const float arg_durationTime)
+	:durationTimer(new Timer(arg_durationTime))
 {
 	position = arg_position;
-	scale = arg_scale;
-	durationTimer = new Timer(arg_durationTime);
+	scale = arg_scale;	
 
 	Create(OBJLoader::GetModel("box"));
 
@@ -26,6 +26,7 @@ void BossRangeAttack::Initialize()
 void BossRangeAttack::Update()
 {
 	durationTimer->Update();
+	//”»’è‚ª”­¶‚µ‚½‚çF‚ð”Z‚­
 	if (IsActive())
 	{
 		color.w = 0.6f;
@@ -40,6 +41,7 @@ void BossRangeAttack::Draw()
 
 bool BossRangeAttack::IsActive()
 {
+	//§ŒÀŽžŠÔ‚ªŽc‚è”¼•ª‚É‚È‚Á‚½‚çtrue
 	return durationTimer->GetRate(TimerPerformance::Down) <= 0.5f;
 }
 
