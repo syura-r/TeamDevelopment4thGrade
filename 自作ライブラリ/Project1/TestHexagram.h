@@ -6,9 +6,9 @@
 class TestHexagram : public virtual Object, public virtual BaseLocus
 {
 public:
-	TestHexagram(const Vector3& arg_pos, const float arg_angle);
+	TestHexagram(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color);
 	//コピーコンストラクタ
-	TestHexagram(const TestHexagram& arg_testHexagram);
+	TestHexagram(const TestHexagram& arg_testHexagram, const DirectX::XMFLOAT4& arg_color);
 	~TestHexagram();
 
 	void Initialize()override;
@@ -16,7 +16,7 @@ public:
 	void DrawReady()override;
 	void Draw()override;
 
-	void Move(const Vector3 arg_movePos, const float arg_angle)override;
+	void Move(const Vector3& arg_movePos, const float arg_angle)override;
 	const LocusType GetType()const override;
 
 private:

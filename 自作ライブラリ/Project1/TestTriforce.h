@@ -6,9 +6,9 @@
 class TestTriforce : public virtual Object, public virtual BaseLocus
 {
 public:
-	TestTriforce(const Vector3& arg_pos, const float arg_angle);
+	TestTriforce(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color);
 	//コピーコンストラクタ
-	TestTriforce(const TestTriforce& arg_testTriforce);
+	TestTriforce(const TestTriforce& arg_testTriforce, const DirectX::XMFLOAT4& arg_color);
 	~TestTriforce();
 
 	void Initialize()override;
@@ -16,7 +16,7 @@ public:
 	void DrawReady()override;
 	void Draw()override;
 
-	void Move(const Vector3 arg_movePos, const float arg_angle)override;
+	void Move(const Vector3& arg_movePos, const float arg_angle)override;
 	const LocusType GetType()const override;
 
 private:

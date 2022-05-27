@@ -38,17 +38,18 @@ Player::Player()
 
 	locusSelecter = new LocusSelecter();
 
-	predictStar = new TestStar(Vector3(0, -5, 0), 90);
+	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);
+	predictStar = new TestStar(Vector3(0, -5, 0), 90, predictColor);
 	predictStar->ChangeIsDraw(false);
-	predictTriforce = new TestTriforce(Vector3(0, -5, 0), 90);
+	predictTriforce = new TestTriforce(Vector3(0, -5, 0), 90, predictColor);
 	predictTriforce->ChangeIsDraw(false);
-	predictRibbon = new TestRibbon(Vector3(0, -5, 0), 90);
+	predictRibbon = new TestRibbon(Vector3(0, -5, 0), 90, predictColor);
 	predictRibbon->ChangeIsDraw(false);
-	predictTriangle = new TestTriangle(Vector3(0, -5, 0), 90);
+	predictTriangle = new TestTriangle(Vector3(0, -5, 0), 90, predictColor);
 	predictTriangle->ChangeIsDraw(false);
-	predictPentagon = new TestPentagon(Vector3(0, -5, 0), 90);
+	predictPentagon = new TestPentagon(Vector3(0, -5, 0), 90, predictColor);
 	predictPentagon->ChangeIsDraw(false);
-	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90);
+	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90, predictColor);
 	predictHexagram->ChangeIsDraw(false);
 	inFeverTimer = new Timer(1200);
 	feverGaugeBaseSprite = new Sprite();
@@ -1001,6 +1002,7 @@ void Player::DrawingLine()
 				{
 					isDrawing = false;
 					currentLineNum = 0;
+					static const XMFLOAT4 copyColor = XMFLOAT4(0.1f, 0.3f, 0.9f, 0.6f);
 					//‚±‚±‚Å}Œ`‚Æ‚µ‚Ä•Û‘¶‚·‚éˆ—
 					BaseLocus* copyLocus = nullptr;
 					switch (nowDrawingLocus->GetType())
@@ -1008,22 +1010,22 @@ void Player::DrawingLine()
 					case LocusType::UNDIFINED:
 						break;
 					case LocusType::TRIANGLE:
-						copyLocus = new TestTriangle(*predictTriangle);
+						copyLocus = new TestTriangle(*predictTriangle, copyColor);
 						break;
 					case LocusType::RIBBON:
-						copyLocus = new TestRibbon(*predictRibbon);
+						copyLocus = new TestRibbon(*predictRibbon, copyColor);
 						break;
 					case LocusType::PENTAGON:
-						copyLocus = new TestPentagon(*predictPentagon);
+						copyLocus = new TestPentagon(*predictPentagon, copyColor);
 						break;
 					case LocusType::STAR:
-						copyLocus = new TestStar(*predictStar);
+						copyLocus = new TestStar(*predictStar, copyColor);
 						break;
 					case LocusType::HEXAGRAM:
-						copyLocus = new TestHexagram(*predictHexagram);
+						copyLocus = new TestHexagram(*predictHexagram, copyColor);
 						break;
 					case LocusType::TRIFORCE:
-						copyLocus = new TestTriforce(*predictTriforce);
+						copyLocus = new TestTriforce(*predictTriforce, copyColor);
 						break;
 					default:
 						break;

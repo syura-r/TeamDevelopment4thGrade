@@ -2,7 +2,7 @@
 #include "Vector.h"
 #include <cstdlib>
 
- enum class LocusType
+enum class LocusType
 {
 	UNDIFINED = -1,
 	TRIANGLE,    //三角形
@@ -13,7 +13,7 @@
 	TRIFORCE,    //トライフォース
 };
 
- //図形定義用　線の構造体
+//図形定義用　線の構造体
 struct LocusPointInfo
 {	
 	Vector3 startPos = Vector3(0, 0, 0);

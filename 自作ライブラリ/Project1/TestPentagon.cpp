@@ -3,8 +3,8 @@
 #include "DrawMode.h"
 std::vector<LocusPointInfo> TestPentagon::baseInfo = std::vector<LocusPointInfo>();
 
-TestPentagon::TestPentagon(const Vector3& arg_pos, const float arg_angle)
-	:BaseLocus(arg_angle)
+TestPentagon::TestPentagon(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
+	:BaseLocus(arg_angle, arg_color)
 {
 	position = arg_pos;
 	if (baseInfo.empty())
@@ -19,14 +19,14 @@ TestPentagon::TestPentagon(const Vector3& arg_pos, const float arg_angle)
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, Vector4(1, 1, 0, 0.6f), Vector3(0.5f, 0.5f, 0.5f));
+		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, true);
 	}
 }
 
-TestPentagon::TestPentagon(const TestPentagon& arg_testPentagon)
-	:TestPentagon(arg_testPentagon.position, arg_testPentagon.angle)
+TestPentagon::TestPentagon(const TestPentagon& arg_testPentagon, const DirectX::XMFLOAT4& arg_color)
+	:TestPentagon(arg_testPentagon.position, arg_testPentagon.angle, arg_color)
 {
 }
 
@@ -50,7 +50,7 @@ void TestPentagon::Draw()
 {
 }
 
-void TestPentagon::Move(const Vector3 arg_movePos, const float arg_angle)
+void TestPentagon::Move(const Vector3& arg_movePos, const float arg_angle)
 {
 	position = arg_movePos;
 	angle = arg_angle;

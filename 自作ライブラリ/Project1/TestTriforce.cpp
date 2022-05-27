@@ -3,8 +3,8 @@
 #include "DrawMode.h"
 std::vector<LocusPointInfo> TestTriforce::baseInfo = std::vector<LocusPointInfo>();
 
-TestTriforce::TestTriforce(const Vector3& arg_pos, const float arg_angle)
-	:BaseLocus(arg_angle)
+TestTriforce::TestTriforce(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
+	:BaseLocus(arg_angle, arg_color)
 {
 	position = arg_pos;
 	if (baseInfo.empty())
@@ -19,14 +19,14 @@ TestTriforce::TestTriforce(const Vector3& arg_pos, const float arg_angle)
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, Vector4(1, 1, 0, 0.6f), Vector3(0.5f, 0.5f, 0.5f));
+		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, true);
 	}
 }
 
-TestTriforce::TestTriforce(const TestTriforce& arg_testTriforce)
-	:TestTriforce(arg_testTriforce.position, arg_testTriforce.angle)
+TestTriforce::TestTriforce(const TestTriforce& arg_testTriforce, const DirectX::XMFLOAT4& arg_color)
+	:TestTriforce(arg_testTriforce.position, arg_testTriforce.angle, arg_color)
 {
 }
 
@@ -68,7 +68,7 @@ void TestTriforce::Draw()
 {
 }
 
-void TestTriforce::Move(const Vector3 arg_movePos, const float arg_angle)
+void TestTriforce::Move(const Vector3& arg_movePos, const float arg_angle)
 {
 	position = arg_movePos;
 	angle = arg_angle;

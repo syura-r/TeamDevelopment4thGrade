@@ -5,7 +5,7 @@
 #include "BoxCollider.h"
 #include "LocusDef.h"
 
-Line::Line(const Vector3& arg_startPos, float arg_angle, float arg_length, const Vector4& arg_color, const Vector3& arg_scale)
+Line::Line(const Vector3& arg_startPos, float arg_angle, float arg_length, const DirectX::XMFLOAT4& arg_color, const Vector3& arg_scale)
 	:endPos(arg_startPos),
 	 direction(LocusUtility::AngleToVector2(arg_angle)),
 	 angle(arg_angle),

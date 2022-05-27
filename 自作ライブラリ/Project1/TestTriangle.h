@@ -6,9 +6,9 @@
 class TestTriangle : public virtual Object, public virtual BaseLocus
 {
 public:
-	TestTriangle(const Vector3& arg_pos, const float arg_angle);
+	TestTriangle(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color);
 	//コピーコンストラクタ
-	TestTriangle(const TestTriangle& arg_testTriangle);
+	TestTriangle(const TestTriangle& arg_testTriangle, const DirectX::XMFLOAT4& arg_color);
 	~TestTriangle();
 
 	void Initialize()override;
@@ -16,7 +16,7 @@ public:
 	void DrawReady()override;
 	void Draw()override;
 
-	void Move(const Vector3 arg_movePos, const float arg_angle)override;
+	void Move(const Vector3& arg_movePos, const float arg_angle)override;
 	const LocusType GetType()const override;
 
 private:

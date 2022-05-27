@@ -3,8 +3,8 @@
 #include "DrawMode.h"
 std::vector<LocusPointInfo> TestStar::baseInfo = std::vector<LocusPointInfo>();
 
-TestStar::TestStar(const Vector3& arg_pos, const float arg_angle)
-	:BaseLocus(arg_angle)
+TestStar::TestStar(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
+	:BaseLocus(arg_angle, arg_color)
 {
 	position = arg_pos;
 	if (baseInfo.empty())
@@ -19,14 +19,14 @@ TestStar::TestStar(const Vector3& arg_pos, const float arg_angle)
 	for (int i = 0; i < baseInfo.size(); i++)
 	{		
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, Vector4(1, 1, 0, 0.6f), Vector3(0.5f, 0.5f, 0.5f));
+		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, true);
 	}
 }
 
-TestStar::TestStar(const TestStar& arg_testStar)
-	:TestStar(arg_testStar.position, arg_testStar.angle)
+TestStar::TestStar(const TestStar& arg_testStar, const DirectX::XMFLOAT4& arg_color)
+	:TestStar(arg_testStar.position, arg_testStar.angle, arg_color)
 {
 }
 
@@ -68,7 +68,7 @@ void TestStar::Draw()
 {
 }
 
-void TestStar::Move(const Vector3 arg_movePos, const float arg_angle)
+void TestStar::Move(const Vector3& arg_movePos, const float arg_angle)
 {
 	position = arg_movePos;
 	angle = arg_angle;

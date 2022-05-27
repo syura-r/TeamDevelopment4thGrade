@@ -6,9 +6,9 @@
 class TestRibbon : public virtual Object, public virtual BaseLocus
 {
 public:
-	TestRibbon(const Vector3& arg_pos, const float arg_angle);
+	TestRibbon(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color);
 	//コピーコンストラクタ
-	TestRibbon(const TestRibbon& arg_testRibbon);
+	TestRibbon(const TestRibbon& arg_testRibbon, const DirectX::XMFLOAT4& arg_color);
 	~TestRibbon();
 
 	void Initialize()override;
@@ -16,7 +16,7 @@ public:
 	void DrawReady()override;
 	void Draw()override;
 
-	void Move(const Vector3 arg_movePos, const float arg_angle)override;
+	void Move(const Vector3& arg_movePos, const float arg_angle)override;
 	const LocusType GetType()const override;
 
 private:

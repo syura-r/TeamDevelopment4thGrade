@@ -5,11 +5,13 @@
 class BaseLocus : public virtual Object
 {
 public:
-	BaseLocus(const float arg_angle);
+	BaseLocus(const float arg_angle, const DirectX::XMFLOAT4& arg_color);
 	BaseLocus(const BaseLocus& arg_baseLocus);
 	virtual ~BaseLocus();
 
-	virtual void Move(const Vector3 arg_movePos, const float arg_angle) = 0;
+	void ChangeColor(const Vector4& arg_color);
+
+	virtual void Move(const Vector3& arg_movePos, const float arg_angle) = 0;
 	virtual const LocusType GetType()const = 0;
 	float GetAngle()const;
 	Line* GetLine(const int arg_num);

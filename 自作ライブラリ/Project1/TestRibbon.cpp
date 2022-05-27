@@ -3,8 +3,8 @@
 #include "DrawMode.h"
 std::vector<LocusPointInfo> TestRibbon::baseInfo = std::vector<LocusPointInfo>();
 
-TestRibbon::TestRibbon(const Vector3& arg_pos, const float arg_angle)
-	:BaseLocus(arg_angle)
+TestRibbon::TestRibbon(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
+	:BaseLocus(arg_angle, arg_color)
 {
 	position = arg_pos;
 	if (baseInfo.empty())
@@ -19,14 +19,14 @@ TestRibbon::TestRibbon(const Vector3& arg_pos, const float arg_angle)
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, Vector4(1, 1, 0, 0.6f), Vector3(0.5f, 0.5f, 0.5f));
+		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, true);
 	}
 }
 
-TestRibbon::TestRibbon(const TestRibbon& arg_testRibbon)
-	:TestRibbon(arg_testRibbon.position, arg_testRibbon.angle)
+TestRibbon::TestRibbon(const TestRibbon& arg_testRibbon, const DirectX::XMFLOAT4& arg_color)
+	:TestRibbon(arg_testRibbon.position, arg_testRibbon.angle, arg_color)
 {
 }
 
@@ -50,7 +50,7 @@ void TestRibbon::Draw()
 {
 }
 
-void TestRibbon::Move(const Vector3 arg_movePos, const float arg_angle)
+void TestRibbon::Move(const Vector3& arg_movePos, const float arg_angle)
 {
 	position = arg_movePos;
 	angle = arg_angle;

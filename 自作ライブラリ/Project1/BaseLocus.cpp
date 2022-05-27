@@ -2,15 +2,16 @@
 #include "ObjectManager.h"
 #include "DrawMode.h"
 
-BaseLocus::BaseLocus(const float arg_angle)
+BaseLocus::BaseLocus(const float arg_angle, const DirectX::XMFLOAT4& arg_color)
 	:angle(arg_angle),
 	 isDraw(true)
 {
+	color = arg_color;
 	lines.clear();
 }
 
 BaseLocus::BaseLocus(const BaseLocus& arg_baseLocus)
-	:BaseLocus(arg_baseLocus.angle)
+	:BaseLocus(arg_baseLocus.angle, arg_baseLocus.color)
 {
 }
 
@@ -23,6 +24,16 @@ BaseLocus::~BaseLocus()
 		{
 			lines[i]->Dead();
 		}
+	}
+}
+
+void BaseLocus::ChangeColor(const Vector4& arg_color)
+{
+	color = arg_color;
+
+	for (auto line : lines)
+	{
+		line->SetColor(color);
 	}
 }
 
