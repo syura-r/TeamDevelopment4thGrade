@@ -15,7 +15,7 @@ int SettingParam::jumpButton = XINPUT_GAMEPAD_A;
 int SettingParam::airSlideButton = XINPUT_GAMEPAD_B;
 int SettingParam::runButton = XINPUT_GAMEPAD_LEFT_SHOULDER;
 int SettingParam::resetButton = XINPUT_GAMEPAD_RIGHT_SHOULDER;
-bool SettingParam::viewCollision = false;
+bool SettingParam::viewCollision = true;
 
 bool SettingParam::onSSAO = false;
 

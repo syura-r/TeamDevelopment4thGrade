@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "Floor.h"
 #include "TestBoss.h"
+#include "Field.h"
 
 
 Play::Play()
@@ -57,7 +58,7 @@ Play::Play()
 	std::vector<Vector3>scales;
 	std::vector<Vector3>rotations;
 	std::vector<Object*>loadObjects;
-	objectManager->Add(new Floor());
+	objectManager->Add(new Field());
 	//for (int i = 0; i < 9; i++)
 	//{
 	//	lightGroup->SetPointLightActive(i, true);

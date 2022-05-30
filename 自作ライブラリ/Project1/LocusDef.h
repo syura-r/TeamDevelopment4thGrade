@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector.h"
+#include "Quaternion.h"
 #include <cstdlib>
 
 enum class LocusType
@@ -62,5 +63,17 @@ public:
 	static Vector3 Dim2XZToDim3(const Vector2& arg_vec2, const float arg_y = 0.0f)
 	{
 		return Vector3(arg_vec2.x, arg_y, arg_vec2.y);
+	}
+
+	static Vector3 ToEuler(const Quaternion& quat)
+	{
+		static Vector3 result = Vector3();
+
+		result.x = asinf(2 * quat.x * quat.w - 2 * quat.y * quat.z);
+		result.y = atan2f(2 * quat.x * quat.z + 2 * quat.y * quat.w, 1.0f - 2 * quat.x * quat.x - 2 * quat.y * quat.y);
+		result.z = atan2f(2 * quat.x * quat.y + 2 * quat.z * quat.w, 1.0f - 2 * quat.x * quat.x - 2 * quat.z * quat.z);
+
+		result *= (180.0f / PI);
+		return result;
 	}
 };
