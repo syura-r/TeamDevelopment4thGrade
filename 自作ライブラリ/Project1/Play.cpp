@@ -41,13 +41,9 @@ Play::Play()
 	objectManager->Add(player);
 	actorManager->AddObject("player", player);
 
-	TestBoss* testBoss = new TestBoss({ 0,0,50 }, 100);
+	/*TestBoss* testBoss = new TestBoss({ 0,0,50 }, 100);
 	objectManager->Add(testBoss);
-	actorManager->AddObject("boss", testBoss);
-	
-
-	/*testStar = new TestStar(Vector3(20, 0, 20), 90);
-	objectManager->Add(testStar);*/
+	actorManager->AddObject("boss", testBoss);*/
 
 	result = std::make_unique<Result>();
 //---------------------------------‰¼ŽÀ‘•------------------------------------------
