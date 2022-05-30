@@ -124,6 +124,12 @@
     <Filter Include="ヘッダー ファイル\PostEffect">
       <UniqueIdentifier>{177cff42-a020-4a91-b952-9a33d19a7c62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject\proto_first">
+      <UniqueIdentifier>{786a0043-1b09-4cf8-a3fa-d26a3f4f3cc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObject\proto_first">
+      <UniqueIdentifier>{ba4bb225-1dc6-477b-b603-4cfc59af8b37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -321,59 +327,59 @@
     <ClCompile Include="LevelEditor.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Floor.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Line.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="TestStar.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseLocus.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="TestRibbon.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="TestTriforce.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="TestBoss.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="HitPointGauge.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>ソース ファイル\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="NormalWaveMeasurer.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="LocusSelecter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="TestTriangle.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="TestPentagon.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="TestHexagram.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
+    <ClCompile Include="BaseLocus.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
     </ClCompile>
     <ClCompile Include="BossMissile.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
     </ClCompile>
     <ClCompile Include="BossRangeAttack.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalWaveMeasurer.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="TestHexagram.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="TestPentagon.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRibbon.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="TestStar.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="TestTriangle.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="TestTriforce.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorManager.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="HitPointGauge.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="LocusSelecter.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="TestBoss.cpp">
+      <Filter>ソース ファイル\GameObject\proto_first</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -545,9 +551,6 @@
     <ClInclude Include="LightCamera.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Matrix4.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -626,59 +629,62 @@
     <ClInclude Include="TitleText.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
-    <ClInclude Include="Floor.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Line.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="LocusDef.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="TestStar.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseLocus.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="TestRibbon.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTriforce.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="TestBoss.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ActorManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="HitPointGauge.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>ヘッダー ファイル\Tool</Filter>
     </ClInclude>
-    <ClInclude Include="NormalWaveMeasurer.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="LocusSelecter.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTriangle.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="TestPentagon.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="TestHexagram.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
+    <ClInclude Include="BaseLocus.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
     </ClInclude>
     <ClInclude Include="BossMissile.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
     </ClInclude>
     <ClInclude Include="BossRangeAttack.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="LocusDef.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalWaveMeasurer.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="TestHexagram.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="TestTriforce.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="TestTriangle.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPentagon.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="TestRibbon.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="TestStar.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
       <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorManager.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="HitPointGauge.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="LocusSelecter.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="TestBoss.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
