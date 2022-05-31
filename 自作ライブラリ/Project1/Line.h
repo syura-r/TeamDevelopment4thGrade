@@ -1,18 +1,16 @@
 #pragma once
 #include "Object.h"
 #include "OBJModel.h"
-
 class Line : public Object
 {
 public:
 
 	Line(const Vector3& arg_startPos, float arg_angle, float arg_length, const DirectX::XMFLOAT4& arg_color, const Vector3& arg_scale);
 	~Line();
-
 	void Initialize()override;
 	void Update()override;
 	void Draw()override;
-
+	void DrawReady()override;
 	//•`‚«‘«‚µ
 	void AddLength(float arg_addSpeed);
 	//}Œ`‚Ìˆê•”‚Æ‚µ‚Ä‚ÌˆÚ“®
@@ -34,5 +32,6 @@ private:
 	float length;
 	//•`‰æ‚·‚é‚©
 	bool isDraw;
+
 };
 

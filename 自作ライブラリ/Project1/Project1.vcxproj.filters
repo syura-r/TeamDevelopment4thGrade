@@ -865,6 +865,12 @@
     <FxCompile Include="Resources\Shader\MigratePS.hlsl">
       <Filter>シェーダファイル\PostEffect</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shader\LocusPS.hlsl">
+      <Filter>シェーダファイル\OBJ</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\FieldPS.hlsl">
+      <Filter>シェーダファイル\OBJ</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\BasicShaderHeader.hlsli">

@@ -8,6 +8,8 @@ class Floor :
 public:
 	Floor();
 	void Update() override;
+	void DrawReady()override;
+	void Draw()override;
 private:
 	std::vector<std::unique_ptr<BoxCollider>> colliders;
 };

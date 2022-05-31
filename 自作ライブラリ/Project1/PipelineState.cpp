@@ -413,6 +413,45 @@ void PipelineState::CreatePipeline(const std::string& keyName, const ShaderType 
 
 		break;
 	}
+	case LOCUS:
+	{
+		CompileShader("BasicVertexShader", vsBlob, errorBlob, VS);
+		CompileShader("LocusPS", psBlob, errorBlob, PS);
+
+		SetVSLayout("POSITION", inputLayout, DXGI_FORMAT_R32G32B32_FLOAT);
+		SetVSLayout("NORMAL", inputLayout, DXGI_FORMAT_R32G32B32_FLOAT);
+		SetVSLayout("TEXCOORD", inputLayout, DXGI_FORMAT_R32G32_FLOAT);
+		gpipeline.RTVFormats[0] = DXGI_FORMAT_R32_FLOAT;//Rのみ32ビットのFLOAT形式
+
+		SetDescriptorConstantBuffer(rootparams, 3, 1, descRangeSRVs);
+
+		rootSignatureDesc.Init_1_0(rootparams.size(), rootparams.data(), 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+		break;
+	}
+	case FIELD:
+	{
+		CompileShader("BasicVertexShader", vsBlob, errorBlob, VS);
+		CompileShader("FieldPS", psBlob, errorBlob, PS);
+
+		SetVSLayout("POSITION", inputLayout, DXGI_FORMAT_R32G32B32_FLOAT);
+		SetVSLayout("NORMAL", inputLayout, DXGI_FORMAT_R32G32B32_FLOAT);
+		SetVSLayout("TEXCOORD", inputLayout, DXGI_FORMAT_R32G32_FLOAT);
+
+		SetDescriptorConstantBuffer(rootparams, 3, 2, descRangeSRVs);
+
+		CD3DX12_STATIC_SAMPLER_DESC samplerDesc2 = samplerDesc;
+		//samplerDesc2.Filter = D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+		//samplerDesc2.ComparisonFunc = D3D12_COMPARISON_FUNC_GREATER;
+		//samplerDesc2.MaxAnisotropy = 1;
+		samplerDesc2.ShaderRegister = 1;
+
+
+		CD3DX12_STATIC_SAMPLER_DESC samplerDescs[2] = { samplerDesc,samplerDesc2 };
+		rootSignatureDesc.Init_1_0(rootparams.size(), rootparams.data(), 2, samplerDescs, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+		break;
+	}
 	case SkyDome:
 	{
 		CompileShader("SkyVS", vsBlob, errorBlob, VS);

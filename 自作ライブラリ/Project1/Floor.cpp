@@ -53,3 +53,14 @@ void Floor::Update()
 		it->Update();
 	}
 }
+
+void Floor::DrawReady()
+{
+	pipelineName = "Field";
+}
+
+void Floor::Draw()
+{
+	DirectXLib::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(4, Texture::GetGpuDescHandleSRV("lineMap" + std::to_string(bbIndex)));  //ヒープの先頭が定数バッファ
+	Object::Draw();
+}

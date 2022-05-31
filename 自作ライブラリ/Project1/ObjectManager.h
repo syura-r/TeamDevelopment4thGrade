@@ -3,10 +3,13 @@
 #include <unordered_map>
 
 class Object;
+class TextureResource;
 class ObjectManager
 {
 public:
 	static ObjectManager* GetInstance();
+	void CreateLineMap();
+
 	void Add(Object* object = nullptr, bool preDraw = true);
 	void AddExecute(Object* object = nullptr, bool preDraw = true);
 	void Initialize();
@@ -29,5 +32,7 @@ private:
 	std::unordered_map<bool, std::unordered_map<std::string, std::vector<Object*>>>drawObjects;
 
 	std::unordered_map<bool, std::vector<Object*>> addScheduledObjects;
+	std::unique_ptr <TextureResource> lineMap = nullptr;
+
 };
 

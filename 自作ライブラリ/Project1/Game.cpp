@@ -145,16 +145,19 @@ void Game::CreatePipeline()
 		PipelineState::CreatePipeline("CollisionSphere", ViewCollisionSphere);
 		break;
 	case 5:
-		PipelineState::CreatePipeline("PolygonBreak", PolygonBreak);
+		PipelineState::CreatePipeline("Locus", LOCUS);
+		PipelineState::CreatePipeline("Field", FIELD);
+
+		//PipelineState::CreatePipeline("PolygonBreak", PolygonBreak);
 		break;
 	case 6:
-		PipelineState::CreatePipeline("FBXShadowMap", FBXShadowMap);
+		//PipelineState::CreatePipeline("FBXShadowMap", FBXShadowMap);
 		break;
 	case 7:
 		PipelineState::CreatePipeline("ShadowMap", NormalShadowMap);
 		break;
 	case 8:
-		PipelineState::CreatePipeline("DrawShadowOBJ", DrawShadowOBJ);
+		//PipelineState::CreatePipeline("DrawShadowOBJ", DrawShadowOBJ);
 		break;
 	case 9:
 		break; 
@@ -184,7 +187,7 @@ void Game::LoadFinish()
 
 	CollisionManager::GetInstance()->Initialize(Vector3{ -370.0f,-310.0f,-370.0f }+100, Vector3{ 370.0f,350.0f,370.0f }+100);
 	
-
+	ObjectManager::GetInstance()->CreateLineMap();
 	lightCamera = std::make_unique<LightCamera>();
 	lightCamera->SetDistance(100);
 	lightCamera->SetLightDir({ dir[0],dir[1],dir[2] });

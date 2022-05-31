@@ -49,6 +49,11 @@ void Line::Draw()
 	}
 }
 
+void Line::DrawReady()
+{
+	pipelineName = "Locus";
+}
+
 void Line::AddLength(float arg_addSpeed)
 {
 	length += arg_addSpeed;

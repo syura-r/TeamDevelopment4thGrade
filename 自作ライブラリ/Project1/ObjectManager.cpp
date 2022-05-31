@@ -3,10 +3,16 @@
 #include "Collision.h"
 #include "CollisionManager.h"
 #include "Object.h"
+#include "TextureResource.h"
+
 ObjectManager* ObjectManager::GetInstance()
 {
 	static ObjectManager instance;
     return &instance;
+}
+void ObjectManager::CreateLineMap()
+{
+	lineMap.reset(new TextureResource("lineMap", { 1920,1080 }, DXGI_FORMAT_R32_FLOAT, { 0,0,0,0 }));
 }
 
 void ObjectManager::Add(Object* object, bool preDraw)
@@ -160,12 +166,21 @@ void ObjectManager::PreDraw()
 {
 	for (auto& itr : drawObjects[true])
 	{
+		if (itr.first == "Locus")
+		{
+			lineMap->PreDraw();
+		}
 		//パイプラインごとの配列になっているため配列の先頭時のみパイプラインを設定
 		PipelineState::SetPipeline(itr.first);
 		for (auto& objectItr : itr.second)
 		{
 			objectItr->Draw();
 		}
+		if (itr.first == "Locus")
+		{
+			lineMap->PostDraw();
+		}
+
 	}
 
 }
