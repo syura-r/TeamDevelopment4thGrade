@@ -7,6 +7,8 @@ TestRibbon::TestRibbon(const Vector3& arg_pos, const float arg_angle, const Dire
 	:BaseLocus(arg_angle, arg_color)
 {
 	position = arg_pos;
+	size = 16.0f;
+	weight = 10.0f;
 	if (baseInfo.empty())
 	{
 		PointSetting();
@@ -79,7 +81,7 @@ void TestRibbon::PointSetting()
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	for (int i = 0; i < points.size(); i++)
 	{
-		points[i] *= 16.0f;
+		points[i] *= size;
 	}
 
 	CalcBaseInfo(points, baseInfo);

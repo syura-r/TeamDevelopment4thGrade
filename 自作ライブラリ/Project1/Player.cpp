@@ -15,6 +15,7 @@
 #include "TestBoss.h"
 #include "BossMissile.h"
 #include "BossRangeAttack.h"
+#include "Field.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -309,7 +310,7 @@ void Player::Update()
 		//ˆÚ“®
 		position.x += fallV.m128_f32[0];
 		position.y += fallV.m128_f32[1];
-		position.z += fallV.m128_f32[2];		
+		position.z += fallV.m128_f32[2];
 		
 	}
 	////ƒWƒƒƒ“ƒv“®ì
@@ -1036,6 +1037,12 @@ void Player::DrawingLine()
 					default:
 						break;
 					}
+
+					Field* field = ActorManager::GetInstance()->GetField();
+					if (field)
+					{
+						field->AddInfluence(LocusFieldInfluence{ copyLocus->GetCenterOfGravity(), copyLocus->GetWeight() });
+					}
 					 
 					vecLocuss.push_back(copyLocus);
 					
@@ -1095,6 +1102,12 @@ void Player::DeleteLocuss()
 	}
 	vecLocuss.clear();
 	locusSelecter->Setting(feverQuota);
+
+	Field* field = ActorManager::GetInstance()->GetField();
+	if (field)
+	{
+		field->ResetInfluences();
+	}
 }
 
 void Player::MoveEndDrawing(BaseLocus* arg_locus)

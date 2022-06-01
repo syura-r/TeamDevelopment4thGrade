@@ -3,6 +3,8 @@
 #include "CollisionManager.h"
 #include "OBJLoader.h"
 #include "LocusDef.h"
+#include "ActorManager.h"
+#include "Player.h"
 
 Field::Field()
 	:depthMagnitude(0.0f),
@@ -29,9 +31,7 @@ Field::~Field()
 
 void Field::Initialize()
 {
-	depthMagnitude = 0.0f;
-	tiltDirection = Vector2(0, 0);
-	vecTilt = Vector3();
+	ResetInfluences();
 	CalcTilt();
 }
 
@@ -48,7 +48,7 @@ void Field::DrawReady()
 {
 #ifdef _DEBUG
 	ImGui::Begin("Field");		
-	ImGui::SliderFloat("depthMag", &depthMagnitude, 0, MAX_DEPTH_MAGNITUDE);
+	ImGui::SliderFloat("depthMag", &depthMagnitude, -MAX_DEPTH_MAGNITUDE, MAX_DEPTH_MAGNITUDE);
 	ImGui::SliderFloat2("tiltDirection", &tiltDirection.x, -1.0f, 1.0f);
 	ImGui::Text("vecTilt | x : %f | y : %f | z : %f", vecTilt.x, vecTilt.y, vecTilt.z);
 	ImGui::End();
@@ -57,8 +57,48 @@ void Field::DrawReady()
 
 void Field::CalcTilt()
 {
+	tiltDirection = Vector2();
+
+	Player* player = ActorManager::GetInstance()->GetPlayer();
+	if (player)
+	{
+	}
+
+	for (int i = 0; i < influences.size(); i++)
+	{
+		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(influences[i].pos);
+		posVector = Vector2::Normalize(posVector) * influences[i].weight * GetMultiplyingFactor(Vector3::Length(influences[i].pos)) * -1;
+		tiltDirection += posVector;
+	}
+
+	depthMagnitude = Vector2::Length(tiltDirection);
+	if (depthMagnitude > MAX_DEPTH_MAGNITUDE)
+	{
+		depthMagnitude = MAX_DEPTH_MAGNITUDE;
+	}
+	tiltDirection = Vector2::Normalize(tiltDirection);
+
 	Vector3 tmp = LocusUtility::Dim2XZToDim3(Vector2(tiltDirection.y, -tiltDirection.x));
 	float degreeTilt = depthMagnitude * DEGREE_COEFFICIENT * PI / 180.0f;
 	Quaternion quatTilt = quaternion(tmp, degreeTilt);
 	vecTilt = LocusUtility::ToEuler(quatTilt);
+}
+
+float Field::GetMultiplyingFactor(const float arg_length)
+{
+	return arg_length / 300.0f;
+}
+
+void Field::AddInfluence(const LocusFieldInfluence& arg_inf)
+{
+	influences.push_back(arg_inf);
+}
+
+void Field::ResetInfluences()
+{
+	influences.clear();
+
+	depthMagnitude = 0.0f;
+	tiltDirection = Vector2(0, 0);
+	vecTilt = Vector3();
 }

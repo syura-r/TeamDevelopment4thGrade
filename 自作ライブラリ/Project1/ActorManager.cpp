@@ -1,6 +1,7 @@
 #include "ActorManager.h"
 #include "Player.h"
 #include "TestBoss.h"
+#include "Field.h"
 
 ActorManager* ActorManager::GetInstance()
 {
@@ -51,6 +52,17 @@ TestBoss* ActorManager::GetBoss()
 	{
 		TestBoss* boss = static_cast<TestBoss*>(itr->second);
 		return boss;
+	}
+	return nullptr;
+}
+
+Field* ActorManager::GetField()
+{
+	auto itr = mapGameObject.find("field");
+	if (itr != mapGameObject.end())
+	{
+		Field* field = static_cast<Field*>(itr->second);
+		return field;
 	}
 	return nullptr;
 }
