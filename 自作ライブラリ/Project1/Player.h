@@ -144,8 +144,7 @@ private:
 	TestRibbon* predictRibbon = nullptr;
 	TestTriangle* predictTriangle = nullptr;
 	TestPentagon* predictPentagon = nullptr;
-	TestHexagram* predictHexagram = nullptr;
-	NormalWaveMeasurer* measurer;
+	TestHexagram* predictHexagram = nullptr;	
 
 	LocusSelecter::Button pressedButton;
 
@@ -170,8 +169,6 @@ private:
 	unsigned int feverQuota;
 	const unsigned int maxFeverQuota = 6;
 	Sprite* attackSprite;
-	//çUåÇéûä‘
-	Timer* AttackTimer;
 	//écã@
 	int life;
 	Timer* invincibleTimer;

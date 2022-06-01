@@ -55,8 +55,7 @@ Player::Player()
 	inFeverTimer = new Timer(1200);
 	feverGaugeBaseSprite = new Sprite();
 	feverGaugeValueSprite = new Sprite();
-	attackSprite = new Sprite();
-	measurer = new NormalWaveMeasurer();
+	attackSprite = new Sprite();	
 	invincibleTimer = new Timer(120);
 	for (int i = 0; i < 5; i++)
 	{
@@ -115,8 +114,7 @@ Player::~Player()
 	delete inFeverTimer;
 	delete feverGaugeBaseSprite;
 	delete feverGaugeValueSprite;
-	delete attackSprite;
-	delete measurer;
+	delete attackSprite;	
 	delete locusSelecter;
 	for (auto s : lifeSprites)
 	{
@@ -188,9 +186,7 @@ void Player::Initialize()
 	predictStar->ChangeIsDraw(true);
 	isInFever = false;
 	posFeverGauge = Vector2(250, 800);
-	feverQuota = 3;
-	measurer->Initialize();
-	measurer->Reset();
+	feverQuota = 3;		
 	locusSelecter->Initialize();
 	locusSelecter->Setting(feverQuota);
 	pressedButton = LocusSelecter::Button::BBUTTON;
@@ -261,17 +257,7 @@ void Player::Update()
 
 	//通常時のタイマー
 	if (!isInFever)
-	{
-		measurer->Update();
-		
-		if (measurer->IsTime())
-		{
-			SuspendDrawing();
-
-			Attack();
-			DeleteLocuss();
-			
-		}
+	{		
 	}
 
 	if (!isDrawing)
@@ -375,8 +361,7 @@ void Player::Draw()
 		{
 			attackSprite->DrawSprite("s_LBorRB", Vector2(960, 150), 0.0f, Vector2(1.5f, 1.5f));
 		}
-
-		measurer->Draw();
+		
 		locusSelecter->Draw();
 
 		lifeCharSprite->DrawSprite("s_LIFE", Vector2(1705, 430));
@@ -768,7 +753,7 @@ void Player::MoveCamera()
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 
 	//カメラのリセット処理
-	if ((Input::TriggerKey(DIK_C) || Input::TriggerPadButton(SettingParam::GetResetButton())) && !rotCamera)
+	if ((Input::TriggerKey(DIK_C) /*|| Input::TriggerPadButton(SettingParam::GetResetButton())*/) && !rotCamera)
 	{
 		rotCamera = true;
 		float cosA = direction.Dot(cameraDirectionZ);
@@ -1073,8 +1058,7 @@ void Player::DeleteLocuss()
 			InFever();
 		}
 		else
-		{
-			measurer->Reset();
+		{			
 		}
 	}
 
@@ -1131,10 +1115,8 @@ void Player::CheckIsInFever()
 				feverQuota++;
 			}
 
-			DeleteLocuss();
-			measurer->Reset();
+			DeleteLocuss();			
 
-			
 			isInFever = false;
 		}
 	}
