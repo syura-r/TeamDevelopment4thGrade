@@ -180,7 +180,7 @@ void Player::Initialize()
 	predictStar->ChangeIsDraw(true);	
 	feverQuota = maxFeverQuota;		
 	locusSelecter->Initialize();
-	locusSelecter->Setting(feverQuota);
+	locusSelecter->Setting();
 	pressedButton = LocusSelecter::Button::BBUTTON;
 	invincibleTimer->Reset();
 	life = lifeSprites.size();
@@ -1023,7 +1023,7 @@ void Player::DeleteLocuss()
 		vecLocuss[i] = nullptr;
 	}
 	vecLocuss.clear();
-	locusSelecter->Setting(feverQuota);
+	//locusSelecter->Setting();
 
 	Field* field = ActorManager::GetInstance()->GetField();
 	if (field)

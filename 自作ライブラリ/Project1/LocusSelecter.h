@@ -21,7 +21,7 @@ public:
 	void Update();
 	void Draw();
 
-	void Setting(unsigned int arg_feverQuota);
+	void Setting();
 
 	void SetNextLocus(Button arg_pressedButton);
 
@@ -53,6 +53,7 @@ private:
 	Vector2 bTexPos;
 	Vector2 nextTexPos;
 
+	int locusMax = 6;
 	int randMax = 0;
 	int GetIntRand(int minValue, int maxValue);
 
