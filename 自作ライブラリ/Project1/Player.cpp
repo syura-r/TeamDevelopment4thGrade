@@ -291,38 +291,21 @@ void Player::Update()
 	HitCheckLoci();
 	HitCheckBossAttack();
 
-	////壁ジャンプ処理
-	//WallJump();
-	////エアスライド処理
-	//AirSlide();
-	////二段ジャンプ処理
-	//if (!onGround && !secondJump && !wallJump &&(Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())))
-	//{
-	//	secondJump = true;
-	//	fallV = { 0,secondJumpVYFist,0,0 };
-	//	ParticleEmitter::CreateShock(position);
-	//}
 	//落下処理
-	if (!onGround)
-	{
-		//加速
-		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
-		//移動
-		position.x += fallV.m128_f32[0];
-		position.y += fallV.m128_f32[1];
-		position.z += fallV.m128_f32[2];
-		
-	}
-	////ジャンプ動作
-	//else if ((Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())) &&!jump)
+	//if (!onGround)
 	//{
-	//	//jump = true;
-	//	//onGround = false;
-	//	//fallV = { 0,jumpVYFist,0,0 };
-	//	ParticleEmitter::CreateShock(position);
+	//	//加速
+	//	fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
+	//	//移動
+	//	position.x += fallV.m128_f32[0];
+	//	position.y += fallV.m128_f32[1];
+	//	position.z += fallV.m128_f32[2];
+	//	
 	//}
+	
 	//他のオブジェクトとのヒットチェック
-	CheckHit();
+	//CheckHit();
+	Object::Update();
 
 	if (prePos != position)
 	{
@@ -781,35 +764,35 @@ void Player::CheckHit()
 
 void Player::MoveCamera()
 {
-	/*XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();*/
+	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
+	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 
 	//カメラのリセット処理
-	//if ((Input::TriggerKey(DIK_C) || Input::TriggerPadButton(SettingParam::GetResetButton())) && !rotCamera)
-	//{
-	//	rotCamera = true;
-	//	float cosA = direction.Dot(cameraDirectionZ);
-	//	if (cosA > 1.0f)
-	//		cosA = 1.0f;
-	//	else if (cosA < -1.0f)
-	//		cosA = -1.0f;
-	//	radY = acos(cosA);
-	//	const Vector3 CrossVec = direction.Cross(cameraDirectionZ);
-	//	if (CrossVec.y < 0)
-	//		radY *= -1;
-	//	cameraRotCount = 0;
-	//	//camera->AddPhi(radY);
-	//}
+	if ((Input::TriggerKey(DIK_C) || Input::TriggerPadButton(SettingParam::GetResetButton())) && !rotCamera)
+	{
+		rotCamera = true;
+		float cosA = direction.Dot(cameraDirectionZ);
+		if (cosA > 1.0f)
+			cosA = 1.0f;
+		else if (cosA < -1.0f)
+			cosA = -1.0f;
+		radY = acos(cosA);
+		const Vector3 CrossVec = direction.Cross(cameraDirectionZ);
+		if (CrossVec.y < 0)
+			radY *= -1;
+		cameraRotCount = 0;
+		//camera->AddPhi(radY);
+	}
 	
 	//カメラの回転処理
-	/*if (rotCamera)
+	if (rotCamera)
 	{
 		cameraRotCount++;
 		float rad = radY / RotTime;
 		camera->AddPhi(rad);
 		if (cameraRotCount >= RotTime)
 			rotCamera = false;
-	}*/
+	}
 }
 
 void Player::ResetPerform()
