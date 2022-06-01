@@ -9,7 +9,8 @@
 Field::Field()
 	:depthMagnitude(0.0f),
 	 tiltDirection(Vector2()),
-	 vecTilt(Vector3())
+	 angleTilt(Vector3()),
+	 localYvec(Vector3())
 {
 	Create(OBJLoader::GetModel("floor"));
 	position = { 0,-5,0 };
@@ -38,7 +39,7 @@ void Field::Initialize()
 void Field::Update()
 {
 	CalcTilt();
-	SetRotation(vecTilt);
+	SetRotation(angleTilt);
 
 	Object::Update();
 	collider->Update();
@@ -50,7 +51,8 @@ void Field::DrawReady()
 	ImGui::Begin("Field");		
 	ImGui::SliderFloat("depthMag", &depthMagnitude, -MAX_DEPTH_MAGNITUDE, MAX_DEPTH_MAGNITUDE);
 	ImGui::SliderFloat2("tiltDirection", &tiltDirection.x, -1.0f, 1.0f);
-	ImGui::Text("vecTilt | x : %f | y : %f | z : %f", vecTilt.x, vecTilt.y, vecTilt.z);
+	ImGui::Text("angleTilt | x : %f | y : %f | z : %f", angleTilt.x, angleTilt.y, angleTilt.z);
+	ImGui::Text("localYvec | x : %f | y : %f | z : %f", localYvec.x, localYvec.y, localYvec.z);
 	ImGui::End();
 #endif // _DEBUG
 }
@@ -81,7 +83,11 @@ void Field::CalcTilt()
 	Vector3 tmp = LocusUtility::Dim2XZToDim3(Vector2(tiltDirection.y, -tiltDirection.x));
 	float degreeTilt = depthMagnitude * DEGREE_COEFFICIENT * PI / 180.0f;
 	Quaternion quatTilt = quaternion(tmp, degreeTilt);
-	vecTilt = LocusUtility::ToEuler(quatTilt);
+	angleTilt = LocusUtility::ToEuler(quatTilt);
+
+	//
+	XMMATRIX mat = XMMatrixScaling(scale.x, scale.y, scale.z) * XMMatrixRotationRollPitchYaw(angleTilt.x, angleTilt.y, angleTilt.z);
+	localYvec = { mat.r[1].m128_f32[0], mat.r[1].m128_f32[1] , mat.r[1].m128_f32[2] };
 }
 
 float Field::GetMultiplyingFactor(const float arg_length)
@@ -100,5 +106,11 @@ void Field::ResetInfluences()
 
 	depthMagnitude = 0.0f;
 	tiltDirection = Vector2(0, 0);
-	vecTilt = Vector3();
+	angleTilt = Vector3();
+	localYvec = Vector3();
+}
+
+Vector3 Field::GetAngleTilt() const
+{
+	return angleTilt;
 }

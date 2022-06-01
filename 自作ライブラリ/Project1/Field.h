@@ -18,6 +18,8 @@ public:
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
 
+	Vector3 GetAngleTilt()const;
+
 private:
 	//L‚³
 	const float RADIUS = 45.0f;
@@ -27,7 +29,8 @@ private:
 	const float DEGREE_COEFFICIENT = 5.0f;
 	Vector2 tiltDirection;
 	//‚Ç‚Ì•ûŒü‚ÉŒX‚¢‚Ä‚¢‚é‚©
-	Vector3 vecTilt;
+	Vector3 angleTilt;
+	Vector3 localYvec;
 	//}Œ`‚ÌêŠ‚Æd‚³
 	std::vector<LocusFieldInfluence> influences;
 
