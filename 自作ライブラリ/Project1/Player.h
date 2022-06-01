@@ -35,11 +35,7 @@ public:
 	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }
 	void Reset();
 	bool GetReset() { return reset; }
-
-	//フィーバーかどうか　仮置き
-	bool IsInFever();
-	//ノルマ達成に必要な図形個数
-	const unsigned int GetFeverQuota()const;
+	
 	//残機が残っているか
 	bool IsAlive();
 	
@@ -116,10 +112,7 @@ private:
 	void HitCheckLoci();
 	void HitLoci(Line* arg_line);
 	//攻撃
-	void Attack();
-	//フィーバー時処理
-	void CheckIsInFever();
-	void InFever();
+	void Attack();	
 	//フィールドから落ちない処理
 	void StayInTheField();
 	//ボスの攻撃との当たり判定
@@ -159,13 +152,7 @@ private:
 	//ドローイングし終わった図形
 	std::vector<BaseLocus*> vecLocuss;
 	//線を一時的に保存しておくvector
-	std::vector<Line*> vecDrawingLines;
-	//フィーバー中かどうか
-	bool isInFever;
-	Timer* inFeverTimer;
-	Sprite* feverGaugeBaseSprite;
-	Sprite* feverGaugeValueSprite;
-	Vector2 posFeverGauge;
+	std::vector<Line*> vecDrawingLines;		
 	unsigned int feverQuota;
 	const unsigned int maxFeverQuota = 6;
 	Sprite* attackSprite;

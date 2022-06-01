@@ -51,10 +51,7 @@ Player::Player()
 	predictPentagon = new TestPentagon(Vector3(0, -5, 0), 90, predictColor);
 	predictPentagon->ChangeIsDraw(false);
 	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90, predictColor);
-	predictHexagram->ChangeIsDraw(false);
-	inFeverTimer = new Timer(1200);
-	feverGaugeBaseSprite = new Sprite();
-	feverGaugeValueSprite = new Sprite();
+	predictHexagram->ChangeIsDraw(false);	
 	attackSprite = new Sprite();	
 	invincibleTimer = new Timer(120);
 	for (int i = 0; i < 5; i++)
@@ -110,10 +107,7 @@ Player::Player()
 }
 
 Player::~Player()
-{
-	delete inFeverTimer;
-	delete feverGaugeBaseSprite;
-	delete feverGaugeValueSprite;
+{	
 	delete attackSprite;	
 	delete locusSelecter;
 	for (auto s : lifeSprites)
@@ -183,10 +177,8 @@ void Player::Initialize()
 	}
 	vecLocuss.clear();
 	nowDrawingLocus = predictStar;
-	predictStar->ChangeIsDraw(true);
-	isInFever = false;
-	posFeverGauge = Vector2(250, 800);
-	feverQuota = 3;		
+	predictStar->ChangeIsDraw(true);	
+	feverQuota = maxFeverQuota;		
 	locusSelecter->Initialize();
 	locusSelecter->Setting(feverQuota);
 	pressedButton = LocusSelecter::Button::BBUTTON;
@@ -234,9 +226,7 @@ void Player::Update()
 	
 	locusSelecter->Update();
 
-	SelectLocus();
-
-	CheckIsInFever();
+	SelectLocus();	
 
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && nowDrawingLocus)
 	{
@@ -253,18 +243,13 @@ void Player::Update()
 	
 
 	//カメラのリセット処理
-	MoveCamera();
-
-	//通常時のタイマー
-	if (!isInFever)
-	{		
-	}
+	MoveCamera();	
 
 	if (!isDrawing)
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
 		{
-			if (vecLocuss.size() >= feverQuota)
+			if (!vecLocuss.empty())
 			{
 				Attack();
 				DeleteLocuss();
@@ -342,22 +327,7 @@ void Player::Draw()
 	CustomDraw(true, true);
 	if (!Object3D::GetDrawShadow())
 	{
-		if (isInFever)
-		{
-			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * inFeverTimer->GetRate(TimerPerformance::Down)), Vector4(0.9f, 0.9f, 0.05f, 1.0f), Vector2(0.0f, 1.0f));
-		}
-		else
-		{
-			int val = vecLocuss.size();
-			if (val > feverQuota)
-			{
-				val = feverQuota;
-			}
-			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * (val / (float)feverQuota)), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 1.0f));
-		}
-		feverGaugeBaseSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700), Vector4(0.2f, 0.2f, 0.2f, 1.0f), Vector2(0.0f, 1.0f));
-
-		if (vecLocuss.size() >= feverQuota)
+		if (!vecLocuss.empty())
 		{
 			attackSprite->DrawSprite("s_LBorRB", Vector2(960, 150), 0.0f, Vector2(1.5f, 1.5f));
 		}
@@ -451,8 +421,7 @@ void Player::Move()
 
 	//移動処理
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
-		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft() ||
-		(isInFever && isDrawing))
+		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 	{
 		if (onGround)
 		{
@@ -530,11 +499,11 @@ void Player::Move()
 			}
 
 			//フィーバー時挙動試し
-			if (isInFever)
+			/*if (isInFever)
 			{
 				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 				inputAccuracy = 30.0f;
-			}
+			}*/
 
 			moveDirection.Normalize();
 		}
@@ -948,15 +917,11 @@ void Player::DrawingLine()
 	if (pNowDrawingLine != nullptr)
 	{
 		//ボタンを押しているかつドローイング中は線を伸ばす
-		if ((Input::CheckPadButton(XINPUT_GAMEPAD_A) || isInFever) && isDrawing)
+		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && isDrawing)
 		{	
 			if (isExtendLine)
-			{	
-				if (isInFever)
-				{
-					pNowDrawingLine->AddLength(speed * inputAccuracy);
-				}
-				else if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
+			{				
+				if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
 					Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 				{
 					pNowDrawingLine->AddLength(speed * inputAccuracy);
@@ -1050,17 +1015,7 @@ void Player::SuspendDrawing()
 
 void Player::DeleteLocuss()
 {
-	auto end = vecLocuss.size();
-	if (!isInFever)
-	{
-		if (end >= feverQuota)
-		{
-			InFever();
-		}
-		else
-		{			
-		}
-	}
+	auto end = vecLocuss.size();	
 
 	for (int i = 0; i < end; i++)
 	{
@@ -1093,39 +1048,6 @@ void Player::Attack()
 	{
 		boss->Damage(value);
 	}	
-}
-
-void Player::CheckIsInFever()
-{
-	if (!isInFever)
-	{
-		return;
-	}
-
-	inFeverTimer->Update();
-
-	if (inFeverTimer->IsTime())
-	{
-		if (!isDrawing)
-		{
-			Attack();
-
-			if (feverQuota < maxFeverQuota)
-			{
-				feverQuota++;
-			}
-
-			DeleteLocuss();			
-
-			isInFever = false;
-		}
-	}
-}
-
-void Player::InFever()
-{
-	isInFever = true;
-	inFeverTimer->Reset();
 }
 
 void Player::StayInTheField()
@@ -1329,15 +1251,4 @@ void Player::HitLoci(Line* arg_line)
 	{
 		SuspendDrawing();
 	}
-}
-
-bool Player::IsInFever()
-{
-	//return isDrawing && Input::CheckPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) && Input::CheckPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER);
-	return isInFever;
-}
-
-const unsigned int Player::GetFeverQuota() const
-{
-	return feverQuota;
 }
