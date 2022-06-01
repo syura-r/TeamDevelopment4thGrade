@@ -91,14 +91,14 @@ void TestStar::PointSetting()
 	//図形を構成する座標　終点まで
 	std::vector<Vector3> points;
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
-	points.push_back(Vector3(1.8090f, 0.0f, 0.5878f));
-	points.push_back(Vector3(0.6910f, 0.0f, -0.9511f));
-	points.push_back(Vector3(0.6910f, 0.0f, 0.9511f));
-	points.push_back(Vector3(1.8090f, 0.0f, -0.5878f));
+	points.push_back(Vector3(0.9045f, 0.0f, 0.2939f));
+	points.push_back(Vector3(0.3455f, 0.0f, -0.4756f));
+	points.push_back(Vector3(0.3455f, 0.0f, 0.4756f));
+	points.push_back(Vector3(0.9045f, 0.0f, -0.2939f));
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	for (int i = 0; i < points.size(); i++)
 	{
-		points[i] *= 10.0f;
+		points[i] *= 20.0f;
 	}
 
 	CalcBaseInfo(points, baseInfo);
