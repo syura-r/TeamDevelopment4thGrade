@@ -38,6 +38,8 @@ public:
 	
 	//残機が残っているか
 	bool IsAlive();
+
+	float GetWeight() { return weight; }
 	
 private:
 	struct ConstBuffData
@@ -162,6 +164,9 @@ private:
 	std::vector<Sprite*> lifeSprites;
 	Sprite* lifeCharSprite;
 	Sprite* gameOverSprite;
+
+	//プレイヤーの重さ　テキトーに初期値　1
+	float weight = 1;
 
 	//フィールドの広さ
 	const Vector2 fieldLowerLimit = Vector2(-45, -45);
