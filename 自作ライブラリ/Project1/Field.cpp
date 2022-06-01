@@ -84,9 +84,9 @@ void Field::CalcTilt()
 	float degreeTilt = depthMagnitude * DEGREE_COEFFICIENT * PI / 180.0f;
 	Quaternion quatTilt = quaternion(tmp, degreeTilt);
 	angleTilt = LocusUtility::ToEuler(quatTilt);
-
+	
 	//
-	XMMATRIX mat = XMMatrixScaling(scale.x, scale.y, scale.z) * XMMatrixRotationRollPitchYaw(angleTilt.x, angleTilt.y, angleTilt.z);
+	XMMATRIX mat = XMMatrixScaling(scale.x, scale.y, scale.z) * XMMatrixRotationRollPitchYaw(XMConvertToRadians(angleTilt.x), XMConvertToRadians(angleTilt.y), XMConvertToRadians(angleTilt.z));
 	localYvec = { mat.r[1].m128_f32[0], mat.r[1].m128_f32[1] , mat.r[1].m128_f32[2] };
 }
 
