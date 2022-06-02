@@ -425,8 +425,10 @@ void Player::Move()
 		//ŠŠ‚è—Ž‚¿‚éˆ—
 		float fallSpeed = 0.05f;
 		Field* field = ActorManager::GetInstance()->GetField();
-
-		position += field->GetTilt() * fallSpeed;
+		
+		virtualityPlanePosition += field->GetTilt() * fallSpeed;
+		StayInTheField();
+		position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), StartPos);
 	   
 		speed = walkSpeed;
 	}
