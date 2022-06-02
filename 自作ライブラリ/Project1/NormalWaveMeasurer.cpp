@@ -34,7 +34,7 @@ void NormalWaveMeasurer::Draw()
 {
 	XMFLOAT2 basepos = XMFLOAT2(100, 800);
 	
-	if (!ActorManager::GetInstance()->GetPlayer()->IsInFever())
+	if (/*!ActorManager::GetInstance()->GetPlayer()->IsInFever()*/false)
 	{
 		int timeDigit = nowSec / 10 + 1;
 		if (timeDigit > 2)
@@ -68,7 +68,7 @@ void NormalWaveMeasurer::Reset()
 	int quota;
 	if (ActorManager::GetInstance()->GetPlayer())
 	{
-		quota = ActorManager::GetInstance()->GetPlayer()->GetFeverQuota();
+		quota = 3/*ActorManager::GetInstance()->GetPlayer()->GetFeverQuota()*/;
 	}
 	else
 	{

@@ -6,6 +6,7 @@
 
 class Player;
 class TestBoss;
+class Field;
 
 class ActorManager
 {
@@ -21,6 +22,7 @@ public:
 
 	Player* GetPlayer();
 	TestBoss* GetBoss();
+	Field* GetField();
 
 private:
 	std::unordered_map<std::string, Object*> mapGameObject;

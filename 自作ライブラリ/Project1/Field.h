@@ -2,8 +2,9 @@
 #include "Object.h"
 #include "BoxCollider.h"
 #include "Quaternion.h"
+#include "LocusDef.h"
 
-class Field : public virtual Object
+class Field : public Object
 {
 public:
 	Field();
@@ -12,6 +13,12 @@ public:
 	void Initialize()override;
 	void Update()override;
 	void DrawReady()override;
+
+	//}Œ`Š®¬‚É‚æ‚Á‚ÄŒX‚­‚Æ‚«
+	void AddInfluence(const LocusFieldInfluence& arg_inf);
+	void ResetInfluences();
+
+	Vector3 GetAngleTilt()const;
 
 private:
 	//L‚³
@@ -22,8 +29,12 @@ private:
 	const float DEGREE_COEFFICIENT = 5.0f;
 	Vector2 tiltDirection;
 	//‚Ç‚Ì•ûŒü‚ÉŒX‚¢‚Ä‚¢‚é‚©
-	Vector3 vecTilt;
+	Vector3 angleTilt;
+	Vector3 localYvec;
+	//}Œ`‚ÌêŠ‚Æd‚³
+	std::vector<LocusFieldInfluence> influences;
 
 	//ŒX‚«ŒvZ
 	void CalcTilt();
+	float GetMultiplyingFactor(const float arg_length);
 };

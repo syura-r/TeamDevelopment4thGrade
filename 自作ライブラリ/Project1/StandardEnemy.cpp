@@ -191,7 +191,7 @@ bool StandardEnemy::HitCheckLoci()
 {
 	static const float radius = 1.0f;
 
-	std::vector<BaseLocus*> vecLocuss=
+	std::vector<BaseLocus*> vecLocuss = ActorManager::GetInstance()->GetPlayer()->GetVecLocuss();
 
 	for (auto locus : vecLocuss)
 	{

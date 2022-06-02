@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Timer.h"
+#include "FBXModel.h"
 
 enum class EnemyState
 {
@@ -69,5 +70,5 @@ private:
     // ‘¬“x’²®—p
     float speed = 1.0f;
     // “¥‚ñ’£‚èó‘Ô‚©
-    bool 
+    bool isStayField;
 };

@@ -7,6 +7,8 @@ TestTriforce::TestTriforce(const Vector3& arg_pos, const float arg_angle, const 
 	:BaseLocus(arg_angle, arg_color)
 {
 	position = arg_pos;
+	size = 14.0f;
+	weight = 10.0f;
 	if (baseInfo.empty())
 	{
 		PointSetting();
@@ -91,16 +93,16 @@ void TestTriforce::PointSetting()
 	//図形を構成する座標　終点まで
 	std::vector<Vector3> points;
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
-	points.push_back(Vector3(3.464f, 0.0f, 2.0f));
-	points.push_back(Vector3(3.464f, 0.0f, -2.0f));
+	points.push_back(Vector3(0.4948f, 0.0f, 0.2857f));
+	points.push_back(Vector3(0.4948f, 0.0f, -0.2857f));
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
-	points.push_back(Vector3(0.0f, 0.0f, 4.0f));
-	points.push_back(Vector3(6.928f, 0.0f, 0.0f));
-	points.push_back(Vector3(0.0f, 0.0f, -4.0f));
+	points.push_back(Vector3(0.0f, 0.0f, 0.5714f));
+	points.push_back(Vector3(0.9897f, 0.0f, 0.0f));
+	points.push_back(Vector3(0.0f, 0.0f, -0.5714f));
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));	
 	for (int i = 0; i < points.size(); i++)
 	{
-		points[i] *= 2.0f;
+		points[i] *= size;
 	}
 
 	CalcBaseInfo(points, baseInfo);

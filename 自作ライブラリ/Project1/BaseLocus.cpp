@@ -66,6 +66,11 @@ void BaseLocus::ChangeIsDraw(const bool arg_isDraw)
 	}
 }
 
+float BaseLocus::GetWeight() const
+{
+	return weight;
+}
+
 void BaseLocus::CalcBaseInfo(const std::vector<Vector3>& arg_points, std::vector<LocusPointInfo>& arg_infoList)
 {
 	//ÉèÅ[ÉãÉhXé≤Ç∆ÇÃÇ»Ç∑äpÇÃåvéZ
@@ -98,4 +103,11 @@ const Vector3 BaseLocus::CalcPointTransform(const DirectX::XMVECTOR& arg_point, 
 	XMMATRIX posMat = XMMATRIX(arg_point, XMVECTOR(), XMVECTOR(), XMVECTOR());
 	posMat *= arg_rotMat;
 	return Vector3(posMat.r[0].m128_f32[0], posMat.r[0].m128_f32[1], posMat.r[0].m128_f32[2]);
+}
+
+const Vector3 BaseLocus::GetCenterOfGravity()
+{
+	static const DirectX::XMVECTOR tmpCenter{ 0.5f, 0.0f, 0.0f, 0.0f };
+	Vector3 rotatedPos = CalcPointTransform(tmpCenter, XMMatrixRotationY(XMConvertToRadians(angle)));
+	return position + rotatedPos * size;
 }

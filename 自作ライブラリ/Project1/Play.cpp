@@ -64,7 +64,11 @@ Play::Play()
 	std::vector<Vector3>scales;
 	std::vector<Vector3>rotations;
 	std::vector<Object*>loadObjects;
-	objectManager->Add(new Field());
+
+	Field* field = new Field();
+	objectManager->Add(field);
+	actorManager->AddObject("field", field);
+
 	//for (int i = 0; i < 9; i++)
 	//{
 	//	lightGroup->SetPointLightActive(i, true);

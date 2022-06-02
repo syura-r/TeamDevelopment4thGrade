@@ -24,6 +24,13 @@ struct LocusPointInfo
 	float length = 0;
 };
 
+//ŒX‚«‚ÉŽg‚¤
+struct LocusFieldInfluence
+{
+	Vector3 pos;
+	float weight;
+};
+
 #define PI 3.14159265
 
 class LocusUtility

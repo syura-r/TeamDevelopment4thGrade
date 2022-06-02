@@ -7,6 +7,8 @@ TestRibbon::TestRibbon(const Vector3& arg_pos, const float arg_angle, const Dire
 	:BaseLocus(arg_angle, arg_color)
 {
 	position = arg_pos;
+	size = 16.0f;
+	weight = 10.0f;
 	if (baseInfo.empty())
 	{
 		PointSetting();
@@ -73,13 +75,13 @@ void TestRibbon::PointSetting()
 	//図形を構成する座標　終点まで
 	std::vector<Vector3> points;
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
-	points.push_back(Vector3(2.0f, 0.0f, 3.4640f));
-	points.push_back(Vector3(6.0f, 0.0f, -3.4640f));
-	points.push_back(Vector3(8.0f, 0.0f, 0.0f));	
+	points.push_back(Vector3(0.25f, 0.0f, 0.4330f));
+	points.push_back(Vector3(0.75, 0.0f, -0.4330f));
+	points.push_back(Vector3(1.0f, 0.0f, 0.0f));	
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	for (int i = 0; i < points.size(); i++)
 	{
-		points[i] *= 2.0f;
+		points[i] *= size;
 	}
 
 	CalcBaseInfo(points, baseInfo);
