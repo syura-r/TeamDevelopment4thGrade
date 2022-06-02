@@ -43,6 +43,9 @@ public:
 		return pipelineName;
 	}
 
+	void SetVelocity(const Vector3& arg_velocity) { velocity = arg_velocity; }
+	inline Vector3 GetVelocity() { return velocity; }
+
 	const XMMATRIX& GetMatWorld()
 	{
 		return object->GetMatWorld();
@@ -64,6 +67,8 @@ public:
 	inline const XMFLOAT4& GetColor() { return color; }
 	inline const bool IsDead() { return dead; }
 	inline const void Dead() { dead = true; }
+
+	
 protected:
 	std::unique_ptr<Object3D> object;
 	Vector3 position = { 0,0,0 };

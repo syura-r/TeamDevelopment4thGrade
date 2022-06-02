@@ -174,7 +174,7 @@ void Player::Initialize()
 	invincibleTimer->Reset();	
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
-	weight = 5;
+	weight = 10;
 }
 
 void Player::Update()
@@ -217,25 +217,36 @@ void Player::Update()
 	
 	locusSelecter->Update();
 
-	SelectLocus();	
-
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && nowDrawingLocus)
-	{
-		isDrawing = true;
-		//線の生成
-		CreateLine();
-	}
-
 	//移動処理
 	Move();
-	
-	//ドローイングの処理
-	DrawingLine();
-	
 
 	//カメラのリセット処理
-	MoveCamera();	
+	MoveCamera();
 
+	if (isBlow)
+	{
+		blowTime--;
+		if (blowTime <= 0)
+		{
+			isBlow = false;
+		}
+	}
+	else
+	{
+		SelectLocus();
+
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && nowDrawingLocus)
+		{
+			isDrawing = true;
+			//線の生成
+			CreateLine();
+		}
+
+		//ドローイングの処理
+		DrawingLine();
+	}
+	
+	
 	if (!isDrawing)
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
@@ -252,6 +263,7 @@ void Player::Update()
 	//当たり判定系
 	HitCheckLoci();
 	HitCheckBossAttack();
+	HitCheckEnemy();
 
 	//落下処理
 	//if (!onGround)
@@ -395,8 +407,6 @@ void Player::Move()
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 
-
-	
 	//走りと歩きの切り替え処理
 	
 	if (isDrawing)
@@ -416,11 +426,9 @@ void Player::Move()
 		speed = walkSpeed;
 	}
 
-
-
 	//移動処理
-	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
-		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+	if ((Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
+		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()) || isBlow)
 	{
 		if (onGround)
 		{
@@ -463,7 +471,6 @@ void Player::Move()
 				moveDirection = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
 			}
 			inputAccuracy = 1;
-			moveDirection.Normalize();
 		}
 		else
 		{
@@ -504,8 +511,19 @@ void Player::Move()
 				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 				inputAccuracy = 30.0f;
 			}*/
+		}
+		
 
+		if (isBlow)
+		{
+			moveDirection = velocity;
+			inputAccuracy = 1;
+			speed = 0.5;
+		}
+		else
+		{
 			moveDirection.Normalize();
+			velocity = moveDirection;
 		}
 		
 
@@ -1182,45 +1200,58 @@ void Player::Damaged()
 
 void Player::HitCheckEnemy()
 {
+	if (isBlow) { return; }
 	StandardEnemy* standardEnemy = ActorManager::GetInstance()->GetStandardEnemy();
 	if (!standardEnemy)
 	{
 		return;
 	}
 
-	
-	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(standardEnemy->GetPosition() - virtualityPlanePosition));
+	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(standardEnemy->GetVirtualityPlanePosition() - virtualityPlanePosition));
 	if (length <= 2.0f)
 	{
-		
+		HitEnemy();
 	}
 
-	
 }
 
 void Player::HitEnemy()
 {
-	StandardEnemy* standardEnemy = ActorManager::GetInstance()->GetStandardEnemy();
 	
-	Vector3 enemyPos = standardEnemy->GetPosition();
-	Vector3 enemyVel = standardEnemy->GetVelocity();
-	float enemyWeight = standardEnemy->GetWeight();
+	static const float weightCoefficient = 0.5;
+	//汎用化
+	StandardEnemy* standardEnemy = ActorManager::GetInstance()->GetStandardEnemy();
+	standardEnemy->IsBlow();
+	isBlow = true;
+	
+	blowTime = 60;
+	standardEnemy->SetBlowTime(60);
 
-	float totalWeight = weight + enemyWeight;
+	Vector3 enemyPos = standardEnemy->GetVirtualityPlanePosition();
+	Vector3 enemyVel = standardEnemy->GetVelocity();
+	float enemyWeight = standardEnemy->GetWeight() * weightCoefficient;
+
+	float totalWeight = weight * weightCoefficient + enemyWeight;
 	float refRate = (1 + 1 * 1); //反発率をプレイヤー、エネミーそれぞれ持たせる
-	Vector3 c = position - enemyPos;
+	Vector3 c = virtualityPlanePosition - enemyPos;
 	c.Normalize();
+
 	float dot = Vector3::Dot((velocity - enemyVel), c);
 	Vector3 constVec = refRate * dot / totalWeight * c;
 
 	//衝突後速度ベクトル
 	Vector3  playerAfterVel = -enemyWeight * constVec + velocity;
-	Vector3  enemyAfterVel = weight * constVec + enemyVel;
+	Vector3  enemyAfterVel = weight * weightCoefficient * constVec + enemyVel;
 
-	int time = 60; //プレイヤー・エネミーそれぞれ操作が効かない時間
-	//衝突後位置
-	Vector3 playerAfterPos = position + time * playerAfterVel;
-	Vector3 enemyAfterPos = enemyPos + time * enemyAfterVel;
+
+	velocity = playerAfterVel.Normalize();
+	standardEnemy->SetVelocity(enemyAfterVel.Normalize());
+
+	SuspendDrawing();
+
+	////衝突後位置
+	//Vector3 playerAfterPos = position + blowTime * playerAfterVel;
+	//Vector3 enemyAfterPos = enemyPos + standardEnemy->GetBlowTime() * enemyAfterVel;
 
 
 }

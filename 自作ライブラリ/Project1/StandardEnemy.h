@@ -26,16 +26,18 @@ public:
     void Draw()override;
     void DrawReady() override;
 
-    
+    void IsBlow();
 
     // getter
     float GetWeight() { return weight; }
     Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
-
-    Vector3 GetVelocity() { return velocity; }
+    int GetBlowTime() { return blowTime; }
 
     // setter
     void SetWeight(float arg_weight) { weight = arg_weight; }
+    void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
+
+
 
 
 private:
@@ -89,4 +91,9 @@ private:
     bool isStraddle = false;
     // ëÄçÏÇ∑ÇÈÇ©
     bool isControl = false;
+    // êÅÇ¡îÚÇ—íÜ
+    bool isBlow = false;
+    // êÅÇ¡îÚÇ—éûä‘
+    int blowTime = 60;
+
 };

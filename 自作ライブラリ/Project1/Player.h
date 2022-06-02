@@ -169,6 +169,10 @@ private:
 
 	//プレイヤーの重さ
 	float weight;
+	//吹っ飛び中
+	bool isBlow = false;
+	// 吹っ飛び時間
+	int blowTime = 60;
 
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;

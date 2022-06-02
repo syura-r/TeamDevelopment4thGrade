@@ -89,59 +89,75 @@ void StandardEnemy::Update()
 		DebugControl();
 	}
 
-	// 行動パターンの選択
 	if (HitCheckLoci())
 	{
 		state = EnemyState::Straddle;
 	}
-	//if (/*タックルが終了して何にも当たらなかったら*/)
-	//{
-	//	state = EnemyState::CoolAfterRushAttack;
-	//}
-	//if (/*プレイヤーがタックルの射程に入ったら*/)
-	//{
-	//	state = EnemyState::RushAttack;
-	//}
-	if (actionTimer->IsTime())
+
+	if (isBlow)
 	{
-		state = EnemyState::RandomMove;
+		virtualityPlanePosition += velocity * speed;
+		StayInTheField();
+		blowTime--;
+		if (blowTime <= 0)
+		{
+			isBlow = false;
+		}
 	}
-	//if (/*何もなく時間経過で*/)
-	//{
-	//	state = EnemyState::Wait;
-	//}
-
-
-	// 決まったパターンによって分岐
-	switch (state)
+	else
 	{
-	case EnemyState::Wait:						// 待機
+		// 行動パターンの選択
+		
+		//if (/*タックルが終了して何にも当たらなかったら*/)
+		//{
+		//	state = EnemyState::CoolAfterRushAttack;
+		//}
+		//if (/*プレイヤーがタックルの射程に入ったら*/)
+		//{
+		//	state = EnemyState::RushAttack;
+		//}
+		if (actionTimer->IsTime())
+		{
+			state = EnemyState::RandomMove;
+		}
+		//if (/*何もなく時間経過で*/)
+		//{
+		//	state = EnemyState::Wait;
+		//}
 
-		break;
 
-	case EnemyState::RandomMove:				// ランダム移動
-		Move();
+		// 決まったパターンによって分岐
+		switch (state)
+		{
+		case EnemyState::Wait:						// 待機
 
-		break;
+			break;
 
-	case EnemyState::RushAttack:				// タックル
-		RushAttack();
+		case EnemyState::RandomMove:				// ランダム移動
+			Move();
 
-		break;
+			break;
 
-	case EnemyState::CoolAfterRushAttack:		// 後隙
-		// タックル後の後隙
+		case EnemyState::RushAttack:				// タックル
+			RushAttack();
 
-		break;
+			break;
 
-	case EnemyState::Straddle:					// 踏ん張り
-		Straddle();
+		case EnemyState::CoolAfterRushAttack:		// 後隙
+			// タックル後の後隙
 
-		break;
+			break;
 
-	default:
-		break;
+		case EnemyState::Straddle:					// 踏ん張り
+			Straddle();
+
+			break;
+
+		default:
+			break;
+		}
 	}
+	
 
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 
@@ -162,6 +178,11 @@ void StandardEnemy::Draw()
 void StandardEnemy::DrawReady()
 {
 	pipelineName = "FBX";
+}
+
+void StandardEnemy::IsBlow()
+{
+	isBlow = true;
 }
 
 
@@ -320,6 +341,7 @@ void StandardEnemy::StayInTheField()
 
 void StandardEnemy::DebugControl()
 {
+	if (isBlow) { return; }
 	velocity = { 0,0,0 };
 
 	if (Input::DownKey(DIK_J))
