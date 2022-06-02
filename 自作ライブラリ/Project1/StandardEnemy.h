@@ -26,12 +26,17 @@ public:
     void Draw()override;
     void DrawReady() override;
 
+    
+
     // getter
     float GetWeight() { return weight; }
     Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
 
+    Vector3 GetVelocity() { return velocity; }
+
     // setter
     void SetWeight(float arg_weight) { weight = arg_weight; }
+
 
 private:
     // ‘Ò‹@

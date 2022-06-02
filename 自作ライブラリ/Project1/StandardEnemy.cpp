@@ -164,6 +164,8 @@ void StandardEnemy::DrawReady()
 	pipelineName = "FBX";
 }
 
+
+
 void StandardEnemy::Move()
 {
 	if (isControl)
