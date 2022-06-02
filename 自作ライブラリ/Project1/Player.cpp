@@ -185,6 +185,7 @@ void Player::Initialize()
 	invincibleTimer->Reset();
 	life = lifeSprites.size();
 	virtualityPlanePosition = position;
+	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 5;
 }
 
@@ -408,6 +409,7 @@ void Player::Reset()
 void Player::Move()
 {
 	prePos = position;
+	preVirtualityPlanePosition = virtualityPlanePosition;
 	//カメラのビュー行列の逆行列を計算
 	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
@@ -426,7 +428,7 @@ void Player::Move()
 		//滑り落ちる処理
 		float fallSpeed = 0.05f;
 		Field* field = ActorManager::GetInstance()->GetField();
-		
+				
 		virtualityPlanePosition += field->GetTilt() * fallSpeed;
 		StayInTheField();
 		position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), StartPos);
@@ -992,7 +994,7 @@ void Player::DrawingLine()
 					{
 						field->AddInfluence(LocusFieldInfluence{ copyLocus->GetCenterOfGravity(), copyLocus->GetWeight() });
 					}
-					weight += 5;
+					weight += 8;
 					 
 					vecLocuss.push_back(copyLocus);
 					
@@ -1053,9 +1055,10 @@ void Player::DeleteLocuss()
 void Player::MoveEndDrawing(BaseLocus* arg_locus)
 {
 	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-	position = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetEndPos();
-	position += vec * 2.0f;
+	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
+	virtualityPlanePosition += vec * 2.0f;
 	StayInTheField();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), StartPos);
 }
 
 void Player::Attack()
@@ -1222,6 +1225,11 @@ bool Player::IsAlive()
 	return life > 0;
 }
 
+float Dot3p(const Vector2& p1, const Vector2& p2, const Vector2& p3)
+{
+	return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+}
+
 void Player::HitCheckLoci()
 {
 	static const float radius = 1.0f;
@@ -1241,6 +1249,7 @@ void Player::HitCheckLoci()
 			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos() - line->GetVirtualityPlaneStartPos());
 			Vector2 normalAB = Vector2::Normalize(AB);
 
+			//今当たっているか
 			float cross = Vector2::Cross(AO, normalAB);
 			if (fabsf(cross) > radius)
 			{
@@ -1251,9 +1260,22 @@ void Player::HitCheckLoci()
 			if (multiDot <= 0.0f)
 			{
 				HitLoci(line);
+				continue;
 			}
 
 			if (Vector2::Length(AO) < radius || Vector2::Length(BO) < radius)
+			{
+				HitLoci(line);
+				continue;
+			}
+
+			//通り過ぎたか
+			Vector2 start = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneStartPos());
+			Vector2 end = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos());
+			Vector2 pos = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition);
+			Vector2 pre = LocusUtility::Dim3ToDim2XZ(preVirtualityPlanePosition);
+
+			if (Dot3p(start, end, pos) * Dot3p(start, end, pre) < 0.0f && Dot3p(pos, pre, start) * Dot3p(pos, pre, end) < 0.0f)
 			{
 				HitLoci(line);
 			}
@@ -1264,6 +1286,7 @@ void Player::HitCheckLoci()
 void Player::HitLoci(Line* arg_line)
 {
 	position = prePos;
+	virtualityPlanePosition = preVirtualityPlanePosition;
 
 	if (isDrawing)
 	{

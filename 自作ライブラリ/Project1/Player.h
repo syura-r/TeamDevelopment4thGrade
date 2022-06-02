@@ -173,6 +173,7 @@ private:
 
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;
+	Vector3 preVirtualityPlanePosition;
 
 	//フィールドの広さ
 	const Vector2 fieldLowerLimit = Vector2(-45, -45);
