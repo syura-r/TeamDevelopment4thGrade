@@ -3,6 +3,7 @@
 
 class FBXModel;
 class Timer;
+class Line;
 
 enum class EnemyState
 {
@@ -46,6 +47,7 @@ private:
     void HitCheck();
     // 図形との判定
     bool HitCheckLoci();
+    void HitLoci(Line* arg_line);
     // フィールド上に居るか
     bool IsOnField();
     void StayInTheField();
@@ -62,8 +64,11 @@ private:
     Timer* actionTimer = nullptr;
     Timer* walkingTimer = nullptr;
 
+    Vector3 prePos;
+
     //平面のままのposition
     Vector3 virtualityPlanePosition;
+    Vector3 preVirtualityPlanePosition;
 
     // 初期位置
     Vector3 initPos;

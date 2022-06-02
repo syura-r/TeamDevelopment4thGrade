@@ -1225,16 +1225,11 @@ bool Player::IsAlive()
 	return life > 0;
 }
 
-float Dot3p(const Vector2& p1, const Vector2& p2, const Vector2& p3)
-{
-	return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
-}
-
 void Player::HitCheckLoci()
 {
 	static const float radius = 1.0f;
 
-	if (position == prePos)
+	if (virtualityPlanePosition == preVirtualityPlanePosition)
 	{
 		return;
 	}
@@ -1275,7 +1270,8 @@ void Player::HitCheckLoci()
 			Vector2 pos = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition);
 			Vector2 pre = LocusUtility::Dim3ToDim2XZ(preVirtualityPlanePosition);
 
-			if (Dot3p(start, end, pos) * Dot3p(start, end, pre) < 0.0f && Dot3p(pos, pre, start) * Dot3p(pos, pre, end) < 0.0f)
+			if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
+				LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 			{
 				HitLoci(line);
 			}

@@ -47,6 +47,7 @@ void StandardEnemy::Initialize()
 {
 	object->Initialize();
 	position = initPos;
+	prePos = position;
 	scale = { 1,1,1 };
 	rotation = { 0,0,0 };
 	velocity = { 0,0,0 };
@@ -57,6 +58,7 @@ void StandardEnemy::Initialize()
 	walkingTimer->Initialize();
 
 	virtualityPlanePosition = position;
+	preVirtualityPlanePosition = virtualityPlanePosition;
 
 	weight = initWeight;
 	state = EnemyState::Wait;
@@ -72,6 +74,14 @@ void StandardEnemy::Update()
 	myModel->PlayAnimation("stand", true, 1, false);
 	actionTimer->Update();
 	walkingTimer->Update();
+	prePos = position;
+	preVirtualityPlanePosition = virtualityPlanePosition;
+
+	//滑り落ちる処理
+	float fallSpeed = 0.05f;
+	Field* field = ActorManager::GetInstance()->GetField();
+	virtualityPlanePosition += field->GetTilt() * fallSpeed;
+	StayInTheField();
 
 	// 自分で操作したい時用(imguiで選択)
 	if (isControl)
@@ -133,6 +143,8 @@ void StandardEnemy::Update()
 		break;
 	}
 
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
+
 	object->Update();
 }
 
@@ -177,7 +189,6 @@ void StandardEnemy::Move()
 
 	virtualityPlanePosition += velocity * speed;
 	StayInTheField();
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 
 	// 移動しきるか他の行動に移ったらactionTimerをリセット
 	if (walkingTimer->IsTime())
@@ -211,20 +222,27 @@ void StandardEnemy::HitCheck()
 bool StandardEnemy::HitCheckLoci()
 {
 	static const float radius = 1.0f;
+	bool b = false;
 
 	// プレイヤーから書いた線のデータを引っ張ってくる
 	std::vector<BaseLocus*> vecLocuss = ActorManager::GetInstance()->GetPlayer()->GetVecLocuss();
+
+	if (virtualityPlanePosition == preVirtualityPlanePosition)
+	{
+		return b;
+	}
 
 	for (auto locus : vecLocuss)
 	{
 		for (int i = 0; i < locus->GetMaxNumLine(); i++)
 		{
 			Line* line = locus->GetLine(i);
-			Vector2 AO = LocusUtility::Dim3ToDim2XZ(position - line->GetStartPos());
-			Vector2 BO = LocusUtility::Dim3ToDim2XZ(position - line->GetEndPos());
-			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetEndPos() - line->GetStartPos());
+			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneStartPos());
+			Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneEndPos());
+			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos() - line->GetVirtualityPlaneStartPos());
 			Vector2 normalAB = Vector2::Normalize(AB);
 
+			//今当たっているか
 			float cross = Vector2::Cross(AO, normalAB);
 			if (fabsf(cross) > radius)
 			{
@@ -234,17 +252,40 @@ bool StandardEnemy::HitCheckLoci()
 			float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
 			if (multiDot <= 0.0f)
 			{
-				return true;
+				HitLoci(line);
+				b = true;
+				continue;
 			}
 
 			if (Vector2::Length(AO) < radius || Vector2::Length(BO) < radius)
 			{
-				return true;
+				HitLoci(line);
+				b = true;
+				continue;
+			}
+
+			//通り過ぎたか
+			Vector2 start = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneStartPos());
+			Vector2 end = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos());
+			Vector2 pos = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition);
+			Vector2 pre = LocusUtility::Dim3ToDim2XZ(preVirtualityPlanePosition);
+
+			if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
+				LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
+			{
+				HitLoci(line);
+				b = true;
 			}
 		}
 	}
 
-	return false;
+	return b;
+}
+
+void StandardEnemy::HitLoci(Line* arg_line)
+{
+	position = prePos;
+	virtualityPlanePosition = preVirtualityPlanePosition;
 }
 
 bool StandardEnemy::IsOnField()
@@ -292,5 +333,4 @@ void StandardEnemy::DebugControl()
 
 	virtualityPlanePosition += velocity * speed;
 	StayInTheField();
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 }
