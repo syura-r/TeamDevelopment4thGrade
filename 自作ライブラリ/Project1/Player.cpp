@@ -16,6 +16,7 @@
 #include "BossMissile.h"
 #include "BossRangeAttack.h"
 #include "Field.h"
+#include "StandardEnemy.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -1193,6 +1194,51 @@ void Player::Damaged()
 	{
 		SuspendDrawing();
 	}
+}
+
+void Player::HitCheckEnemy()
+{
+	StandardEnemy* standardEnemy = ActorManager::GetInstance()->GetStandardEnemy();
+	if (!standardEnemy)
+	{
+		return;
+	}
+
+	
+	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(standardEnemy->GetPosition() - virtualityPlanePosition));
+	if (length <= 2.0f)
+	{
+		
+	}
+
+	
+}
+
+void Player::HitEnemy()
+{
+	StandardEnemy* standardEnemy = ActorManager::GetInstance()->GetStandardEnemy();
+	
+	Vector3 enemyPos = standardEnemy->GetPosition();
+	Vector3 enemyVel = standardEnemy->GetVelocity();
+	float enemyWeight = standardEnemy->GetWeight();
+
+	float totalWeight = weight + enemyWeight;
+	float refRate = (1 + 1 * 1); //反発率をプレイヤー、エネミーそれぞれ持たせる
+	Vector3 c = position - enemyPos;
+	c.Normalize();
+	float dot = Vector3::Dot((velocity - enemyVel), c);
+	Vector3 constVec = refRate * dot / totalWeight * c;
+
+	//衝突後速度ベクトル
+	Vector3  playerAfterVel = -enemyWeight * constVec + velocity;
+	Vector3  enemyAfterVel = weight * constVec + enemyVel;
+
+	int time = 60; //プレイヤー・エネミーそれぞれ操作が効かない時間
+	//衝突後位置
+	Vector3 playerAfterPos = position + time * playerAfterVel;
+	Vector3 enemyAfterPos = enemyPos + time * enemyAfterVel;
+
+
 }
 
 void Player::BeingInvincible()

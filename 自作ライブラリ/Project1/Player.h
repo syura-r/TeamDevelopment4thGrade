@@ -124,6 +124,9 @@ private:
 	void HitBossMissile(BossMissile* arg_missile);
 	void HitBossRangeAttack(BossRangeAttack* arg_rangeAttack);
 	void Damaged();
+	//“G‚Æ‚Ì“–‚½‚è”»’è
+	void HitCheckEnemy();
+	void HitEnemy();
 	//–³“Gˆ—
 	void BeingInvincible();
 	bool IsInvincible();

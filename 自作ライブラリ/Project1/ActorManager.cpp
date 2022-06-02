@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "TestBoss.h"
 #include "Field.h"
+#include "StandardEnemy.h"
 
 ActorManager* ActorManager::GetInstance()
 {
@@ -63,6 +64,17 @@ Field* ActorManager::GetField()
 	{
 		Field* field = static_cast<Field*>(itr->second);
 		return field;
+	}
+	return nullptr;
+}
+
+StandardEnemy* ActorManager::GetStandardEnemy()
+{
+	auto itr = mapGameObject.find("enemy");
+	if (itr != mapGameObject.end())
+	{
+		StandardEnemy* enemy = static_cast<StandardEnemy*>(itr->second);
+		return enemy;
 	}
 	return nullptr;
 }
