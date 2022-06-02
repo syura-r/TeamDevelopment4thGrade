@@ -38,5 +38,7 @@ private:
 	bool isDraw;
 	Vector3 virtualityPlaneStartPos;
 	Vector3 virtualityPlaneEndPos;
+
+	void UpdateRotation();
 };
 

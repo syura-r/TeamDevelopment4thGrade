@@ -33,19 +33,20 @@ Line::~Line()
 
 void Line::Initialize()
 {	
-	virtualityPlaneEndPos = virtualityPlaneStartPos + direction * length;
-	endPos = LocusUtility::RotateForFieldTilt(virtualityPlaneEndPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
+	virtualityPlaneEndPos = virtualityPlaneStartPos + direction * length;	
 	position = LocusUtility::RotateForFieldTilt(virtualityPlaneStartPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
+	endPos = LocusUtility::RotateForFieldTilt(virtualityPlaneEndPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 }
 
 void Line::Update()
 {	
 	scale.x = length;
-	rotation = { 0,angle,0 };
+	rotation = Vector3(0, angle, 0);	
+	UpdateRotation();
 	direction = LocusUtility::AngleToVector2(angle);
 	virtualityPlaneEndPos = virtualityPlaneStartPos + direction * length;
-	endPos = LocusUtility::RotateForFieldTilt(virtualityPlaneEndPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 	position = LocusUtility::RotateForFieldTilt(virtualityPlaneStartPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
+	endPos = LocusUtility::RotateForFieldTilt(virtualityPlaneEndPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 	Object::Update();
 }
 
@@ -93,7 +94,8 @@ void Line::SetLength(const float arg_length)
 {
 	length = arg_length;
 	virtualityPlaneEndPos = virtualityPlaneStartPos + direction * length;
-	endPos = LocusUtility::RotateForFieldTilt(virtualityPlaneEndPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));;
+	position = LocusUtility::RotateForFieldTilt(virtualityPlaneStartPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
+	endPos = LocusUtility::RotateForFieldTilt(virtualityPlaneEndPos, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 }
 
 float Line::GetAngle() const
@@ -119,4 +121,15 @@ Vector3 Line::GetVirtualityPlaneStartPos() const
 Vector3 Line::GetVirtualityPlaneEndPos() const
 {
 	return virtualityPlaneEndPos;
+}
+
+void Line::UpdateRotation()
+{
+	XMMATRIX rotMat = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
+	Vector3 fieldRot = ActorManager::GetInstance()->GetField()->GetAngleTilt();
+	XMMATRIX fieldRotMat = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fieldRot.x), XMConvertToRadians(fieldRot.y), XMConvertToRadians(fieldRot.z));
+	rotMat *= fieldRotMat;
+	XMVECTOR rotQuat;
+	XMMatrixDecompose(&XMVECTOR(), &rotQuat, &XMVECTOR(), rotMat);
+	rotation = LocusUtility::ToEuler(quaternion(rotQuat.m128_f32[0], rotQuat.m128_f32[1], rotQuat.m128_f32[2], rotQuat.m128_f32[3]));
 }
