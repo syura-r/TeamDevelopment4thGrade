@@ -42,6 +42,7 @@ public:
 	// 敵と図形の判定のため
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
 	float GetWeight() { return weight; }
+	Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
 	
 private:
 	struct ConstBuffData
@@ -167,8 +168,8 @@ private:
 	Sprite* lifeCharSprite;
 	Sprite* gameOverSprite;
 
-	//プレイヤーの重さ　テキトーに初期値　1
-	float weight = 1;
+	//プレイヤーの重さ
+	float weight;
 
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;

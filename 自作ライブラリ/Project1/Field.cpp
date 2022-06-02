@@ -5,6 +5,7 @@
 #include "LocusDef.h"
 #include "ActorManager.h"
 #include "Player.h"
+#include "StandardEnemy.h"
 
 Field::Field()
 	:depthMagnitude(0.0f),
@@ -64,6 +65,17 @@ void Field::CalcTilt()
 	Player* player = ActorManager::GetInstance()->GetPlayer();
 	if (player)
 	{
+		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
+		posVector = Vector2::Normalize(posVector) * player->GetWeight() * GetMultiplyingFactor(Vector3::Length(player->GetVirtualityPlanePosition()));
+		tiltDirection += posVector;
+	}
+
+	StandardEnemy* enemy = ActorManager::GetInstance()->GetStandardEnemy();
+	if (enemy)
+	{
+		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(enemy->GetVirtualityPlanePosition());
+		posVector = Vector2::Normalize(posVector) * enemy->GetWeight() * GetMultiplyingFactor(Vector3::Length(enemy->GetVirtualityPlanePosition()));
+		tiltDirection += posVector;
 	}
 
 	for (int i = 0; i < influences.size(); i++)

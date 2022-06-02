@@ -27,6 +27,7 @@ public:
 
     // getter
     float GetWeight() { return weight; }
+    Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
 
     // setter
     void SetWeight(float arg_weight) { weight = arg_weight; }

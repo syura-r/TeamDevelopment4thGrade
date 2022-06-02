@@ -185,6 +185,7 @@ void Player::Initialize()
 	invincibleTimer->Reset();
 	life = lifeSprites.size();
 	virtualityPlanePosition = position;
+	weight = 5;
 }
 
 void Player::Update()
@@ -991,6 +992,7 @@ void Player::DrawingLine()
 					{
 						field->AddInfluence(LocusFieldInfluence{ copyLocus->GetCenterOfGravity(), copyLocus->GetWeight() });
 					}
+					weight += 5;
 					 
 					vecLocuss.push_back(copyLocus);
 					
@@ -1045,6 +1047,7 @@ void Player::DeleteLocuss()
 	{
 		field->ResetInfluences();
 	}
+	weight = 5;
 }
 
 void Player::MoveEndDrawing(BaseLocus* arg_locus)
