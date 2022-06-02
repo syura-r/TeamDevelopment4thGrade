@@ -1,12 +1,17 @@
 #include "TestStar.h"
 #include "ObjectManager.h"
 #include "DrawMode.h"
+#include "ActorManager.h"
+#include "Field.h"
 std::vector<LocusPointInfo> TestStar::baseInfo = std::vector<LocusPointInfo>();
 
 TestStar::TestStar(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
 	:BaseLocus(arg_angle, arg_color)
 {
-	position = arg_pos;
+	virtualityPlanePosition = arg_pos;
+	position = virtualityPlanePosition;
+	size = 20.0f;
+	weight = 10.0f;
 	if (baseInfo.empty())
 	{
 		PointSetting();
@@ -19,14 +24,14 @@ TestStar::TestStar(const Vector3& arg_pos, const float arg_angle, const DirectX:
 	for (int i = 0; i < baseInfo.size(); i++)
 	{		
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
+		Line* line = new Line(rotatedPos + virtualityPlanePosition, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, true);
 	}
 }
 
 TestStar::TestStar(const TestStar& arg_testStar, const DirectX::XMFLOAT4& arg_color)
-	:TestStar(arg_testStar.position, arg_testStar.angle, arg_color)
+	:TestStar(arg_testStar.virtualityPlanePosition, arg_testStar.angle, arg_color)
 {
 }
 
@@ -70,14 +75,15 @@ void TestStar::Draw()
 
 void TestStar::Move(const Vector3& arg_movePos, const float arg_angle)
 {
-	position = arg_movePos;
+	virtualityPlanePosition = arg_movePos;
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 	angle = arg_angle;
 	//引数でもらった座標、角度に変換してLineを生成
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		lines[i]->Move(rotatedPos + position, angle + baseInfo[i].angle);
+		lines[i]->Move(rotatedPos + virtualityPlanePosition, angle + baseInfo[i].angle);
 	}
 }
 
@@ -91,14 +97,14 @@ void TestStar::PointSetting()
 	//図形を構成する座標　終点まで
 	std::vector<Vector3> points;
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
-	points.push_back(Vector3(1.8090f, 0.0f, 0.5878f));
-	points.push_back(Vector3(0.6910f, 0.0f, -0.9511f));
-	points.push_back(Vector3(0.6910f, 0.0f, 0.9511f));
-	points.push_back(Vector3(1.8090f, 0.0f, -0.5878f));
+	points.push_back(Vector3(0.9045f, 0.0f, 0.2939f));
+	points.push_back(Vector3(0.3455f, 0.0f, -0.4756f));
+	points.push_back(Vector3(0.3455f, 0.0f, 0.4756f));
+	points.push_back(Vector3(0.9045f, 0.0f, -0.2939f));
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	for (int i = 0; i < points.size(); i++)
 	{
-		points[i] *= 10.0f;
+		points[i] *= size;
 	}
 
 	CalcBaseInfo(points, baseInfo);

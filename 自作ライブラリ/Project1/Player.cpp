@@ -15,6 +15,7 @@
 #include "TestBoss.h"
 #include "BossMissile.h"
 #include "BossRangeAttack.h"
+#include "Field.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -50,12 +51,8 @@ Player::Player()
 	predictPentagon = new TestPentagon(Vector3(0, -5, 0), 90, predictColor);
 	predictPentagon->ChangeIsDraw(false);
 	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90, predictColor);
-	predictHexagram->ChangeIsDraw(false);
-	inFeverTimer = new Timer(1200);
-	feverGaugeBaseSprite = new Sprite();
-	feverGaugeValueSprite = new Sprite();
-	attackSprite = new Sprite();
-	measurer = new NormalWaveMeasurer();
+	predictHexagram->ChangeIsDraw(false);	
+	attackSprite = new Sprite();	
 	invincibleTimer = new Timer(120);
 	for (int i = 0; i < 5; i++)
 	{
@@ -110,12 +107,8 @@ Player::Player()
 }
 
 Player::~Player()
-{
-	delete inFeverTimer;
-	delete feverGaugeBaseSprite;
-	delete feverGaugeValueSprite;
-	delete attackSprite;
-	delete measurer;
+{	
+	delete attackSprite;	
 	delete locusSelecter;
 	for (auto s : lifeSprites)
 	{
@@ -132,7 +125,7 @@ void Player::Initialize()
 	name = typeid(*this).name();
 	onGround = true;
 	scale = { 0.9f };
-	position = StartPos;	
+	position = StartPos;
 	rotation = 0;
 	prePos = position;
 	direction = { 0,0,1 };
@@ -184,17 +177,14 @@ void Player::Initialize()
 	}
 	vecLocuss.clear();
 	nowDrawingLocus = predictStar;
-	predictStar->ChangeIsDraw(true);
-	isInFever = false;
-	posFeverGauge = Vector2(250, 800);
-	feverQuota = 3;
-	measurer->Initialize();
-	measurer->Reset();
+	predictStar->ChangeIsDraw(true);	
+	feverQuota = maxFeverQuota;		
 	locusSelecter->Initialize();
-	locusSelecter->Setting(feverQuota);
+	locusSelecter->Setting();
 	pressedButton = LocusSelecter::Button::BBUTTON;
 	invincibleTimer->Reset();
 	life = lifeSprites.size();
+	virtualityPlanePosition = position;
 }
 
 void Player::Update()
@@ -237,9 +227,7 @@ void Player::Update()
 	
 	locusSelecter->Update();
 
-	SelectLocus();
-
-	CheckIsInFever();
+	SelectLocus();	
 
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && nowDrawingLocus)
 	{
@@ -256,28 +244,13 @@ void Player::Update()
 	
 
 	//カメラのリセット処理
-	MoveCamera();
-
-	//通常時のタイマー
-	if (!isInFever)
-	{
-		measurer->Update();
-		
-		if (measurer->IsTime())
-		{
-			SuspendDrawing();
-
-			Attack();
-			DeleteLocuss();
-			
-		}
-	}
+	MoveCamera();	
 
 	if (!isDrawing)
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
 		{
-			if (vecLocuss.size() >= feverQuota)
+			if (!vecLocuss.empty())
 			{
 				Attack();
 				DeleteLocuss();
@@ -290,38 +263,21 @@ void Player::Update()
 	HitCheckLoci();
 	HitCheckBossAttack();
 
-	////壁ジャンプ処理
-	//WallJump();
-	////エアスライド処理
-	//AirSlide();
-	////二段ジャンプ処理
-	//if (!onGround && !secondJump && !wallJump &&(Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())))
-	//{
-	//	secondJump = true;
-	//	fallV = { 0,secondJumpVYFist,0,0 };
-	//	ParticleEmitter::CreateShock(position);
-	//}
 	//落下処理
-	if (!onGround)
-	{
-		//加速
-		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
-		//移動
-		position.x += fallV.m128_f32[0];
-		position.y += fallV.m128_f32[1];
-		position.z += fallV.m128_f32[2];		
-		
-	}
-	////ジャンプ動作
-	//else if ((Input::TriggerKey(DIK_SPACE) || Input::TriggerPadButton(SettingParam::GetJumpButton())) &&!jump)
+	//if (!onGround)
 	//{
-	//	//jump = true;
-	//	//onGround = false;
-	//	//fallV = { 0,jumpVYFist,0,0 };
-	//	ParticleEmitter::CreateShock(position);
+	//	//加速
+	//	fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
+	//	//移動
+	//	position.x += fallV.m128_f32[0];
+	//	position.y += fallV.m128_f32[1];
+	//	position.z += fallV.m128_f32[2];
+	//	
 	//}
+	
 	//他のオブジェクトとのヒットチェック
-	CheckHit();
+	//CheckHit();
+	Object::Update();
 
 	if (prePos != position)
 	{
@@ -331,13 +287,17 @@ void Player::Update()
 	if (!isDrawing)
 	{
 		//nowDrawingLocus->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictStar->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictRibbon->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictTriforce->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictTriangle->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictPentagon->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictHexagram->Move(position, LocusUtility::Vector3XZToAngle(direction));
-	}	
+		predictStar->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictRibbon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictTriforce->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictTriangle->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictPentagon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictHexagram->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+	}
+	for (auto l : vecLocuss)
+	{
+		l->Move(l->GetVirtualityPlanePosition(), l->GetAngle());
+	}
 }
 
 void Player::Draw()
@@ -372,27 +332,11 @@ void Player::Draw()
 	CustomDraw(true, true);
 	if (!Object3D::GetDrawShadow())
 	{
-		if (isInFever)
-		{
-			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * inFeverTimer->GetRate(TimerPerformance::Down)), Vector4(0.9f, 0.9f, 0.05f, 1.0f), Vector2(0.0f, 1.0f));
-		}
-		else
-		{
-			int val = vecLocuss.size();
-			if (val > feverQuota)
-			{
-				val = feverQuota;
-			}
-			feverGaugeValueSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700 * (val / (float)feverQuota)), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 1.0f));
-		}
-		feverGaugeBaseSprite->DrawSprite("white1x1", posFeverGauge, 0.0f, Vector2(100, 700), Vector4(0.2f, 0.2f, 0.2f, 1.0f), Vector2(0.0f, 1.0f));
-
-		if (vecLocuss.size() >= feverQuota)
+		if (!vecLocuss.empty())
 		{
 			attackSprite->DrawSprite("s_LBorRB", Vector2(960, 150), 0.0f, Vector2(1.5f, 1.5f));
 		}
-
-		measurer->Draw();
+		
 		locusSelecter->Draw();
 
 		lifeCharSprite->DrawSprite("s_LIFE", Vector2(1705, 430));
@@ -482,8 +426,7 @@ void Player::Move()
 
 	//移動処理
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
-		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft() ||
-		(isInFever && isDrawing))
+		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 	{
 		if (onGround)
 		{
@@ -561,11 +504,11 @@ void Player::Move()
 			}
 
 			//フィーバー時挙動試し
-			if (isInFever)
+			/*if (isInFever)
 			{
 				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 				inputAccuracy = 30.0f;
-			}
+			}*/
 
 			moveDirection.Normalize();
 		}
@@ -586,8 +529,9 @@ void Player::Move()
 		float rotSpeed = rotateSpeed;
 		if (abs(rotY) < 55)
 		{
-			position += moveDirection * (speed * inputAccuracy);
+			virtualityPlanePosition += moveDirection * (speed * inputAccuracy);
 			StayInTheField();
+			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), StartPos);
 			isExtendLine = true;
 		}
 		else
@@ -780,35 +724,35 @@ void Player::CheckHit()
 
 void Player::MoveCamera()
 {
-	/*XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();*/
+	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
+	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 
 	//カメラのリセット処理
-	//if ((Input::TriggerKey(DIK_C) || Input::TriggerPadButton(SettingParam::GetResetButton())) && !rotCamera)
-	//{
-	//	rotCamera = true;
-	//	float cosA = direction.Dot(cameraDirectionZ);
-	//	if (cosA > 1.0f)
-	//		cosA = 1.0f;
-	//	else if (cosA < -1.0f)
-	//		cosA = -1.0f;
-	//	radY = acos(cosA);
-	//	const Vector3 CrossVec = direction.Cross(cameraDirectionZ);
-	//	if (CrossVec.y < 0)
-	//		radY *= -1;
-	//	cameraRotCount = 0;
-	//	//camera->AddPhi(radY);
-	//}
+	if ((Input::TriggerKey(DIK_C) /*|| Input::TriggerPadButton(SettingParam::GetResetButton())*/) && !rotCamera)
+	{
+		rotCamera = true;
+		float cosA = direction.Dot(cameraDirectionZ);
+		if (cosA > 1.0f)
+			cosA = 1.0f;
+		else if (cosA < -1.0f)
+			cosA = -1.0f;
+		radY = acos(cosA);
+		const Vector3 CrossVec = direction.Cross(cameraDirectionZ);
+		if (CrossVec.y < 0)
+			radY *= -1;
+		cameraRotCount = 0;
+		//camera->AddPhi(radY);
+	}
 	
 	//カメラの回転処理
-	/*if (rotCamera)
+	if (rotCamera)
 	{
 		cameraRotCount++;
 		float rad = radY / RotTime;
 		camera->AddPhi(rad);
 		if (cameraRotCount >= RotTime)
 			rotCamera = false;
-	}*/
+	}
 }
 
 void Player::ResetPerform()
@@ -967,7 +911,7 @@ void Player::CreateLine()
 	if (currentLineNum < nowDrawingLocus->GetMaxNumLine())
 	{
 		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetDirection(); //kokokokoko
-		pNowDrawingLine = new Line(position, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
+		pNowDrawingLine = new Line(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
 		ObjectManager::GetInstance()->Add(pNowDrawingLine, true);
 		vecDrawingLines.push_back(pNowDrawingLine);
 	}
@@ -979,23 +923,16 @@ void Player::DrawingLine()
 	if (pNowDrawingLine != nullptr)
 	{
 		//ボタンを押しているかつドローイング中は線を伸ばす
-		if ((Input::CheckPadButton(XINPUT_GAMEPAD_A) || isInFever) && isDrawing)
+		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && isDrawing)
 		{	
 			if (isExtendLine)
-			{	
-				if (isInFever)
-				{
-					pNowDrawingLine->AddLength(speed * inputAccuracy);
-				}
-				else if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
+			{				
+				if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
 					Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
 				{
 					pNowDrawingLine->AddLength(speed * inputAccuracy);
 				}
-			}
-
-			Vector3 endPos = nowDrawingLocus->GetLine(currentLineNum)->GetEndPos();
-			Vector3 pPos = position;
+			}			
 
 			float lengthNowLine = pNowDrawingLine->GetLength();
 			float lengthLocusLine = nowDrawingLocus->GetLine(currentLineNum)->GetLength();
@@ -1036,6 +973,12 @@ void Player::DrawingLine()
 					default:
 						break;
 					}
+
+					Field* field = ActorManager::GetInstance()->GetField();
+					if (field)
+					{
+						field->AddInfluence(LocusFieldInfluence{ copyLocus->GetCenterOfGravity(), copyLocus->GetWeight() });
+					}
 					 
 					vecLocuss.push_back(copyLocus);
 					
@@ -1075,18 +1018,7 @@ void Player::SuspendDrawing()
 
 void Player::DeleteLocuss()
 {
-	auto end = vecLocuss.size();
-	if (!isInFever)
-	{
-		if (end >= feverQuota)
-		{
-			InFever();
-		}
-		else
-		{
-			measurer->Reset();
-		}
-	}
+	auto end = vecLocuss.size();	
 
 	for (int i = 0; i < end; i++)
 	{
@@ -1094,7 +1026,13 @@ void Player::DeleteLocuss()
 		vecLocuss[i] = nullptr;
 	}
 	vecLocuss.clear();
-	locusSelecter->Setting(feverQuota);
+	//locusSelecter->Setting();
+
+	Field* field = ActorManager::GetInstance()->GetField();
+	if (field)
+	{
+		field->ResetInfluences();
+	}
 }
 
 void Player::MoveEndDrawing(BaseLocus* arg_locus)
@@ -1115,66 +1053,31 @@ void Player::Attack()
 	}	
 }
 
-void Player::CheckIsInFever()
-{
-	if (!isInFever)
-	{
-		return;
-	}
-
-	inFeverTimer->Update();
-
-	if (inFeverTimer->IsTime())
-	{
-		if (!isDrawing)
-		{
-			Attack();
-
-			if (feverQuota < maxFeverQuota)
-			{
-				feverQuota++;
-			}
-
-			DeleteLocuss();
-			measurer->Reset();
-
-			
-			isInFever = false;
-		}
-	}
-}
-
-void Player::InFever()
-{
-	isInFever = true;
-	inFeverTimer->Reset();
-}
-
 void Player::StayInTheField()
 {
 	bool b = false;
 
 	//X軸
-	if (position.x > fieldUpperLimit.x)
+	if (virtualityPlanePosition.x > fieldUpperLimit.x)
 	{
-		position.x = fieldUpperLimit.x;
+		virtualityPlanePosition.x = fieldUpperLimit.x;
 		b = true;
 	}
-	else if (position.x < fieldLowerLimit.x)
+	else if (virtualityPlanePosition.x < fieldLowerLimit.x)
 	{
-		position.x = fieldLowerLimit.x;
+		virtualityPlanePosition.x = fieldLowerLimit.x;
 		b = true;
 	}
 	
 	//Z軸
-	if (position.z > fieldUpperLimit.y)
+	if (virtualityPlanePosition.z > fieldUpperLimit.y)
 	{
-		position.z = fieldUpperLimit.y;
+		virtualityPlanePosition.z = fieldUpperLimit.y;
 		b = true;
 	}
-	else if (position.z < fieldLowerLimit.y)
+	else if (virtualityPlanePosition.z < fieldLowerLimit.y)
 	{
-		position.z = fieldLowerLimit.y;
+		virtualityPlanePosition.z = fieldLowerLimit.y;
 		b = true;
 	}
 
@@ -1201,7 +1104,7 @@ void Player::HitCheckBossAttack()
 	std::vector<BossMissile*>& missiles = boss->GetMissiles();
 	for (int i = 0; i < missiles.size(); i++)
 	{
-		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(missiles[i]->GetPosition() - position));
+		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(missiles[i]->GetPosition() - virtualityPlanePosition));
 		if (length <= 4.0f)
 		{
 			HitBossMissile(missiles[i]);
@@ -1230,10 +1133,10 @@ void Player::HitCheckBossAttack()
 
 		Vector3 attackScale = rangeAttacks[i]->GetScale() / 2.0f;
 		Vector3 attackPos = rangeAttacks[i]->GetPosition();
-		if (position.x >= attackPos.x - attackScale.x - 1 &&
-			position.x <= attackPos.x + attackScale.x + 1 &&
-			position.z >= attackPos.z - attackScale.z - 1 &&
-			position.z <= attackPos.z + attackScale.z + 1)
+		if (virtualityPlanePosition.x >= attackPos.x - attackScale.x - 1 &&
+			virtualityPlanePosition.x <= attackPos.x + attackScale.x + 1 &&
+			virtualityPlanePosition.z >= attackPos.z - attackScale.z - 1 &&
+			virtualityPlanePosition.z <= attackPos.z + attackScale.z + 1)
 		{
 			HitBossRangeAttack(rangeAttacks[i]);
 		}
@@ -1318,9 +1221,9 @@ void Player::HitCheckLoci()
 		for (int i = 0; i < locus->GetMaxNumLine(); i++)
 		{
 			Line* line = locus->GetLine(i);
-			Vector2 AO = LocusUtility::Dim3ToDim2XZ(position - line->GetStartPos());
-			Vector2 BO = LocusUtility::Dim3ToDim2XZ(position - line->GetEndPos());
-			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetEndPos() - line->GetStartPos());
+			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneStartPos());
+			Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneEndPos());
+			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos() - line->GetVirtualityPlaneStartPos());
 			Vector2 normalAB = Vector2::Normalize(AB);
 
 			float cross = Vector2::Cross(AO, normalAB);
@@ -1351,15 +1254,4 @@ void Player::HitLoci(Line* arg_line)
 	{
 		SuspendDrawing();
 	}
-}
-
-bool Player::IsInFever()
-{
-	//return isDrawing && Input::CheckPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) && Input::CheckPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER);
-	return isInFever;
-}
-
-const unsigned int Player::GetFeverQuota() const
-{
-	return feverQuota;
 }

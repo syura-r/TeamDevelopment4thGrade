@@ -26,6 +26,8 @@ public:
 	float GetAngle()const;
 	bool IsDraw()const;
 	void ChangeIsDraw(const bool arg_isDraw);
+	Vector3 GetVirtualityPlaneStartPos()const;
+	Vector3 GetVirtualityPlaneEndPos()const;
 
 private:
 	Vector3 endPos;
@@ -34,5 +36,9 @@ private:
 	float length;
 	//•`‰æ‚·‚é‚©
 	bool isDraw;
+	Vector3 virtualityPlaneStartPos;
+	Vector3 virtualityPlaneEndPos;
+
+	void UpdateRotation();
 };
 

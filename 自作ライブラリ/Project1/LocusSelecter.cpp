@@ -75,15 +75,14 @@ void LocusSelecter::Draw()
 	frameNextTex->DrawSprite("frame_next", nextTexPos, 0, scale, { 1,1,1,1 }, { 0,0 });
 }
 
-void LocusSelecter::Setting(unsigned int arg_feverQuota)
+void LocusSelecter::Setting()
 {
 	vecWaveLocuses.clear();
 	nextLocusType = LocusType::UNDIFINED;
 	//int max = ActorManager::GetInstance()->GetPlayer()->GetFeverQuota();
-	unsigned int max = arg_feverQuota;
-	randMax = max - 1;
+	randMax = locusMax - 1;
 
-	for (int i = 0; i < max; i++)
+	for (int i = 0; i < locusMax; i++)
 	{
 		vecWaveLocuses.push_back((LocusType)i);
 	}
@@ -122,13 +121,33 @@ void LocusSelecter::Setting(unsigned int arg_feverQuota)
 	{
 		nextLocusType = LocusType::UNDIFINED;
 	}
+	//Œã‚ÅŽ¡‚·
+	vecWaveLocuses.clear();
+	for (int i = 0; i < locusMax; i++)
+	{
+		vecWaveLocuses.push_back((LocusType)i);
+	}
+	randMax = locusMax - 1;
 }
 
 void LocusSelecter::SetNextLocus(Button arg_pressedButton)
 {
 	locusTypes[arg_pressedButton] = nextLocusType;
 
-	if (vecWaveLocuses.size() > 0)
+	int rand = 0;
+	while (true)
+	{
+		rand = GetIntRand(0, randMax);
+		nextLocusType = vecWaveLocuses.at(rand);
+		if (locusTypes[XBUTTON] != nextLocusType &&
+			locusTypes[YBUTTON] != nextLocusType &&
+			locusTypes[BBUTTON] != nextLocusType)
+		{
+			break;
+		}
+	}
+
+	/*if (vecWaveLocuses.size() > 0)
 	{
 		auto itr = vecWaveLocuses.begin();
 		int rand = GetIntRand(0, randMax);
@@ -136,10 +155,15 @@ void LocusSelecter::SetNextLocus(Button arg_pressedButton)
 		vecWaveLocuses.erase(itr + rand);
 		randMax--;
 	}
-	else
+	if (vecWaveLocuses.size() <= 0)
 	{
-		nextLocusType = LocusType::UNDIFINED;
-	}
+		for (int i = 0; i < locusMax; i++)
+		{
+			vecWaveLocuses.push_back((LocusType)i);
+			
+		}
+		randMax = locusMax - 1;
+	}*/
 }
 
 LocusType LocusSelecter::XbuttonLocusType()

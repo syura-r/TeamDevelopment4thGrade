@@ -35,16 +35,13 @@ public:
 	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }
 	void Reset();
 	bool GetReset() { return reset; }
-
-	//フィーバーかどうか　仮置き
-	bool IsInFever();
-	//ノルマ達成に必要な図形個数
-	const unsigned int GetFeverQuota()const;
+	
 	//残機が残っているか
 	bool IsAlive();
 
 	// 敵と図形の判定のため
-	std::vector<BaseLocus*> GetVecLocuss() { return vecLocuss; };
+	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
+	float GetWeight() { return weight; }
 	
 private:
 	struct ConstBuffData
@@ -88,7 +85,7 @@ private:
 	int walkDustCounter = 0;
 	
 	//初期位置
-	const Vector3 StartPos = { 0,-4,0 };
+	const Vector3 StartPos = { 0,-5,0 };
 	//移動処理
 	void Move();
 	//当たり判定
@@ -119,10 +116,7 @@ private:
 	void HitCheckLoci();
 	void HitLoci(Line* arg_line);
 	//攻撃
-	void Attack();
-	//フィーバー時処理
-	void CheckIsInFever();
-	void InFever();
+	void Attack();	
 	//フィールドから落ちない処理
 	void StayInTheField();
 	//ボスの攻撃との当たり判定
@@ -147,8 +141,7 @@ private:
 	TestRibbon* predictRibbon = nullptr;
 	TestTriangle* predictTriangle = nullptr;
 	TestPentagon* predictPentagon = nullptr;
-	TestHexagram* predictHexagram = nullptr;
-	NormalWaveMeasurer* measurer;
+	TestHexagram* predictHexagram = nullptr;	
 
 	LocusSelecter::Button pressedButton;
 
@@ -163,24 +156,22 @@ private:
 	//ドローイングし終わった図形
 	std::vector<BaseLocus*> vecLocuss;
 	//線を一時的に保存しておくvector
-	std::vector<Line*> vecDrawingLines;
-	//フィーバー中かどうか
-	bool isInFever;
-	Timer* inFeverTimer;
-	Sprite* feverGaugeBaseSprite;
-	Sprite* feverGaugeValueSprite;
-	Vector2 posFeverGauge;
+	std::vector<Line*> vecDrawingLines;		
 	unsigned int feverQuota;
 	const unsigned int maxFeverQuota = 6;
 	Sprite* attackSprite;
-	//攻撃時間
-	Timer* AttackTimer;
 	//残機
 	int life;
 	Timer* invincibleTimer;
 	std::vector<Sprite*> lifeSprites;
 	Sprite* lifeCharSprite;
 	Sprite* gameOverSprite;
+
+	//プレイヤーの重さ　テキトーに初期値　1
+	float weight = 1;
+
+	//平面のままのposition
+	Vector3 virtualityPlanePosition;
 
 	//フィールドの広さ
 	const Vector2 fieldLowerLimit = Vector2(-45, -45);

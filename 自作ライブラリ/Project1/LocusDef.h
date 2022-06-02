@@ -24,6 +24,13 @@ struct LocusPointInfo
 	float length = 0;
 };
 
+//ŒX‚«‚ÉŽg‚¤
+struct LocusFieldInfluence
+{
+	Vector3 pos;
+	float weight;
+};
+
 #define PI 3.14159265
 
 class LocusUtility
@@ -75,5 +82,18 @@ public:
 
 		result *= (180.0f / PI);
 		return result;
+	}
+
+	static Vector3 RotateForFieldTilt(const Vector3& arg_virPos, const Vector3& arg_angleTilt, const Vector3& arg_offset = Vector3())
+	{
+		Vector3 tmp = arg_virPos - arg_offset;
+		XMMATRIX rotMat = XMMatrixRotationRollPitchYaw(XMConvertToRadians(arg_angleTilt.x), XMConvertToRadians(arg_angleTilt.y), XMConvertToRadians(arg_angleTilt.z));
+		XMMATRIX posMat = XMMATRIX(tmp.ConvertXMVECTOR(), XMVECTOR(), XMVECTOR(), XMVECTOR());
+
+		posMat *= rotMat;
+		tmp = { posMat.r[0].m128_f32[0], posMat.r[0].m128_f32[1] , posMat.r[0].m128_f32[2] };
+		tmp += arg_offset;
+
+		return tmp;
 	}
 };
