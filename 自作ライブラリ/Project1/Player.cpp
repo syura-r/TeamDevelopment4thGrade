@@ -125,7 +125,7 @@ void Player::Initialize()
 	name = typeid(*this).name();
 	onGround = true;
 	scale = { 0.9f };
-	position = StartPos;	
+	position = StartPos;
 	rotation = 0;
 	prePos = position;
 	direction = { 0,0,1 };
@@ -184,6 +184,7 @@ void Player::Initialize()
 	pressedButton = LocusSelecter::Button::BBUTTON;
 	invincibleTimer->Reset();
 	life = lifeSprites.size();
+	virtualityPlanePosition = position;
 }
 
 void Player::Update()
@@ -524,8 +525,9 @@ void Player::Move()
 		float rotSpeed = rotateSpeed;
 		if (abs(rotY) < 55)
 		{
-			position += moveDirection * (speed * inputAccuracy);
+			virtualityPlanePosition += moveDirection * (speed * inputAccuracy);
 			StayInTheField();
+			position = virtualityPlanePosition;
 			isExtendLine = true;
 		}
 		else
@@ -926,10 +928,7 @@ void Player::DrawingLine()
 				{
 					pNowDrawingLine->AddLength(speed * inputAccuracy);
 				}
-			}
-
-			Vector3 endPos = nowDrawingLocus->GetLine(currentLineNum)->GetEndPos();
-			Vector3 pPos = position;
+			}			
 
 			float lengthNowLine = pNowDrawingLine->GetLength();
 			float lengthLocusLine = nowDrawingLocus->GetLine(currentLineNum)->GetLength();
@@ -1055,26 +1054,26 @@ void Player::StayInTheField()
 	bool b = false;
 
 	//XŽ²
-	if (position.x > fieldUpperLimit.x)
+	if (virtualityPlanePosition.x > fieldUpperLimit.x)
 	{
-		position.x = fieldUpperLimit.x;
+		virtualityPlanePosition.x = fieldUpperLimit.x;
 		b = true;
 	}
-	else if (position.x < fieldLowerLimit.x)
+	else if (virtualityPlanePosition.x < fieldLowerLimit.x)
 	{
-		position.x = fieldLowerLimit.x;
+		virtualityPlanePosition.x = fieldLowerLimit.x;
 		b = true;
 	}
 	
 	//ZŽ²
-	if (position.z > fieldUpperLimit.y)
+	if (virtualityPlanePosition.z > fieldUpperLimit.y)
 	{
-		position.z = fieldUpperLimit.y;
+		virtualityPlanePosition.z = fieldUpperLimit.y;
 		b = true;
 	}
-	else if (position.z < fieldLowerLimit.y)
+	else if (virtualityPlanePosition.z < fieldLowerLimit.y)
 	{
-		position.z = fieldLowerLimit.y;
+		virtualityPlanePosition.z = fieldLowerLimit.y;
 		b = true;
 	}
 

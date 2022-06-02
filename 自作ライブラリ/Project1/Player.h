@@ -85,7 +85,7 @@ private:
 	int walkDustCounter = 0;
 	
 	//初期位置
-	const Vector3 StartPos = { 0,-4,0 };
+	const Vector3 StartPos = { 0,-5,0 };
 	//移動処理
 	void Move();
 	//当たり判定
@@ -169,6 +169,9 @@ private:
 
 	//プレイヤーの重さ　テキトーに初期値　1
 	float weight = 1;
+
+	//平面のままのposition
+	Vector3 virtualityPlanePosition;
 
 	//フィールドの広さ
 	const Vector2 fieldLowerLimit = Vector2(-45, -45);
