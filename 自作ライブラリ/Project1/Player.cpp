@@ -53,13 +53,7 @@ Player::Player()
 	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90, predictColor);
 	predictHexagram->ChangeIsDraw(false);	
 	attackSprite = new Sprite();	
-	invincibleTimer = new Timer(120);
-	for (int i = 0; i < 5; i++)
-	{
-		Sprite* s = new Sprite();
-		lifeSprites.push_back(s);
-	}
-	lifeCharSprite = new Sprite();
+	invincibleTimer = new Timer(120);	
 	gameOverSprite = new Sprite();
 
 	Initialize();
@@ -109,13 +103,7 @@ Player::Player()
 Player::~Player()
 {	
 	delete attackSprite;	
-	delete locusSelecter;
-	for (auto s : lifeSprites)
-	{
-		delete s;
-	}
-	lifeSprites.clear();
-	delete lifeCharSprite;
+	delete locusSelecter;	
 	delete gameOverSprite;
 	delete invincibleTimer;
 }
@@ -182,8 +170,7 @@ void Player::Initialize()
 	locusSelecter->Initialize();
 	locusSelecter->Setting();
 	pressedButton = LocusSelecter::Button::BBUTTON;
-	invincibleTimer->Reset();
-	life = lifeSprites.size();
+	invincibleTimer->Reset();	
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 5;
@@ -339,15 +326,7 @@ void Player::Draw()
 			attackSprite->DrawSprite("s_LBorRB", Vector2(960, 150), 0.0f, Vector2(1.5f, 1.5f));
 		}
 		
-		locusSelecter->Draw();
-
-		lifeCharSprite->DrawSprite("s_LIFE", Vector2(1705, 430));
-		Vector2 lifeSpritePos = Vector2(1560, 500);
-		for (int i = 0; i < life; i++)
-		{
-			lifeSprites[i]->DrawSprite("white1x1", lifeSpritePos, 0.0f, Vector2(50, 50), Vector4(1, 1, 1, 1), Vector2(0.0f, 0.0f));
-			lifeSpritePos.x += 60;
-		}
+		locusSelecter->Draw();		
 
 		TestBoss* boss = ActorManager::GetInstance()->GetBoss();
 		if (boss)
@@ -1190,8 +1169,7 @@ void Player::HitBossRangeAttack(BossRangeAttack* arg_rangeAttack)
 }
 
 void Player::Damaged()
-{
-	life--;
+{	
 	invincibleTimer->Update();
 
 	//ドローイング中なら動作中断
@@ -1222,7 +1200,7 @@ bool Player::IsInvincible()
 
 bool Player::IsAlive()
 {
-	return life > 0;
+	return true;
 }
 
 void Player::HitCheckLoci()

@@ -161,11 +161,7 @@ private:
 	unsigned int feverQuota;
 	const unsigned int maxFeverQuota = 6;
 	Sprite* attackSprite;
-	//残機
-	int life;
-	Timer* invincibleTimer;
-	std::vector<Sprite*> lifeSprites;
-	Sprite* lifeCharSprite;
+	Timer* invincibleTimer;	
 	Sprite* gameOverSprite;
 
 	//プレイヤーの重さ
