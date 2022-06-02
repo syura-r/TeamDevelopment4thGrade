@@ -109,5 +109,10 @@ const Vector3 BaseLocus::GetCenterOfGravity()
 {
 	static const DirectX::XMVECTOR tmpCenter{ 0.5f, 0.0f, 0.0f, 0.0f };
 	Vector3 rotatedPos = CalcPointTransform(tmpCenter, XMMatrixRotationY(XMConvertToRadians(angle)));
-	return position + rotatedPos * size;
+	return virtualityPlanePosition + rotatedPos * size;
+}
+
+Vector3 BaseLocus::GetVirtualityPlanePosition() const
+{
+	return virtualityPlanePosition;
 }

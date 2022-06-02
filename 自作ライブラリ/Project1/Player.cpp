@@ -287,13 +287,17 @@ void Player::Update()
 	if (!isDrawing)
 	{
 		//nowDrawingLocus->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictStar->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictRibbon->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictTriforce->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictTriangle->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictPentagon->Move(position, LocusUtility::Vector3XZToAngle(direction));
-		predictHexagram->Move(position, LocusUtility::Vector3XZToAngle(direction));
-	}	
+		predictStar->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictRibbon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictTriforce->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictTriangle->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictPentagon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictHexagram->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+	}
+	for (auto l : vecLocuss)
+	{
+		l->Move(l->GetVirtualityPlanePosition(), l->GetAngle());
+	}
 }
 
 void Player::Draw()
@@ -907,7 +911,7 @@ void Player::CreateLine()
 	if (currentLineNum < nowDrawingLocus->GetMaxNumLine())
 	{
 		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetDirection(); //kokokokoko
-		pNowDrawingLine = new Line(position, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
+		pNowDrawingLine = new Line(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
 		ObjectManager::GetInstance()->Add(pNowDrawingLine, true);
 		vecDrawingLines.push_back(pNowDrawingLine);
 	}
@@ -1217,9 +1221,9 @@ void Player::HitCheckLoci()
 		for (int i = 0; i < locus->GetMaxNumLine(); i++)
 		{
 			Line* line = locus->GetLine(i);
-			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetStartPos());
-			Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetEndPos());
-			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetEndPos() - line->GetStartPos());
+			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneStartPos());
+			Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneEndPos());
+			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos() - line->GetVirtualityPlaneStartPos());
 			Vector2 normalAB = Vector2::Normalize(AB);
 
 			float cross = Vector2::Cross(AO, normalAB);

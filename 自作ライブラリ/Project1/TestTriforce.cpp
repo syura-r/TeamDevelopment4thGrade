@@ -1,11 +1,14 @@
 #include "TestTriforce.h"
 #include "ObjectManager.h"
 #include "DrawMode.h"
+#include "ActorManager.h"
+#include "Field.h"
 std::vector<LocusPointInfo> TestTriforce::baseInfo = std::vector<LocusPointInfo>();
 
 TestTriforce::TestTriforce(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
 	:BaseLocus(arg_angle, arg_color)
 {
+	virtualityPlanePosition = arg_pos;
 	position = arg_pos;
 	size = 14.0f;
 	weight = 10.0f;
@@ -21,14 +24,14 @@ TestTriforce::TestTriforce(const Vector3& arg_pos, const float arg_angle, const 
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
+		Line* line = new Line(rotatedPos + virtualityPlanePosition, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, true);
 	}
 }
 
 TestTriforce::TestTriforce(const TestTriforce& arg_testTriforce, const DirectX::XMFLOAT4& arg_color)
-	:TestTriforce(arg_testTriforce.position, arg_testTriforce.angle, arg_color)
+	:TestTriforce(arg_testTriforce.virtualityPlanePosition, arg_testTriforce.angle, arg_color)
 {
 }
 
@@ -72,14 +75,15 @@ void TestTriforce::Draw()
 
 void TestTriforce::Move(const Vector3& arg_movePos, const float arg_angle)
 {
-	position = arg_movePos;
+	virtualityPlanePosition = arg_movePos;
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 	angle = arg_angle;
 	//à¯êîÇ≈Ç‡ÇÁÇ¡ÇΩç¿ïWÅAäpìxÇ…ïœä∑ÇµÇƒLineÇê∂ê¨
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		lines[i]->Move(rotatedPos + position, angle + baseInfo[i].angle);
+		lines[i]->Move(rotatedPos + virtualityPlanePosition, angle + baseInfo[i].angle);
 	}
 }
 

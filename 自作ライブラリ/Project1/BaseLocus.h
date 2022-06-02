@@ -21,6 +21,7 @@ public:
 	float GetWeight()const;
 	//重心
 	virtual const Vector3 GetCenterOfGravity();
+	Vector3 GetVirtualityPlanePosition()const;
 
 protected:	
 	float angle;
@@ -28,6 +29,7 @@ protected:
 	bool isDraw;
 	float size;
 	float weight;
+	Vector3 virtualityPlanePosition;
 
 	//デフォルトの図形情報を一回だけ計算
 	virtual void PointSetting() = 0;

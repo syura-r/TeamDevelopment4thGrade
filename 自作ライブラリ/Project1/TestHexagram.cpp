@@ -1,12 +1,15 @@
 #include "TestHexagram.h"
 #include "ObjectManager.h"
 #include "DrawMode.h"
+#include "ActorManager.h"
+#include "Field.h"
 std::vector<LocusPointInfo> TestHexagram::baseInfo = std::vector<LocusPointInfo>();
 
 TestHexagram::TestHexagram(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
 	:BaseLocus(arg_angle, arg_color)
 {
-	position = arg_pos;
+	virtualityPlanePosition = arg_pos;
+	position = virtualityPlanePosition;
 	size = 16.0f;
 	weight = 10.0f;
 	if (baseInfo.empty())
@@ -21,7 +24,7 @@ TestHexagram::TestHexagram(const Vector3& arg_pos, const float arg_angle, const 
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		Line* line = new Line(rotatedPos + position, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
+		Line* line = new Line(rotatedPos + virtualityPlanePosition, angle + baseInfo[i].angle, baseInfo[i].length, arg_color, Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, true);
 	}
@@ -29,7 +32,7 @@ TestHexagram::TestHexagram(const Vector3& arg_pos, const float arg_angle, const 
 //Vector4(1, 1, 0, 0.6f)
 
 TestHexagram::TestHexagram(const TestHexagram& arg_testHexagram, const DirectX::XMFLOAT4& arg_color)
-	:TestHexagram(arg_testHexagram.position, arg_testHexagram.angle, arg_color)
+	:TestHexagram(arg_testHexagram.virtualityPlanePosition, arg_testHexagram.angle, arg_color)
 {
 }
 
@@ -55,14 +58,15 @@ void TestHexagram::Draw()
 
 void TestHexagram::Move(const Vector3& arg_movePos, const float arg_angle)
 {
-	position = arg_movePos;
+	virtualityPlanePosition = arg_movePos;
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 	angle = arg_angle;
 	//à¯êîÇ≈Ç‡ÇÁÇ¡ÇΩç¿ïWÅAäpìxÇ…ïœä∑ÇµÇƒLineÇê∂ê¨
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));
 	for (int i = 0; i < baseInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(baseInfo[i].startPos.ConvertXMVECTOR(), rotMat);
-		lines[i]->Move(rotatedPos + position, angle + baseInfo[i].angle);
+		lines[i]->Move(rotatedPos + virtualityPlanePosition, angle + baseInfo[i].angle);
 	}
 }
 

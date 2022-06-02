@@ -39,6 +39,10 @@ Play::Play()
 	actorManager = ActorManager::GetInstance();
 	actorManager->Initialize();
 
+	Field* field = new Field();
+	objectManager->Add(field);
+	actorManager->AddObject("field", field);
+
 	player = new Player();
 	objectManager->Add(player);
 	actorManager->AddObject("player", player);
@@ -64,10 +68,6 @@ Play::Play()
 	std::vector<Vector3>scales;
 	std::vector<Vector3>rotations;
 	std::vector<Object*>loadObjects;
-
-	Field* field = new Field();
-	objectManager->Add(field);
-	actorManager->AddObject("field", field);
 
 	//for (int i = 0; i < 9; i++)
 	//{
