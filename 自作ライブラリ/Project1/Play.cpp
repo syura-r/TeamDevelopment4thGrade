@@ -15,7 +15,9 @@
 #include "Player.h"
 #include "Floor.h"
 #include "TestBoss.h"
+#include "Field.h"
 
+#include "StandardEnemy.h"
 
 Play::Play()
 {
@@ -41,13 +43,14 @@ Play::Play()
 	objectManager->Add(player);
 	actorManager->AddObject("player", player);
 
-	TestBoss* testBoss = new TestBoss({ 0,0,50 }, 100);
+	/*TestBoss* testBoss = new TestBoss({ 0,0,50 }, 100);
 	objectManager->Add(testBoss);
-	actorManager->AddObject("boss", testBoss);
-	
+	actorManager->AddObject("boss", testBoss);*/
 
-	/*testStar = new TestStar(Vector3(20, 0, 20), 90);
-	objectManager->Add(testStar);*/
+	// 
+	StandardEnemy* testEnemy = new StandardEnemy({ 0,0,0 }, 10);
+	objectManager->Add(testEnemy);
+	actorManager->AddObject("enemy", testEnemy);
 
 	result = std::make_unique<Result>();
 //---------------------------------‰¼ŽÀ‘•------------------------------------------
@@ -61,7 +64,7 @@ Play::Play()
 	std::vector<Vector3>scales;
 	std::vector<Vector3>rotations;
 	std::vector<Object*>loadObjects;
-	objectManager->Add(new Floor());
+	objectManager->Add(new Field());
 	//for (int i = 0; i < 9; i++)
 	//{
 	//	lightGroup->SetPointLightActive(i, true);

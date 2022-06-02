@@ -100,6 +100,7 @@ void Game::RoadAsset()
 	case 4:
 		//FBXファイルの読み込み
 		FBXManager::LoadModelFile("player", "player", false);
+		FBXManager::LoadModelFile("enemy", "player", false);
 		//WAVファイルの読み込み
 		//Audio::LoadFile("test", "51e7ff6cc6b93897.wav");
 		break;
@@ -111,6 +112,8 @@ void Game::RoadAsset()
 		FBXManager::AddAnimationList("player", "jump", 122, 152);
 		FBXManager::AddAnimationList("player", "secondJump", 153, 180);
 		FBXManager::AddAnimationList("player", "airSlide", 181, 190);
+
+		FBXManager::AddAnimationList("enemy", "stand", 61, 61);
 
 		break;
 	default:

@@ -191,6 +191,7 @@
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FBXManager.cpp" />
     <ClCompile Include="FBXModel.cpp" />
+    <ClCompile Include="Field.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -238,6 +239,7 @@
     <ClCompile Include="SmartPtr.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="StandardEnemy.cpp" />
     <ClCompile Include="TestBoss.cpp" />
     <ClCompile Include="TestHexagram.cpp" />
     <ClCompile Include="TestPentagon.cpp" />
@@ -289,6 +291,7 @@
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FBXManager.h" />
     <ClInclude Include="FBXModel.h" />
+    <ClInclude Include="Field.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="Game.h" />
@@ -346,6 +349,7 @@
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="StandardEnemy.h" />
     <ClInclude Include="TestBoss.h" />
     <ClInclude Include="TestHexagram.h" />
     <ClInclude Include="TestPentagon.h" />

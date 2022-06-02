@@ -42,6 +42,9 @@ public:
 	const unsigned int GetFeverQuota()const;
 	//残機が残っているか
 	bool IsAlive();
+
+	// 敵と図形の判定のため
+	std::vector<BaseLocus*> GetVecLocuss() { return vecLocuss; };
 	
 private:
 	struct ConstBuffData

@@ -222,14 +222,17 @@ void Player::Update()
 	}
 
 	TestBoss* boss = ActorManager::GetInstance()->GetBoss();
-	if (!IsAlive() || !boss->IsAlive())
+	if (boss)
 	{
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
+		if (!IsAlive() || !boss->IsAlive())
 		{
-			Initialize();
-			boss->Initialize();
+			if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
+			{
+				Initialize();
+				boss->Initialize();
+			}
+			return;
 		}
-		return;
 	}
 	
 	locusSelecter->Update();
@@ -401,9 +404,12 @@ void Player::Draw()
 		}
 
 		TestBoss* boss = ActorManager::GetInstance()->GetBoss();
-		if (!IsAlive() || !boss->IsAlive())
+		if (boss)
 		{
-			gameOverSprite->DrawSprite("s_GameOver", Vector2(960, 64));
+			if (!IsAlive() || !boss->IsAlive())
+			{
+				gameOverSprite->DrawSprite("s_GameOver", Vector2(960, 64));
+			}
 		}
 	}
 }
@@ -1102,7 +1108,11 @@ void Player::MoveEndDrawing(BaseLocus* arg_locus)
 void Player::Attack()
 {
 	float value = 4.0f * vecLocuss.size();
-	ActorManager::GetInstance()->GetBoss()->Damage(value);
+	TestBoss* boss = ActorManager::GetInstance()->GetBoss();
+	if (boss)
+	{
+		boss->Damage(value);
+	}	
 }
 
 void Player::CheckIsInFever()
@@ -1181,8 +1191,14 @@ void Player::StayInTheField()
 
 void Player::HitCheckBossAttack()
 {
+	TestBoss* boss = ActorManager::GetInstance()->GetBoss();
+	if (!boss)
+	{
+		return;
+	}
+
 	//ƒ~ƒTƒCƒ‹
-	std::vector<BossMissile*>& missiles = ActorManager::GetInstance()->GetBoss()->GetMissiles();
+	std::vector<BossMissile*>& missiles = boss->GetMissiles();
 	for (int i = 0; i < missiles.size(); i++)
 	{
 		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(missiles[i]->GetPosition() - position));
@@ -1204,7 +1220,7 @@ void Player::HitCheckBossAttack()
 	}
 
 	//”ÍˆÍUŒ‚
-	std::vector<BossRangeAttack*>& rangeAttacks = ActorManager::GetInstance()->GetBoss()->GetRangeAttacks();
+	std::vector<BossRangeAttack*>& rangeAttacks = boss->GetRangeAttacks();
 	for (int i = 0; i < rangeAttacks.size(); i++)
 	{
 		if (!rangeAttacks[i]->IsActive())

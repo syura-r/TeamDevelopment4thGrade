@@ -130,6 +130,12 @@
     <Filter Include="ソース ファイル\GameObject\proto_first">
       <UniqueIdentifier>{ba4bb225-1dc6-477b-b603-4cfc59af8b37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject\proto_second">
+      <UniqueIdentifier>{98271ab2-ee76-4b63-a96e-53cd7a69d3c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObject\proto_second">
+      <UniqueIdentifier>{3a6e0a66-3a7f-467a-abc2-cc9d7f7e462d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -380,6 +386,12 @@
     </ClCompile>
     <ClCompile Include="TestBoss.cpp">
       <Filter>ソース ファイル\GameObject\proto_first</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardEnemy.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -685,6 +697,12 @@
     </ClInclude>
     <ClInclude Include="TestBoss.h">
       <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardEnemy.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
