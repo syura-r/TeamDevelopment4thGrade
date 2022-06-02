@@ -1,6 +1,8 @@
 #pragma once
 #include "Object.h"
-#include "Timer.h"
+
+class FBXModel;
+class Timer;
 
 enum class EnemyState
 {
@@ -67,7 +69,9 @@ private:
     // ˆÚ“®‚ªŠ®—¹‚µ‚½‚©
     bool isMoved = true;
     // ‘¬“x’²®—p
-    float speed = 1.0f;
+    float speed = 0.2f;
     // “¥‚ñ’£‚èó‘Ô‚©
-    bool 
+    bool isStraddle = false;
+    // ‘€ì‚·‚é‚©
+    bool isControl = false;
 };

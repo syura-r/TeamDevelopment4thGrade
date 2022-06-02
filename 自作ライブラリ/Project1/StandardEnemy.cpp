@@ -1,4 +1,5 @@
 #include "StandardEnemy.h"
+#include "Timer.h"
 #include "FBXModel.h"
 #include "FBXManager.h"
 #include "BoxCollider.h"
@@ -57,6 +58,10 @@ void StandardEnemy::Initialize()
 	weight = initWeight;
 	state = EnemyState::Wait;
 
+	isMoved = true;
+	speed = 0.2f;
+	isStraddle = false;
+	isControl = false;
 }
 
 void StandardEnemy::Update()
@@ -64,6 +69,12 @@ void StandardEnemy::Update()
 	myModel->PlayAnimation("stand", true, 1, false);
 	actionTimer->Update();
 	walkingTimer->Update();
+
+	// 自分で操作したい時用(imguiで選択)
+	if (isControl)
+	{
+		DebugControl();
+	}
 
 	// 行動パターンの選択
 	if (HitCheckLoci())
@@ -125,7 +136,7 @@ void StandardEnemy::Update()
 void StandardEnemy::Draw()
 {
 	ImGui::Begin("enemy");
-
+	ImGui::Checkbox("isControl", &isControl);
 	ImGui::End();
 
 	PipelineState::SetPipeline("FBX");
@@ -191,7 +202,8 @@ bool StandardEnemy::HitCheckLoci()
 {
 	static const float radius = 1.0f;
 
-	std::vector<BaseLocus*> vecLocuss=
+	// プレイヤーから書いた線のデータを引っ張ってくる
+	std::vector<BaseLocus*> vecLocuss = ActorManager::GetInstance()->GetPlayer()->GetVecLocuss();
 
 	for (auto locus : vecLocuss)
 	{
@@ -232,8 +244,17 @@ bool StandardEnemy::IsOnField()
 
 void StandardEnemy::DebugControl()
 {
-	if (Input::DownKey(DIK_J) || Input::DownKey(DIK_L) || Input::DownKey(DIK_K) || Input::DownKey(DIK_I))
-	{
+	velocity = { 0,0,0 };
 
-	}
+	if (Input::DownKey(DIK_J))
+		velocity.x = -1;
+	if (Input::DownKey(DIK_L))
+		velocity.x = 1;
+	if (Input::DownKey(DIK_K))
+		velocity.z = -1;
+	if (Input::DownKey(DIK_I))
+		velocity.z = 1;
+
+	position += velocity * speed;
+
 }
