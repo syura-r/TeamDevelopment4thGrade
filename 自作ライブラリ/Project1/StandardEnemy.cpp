@@ -71,7 +71,16 @@ void StandardEnemy::Initialize()
 
 void StandardEnemy::Update()
 {
-	myModel->PlayAnimation("stand", true, 1, false);
+	// ƒ‚[ƒVƒ‡ƒ“
+	if (state == EnemyState::Wait)
+	{
+		myModel->PlayAnimation("stand", true, 1, false);
+	}
+	else
+	{
+		myModel->PlayAnimation("walk", true);
+	}
+
 	actionTimer->Update();
 	walkingTimer->Update();
 	prePos = position;
