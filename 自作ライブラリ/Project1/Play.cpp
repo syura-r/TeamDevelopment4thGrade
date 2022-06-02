@@ -52,7 +52,7 @@ Play::Play()
 	actorManager->AddObject("boss", testBoss);*/
 
 	// 
-	StandardEnemy* testEnemy = new StandardEnemy({ 0,0,0 }, 10);
+	StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
 	objectManager->Add(testEnemy);
 	actorManager->AddObject("enemy", testEnemy);
 

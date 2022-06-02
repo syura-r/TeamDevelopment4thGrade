@@ -47,6 +47,7 @@ private:
     bool HitCheckLoci();
     // フィールド上に居るか
     bool IsOnField();
+    void StayInTheField();
 
     // デバッグ用操作
     void DebugControl();
@@ -59,6 +60,9 @@ private:
     // 時間
     Timer* actionTimer = nullptr;
     Timer* walkingTimer = nullptr;
+
+    //平面のままのposition
+    Vector3 virtualityPlanePosition;
 
     // 初期位置
     Vector3 initPos;

@@ -7,6 +7,7 @@
 #include "ActorManager.h"
 #include "Player.h"
 #include "Input.h"
+#include "Field.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -54,6 +55,8 @@ void StandardEnemy::Initialize()
 
 	actionTimer->Initialize();
 	walkingTimer->Initialize();
+
+	virtualityPlanePosition = position;
 
 	weight = initWeight;
 	state = EnemyState::Wait;
@@ -151,6 +154,11 @@ void StandardEnemy::DrawReady()
 
 void StandardEnemy::Move()
 {
+	if (isControl)
+	{
+		return;
+	}
+
 	if (isMoved == true)
 	{
 		//ランダムな向きを決定
@@ -167,7 +175,9 @@ void StandardEnemy::Move()
 		isMoved = false;
 	}
 
-	position += velocity * speed;
+	virtualityPlanePosition += velocity * speed;
+	StayInTheField();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 
 	// 移動しきるか他の行動に移ったらactionTimerをリセット
 	if (walkingTimer->IsTime())
@@ -242,6 +252,29 @@ bool StandardEnemy::IsOnField()
 	return false;
 }
 
+void StandardEnemy::StayInTheField()
+{
+	//X軸
+	if (virtualityPlanePosition.x > 45)
+	{
+		virtualityPlanePosition.x = 45;
+	}
+	else if (virtualityPlanePosition.x < -45)
+	{
+		virtualityPlanePosition.x = -45;
+	}
+
+	//Z軸
+	if (virtualityPlanePosition.z > 45)
+	{
+		virtualityPlanePosition.z = 45;
+	}
+	else if (virtualityPlanePosition.z < -45)
+	{
+		virtualityPlanePosition.z = -45;
+	}	
+}
+
 void StandardEnemy::DebugControl()
 {
 	velocity = { 0,0,0 };
@@ -255,6 +288,9 @@ void StandardEnemy::DebugControl()
 	if (Input::DownKey(DIK_I))
 		velocity.z = 1;
 
-	position += velocity * speed;
+	velocity.Normalize();
 
+	virtualityPlanePosition += velocity * speed;
+	StayInTheField();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 }
