@@ -412,6 +412,8 @@ void Player::Move()
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 
+
+	
 	//‘–‚è‚Æ•à‚«‚ÌØ‚è‘Ö‚¦ˆ—
 	
 	if (isDrawing)
@@ -420,9 +422,16 @@ void Player::Move()
 	}
 	else
 	{
-		
+		//ŠŠ‚è—‚¿‚éˆ—
+		float fallSpeed = 0.05f;
+		Field* field = ActorManager::GetInstance()->GetField();
+
+		position += field->GetTilt() * fallSpeed;
+	   
 		speed = walkSpeed;
 	}
+
+
 
 	//ˆÚ“®ˆ—
 	if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
@@ -451,6 +460,7 @@ void Player::Move()
 		
 		if (!isDrawing)
 		{	
+			
 			//’‹ŠÔ‚â‚é
 			
 			if (Input::DownKey(DIK_A))

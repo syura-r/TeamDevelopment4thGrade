@@ -20,6 +20,8 @@ public:
 
 	Vector3 GetAngleTilt()const;
 
+	Vector3 GetTilt();
+
 private:
 	//çLÇ≥
 	const float RADIUS = 45.0f;

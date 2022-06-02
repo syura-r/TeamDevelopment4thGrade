@@ -114,3 +114,8 @@ Vector3 Field::GetAngleTilt() const
 {
 	return angleTilt;
 }
+
+Vector3 Field::GetTilt()
+{
+	return LocusUtility::Dim2XZToDim3(tiltDirection);
+}
