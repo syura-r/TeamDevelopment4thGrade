@@ -527,7 +527,7 @@ void Player::Move()
 		{
 			virtualityPlanePosition += moveDirection * (speed * inputAccuracy);
 			StayInTheField();
-			position = virtualityPlanePosition;
+			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), StartPos);
 			isExtendLine = true;
 		}
 		else
@@ -1100,7 +1100,7 @@ void Player::HitCheckBossAttack()
 	std::vector<BossMissile*>& missiles = boss->GetMissiles();
 	for (int i = 0; i < missiles.size(); i++)
 	{
-		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(missiles[i]->GetPosition() - position));
+		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(missiles[i]->GetPosition() - virtualityPlanePosition));
 		if (length <= 4.0f)
 		{
 			HitBossMissile(missiles[i]);
@@ -1129,10 +1129,10 @@ void Player::HitCheckBossAttack()
 
 		Vector3 attackScale = rangeAttacks[i]->GetScale() / 2.0f;
 		Vector3 attackPos = rangeAttacks[i]->GetPosition();
-		if (position.x >= attackPos.x - attackScale.x - 1 &&
-			position.x <= attackPos.x + attackScale.x + 1 &&
-			position.z >= attackPos.z - attackScale.z - 1 &&
-			position.z <= attackPos.z + attackScale.z + 1)
+		if (virtualityPlanePosition.x >= attackPos.x - attackScale.x - 1 &&
+			virtualityPlanePosition.x <= attackPos.x + attackScale.x + 1 &&
+			virtualityPlanePosition.z >= attackPos.z - attackScale.z - 1 &&
+			virtualityPlanePosition.z <= attackPos.z + attackScale.z + 1)
 		{
 			HitBossRangeAttack(rangeAttacks[i]);
 		}
@@ -1217,8 +1217,8 @@ void Player::HitCheckLoci()
 		for (int i = 0; i < locus->GetMaxNumLine(); i++)
 		{
 			Line* line = locus->GetLine(i);
-			Vector2 AO = LocusUtility::Dim3ToDim2XZ(position - line->GetStartPos());
-			Vector2 BO = LocusUtility::Dim3ToDim2XZ(position - line->GetEndPos());
+			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetStartPos());
+			Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetEndPos());
 			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetEndPos() - line->GetStartPos());
 			Vector2 normalAB = Vector2::Normalize(AB);
 
