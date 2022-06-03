@@ -85,6 +85,10 @@ void Game::RoadAsset()
 		Texture::LoadTexture("s_Fever", "s_Fever.png");
 		Texture::LoadTexture("titlelogo", "titlelogo.png");
 		Texture::LoadTexture("titlestart", "titlestart.png");
+		Texture::LoadTexture("toGame", "toGame.png");
+		Texture::LoadTexture("restart", "restart.png");
+		Texture::LoadTexture("toTitle", "toTitle.png");
+		Texture::LoadTexture("selectInPause", "selectInPause.png");
 	
 		break; 
 	case 2:
