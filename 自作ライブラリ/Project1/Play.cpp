@@ -147,8 +147,6 @@ void Play::Update()
 	lightGroup->Update();
 	objectManager->Update();
 	collisionManager->CheckAllCollisions();
-	if (!player->GetReset())
-		TimeUpdate();
 }
 
 void Play::PreDraw()
