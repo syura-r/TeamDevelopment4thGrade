@@ -22,7 +22,8 @@ Play::Play()
 	next = Ending;
 	camera = std::make_unique<DebugCamera>();
 	Object3D::SetCamera(camera.get());
-	ParticleEmitter::Initialize(camera.get());
+	//ParticleEmitter::Initialize(camera.get());
+	ParticleManager::GetInstance()->SetCamera(camera.get());
 	Player::SetDebugCamera(camera.get());
 	//ƒ‰ƒCƒg¶¬
 	lightGroup.reset(LightGroup::Create());
@@ -145,6 +146,11 @@ void Play::Initialize()
 void Play::Update()
 {
 	camera->Update();
+
+	if (Input::TriggerKey(DIK_7))
+	{
+		ParticleEmitter::CreateExplosion(Vector3(0, 0, 0));
+	}
 
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });

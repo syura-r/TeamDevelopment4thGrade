@@ -5,12 +5,19 @@
 
 ParticleManager* ParticleEmitter::particleManager = nullptr;
 
-void ParticleEmitter::Initialize(Camera* camera)
+//void ParticleEmitter::Initialize(Camera* camera)
+//{
+//	particleManager = ParticleManager::GetInstance();
+//	particleManager->SetCamera(camera);
+//	particleManager->Initialize();
+//}
+
+void ParticleEmitter::Initialize()
 {
 	particleManager = ParticleManager::GetInstance();
-	particleManager->SetCamera(camera);
 	particleManager->Initialize();
 }
+
 
 void ParticleEmitter::CreateExplosion(const Vector3& pos)
 {

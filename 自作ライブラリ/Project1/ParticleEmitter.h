@@ -6,7 +6,9 @@ class ParticleEmitter
 private:
 	static ParticleManager* particleManager;
 public:
-	static void Initialize(Camera* camera);
+	//static void Initialize(Camera* camera);
+	static void Initialize();
+
 	static void CreateExplosion(const Vector3& pos);
 	static void CreateShock(const Vector3& pos, const Vector3& arg_rotation = { XM_PI * 0.5f,0,0 });
 	static void CreateGetEffect(const Vector3& pos);
