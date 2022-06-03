@@ -62,7 +62,7 @@ void Field::CalcTilt()
 {
 	tiltDirection = Vector2();
 
-	/*Player* player = ActorManager::GetInstance()->GetPlayer();
+	Player* player = ActorManager::GetInstance()->GetPlayer();
 	if (player)
 	{
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
@@ -76,7 +76,7 @@ void Field::CalcTilt()
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(enemy->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * enemy->GetWeight() * GetMultiplyingFactor(Vector3::Length(enemy->GetVirtualityPlanePosition()));
 		tiltDirection += posVector;
-	}*/
+	}
 
 	for (int i = 0; i < influences.size(); i++)
 	{

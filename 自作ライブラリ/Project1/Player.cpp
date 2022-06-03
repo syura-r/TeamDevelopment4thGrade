@@ -1218,20 +1218,20 @@ void Player::HitCheckEnemy()
 void Player::HitEnemy()
 {
 	
-	static const float weightCoefficient = 0.5;
+	static const float weightCoefficient = 0.3f;
 	//汎用化
 	StandardEnemy* standardEnemy = ActorManager::GetInstance()->GetStandardEnemy();
 	standardEnemy->IsBlow();
 	isBlow = true;
 	
-	blowTime = 60;
-	standardEnemy->SetBlowTime(60);
+	blowTime = 40;
+	standardEnemy->SetBlowTime(40);
 
 	Vector3 enemyPos = standardEnemy->GetVirtualityPlanePosition();
 	Vector3 enemyVel = standardEnemy->GetVelocity();
 	float enemyWeight = standardEnemy->GetWeight() * weightCoefficient;
 
-	float totalWeight = weight * weightCoefficient + enemyWeight;
+	float totalWeight = (weight * weightCoefficient) + enemyWeight;
 	float refRate = (1 + 1 * 1); //反発率をプレイヤー、エネミーそれぞれ持たせる
 	Vector3 c = virtualityPlanePosition - enemyPos;
 	c.Normalize();
@@ -1241,7 +1241,7 @@ void Player::HitEnemy()
 
 	//衝突後速度ベクトル
 	Vector3  playerAfterVel = -enemyWeight * constVec + velocity;
-	Vector3  enemyAfterVel = weight * weightCoefficient * constVec + enemyVel;
+	Vector3  enemyAfterVel = (weight * weightCoefficient) * constVec + enemyVel;
 
 
 	velocity = playerAfterVel.Normalize();
