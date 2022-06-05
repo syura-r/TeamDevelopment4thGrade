@@ -54,6 +54,8 @@ private:
 
     // デバッグ用操作
     void DebugControl();
+    // 移動とモデルの向きを合わせる
+    void MatchDir();
 
     // モデル
     FBXModel* myModel = nullptr;

@@ -198,7 +198,7 @@ void StandardEnemy::Move()
 
 	virtualityPlanePosition += velocity * speed;
 	StayInTheField();
-
+	MatchDir();
 	// 移動しきるか他の行動に移ったらactionTimerをリセット
 	if (walkingTimer->IsTime())
 	{
@@ -342,4 +342,9 @@ void StandardEnemy::DebugControl()
 
 	virtualityPlanePosition += velocity * speed;
 	StayInTheField();
+}
+
+void StandardEnemy::MatchDir()
+{
+	rotation.y = atan2(velocity.x, velocity.z) * 180 / PI;
 }
