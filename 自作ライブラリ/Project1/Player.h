@@ -131,6 +131,13 @@ private:
 	//無敵処理
 	void BeingInvincible();
 	bool IsInvincible();
+	//踏ん張りになる
+	void IsStand();
+	//踏ん張り中の処理
+	void WithStand();
+	//
+	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);
+
 	
 	ObjectManager* pObjectManager = nullptr;
 
@@ -173,6 +180,21 @@ private:
 	bool isBlow = false;
 	// 吹っ飛び時間
 	int blowTime = 60;
+	//踏ん張り中
+	bool isStanding = false;
+	//踏ん張り中の猶予
+	int standTime = 120;
+	//踏ん張りになる前のベクトル
+	Vector3 preStandVec;
+	//踏ん張り中の色を変化させるための値
+	float BGColor = 1;
+	//踏ん張り復帰中
+	bool isReturningField = false;
+	//復帰後の着地位置
+	Vector3 returningStartPos = { 0,0,0 };
+	Vector3 returningEndPos = { 0,0,0 };
+	//復帰移動イージング用のカウント
+	int moveEasingCount = 0;
 
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;
