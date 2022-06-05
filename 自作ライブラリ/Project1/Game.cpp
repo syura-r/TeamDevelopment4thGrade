@@ -113,6 +113,7 @@ void Game::RoadAsset()
 		FBXManager::AddAnimationList("player", "secondJump", 153, 180);
 		FBXManager::AddAnimationList("player", "airSlide", 181, 190);
 
+		FBXManager::AddAnimationList("enemy", "walk", 0, 60);
 		FBXManager::AddAnimationList("enemy", "stand", 61, 61);
 
 		break;
