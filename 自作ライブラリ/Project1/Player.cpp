@@ -366,6 +366,7 @@ void Player::DrawReady()
 		ImGui::Text("Position : {%f, %f, %f }\n", position.x, position.y, position.z);
 		ImGui::Text("Rot : {%f, %f, %f }\n", rotation.x, rotation.y, rotation.z);
 		ImGui::Text("inputAccuracy : {%f}\n", inputAccuracy);
+		ImGui::Text("virtualityPlanePosition : {%f,%f,%f}\n", virtualityPlanePosition.x, virtualityPlanePosition.y, virtualityPlanePosition.z);
 
 		ImGui::SliderFloat("destruction", &sendData._Destruction, 0, 1.0f);
 		ImGui::SliderFloat("scaleFactor", &sendData._ScaleFactor, 0, 1.0f);
@@ -374,6 +375,7 @@ void Player::DrawReady()
 		ImGui::SliderInt("tessellation", &sendData._Tessellation, 1, 32);
 		ImGui::SliderInt("onEasing", &sendData._OnEasing, 0, 1);
 		ImGui::Checkbox("reset", &reset);
+		
 
 		ImGui::End();
 	}
@@ -415,22 +417,31 @@ void Player::Move()
 	}
 	else
 	{
-		//滑り落ちる処理
-		float fallSpeed = 0.05f;
 		Field* field = ActorManager::GetInstance()->GetField();
-				
-		virtualityPlanePosition += field->GetTilt() * fallSpeed;
-		StayInTheField();
+
+		if (isStanding) //踏ん張り中
+		{
+			WithStand();
+		}
+		else
+		{
+			//滑り落ちる処理
+			float fallSpeed = 0.05f;
+			virtualityPlanePosition += field->GetTilt() * fallSpeed;
+			StayInTheField();
+		}
+		
+		
 		position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), StartPos);
 	   
 		speed = walkSpeed;
 	}
 
 	//移動処理
-	if ((Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
-		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()) || isBlow)
+	if (((Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
+		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()) || isBlow) && !isStanding && !isReturningField)
 	{
-		if (onGround)
+		/*if (onGround)
 		{
 			walkDustCounter++;
 			if (walkDustCounter > 25)
@@ -445,7 +456,7 @@ void Player::Move()
 				}
 				walkDustCounter = 0;
 			}
-		}
+		}*/
 		//移動方向
 		Vector3 moveDirection = {};
 		Vector2 stickDirection = {};
@@ -573,6 +584,17 @@ void Player::Move()
 	else
 	{
 			myModel->PlayAnimation("stand", true);
+			if (isReturningField)
+			{
+				virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
+				position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), { 0,-5,0 });
+				moveEasingCount++;
+				if (moveEasingCount >= 30)
+				{
+					moveEasingCount = 0;
+					isReturningField = false;
+				}
+			}
 	}
 }
 
@@ -1071,33 +1093,37 @@ void Player::Attack()
 
 void Player::StayInTheField()
 {
-	bool b = false;
+	if (isStanding || isReturningField)
+	{
+		return;
+	}
 
 	//X軸
 	if (virtualityPlanePosition.x > fieldUpperLimit.x)
 	{
 		virtualityPlanePosition.x = fieldUpperLimit.x;
-		b = true;
+		IsStand();
+		
 	}
 	else if (virtualityPlanePosition.x < fieldLowerLimit.x)
 	{
 		virtualityPlanePosition.x = fieldLowerLimit.x;
-		b = true;
+		IsStand();
 	}
 	
 	//Z軸
 	if (virtualityPlanePosition.z > fieldUpperLimit.y)
 	{
 		virtualityPlanePosition.z = fieldUpperLimit.y;
-		b = true;
+		IsStand(); 
 	}
 	else if (virtualityPlanePosition.z < fieldLowerLimit.y)
 	{
 		virtualityPlanePosition.z = fieldLowerLimit.y;
-		b = true;
+		IsStand();
 	}
 
-	if (!b)
+	if (!isStanding)
 	{
 		return;
 	}
@@ -1273,6 +1299,78 @@ void Player::BeingInvincible()
 bool Player::IsInvincible()
 {
 	return invincibleTimer->GetTime(TimerPerformance::Up) != 0;
+}
+
+void Player::IsStand()
+{
+	isStanding = true;
+	standTime = 120;
+	preStandVec = -position;
+	preStandVec.y = 0;
+	preStandVec.Normalize();
+}
+
+void Player::WithStand()
+{
+	//踏ん張り中　赤
+	Object::SetColor({ 0.6f,BGColor,BGColor,1 });
+	if (BGColor >= 0)
+	{
+		BGColor -= 0.02f;
+	}
+	else
+	{
+		BGColor = 1;
+	}
+
+	//カメラのビュー行列の逆行列を計算
+	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
+	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
+	Vector2 stickDirection = {};
+	//スティックの向き
+	auto vec = Input::GetLStickDirection();
+	stickDirection.x = (cameraDirectionX * vec.x).x;
+	stickDirection.y = (cameraDirectionZ * vec.y).z;
+	stickDirection = Vector2::Normalize(stickDirection);
+
+	float accuracy = 0;
+
+	Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preStandVec);
+
+	accuracy = Vector2::Dot(stickDirection, correctVec);
+
+	if (accuracy <= 0)
+	{
+		accuracy = 0;
+	}
+
+	if (accuracy >= 0.7f)
+	{
+		Vector3 moveDirection = preStandVec;	
+		Object::SetColor({ 1,1,1,1 });
+		isReturningField = true;
+		isStanding = false;
+		returningStartPos = virtualityPlanePosition;
+		returningEndPos = virtualityPlanePosition + moveDirection * 3;
+		return;
+	}
+
+	/*standTime--;
+	if (standTime <= 0)
+	{
+		Object::SetColor({ 1,1,1,1 });
+		isStanding = false;
+	}*/
+}
+
+Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
+{
+	Vector3 result = {};
+	result.x = Easing::EaseOutCubic(arg_startPos.x, arg_endPos.x, arg_maxTime, arg_nowTime);
+	result.y = Easing::EaseOutCubic(arg_startPos.y, arg_endPos.y, arg_maxTime, arg_nowTime);
+	result.z = Easing::EaseOutCubic(arg_startPos.z, arg_endPos.z, arg_maxTime, arg_nowTime);
+	return result;
 }
 
 bool Player::IsAlive()
