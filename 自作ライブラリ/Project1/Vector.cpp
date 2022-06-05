@@ -201,6 +201,16 @@ Vector3::Vector3(const float & x, const float & y, const float & z)
 	this->z = z;
 }
 
+Vector3 Vector3::operator+()
+{
+	return *this;
+}
+
+Vector3 Vector3::operator-()
+{
+	return Vector3{ -x,-y,-z };
+}
+
 
 //Vector3& Vector3::operator*(Vector3 vector)
 //{
