@@ -39,18 +39,6 @@ Play::Play()
 	actorManager = ActorManager::GetInstance();
 	actorManager->Initialize();
 
-	Field* field = new Field();
-	objectManager->Add(field);
-	actorManager->AddObject("field", field);
-
-	player = new Player();
-	objectManager->Add(player);
-	actorManager->AddObject("player", player);	
-
-	StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
-	objectManager->Add(testEnemy);
-	actorManager->AddObject("enemy", testEnemy);
-
 	result = std::make_unique<Result>();
 //---------------------------------仮実装------------------------------------------
 	std::string filepath = "Resources/Map/Report" + std::to_string(0) + ".txt";
@@ -143,7 +131,23 @@ void Play::Initialize()
 {
 	Object3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());
-	objectManager->Initialize();
+
+	objectManager->Reset();
+	actorManager->Initialize();
+
+	//ゲームオブジェクト生成
+	Field* field = new Field();
+	objectManager->Add(field);
+	actorManager->AddObject("field", field);
+
+	Player* player = new Player();
+	objectManager->Add(player);
+	actorManager->AddObject("player", player);
+
+	StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
+	objectManager->Add(testEnemy);
+	actorManager->AddObject("enemy", testEnemy);
+
 	isEnd = false;
 	pause->Initialize();
 }
@@ -177,7 +181,7 @@ void Play::Update()
 	lightGroup->Update();
 	objectManager->Update();
 	collisionManager->CheckAllCollisions();
-	if (!player->GetReset())
+	if (!actorManager->GetPlayer()->GetReset())
 		TimeUpdate();
 }
 

@@ -31,6 +31,10 @@ void ActorManager::AddObject(std::string arg_name, Object* arg_object)
 	mapGameObject[arg_name] = arg_object;
 }
 
+void ActorManager::DeleteObject(Object* arg_object)
+{
+}
+
 Object* ActorManager::GetGameObject(std::string arg_name)
 {
 	return mapGameObject[arg_name];

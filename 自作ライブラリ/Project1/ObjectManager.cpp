@@ -31,6 +31,25 @@ void ObjectManager::Initialize()
 	}
 }
 
+void ObjectManager::Reset()
+{
+	for (auto& vecObjects : objects)
+	{
+		for (auto itr = vecObjects.second.begin(); itr != vecObjects.second.end();)
+		{
+			if (*itr)
+			{
+				itr = vecObjects.second.erase(itr);
+			}
+			else
+			{
+				itr++;
+			}
+		}
+		vecObjects.second.clear();
+	}
+}
+
 void ObjectManager::Update()
 {
 	for (auto& it : objects)

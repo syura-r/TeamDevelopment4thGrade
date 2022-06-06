@@ -13,16 +13,17 @@ public:
 	void Update()override;
 
 	void Appear();
-
-	static float GetRadius();
+	
 	bool IsAppeared();
 
 private:
-	static const float RADIUS;
 
 	//•½–Ê‚Ì‚Ü‚Ü‚Ìposition
 	Vector3 virtualityPlanePosition;	
 
 	//”»’è”­¶‚Ü‚Å‚ÌŠÔ
 	Timer* appearTimer;
+
+public:
+	static const float RADIUS;
 };

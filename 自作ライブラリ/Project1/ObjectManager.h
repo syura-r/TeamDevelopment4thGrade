@@ -10,6 +10,7 @@ public:
 	void Add(Object* object = nullptr, bool preDraw = true);
 	void AddExecute(Object* object = nullptr, bool preDraw = true);
 	void Initialize();
+	void Reset();
 	void Update();
 	void Remove(Object* object);
 	//

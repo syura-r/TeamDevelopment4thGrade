@@ -1374,7 +1374,7 @@ Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_max
 
 void Player::EmitEnergyItem()
 {
-	EnergyItem* item = new EnergyItem(virtualityPlanePosition + Vector3(0, EnergyItem::GetRadius(), 0));
+	EnergyItem* item = new EnergyItem(virtualityPlanePosition + Vector3(0, EnergyItem::RADIUS, 0));
 	pObjectManager->Add(item);
 }
 

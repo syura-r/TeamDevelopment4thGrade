@@ -37,8 +37,7 @@ private:
 	float lightDir[3] = { 0.01f,-1.00f,0.0f };
 	bool targetSphere = false;
 	CollisionManager* collisionManager = nullptr;
-	ObjectManager* objectManager = nullptr;
-	Player* player =nullptr;
+	ObjectManager* objectManager = nullptr;	
 	std::unique_ptr<Menu> menu;
 
 	ActorManager* actorManager = nullptr;

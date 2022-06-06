@@ -19,6 +19,7 @@ public:
 	void Initialize();
 
 	void AddObject(std::string arg_name, Object* arg_object);
+	void DeleteObject(Object* arg_object);
 
 	Object* GetGameObject(std::string arg_name);
 
