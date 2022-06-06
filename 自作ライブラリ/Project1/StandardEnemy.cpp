@@ -21,14 +21,14 @@ StandardEnemy::StandardEnemy(Vector3 arg_position, float arg_hitWeight)
 	myModel = FBXManager::GetModel("enemy");
 	//モデルの生成
 	Create(myModel);
-	//当たり判定(Box)の生成
-	BoxCollider* boxCollider = new BoxCollider();
-	boxCollider->SetObject(this);
-	boxCollider->SetScale({ 0.2f,0.5f,0.2f });
-	boxCollider->SetOffset({ 0,0.5f,0 ,0 });
-	SetCollider(boxCollider);
-	collider->SetAttribute(COLLISION_ATTR_ENEMYS);
-	collider->SetMove(true);
+	////当たり判定(Box)の生成
+	//BoxCollider* boxCollider = new BoxCollider();
+	//boxCollider->SetObject(this);
+	//boxCollider->SetScale({ 0.2f,0.5f,0.2f });
+	//boxCollider->SetOffset({ 0,0.5f,0 ,0 });
+	//SetCollider(boxCollider);
+	//collider->SetAttribute(COLLISION_ATTR_ENEMYS);
+	//collider->SetMove(true);
 
 	actionTimer = new Timer(INTERVAL_ACTIONTIMER);
 	walkingTimer = new Timer(WALKING);
@@ -67,6 +67,7 @@ void StandardEnemy::Initialize()
 	speed = 0.2f;
 	isStraddle = false;
 	isControl = false;
+	isAttacked = false;
 }
 
 void StandardEnemy::Update()
@@ -121,10 +122,10 @@ void StandardEnemy::Update()
 		//{
 		//	state = EnemyState::CoolAfterRushAttack;
 		//}
-		//if (/*プレイヤーがタックルの射程に入ったら*/)
-		//{
-		//	state = EnemyState::RushAttack;
-		//}
+		if (RangeCheckPlayer())
+		{
+			state = EnemyState::RushAttack;
+		}
 		if (actionTimer->IsTime())
 		{
 			state = EnemyState::RandomMove;
@@ -166,7 +167,6 @@ void StandardEnemy::Update()
 			break;
 		}
 	}
-	
 
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
 
@@ -193,8 +193,6 @@ void StandardEnemy::IsBlow()
 {
 	isBlow = true;
 }
-
-
 
 void StandardEnemy::Move()
 {
@@ -233,10 +231,33 @@ void StandardEnemy::Move()
 
 void StandardEnemy::RushAttack()
 {
+	if (isControl)
+	{
+		return;
+	}
+
 	// プレイヤーの位置を見て予備動作→突進
 	// プレイヤーに当たった場合→後隙
 	// プレイヤーにも当たらず縁にも立たなかった場合→後隙
 	// 縁に到達した場合→踏ん張り状態
+
+	if (isAttacked == true)
+	{
+		state = EnemyState::Wait;
+		isAttacked = false;
+	}
+
+	if (isAttacked == false)
+	{
+		// 向きの決定
+		Vector3 attackDir = ActorManager::GetInstance()->GetPlayer()->GetVirtualityPlanePosition() - virtualityPlanePosition;
+		attackDir.Normalize();
+
+		velocity = attackDir * AttackPower;
+		isAttacked = true;
+
+		virtualityPlanePosition += velocity * speed;
+	}
 }
 
 void StandardEnemy::Straddle()
@@ -318,6 +339,24 @@ void StandardEnemy::HitLoci(Line* arg_line)
 {
 	position = prePos;
 	virtualityPlanePosition = preVirtualityPlanePosition;
+}
+
+bool StandardEnemy::RangeCheckPlayer()
+{
+	if (isBlow) { return false; }
+	Player* player = ActorManager::GetInstance()->GetPlayer();
+	if (!player)
+	{
+		return false;
+	}
+
+	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition() - virtualityPlanePosition));
+	if (length <= AttackRange)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 bool StandardEnemy::IsOnField()
