@@ -83,7 +83,12 @@ void Game::RoadAsset()
 		Texture::LoadTexture("s_LBorRB", "s_LBorRB.png");
 		Texture::LoadTexture("s_GameOver", "s_GameOver.png");
 		Texture::LoadTexture("s_Fever", "s_Fever.png");
-
+		Texture::LoadTexture("titlelogo", "titlelogo.png");
+		Texture::LoadTexture("titlestart", "titlestart.png");
+		Texture::LoadTexture("toGame", "toGame.png");
+		Texture::LoadTexture("restart", "restart.png");
+		Texture::LoadTexture("toTitle", "toTitle.png");
+		Texture::LoadTexture("selectInPause", "selectInPause.png");
 	
 		break; 
 	case 2:
@@ -198,7 +203,7 @@ void Game::LoadFinish()
 	sceneManeger->Add(Scene::SCENE::Title, new Title());
 	sceneManeger->Add(Scene::SCENE::Play, new Play());
 	//sceneManeger->Add(Scene::SCENE::Ending, new Ending());
-	sceneManeger->Change(Scene::SCENE::Play);
+	sceneManeger->Change(Scene::SCENE::Title);
 	
 	//shadowMap.reset(new TextureResource("shadowMap",{1920,1080}, DXGI_FORMAT_R32_FLOAT,{0,0,0,0}));
 	nowLoading = false;

@@ -224,6 +224,7 @@
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
+    <ClCompile Include="Pause.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="DirectXLib.cpp" />
     <ClCompile Include="Ending.cpp" />
@@ -330,6 +331,7 @@
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="ParticleParameter.h" />
+    <ClInclude Include="Pause.h" />
     <ClInclude Include="PipelineState.h" />
     <ClInclude Include="DirectXLib.h" />
     <ClInclude Include="Ending.h" />

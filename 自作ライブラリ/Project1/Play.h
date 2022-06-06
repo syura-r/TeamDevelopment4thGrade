@@ -13,6 +13,7 @@
 #include "Sprite.h"
 
 #include "ActorManager.h"
+#include "Pause.h"
 
 
 class TouchAbleObject;
@@ -58,5 +59,7 @@ private:
 	};
 	
 	std::array<float, 3> lightAtten = { 1,1,1 };
+
+	Pause* pause = nullptr;
 };
 

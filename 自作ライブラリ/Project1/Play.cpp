@@ -133,12 +133,15 @@ Play::Play()
 	}
 //---------------------------------------------------------------------------
 	objectManager->AddObjectsAtOnce();
+
+	pause = new Pause();
 }
 
 
 Play::~Play()
 {
 	LevelEditor::GetInstance()->Clear();
+	delete pause;
 }
 
 void Play::Initialize()
@@ -147,10 +150,31 @@ void Play::Initialize()
 	Object3D::SetLightGroup(lightGroup.get());
 	objectManager->Initialize();
 	isEnd = false;
+	pause->Initialize();
 }
 
 void Play::Update()
 {
+	//ポーズのオンオフ
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_START))
+	{
+		pause->SetUsePause(!pause->GetUsePause());
+	}
+	pause->Update();
+	//やり直す
+	if (pause->GetRestart())
+	{
+		Initialize();
+	}
+	//タイトルにもどる
+	if (pause->GetToTitle())
+	{
+		next = Title;
+		ShutDown();
+	}
+	if (pause->GetUsePause())
+		return;
+
 	camera->Update();
 
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
@@ -164,6 +188,8 @@ void Play::Update()
 
 void Play::PreDraw()
 {
+	pause->Draw();
+
 		objectManager->DrawReady();
 #ifdef _DEBUG
 		if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())

@@ -5,6 +5,7 @@
 #include"Alpha.h"
 #include "Object.h"
 #include "TitleText.h"
+#include "Sprite.h"
 class Title :
 	public Scene
 {
@@ -16,4 +17,6 @@ public:
 	void PreDraw()override;
 	void PostDraw()override;
 private:
+	Sprite* titleLogo = nullptr;
+	Sprite* titleStart = nullptr;
 };
