@@ -231,12 +231,13 @@ void Player::Update()
 		DrawingLine();
 	}
 
+	//アイテム生成(仮)
 	if (Input::TriggerKey(DIK_B))
 	{
 		EmitEnergyItem();
 	}
 	
-	
+	//図形の消去
 	if (!isDrawing)
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
@@ -251,32 +252,14 @@ void Player::Update()
 	//当たり判定系
 	HitCheckLoci();	
 	HitCheckEnemy();
-	HitCheckItems();
-
-	//落下処理
-	//if (!onGround)
-	//{
-	//	//加速
-	//	fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
-	//	//移動
-	//	position.x += fallV.m128_f32[0];
-	//	position.y += fallV.m128_f32[1];
-	//	position.z += fallV.m128_f32[2];
-	//	
-	//}
+	HitCheckItems();	
 	
 	//他のオブジェクトとのヒットチェック
 	//CheckHit();
-	Object::Update();
-
-	if (prePos != position)
-	{
-		//camera->SetTarget(position + Vector3{0, 1, 0});
-	}
+	Object::Update();	
 
 	if (!isDrawing)
-	{
-		//nowDrawingLocus->Move(position, LocusUtility::Vector3XZToAngle(direction));
+	{		
 		predictStar->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
 		predictRibbon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
 		predictTriforce->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
@@ -284,9 +267,9 @@ void Player::Update()
 		predictPentagon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
 		predictHexagram->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
 	}
-	for (auto l : vecLocuss)
+	for (auto locus : vecLocuss)
 	{
-		l->Move(l->GetVirtualityPlanePosition(), l->GetAngle());
+		locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 	}
 }
 
@@ -1015,8 +998,7 @@ void Player::DeleteLocuss()
 		delete vecLocuss[i];
 		vecLocuss[i] = nullptr;
 	}
-	vecLocuss.clear();
-	//locusSelecter->Setting();
+	vecLocuss.clear();	
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	if (field)
