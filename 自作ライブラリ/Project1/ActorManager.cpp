@@ -3,6 +3,7 @@
 #include "TestBoss.h"
 #include "Field.h"
 #include "StandardEnemy.h"
+#include "EnergyItem.h"
 
 ActorManager* ActorManager::GetInstance()
 {
@@ -77,4 +78,17 @@ StandardEnemy* ActorManager::GetStandardEnemy()
 		return enemy;
 	}
 	return nullptr;
+}
+
+std::vector<EnergyItem*>& ActorManager::GetEnergyItems()
+{
+	static std::vector<EnergyItem*> items;
+	items.clear();
+	auto itr = mapGameObject.find("item");
+	if (itr != mapGameObject.end())
+	{
+		EnergyItem* item = static_cast<EnergyItem*>(itr->second);
+		items.push_back(item);
+	}
+	return items;
 }

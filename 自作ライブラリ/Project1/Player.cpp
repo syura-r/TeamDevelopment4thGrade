@@ -266,6 +266,7 @@ void Player::Update()
 	HitCheckLoci();
 	HitCheckBossAttack();
 	HitCheckEnemy();
+	HitCheckItems();
 
 	//—Ž‰ºˆ—
 	//if (!onGround)
@@ -1280,6 +1281,23 @@ void Player::HitEnemy()
 	//Vector3 enemyAfterPos = enemyPos + standardEnemy->GetBlowTime() * enemyAfterVel;
 
 
+}
+
+void Player::HitCheckItems()
+{
+	std::vector<EnergyItem*> items = ActorManager::GetInstance()->GetEnergyItems();
+
+	for (auto item : items)
+	{
+		if (false)
+		{
+			HitItem(item);
+		}
+	}
+}
+
+void Player::HitItem(EnergyItem* arg_item)
+{
 }
 
 void Player::IsStand()

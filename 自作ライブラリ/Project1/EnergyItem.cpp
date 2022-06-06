@@ -14,6 +14,8 @@ EnergyItem::EnergyItem(const Vector3& arg_position)
 
 	appearTimer = new Timer(120);
 
+	//ActorManager::GetInstance()->AddObject("item", this);
+
 	Initialize();
 }
 

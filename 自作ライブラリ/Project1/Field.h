@@ -19,8 +19,8 @@ public:
 	void ResetInfluences();
 
 	Vector3 GetAngleTilt()const;
-
 	Vector3 GetTilt();
+	float GetDepthMagnitude()const;
 
 private:
 	//çLÇ≥

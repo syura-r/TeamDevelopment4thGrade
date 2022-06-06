@@ -128,7 +128,10 @@ private:
 	void Damaged();
 	//“G‚Æ‚Ì“–‚½‚è”»’è
 	void HitCheckEnemy();
-	void HitEnemy();	
+	void HitEnemy();
+	//ƒAƒCƒeƒ€‚Æ‚Ì“–‚½‚è”»’è
+	void HitCheckItems();
+	void HitItem(EnergyItem* arg_item);
 	//“¥‚ñ’£‚è‚É‚È‚é
 	void IsStand();
 	//“¥‚ñ’£‚è’†‚Ìˆ—

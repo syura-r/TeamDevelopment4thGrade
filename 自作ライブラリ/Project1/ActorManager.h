@@ -8,6 +8,7 @@ class Player;
 class TestBoss;
 class Field;
 class StandardEnemy;
+class EnergyItem;
 
 class ActorManager
 {
@@ -25,6 +26,7 @@ public:
 	TestBoss* GetBoss();
 	Field* GetField();
 	StandardEnemy* GetStandardEnemy();
+	std::vector<EnergyItem*>& GetEnergyItems();
 
 private:
 	std::unordered_map<std::string, Object*> mapGameObject;

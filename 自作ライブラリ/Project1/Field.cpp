@@ -131,3 +131,8 @@ Vector3 Field::GetTilt()
 {
 	return LocusUtility::Dim2XZToDim3(tiltDirection);
 }
+
+float Field::GetDepthMagnitude() const
+{
+	return depthMagnitude;
+}
