@@ -98,6 +98,8 @@ private:
 	
 	//傾きで滑る処理
 	void SlidingDown();
+	//移動方向の決定
+	void DecideDirection(Vector3& arg_direction);
 
 	//ドローイングする図形を選択
 	void SelectLocus();
