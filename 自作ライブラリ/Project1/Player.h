@@ -21,6 +21,7 @@
 
 class BossMissile;
 class BossRangeAttack;
+class EnergyItem;
 
 class Player :
 	public Object
@@ -127,16 +128,15 @@ private:
 	void Damaged();
 	//敵との当たり判定
 	void HitCheckEnemy();
-	void HitEnemy();
-	//無敵処理
-	void BeingInvincible();
-	bool IsInvincible();
+	void HitEnemy();	
 	//踏ん張りになる
 	void IsStand();
 	//踏ん張り中の処理
 	void WithStand();
 	//
 	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);
+	//アイテム生成仮置き
+	void EmitEnergyItem();
 
 	
 	ObjectManager* pObjectManager = nullptr;
@@ -170,8 +170,7 @@ private:
 	std::vector<Line*> vecDrawingLines;		
 	unsigned int feverQuota;
 	const unsigned int maxFeverQuota = 6;
-	Sprite* attackSprite;
-	Timer* invincibleTimer;	
+	Sprite* attackSprite;	
 	Sprite* gameOverSprite;
 
 	//プレイヤーの重さ

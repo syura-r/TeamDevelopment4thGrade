@@ -17,6 +17,7 @@
 #include "BossRangeAttack.h"
 #include "Field.h"
 #include "StandardEnemy.h"
+#include "EnergyItem.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -53,8 +54,7 @@ Player::Player()
 	predictPentagon->ChangeIsDraw(false);
 	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90, predictColor);
 	predictHexagram->ChangeIsDraw(false);	
-	attackSprite = new Sprite();	
-	invincibleTimer = new Timer(120);	
+	attackSprite = new Sprite();			
 	gameOverSprite = new Sprite();
 
 	Initialize();
@@ -105,8 +105,7 @@ Player::~Player()
 {	
 	delete attackSprite;	
 	delete locusSelecter;	
-	delete gameOverSprite;
-	delete invincibleTimer;
+	delete gameOverSprite;	
 }
 
 void Player::Initialize()
@@ -170,8 +169,7 @@ void Player::Initialize()
 	feverQuota = maxFeverQuota;		
 	locusSelecter->Initialize();
 	locusSelecter->Setting();
-	pressedButton = LocusSelecter::Button::BBUTTON;
-	invincibleTimer->Reset();	
+	pressedButton = LocusSelecter::Button::BBUTTON;		
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
@@ -245,6 +243,11 @@ void Player::Update()
 		//ドローイングの処理
 		DrawingLine();
 	}
+
+	if (Input::TriggerKey(DIK_B))
+	{
+		EmitEnergyItem();
+	}
 	
 	
 	if (!isDrawing)
@@ -258,8 +261,7 @@ void Player::Update()
 			}
 		}
 	}
-
-	BeingInvincible();
+	
 	//当たり判定系
 	HitCheckLoci();
 	HitCheckBossAttack();
@@ -1199,7 +1201,7 @@ void Player::HitCheckBossAttack()
 void Player::HitBossMissile(BossMissile* arg_missile)
 {
 	arg_missile->Dead();
-	if (IsAlive() && !IsInvincible())
+	if (IsAlive())
 	{
 		Damaged();
 	}
@@ -1207,16 +1209,14 @@ void Player::HitBossMissile(BossMissile* arg_missile)
 
 void Player::HitBossRangeAttack(BossRangeAttack* arg_rangeAttack)
 {
-	if (IsAlive() && !IsInvincible())
+	if (IsAlive())
 	{
 		Damaged();
 	}
 }
 
 void Player::Damaged()
-{	
-	invincibleTimer->Update();
-
+{
 	//ドローイング中なら動作中断
 	if (isDrawing)
 	{
@@ -1280,25 +1280,6 @@ void Player::HitEnemy()
 	//Vector3 enemyAfterPos = enemyPos + standardEnemy->GetBlowTime() * enemyAfterVel;
 
 
-}
-
-void Player::BeingInvincible()
-{
-	if (!IsInvincible())
-	{
-		return;
-	}
-
-	invincibleTimer->Update();
-	if (invincibleTimer->IsTime())
-	{
-		invincibleTimer->Reset();
-	}
-}
-
-bool Player::IsInvincible()
-{
-	return invincibleTimer->GetTime(TimerPerformance::Up) != 0;
 }
 
 void Player::IsStand()
@@ -1371,6 +1352,12 @@ Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_max
 	result.y = Easing::EaseOutCubic(arg_startPos.y, arg_endPos.y, arg_maxTime, arg_nowTime);
 	result.z = Easing::EaseOutCubic(arg_startPos.z, arg_endPos.z, arg_maxTime, arg_nowTime);
 	return result;
+}
+
+void Player::EmitEnergyItem()
+{
+	EnergyItem* item = new EnergyItem(virtualityPlanePosition + Vector3(0, EnergyItem::GetRadius(), 0));
+	pObjectManager->Add(item);
 }
 
 bool Player::IsAlive()
