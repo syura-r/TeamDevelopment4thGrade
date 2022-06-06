@@ -37,9 +37,6 @@ public:
     void SetWeight(float arg_weight) { weight = arg_weight; }
     void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
 
-
-
-
 private:
     // 待機
 
@@ -55,6 +52,8 @@ private:
     // 図形との判定
     bool HitCheckLoci();
     void HitLoci(Line* arg_line);
+    // プレイヤーとの当たり判定
+    bool RangeCheckPlayer();
     // フィールド上に居るか
     bool IsOnField();
     void StayInTheField();
@@ -97,5 +96,10 @@ private:
     bool isBlow = false;
     // 吹っ飛び時間
     int blowTime = 60;
-
+    // 攻撃動作に入ったか
+    bool isAttacked = false;
+    // タックルの索敵半径
+    const float AttackRange = 6.0f;
+    // タックルの勢い
+    const float AttackPower = 5.0f;
 };
