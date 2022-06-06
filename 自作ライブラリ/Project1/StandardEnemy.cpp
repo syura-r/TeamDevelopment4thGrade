@@ -370,24 +370,24 @@ bool StandardEnemy::IsOnField()
 void StandardEnemy::StayInTheField()
 {
 	//XŽ²
-	if (virtualityPlanePosition.x > 45)
+	if (virtualityPlanePosition.x > Field::UPPER_LIMIT.x)
 	{
-		virtualityPlanePosition.x = 45;
+		virtualityPlanePosition.x = Field::UPPER_LIMIT.x;
 	}
-	else if (virtualityPlanePosition.x < -45)
+	else if (virtualityPlanePosition.x < Field::LOWER_LIMIT.x)
 	{
-		virtualityPlanePosition.x = -45;
+		virtualityPlanePosition.x = Field::LOWER_LIMIT.x;
 	}
 
 	//ZŽ²
-	if (virtualityPlanePosition.z > 45)
+	if (virtualityPlanePosition.z > Field::UPPER_LIMIT.y)
 	{
-		virtualityPlanePosition.z = 45;
+		virtualityPlanePosition.z = Field::UPPER_LIMIT.y;
 	}
-	else if (virtualityPlanePosition.z < -45)
+	else if (virtualityPlanePosition.z < Field::LOWER_LIMIT.y)
 	{
-		virtualityPlanePosition.z = -45;
-	}	
+		virtualityPlanePosition.z = Field::LOWER_LIMIT.y;
+	}
 }
 
 void StandardEnemy::DebugControl()

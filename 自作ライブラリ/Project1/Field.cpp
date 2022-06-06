@@ -7,6 +7,9 @@
 #include "Player.h"
 #include "StandardEnemy.h"
 
+const Vector2 Field::LOWER_LIMIT = Vector2(-45, -45);
+const Vector2 Field::UPPER_LIMIT = Vector2(45, 45);
+
 Field::Field()
 	:depthMagnitude(0.0f),
 	 tiltDirection(Vector2()),

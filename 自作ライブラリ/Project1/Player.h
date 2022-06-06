@@ -19,8 +19,6 @@
 #include "LocusSelecter.h"
 #include "NumberSprite.h"
 
-class BossMissile;
-class BossRangeAttack;
 class StandardEnemy;
 class EnergyItem;
 
@@ -135,13 +133,10 @@ private:
 	//アイテム生成仮置き
 	void EmitEnergyItem();
 
-	
 	ObjectManager* pObjectManager = nullptr;
-
 	LocusSelecter* locusSelecter = nullptr;
 
 	Line* pNowDrawingLine = nullptr;
-
 	BaseLocus* nowDrawingLocus = nullptr;
 
 	TestStar* predictStar = nullptr;
@@ -168,7 +163,6 @@ private:
 	unsigned int feverQuota;
 	const unsigned int maxFeverQuota = 6;
 	Sprite* attackSprite;	
-	Sprite* gameOverSprite;
 
 	//プレイヤーの重さ
 	float weight;
@@ -195,10 +189,6 @@ private:
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;
 	Vector3 preVirtualityPlanePosition;
-
-	//フィールドの広さ
-	const Vector2 fieldLowerLimit = Vector2(-45, -45);
-	const Vector2 fieldUpperLimit = Vector2(45, 45);
 
 	//接地フラグ
 	bool onGround = true;

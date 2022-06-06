@@ -22,6 +22,10 @@ public:
 	Vector3 GetTilt();
 	float GetDepthMagnitude()const;
 
+	//çLÇ≥
+	static const Vector2 LOWER_LIMIT;
+	static const Vector2 UPPER_LIMIT;
+
 private:
 	//çLÇ≥
 	const float RADIUS = 45.0f;

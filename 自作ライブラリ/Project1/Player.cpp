@@ -54,8 +54,7 @@ Player::Player()
 	predictPentagon->ChangeIsDraw(false);
 	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90, predictColor);
 	predictHexagram->ChangeIsDraw(false);	
-	attackSprite = new Sprite();			
-	gameOverSprite = new Sprite();
+	attackSprite = new Sprite();	
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Player", this);
@@ -107,8 +106,7 @@ Player::Player()
 Player::~Player()
 {	
 	delete attackSprite;	
-	delete locusSelecter;	
-	delete gameOverSprite;	
+	delete locusSelecter;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -1045,27 +1043,26 @@ void Player::StayInTheField()
 	}
 
 	//XŽ²
-	if (virtualityPlanePosition.x > fieldUpperLimit.x)
+	if (virtualityPlanePosition.x > Field::UPPER_LIMIT.x)
 	{
-		virtualityPlanePosition.x = fieldUpperLimit.x;
+		virtualityPlanePosition.x = Field::UPPER_LIMIT.x;
 		IsStand();
-		
 	}
-	else if (virtualityPlanePosition.x < fieldLowerLimit.x)
+	else if (virtualityPlanePosition.x < Field::LOWER_LIMIT.x)
 	{
-		virtualityPlanePosition.x = fieldLowerLimit.x;
+		virtualityPlanePosition.x = Field::LOWER_LIMIT.x;
 		IsStand();
 	}
 	
 	//ZŽ²
-	if (virtualityPlanePosition.z > fieldUpperLimit.y)
+	if (virtualityPlanePosition.z > Field::UPPER_LIMIT.y)
 	{
-		virtualityPlanePosition.z = fieldUpperLimit.y;
+		virtualityPlanePosition.z = Field::UPPER_LIMIT.y;
 		IsStand(); 
 	}
-	else if (virtualityPlanePosition.z < fieldLowerLimit.y)
+	else if (virtualityPlanePosition.z < Field::LOWER_LIMIT.y)
 	{
-		virtualityPlanePosition.z = fieldLowerLimit.y;
+		virtualityPlanePosition.z = Field::LOWER_LIMIT.y;
 		IsStand();
 	}
 
