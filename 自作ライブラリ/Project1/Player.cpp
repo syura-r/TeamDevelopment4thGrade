@@ -372,7 +372,6 @@ void Player::Move()
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 
 	//走りと歩きの切り替え処理
-	
 	if (isDrawing)
 	{
 		speed = drawingSpeed;
@@ -393,90 +392,92 @@ void Player::Move()
 			StayInTheField();
 		}
 		
-		
 		position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), StartPos);
 	   
 		speed = walkSpeed;
 	}
 
-	//移動処理
-	if (((Input::DownWASD() || Input::CheckPadLStickAnythingDir()) || isBlow) && !isStanding && !isReturningField)
-	{		
-		//移動方向
-		Vector3 moveDirection = {};
-		Vector2 stickDirection = {};
-		Vector2 lineDirection = {};
-		
-		if (!isDrawing)
-		{	
-			
-			//昼間やる
-			
-			if (Input::DownKey(DIK_A))
-				moveDirection += cameraDirectionX * -1;
-			if (Input::DownKey(DIK_D))
-				moveDirection += cameraDirectionX;
-			if (Input::DownKey(DIK_S))
-				moveDirection += cameraDirectionZ * -1;
-			if (Input::DownKey(DIK_W))
-				moveDirection += cameraDirectionZ;
-			if (Input::CheckPadLStickAnythingDir())
-			{
-				auto vec = Input::GetLStickDirection();
+	//移動方向
+	Vector3 moveDirection = direction;
+	Vector2 stickDirection = Vector2(0, 0);
+	Vector2 lineDirection = Vector2(0, 0);
 
-				moveDirection = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
-			}
-			inputAccuracy = 1;
-		}
-		else
+	//移動方向決定
+	if (!isStanding && !isReturningField)
+	{
+		//入力を反映させたいとき、吹っ飛ばされていないなら
+		if ((Input::DownWASD() || Input::CheckPadLStickAnythingDir()) || isBlow)
 		{
-			if (Input::CheckPadLStickAnythingDir())
+			//くり抜き動作中
+			if (isDrawing)
 			{
-				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
-
-				//スティックの向き
-				auto vec = Input::GetLStickDirection();
-				stickDirection.x = (cameraDirectionX * vec.x).x;
-				stickDirection.y = (cameraDirectionZ * vec.y).z;
-				stickDirection = Vector2::Normalize(stickDirection);
-
-				//線の向き
-				auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
-				lineDirection.x = lineVec.x;
-				lineDirection.y = lineVec.z;
-				lineDirection = Vector2::Normalize(lineDirection);
-
-				inputAccuracy = Vector2::Dot(stickDirection, lineDirection);
-
-				if (inputAccuracy <= 0)
+				if (Input::CheckPadLStickAnythingDir())
 				{
-					inputAccuracy = 0;
+					moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
+
+					//スティックの向き
+					auto vec = Input::GetLStickDirection();
+					stickDirection.x = (cameraDirectionX * vec.x).x;
+					stickDirection.y = (cameraDirectionZ * vec.y).z;
+					stickDirection = Vector2::Normalize(stickDirection);
+
+					//線の向き
+					auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
+					lineDirection.x = lineVec.x;
+					lineDirection.y = lineVec.z;
+					lineDirection = Vector2::Normalize(lineDirection);
+
+					inputAccuracy = Vector2::Dot(stickDirection, lineDirection);
+
+					if (inputAccuracy <= 0)
+					{
+						inputAccuracy = 0;
+					}
+
+					inputAccuracy = Easing::EaseOutCirc(0, 1, 1, inputAccuracy);
+
 				}
-
-				inputAccuracy = Easing::EaseOutCirc(0, 1, 1, inputAccuracy);
-
+				else
+				{
+					inputAccuracy = 0; //スティック入力がないから動かない
+				}
 			}
 			else
 			{
-				inputAccuracy = 0; //スティック入力がないから動かない
-			}			
+				if (Input::DownKey(DIK_A))
+					moveDirection += cameraDirectionX * -1;
+				if (Input::DownKey(DIK_D))
+					moveDirection += cameraDirectionX;
+				if (Input::DownKey(DIK_S))
+					moveDirection += cameraDirectionZ * -1;
+				if (Input::DownKey(DIK_W))
+					moveDirection += cameraDirectionZ;
+				if (Input::CheckPadLStickAnythingDir())
+				{
+					auto vec = Input::GetLStickDirection();
+
+					moveDirection = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
+				}
+				inputAccuracy = 1;
+			}
+
+			//ふっとばされ中
+			if (isBlow)
+			{
+				//velocityに入っている値に進むように
+				moveDirection = velocity;
+				inputAccuracy = 1;
+				speed = 0.5;
+			}
+			else
+			{
+				moveDirection.Normalize();
+				//反発用に代入
+				velocity = moveDirection;
+			}
 		}
 		
-
-		if (isBlow)
-		{
-			moveDirection = velocity;
-			inputAccuracy = 1;
-			speed = 0.5;
-		}
-		else
-		{
-			moveDirection.Normalize();
-			velocity = moveDirection;
-		}
-		
-
-	//回転処理
+		//回転処理
 		//現在の進行方向とカメラの正面と角度を求める
 		direction.Normalize();
 		float cosA = direction.Dot(moveDirection);
@@ -487,6 +488,12 @@ void Player::Move()
 
 		float rotY = acos(cosA) * 180 / 3.14159365f;
 		const Vector3 CrossVec = direction.Cross(moveDirection);
+
+		//入力がないので0にする
+		if (!Input::DownWASD() && !Input::CheckPadLStickAnythingDir())
+		{
+			moveDirection = Vector3(0, 0, 0);
+		}
 
 		float rotSpeed = rotateSpeed;
 		if (abs(rotY) < 55)
@@ -514,25 +521,33 @@ void Player::Move()
 		dir = XMVector3TransformNormal(dir, matRot);
 		direction = dir;
 
-		if (isDrawing)
+		if (!Input::DownWASD() && !Input::CheckPadLStickAnythingDir())
+		{
+			myModel->PlayAnimation("stand", true);
+		}
+		else if (isDrawing)
+		{
 			myModel->PlayAnimation("run", true);
+		}
 		else
+		{
 			myModel->PlayAnimation("walk", true);
+		}
 	}
 	else
 	{
-			myModel->PlayAnimation("stand", true);
-			if (isReturningField)
+		myModel->PlayAnimation("stand", true);
+		if (isReturningField)
+		{
+			virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
+			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), { 0,-5,0 });
+			moveEasingCount++;
+			if (moveEasingCount >= 30)
 			{
-				virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
-				position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), { 0,-5,0 });
-				moveEasingCount++;
-				if (moveEasingCount >= 30)
-				{
-					moveEasingCount = 0;
-					isReturningField = false;
-				}
+				moveEasingCount = 0;
+				isReturningField = false;
 			}
+		}
 	}
 }
 
