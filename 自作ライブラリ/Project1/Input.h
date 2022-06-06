@@ -60,6 +60,7 @@ public:
 	static bool CheckPadRStickLeft();
 	static bool CheckPadRStickUp();
 	static bool CheckPadRStickDown();
+	static bool CheckPadRStickAnythingDir();
 
 	static bool TriggerPadRStickRight();
 	static bool TriggerPadRStickLeft();
@@ -71,6 +72,7 @@ public:
 	static bool CheckPadLStickLeft();
 	static bool CheckPadLStickUp();
 	static bool CheckPadLStickDown();
+	static bool CheckPadLStickAnythingDir();
 
 	static bool TriggerPadLStickRight();
 	static bool TriggerPadLStickLeft();
@@ -109,6 +111,11 @@ public:
 			mouseMove = true;
 		}
 	}
+
+	//移動に使いそうなキー・スティック入力があるか
+	static bool DownWASD();
+	static bool DownArrow();
+
 private:
 	static ComPtr<IDirectInputDevice8> devkeyboard;
 	static ComPtr<IDirectInputDevice8> devPad;

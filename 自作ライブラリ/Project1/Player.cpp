@@ -419,25 +419,8 @@ void Player::Move()
 	}
 
 	//移動処理
-	if (((Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W)||
-		Input::CheckPadLStickDown()|| Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft()) || isBlow) && !isStanding && !isReturningField)
-	{
-		/*if (onGround)
-		{
-			walkDustCounter++;
-			if (walkDustCounter > 25)
-			{
-				if (!run)
-				{
-					ParticleEmitter::CreateWalkDust(position, direction);
-				}
-				else
-				{
-					ParticleEmitter::CreateRunDust(position, direction);
-				}
-				walkDustCounter = 0;
-			}
-		}*/
+	if (((Input::DownWASD() || Input::CheckPadLStickAnythingDir()) || isBlow) && !isStanding && !isReturningField)
+	{		
 		//移動方向
 		Vector3 moveDirection = {};
 		Vector2 stickDirection = {};
@@ -456,7 +439,7 @@ void Player::Move()
 				moveDirection += cameraDirectionZ * -1;
 			if (Input::DownKey(DIK_W))
 				moveDirection += cameraDirectionZ;
-			if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+			if (Input::CheckPadLStickAnythingDir())
 			{
 				auto vec = Input::GetLStickDirection();
 
@@ -466,7 +449,7 @@ void Player::Move()
 		}
 		else
 		{
-			if (Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+			if (Input::CheckPadLStickAnythingDir())
 			{
 				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 
@@ -495,14 +478,7 @@ void Player::Move()
 			else
 			{
 				inputAccuracy = 0; //スティック入力がないから動かない
-			}
-
-			//フィーバー時挙動試し
-			/*if (isInFever)
-			{
-				moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
-				inputAccuracy = 30.0f;
-			}*/
+			}			
 		}
 		
 
@@ -744,7 +720,7 @@ void Player::MoveCamera()
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 
 	//カメラのリセット処理
-	if ((Input::TriggerKey(DIK_C) /*|| Input::TriggerPadButton(SettingParam::GetResetButton())*/) && !rotCamera)
+	if (Input::TriggerKey(DIK_C) && !rotCamera)
 	{
 		rotCamera = true;
 		float cosA = direction.Dot(cameraDirectionZ);
@@ -943,8 +919,7 @@ void Player::DrawingLine()
 		{	
 			if (isExtendLine)
 			{				
-				if (Input::DownKey(DIK_A) || Input::DownKey(DIK_D) || Input::DownKey(DIK_S) || Input::DownKey(DIK_W) ||
-					Input::CheckPadLStickDown() || Input::CheckPadLStickUp() || Input::CheckPadLStickRight() || Input::CheckPadLStickLeft())
+				if (Input::DownWASD() || Input::CheckPadLStickAnythingDir())
 				{
 					pNowDrawingLine->AddLength(speed * inputAccuracy);
 				}

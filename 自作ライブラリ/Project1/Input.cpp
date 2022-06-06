@@ -149,6 +149,12 @@ bool Input::CheckPadRStickDown()
 	return padState.Gamepad.sThumbRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE;
 }
 
+bool Input::CheckPadRStickAnythingDir()
+{
+	return CheckPadRStickRight() || CheckPadRStickLeft() ||
+		CheckPadRStickUp() || CheckPadRStickDown();
+}
+
 bool Input::TriggerPadRStickRight()
 {
 	return (padState.Gamepad.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
@@ -191,6 +197,12 @@ bool Input::CheckPadLStickUp()
 bool Input::CheckPadLStickDown()
 {
 	return padState.Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
+}
+
+bool Input::CheckPadLStickAnythingDir()
+{
+	return CheckPadLStickRight() || CheckPadLStickLeft() ||
+		CheckPadLStickUp() || CheckPadLStickDown();
 }
 
 void Input::Update()
@@ -416,4 +428,14 @@ int Input::CheckAnyPadButton()
 	if (padState.Gamepad.wButtons != prevPadState.Gamepad.wButtons && padState.Gamepad.wButtons != 0)
 		result = padState.Gamepad.wButtons ^ prevPadState.Gamepad.wButtons;
 	return result;
+}
+
+bool Input::DownWASD()
+{
+	return DownKey(DIK_W) || DownKey(DIK_A) || DownKey(DIK_S) || DownKey(DIK_D);
+}
+
+bool Input::DownArrow()
+{
+	return DownKey(DIK_RIGHT) || DownKey(DIK_LEFT) || DownKey(DIK_UP) || DownKey(DIK_DOWN);
 }
