@@ -11,8 +11,6 @@ ActorManager* ActorManager::GetInstance()
 	return instance;
 }
 
-
-
 ActorManager::~ActorManager()
 {
 	mapGameObject.clear();//登録してあるオブジェクトは別の場所でdeleteされる
@@ -25,74 +23,70 @@ void ActorManager::Initialize()
 
 void ActorManager::AddObject(std::string arg_name, Object* arg_object)
 {
-	if (mapGameObject[arg_name] != nullptr)//既にその名前で作成されたオブジェクトがある場合は終了
-		return;
-
-	mapGameObject[arg_name] = arg_object;
+	mapGameObject.insert(std::make_pair(arg_name, arg_object));
 }
 
 void ActorManager::DeleteObject(Object* arg_object)
 {
-}
-
-Object* ActorManager::GetGameObject(std::string arg_name)
-{
-	return mapGameObject[arg_name];
+	for (auto itr = mapGameObject.begin(); itr != mapGameObject.end(); itr++)
+	{
+		if (itr->second == arg_object)
+		{
+			mapGameObject.erase(itr);
+			return;
+		}
+	}
 }
 
 Player* ActorManager::GetPlayer()
 {
-	auto itr = mapGameObject.find("player");
-	if (itr != mapGameObject.end())
+	auto range = mapGameObject.equal_range("Player");
+	if (range.first != range.second)
 	{
-		Player* player = static_cast<Player*>(itr->second);
+		Player* player = static_cast<Player*>(range.first->second);
 		return player;
 	}
 	return nullptr;
 }
 
-TestBoss* ActorManager::GetBoss()
+std::vector<Field*>& ActorManager::GetFields()
 {
-	auto itr = mapGameObject.find("boss");
-	if (itr != mapGameObject.end())
+	static std::vector<Field*> vec;
+	vec.clear();
+
+	auto range = mapGameObject.equal_range("Field");
+	for (auto itr = range.first; itr != range.second; itr++)
 	{
-		TestBoss* boss = static_cast<TestBoss*>(itr->second);
-		return boss;
+		vec.push_back(static_cast<Field*>(itr->second));
 	}
-	return nullptr;
+
+	return vec;
 }
 
-Field* ActorManager::GetField()
+std::vector<StandardEnemy*>& ActorManager::GetStandardEnemies()
 {
-	auto itr = mapGameObject.find("field");
-	if (itr != mapGameObject.end())
-	{
-		Field* field = static_cast<Field*>(itr->second);
-		return field;
-	}
-	return nullptr;
-}
+	static std::vector<StandardEnemy*> vec;
+	vec.clear();
 
-StandardEnemy* ActorManager::GetStandardEnemy()
-{
-	auto itr = mapGameObject.find("enemy");
-	if (itr != mapGameObject.end())
+	auto range = mapGameObject.equal_range("StandardEnemy");
+	for (auto itr = range.first; itr != range.second; itr++)
 	{
-		StandardEnemy* enemy = static_cast<StandardEnemy*>(itr->second);
-		return enemy;
+		vec.push_back(static_cast<StandardEnemy*>(itr->second));
 	}
-	return nullptr;
+
+	return vec;
 }
 
 std::vector<EnergyItem*>& ActorManager::GetEnergyItems()
 {
-	static std::vector<EnergyItem*> items;
-	items.clear();
-	auto itr = mapGameObject.find("item");
-	if (itr != mapGameObject.end())
+	static std::vector<EnergyItem*> vec;
+	vec.clear();
+
+	auto range = mapGameObject.equal_range("EnergyItem");
+	for (auto itr = range.first; itr != range.second; itr++)
 	{
-		EnergyItem* item = static_cast<EnergyItem*>(itr->second);
-		items.push_back(item);
+		vec.push_back(static_cast<EnergyItem*>(itr->second));
 	}
-	return items;
+
+	return vec;
 }

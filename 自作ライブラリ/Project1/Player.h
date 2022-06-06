@@ -21,6 +21,7 @@
 
 class BossMissile;
 class BossRangeAttack;
+class StandardEnemy;
 class EnergyItem;
 
 class Player :
@@ -116,19 +117,12 @@ private:
 	void MoveEndDrawing(BaseLocus* arg_locus);
 	//既存の図形との当たり判定
 	void HitCheckLoci();
-	void HitLoci(Line* arg_line);
-	//攻撃
-	void Attack();	
+	void HitLoci(Line* arg_line);	
 	//フィールドから落ちない処理
-	void StayInTheField();
-	//ボスの攻撃との当たり判定
-	void HitCheckBossAttack();
-	void HitBossMissile(BossMissile* arg_missile);
-	void HitBossRangeAttack(BossRangeAttack* arg_rangeAttack);
-	void Damaged();
+	void StayInTheField();	
 	//敵との当たり判定
 	void HitCheckEnemy();
-	void HitEnemy();
+	void HitEnemy(StandardEnemy* arg_enemy);
 	//アイテムとの当たり判定
 	void HitCheckItems();
 	void HitItem(EnergyItem* arg_item);

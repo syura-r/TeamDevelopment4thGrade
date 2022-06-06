@@ -137,16 +137,13 @@ void Play::Initialize()
 
 	//ゲームオブジェクト生成
 	Field* field = new Field();
-	objectManager->Add(field);
-	actorManager->AddObject("field", field);
+	objectManager->Add(field);	
 
 	Player* player = new Player();
-	objectManager->Add(player);
-	actorManager->AddObject("player", player);
+	objectManager->Add(player);	
 
 	StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
-	objectManager->Add(testEnemy);
-	actorManager->AddObject("enemy", testEnemy);
+	objectManager->Add(testEnemy);	
 
 	isEnd = false;
 	pause->Initialize();

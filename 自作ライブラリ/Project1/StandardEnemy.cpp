@@ -33,6 +33,9 @@ StandardEnemy::StandardEnemy(Vector3 arg_position, float arg_hitWeight)
 	actionTimer = new Timer(INTERVAL_ACTIONTIMER);
 	walkingTimer = new Timer(WALKING);
 
+	name = typeid(*this).name();
+	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
+
 	Initialize();
 }
 
@@ -40,7 +43,7 @@ StandardEnemy::~StandardEnemy()
 {
 	delete actionTimer;
 	delete walkingTimer;
-
+	ActorManager::GetInstance()->DeleteObject(this);
 }
 
 void StandardEnemy::Initialize()
@@ -89,7 +92,7 @@ void StandardEnemy::Update()
 
 	//ŠŠ‚è—Ž‚¿‚éˆ—
 	float fallSpeed = 0.05f;
-	Field* field = ActorManager::GetInstance()->GetField();
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	virtualityPlanePosition += field->GetTilt() * fallSpeed;
 	StayInTheField();
 
@@ -168,7 +171,7 @@ void StandardEnemy::Update()
 		}
 	}
 
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), Vector3(0, -5, 0));
 
 	object->Update();
 }

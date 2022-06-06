@@ -58,7 +58,7 @@ void TestTriangle::Draw()
 void TestTriangle::Move(const Vector3& arg_movePos, const float arg_angle)
 {
 	virtualityPlanePosition = arg_movePos;
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), Vector3(0, -5, 0));
 	angle = arg_angle;
 	//ˆø”‚Å‚à‚ç‚Á‚½À•WAŠp“x‚É•ÏŠ·‚µ‚ÄLine‚ğ¶¬
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));

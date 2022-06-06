@@ -57,6 +57,9 @@ Player::Player()
 	attackSprite = new Sprite();			
 	gameOverSprite = new Sprite();
 
+	name = typeid(*this).name();
+	ActorManager::GetInstance()->AddObject("Player", this);
+
 	Initialize();
 
 	//定数バッファの作成
@@ -106,11 +109,11 @@ Player::~Player()
 	delete attackSprite;	
 	delete locusSelecter;	
 	delete gameOverSprite;	
+	ActorManager::GetInstance()->DeleteObject(this);
 }
 
 void Player::Initialize()
 {
-	name = typeid(*this).name();
 	onGround = true;
 	scale = { 0.9f };
 	position = StartPos;
@@ -197,21 +200,7 @@ void Player::Update()
 			myModel->PlayAnimation("stand", true, 1, false);
 		Object::Update();
 		return;//やり直し時はここまで
-	}
-
-	TestBoss* boss = ActorManager::GetInstance()->GetBoss();
-	if (boss)
-	{
-		if (!IsAlive() || !boss->IsAlive())
-		{
-			if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
-			{
-				Initialize();
-				boss->Initialize();
-			}
-			return;
-		}
-	}
+	}	
 	
 	locusSelecter->Update();
 
@@ -255,16 +244,14 @@ void Player::Update()
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
 		{
 			if (!vecLocuss.empty())
-			{
-				Attack();
+			{				
 				DeleteLocuss();
 			}
 		}
 	}
 	
 	//当たり判定系
-	HitCheckLoci();
-	HitCheckBossAttack();
+	HitCheckLoci();	
 	HitCheckEnemy();
 	HitCheckItems();
 
@@ -343,15 +330,6 @@ void Player::Draw()
 		}
 		
 		locusSelecter->Draw();		
-
-		TestBoss* boss = ActorManager::GetInstance()->GetBoss();
-		if (boss)
-		{
-			if (!IsAlive() || !boss->IsAlive())
-			{
-				gameOverSprite->DrawSprite("s_GameOver", Vector2(960, 64));
-			}
-		}
 	}
 }
 
@@ -420,7 +398,7 @@ void Player::Move()
 	}
 	else
 	{
-		Field* field = ActorManager::GetInstance()->GetField();
+		Field* field = ActorManager::GetInstance()->GetFields()[0];
 
 		if (isStanding) //踏ん張り中
 		{
@@ -558,7 +536,7 @@ void Player::Move()
 		{
 			virtualityPlanePosition += moveDirection * (speed * inputAccuracy);
 			StayInTheField();
-			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), StartPos);
+			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), StartPos);
 			isExtendLine = true;
 		}
 		else
@@ -590,7 +568,7 @@ void Player::Move()
 			if (isReturningField)
 			{
 				virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
-				position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), { 0,-5,0 });
+				position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), { 0,-5,0 });
 				moveEasingCount++;
 				if (moveEasingCount >= 30)
 				{
@@ -1012,7 +990,7 @@ void Player::DrawingLine()
 						break;
 					}
 
-					Field* field = ActorManager::GetInstance()->GetField();
+					Field* field = ActorManager::GetInstance()->GetFields()[0];
 					if (field)
 					{
 						field->AddInfluence(LocusFieldInfluence{ copyLocus->GetCenterOfGravity(), copyLocus->GetWeight() });
@@ -1067,7 +1045,7 @@ void Player::DeleteLocuss()
 	vecLocuss.clear();
 	//locusSelecter->Setting();
 
-	Field* field = ActorManager::GetInstance()->GetField();
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	if (field)
 	{
 		field->ResetInfluences();
@@ -1081,17 +1059,7 @@ void Player::MoveEndDrawing(BaseLocus* arg_locus)
 	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
 	virtualityPlanePosition += vec * 2.0f;
 	StayInTheField();
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), StartPos);
-}
-
-void Player::Attack()
-{
-	float value = 4.0f * vecLocuss.size();
-	TestBoss* boss = ActorManager::GetInstance()->GetBoss();
-	if (boss)
-	{
-		boss->Damage(value);
-	}	
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), StartPos);
 }
 
 void Player::StayInTheField()
@@ -1137,126 +1105,40 @@ void Player::StayInTheField()
 	}
 }
 
-void Player::HitCheckBossAttack()
-{
-	TestBoss* boss = ActorManager::GetInstance()->GetBoss();
-	if (!boss)
-	{
-		return;
-	}
-
-	//ミサイル
-	std::vector<BossMissile*>& missiles = boss->GetMissiles();
-	for (int i = 0; i < missiles.size(); i++)
-	{
-		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(missiles[i]->GetPosition() - virtualityPlanePosition));
-		if (length <= 4.0f)
-		{
-			HitBossMissile(missiles[i]);
-		}
-	}
-	for (auto itr = missiles.begin(); itr != missiles.end();)
-	{
-		if ((*itr)->IsDead())
-		{
-			itr = missiles.erase(itr);
-		}
-		else
-		{
-			itr++;
-		}
-	}
-
-	//範囲攻撃
-	std::vector<BossRangeAttack*>& rangeAttacks = boss->GetRangeAttacks();
-	for (int i = 0; i < rangeAttacks.size(); i++)
-	{
-		if (!rangeAttacks[i]->IsActive())
-		{
-			continue;
-		}
-
-		Vector3 attackScale = rangeAttacks[i]->GetScale() / 2.0f;
-		Vector3 attackPos = rangeAttacks[i]->GetPosition();
-		if (virtualityPlanePosition.x >= attackPos.x - attackScale.x - 1 &&
-			virtualityPlanePosition.x <= attackPos.x + attackScale.x + 1 &&
-			virtualityPlanePosition.z >= attackPos.z - attackScale.z - 1 &&
-			virtualityPlanePosition.z <= attackPos.z + attackScale.z + 1)
-		{
-			HitBossRangeAttack(rangeAttacks[i]);
-		}
-	}
-	for (auto itr = rangeAttacks.begin(); itr != rangeAttacks.end();)
-	{
-		if ((*itr)->IsDead())
-		{
-			itr = rangeAttacks.erase(itr);
-		}
-		else
-		{
-			itr++;
-		}
-	}
-}
-
-void Player::HitBossMissile(BossMissile* arg_missile)
-{
-	arg_missile->Dead();
-	if (IsAlive())
-	{
-		Damaged();
-	}
-}
-
-void Player::HitBossRangeAttack(BossRangeAttack* arg_rangeAttack)
-{
-	if (IsAlive())
-	{
-		Damaged();
-	}
-}
-
-void Player::Damaged()
-{
-	//ドローイング中なら動作中断
-	if (isDrawing)
-	{
-		SuspendDrawing();
-	}
-}
-
 void Player::HitCheckEnemy()
 {
-	if (isBlow) { return; }
-	StandardEnemy* standardEnemy = ActorManager::GetInstance()->GetStandardEnemy();
-	if (!standardEnemy)
+	if (isBlow)
 	{
 		return;
 	}
 
-	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(standardEnemy->GetVirtualityPlanePosition() - virtualityPlanePosition));
-	if (length <= 2.0f)
-	{
-		HitEnemy();
-	}
+	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();	
 
+
+	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
+	{
+		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition() - virtualityPlanePosition));
+		if (length <= 2.0f)
+		{
+			HitEnemy(*itr);
+		}
+	}
 }
 
-void Player::HitEnemy()
+void Player::HitEnemy(StandardEnemy* arg_enemy)
 {
 	
 	static const float weightCoefficient = 0.3f;
-	//汎用化
-	StandardEnemy* standardEnemy = ActorManager::GetInstance()->GetStandardEnemy();
-	standardEnemy->IsBlow();
+	//汎用化	
+	arg_enemy->IsBlow();
 	isBlow = true;
 	
 	blowTime = 40;
-	standardEnemy->SetBlowTime(40);
+	arg_enemy->SetBlowTime(40);
 
-	Vector3 enemyPos = standardEnemy->GetVirtualityPlanePosition();
-	Vector3 enemyVel = standardEnemy->GetVelocity();
-	float enemyWeight = standardEnemy->GetWeight() * weightCoefficient;
+	Vector3 enemyPos = arg_enemy->GetVirtualityPlanePosition();
+	Vector3 enemyVel = arg_enemy->GetVelocity();
+	float enemyWeight = arg_enemy->GetWeight() * weightCoefficient;
 
 	float totalWeight = (weight * weightCoefficient) + enemyWeight;
 	float refRate = (1 + 1 * 1); //反発率をプレイヤー、エネミーそれぞれ持たせる
@@ -1272,7 +1154,7 @@ void Player::HitEnemy()
 
 
 	velocity = playerAfterVel.Normalize();
-	standardEnemy->SetVelocity(enemyAfterVel.Normalize());
+	arg_enemy->SetVelocity(enemyAfterVel.Normalize());
 
 	SuspendDrawing();
 

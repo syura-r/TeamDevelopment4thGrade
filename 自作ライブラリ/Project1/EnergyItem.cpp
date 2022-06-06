@@ -14,7 +14,8 @@ EnergyItem::EnergyItem(const Vector3& arg_position)
 
 	appearTimer = new Timer(120);
 
-	//ActorManager::GetInstance()->AddObject("item", this);
+	name = typeid(*this).name();
+	ActorManager::GetInstance()->AddObject("EnergyItem", this);
 
 	Initialize();
 }
@@ -22,6 +23,7 @@ EnergyItem::EnergyItem(const Vector3& arg_position)
 EnergyItem::~EnergyItem()
 {
 	delete appearTimer;
+	ActorManager::GetInstance()->DeleteObject(this);
 }
 
 void EnergyItem::Initialize()
@@ -41,7 +43,7 @@ void EnergyItem::Update()
 		Appear();
 	}
 
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetField()->GetAngleTilt(), Vector3(0, -5, 0));
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), Vector3(0, -5, 0));
 
 	Object::Update();
 }

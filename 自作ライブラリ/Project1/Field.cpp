@@ -25,10 +25,14 @@ Field::Field()
 	collider->SetObject(this);
 	collider->Update();
 	CollisionManager::GetInstance()->AddCollider(collider);
+
+	name = typeid(*this).name();
+	ActorManager::GetInstance()->AddObject("Field", this);
 }
 
 Field::~Field()
 {	
+	ActorManager::GetInstance()->DeleteObject(this);
 }
 
 void Field::Initialize()
@@ -70,11 +74,11 @@ void Field::CalcTilt()
 		tiltDirection += posVector;
 	}
 
-	StandardEnemy* enemy = ActorManager::GetInstance()->GetStandardEnemy();
-	if (enemy)
+	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
 	{
-		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(enemy->GetVirtualityPlanePosition());
-		posVector = Vector2::Normalize(posVector) * enemy->GetWeight() * GetMultiplyingFactor(Vector3::Length(enemy->GetVirtualityPlanePosition()));
+		Vector2 posVector = LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition());
+		posVector = Vector2::Normalize(posVector) * (*itr)->GetWeight() * GetMultiplyingFactor(Vector3::Length((*itr)->GetVirtualityPlanePosition()));
 		tiltDirection += posVector;
 	}
 

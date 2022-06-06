@@ -67,7 +67,7 @@ public:
 	inline const XMFLOAT4& GetColor() { return color; }
 	inline const bool IsDead() { return dead; }
 	inline const void Dead() { dead = true; }
-
+	inline const char* GetName()const { return name; }
 	
 protected:
 	std::unique_ptr<Object3D> object;

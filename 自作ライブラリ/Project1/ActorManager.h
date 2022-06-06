@@ -19,17 +19,14 @@ public:
 	void Initialize();
 
 	void AddObject(std::string arg_name, Object* arg_object);
-	void DeleteObject(Object* arg_object);
+	void DeleteObject(Object* arg_object);	
 
-	Object* GetGameObject(std::string arg_name);
-
-	Player* GetPlayer();
-	TestBoss* GetBoss();
-	Field* GetField();
-	StandardEnemy* GetStandardEnemy();
+	Player* GetPlayer();	
+	std::vector<Field*>& GetFields();
+	std::vector<StandardEnemy*>& GetStandardEnemies();
 	std::vector<EnergyItem*>& GetEnergyItems();
 
 private:
-	std::unordered_map<std::string, Object*> mapGameObject;
+	std::unordered_multimap<std::string, Object*> mapGameObject;
 };
 
