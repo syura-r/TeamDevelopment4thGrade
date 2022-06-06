@@ -82,7 +82,7 @@ Vector3 Line::GetEndPos()
 
 Vector3 Line::GetDirection()
 {
-	return direction;
+	return Vector3::Normalize(direction);
 }
 
 float Line::GetLength() const

@@ -96,6 +96,9 @@ private:
 	//出現消滅時の演出処理
 	void ResetPerform();
 	
+	//傾きで滑る処理
+	void SlidingDown();
+
 	//ドローイングする図形を選択
 	void SelectLocus();
 	//図形をセットする

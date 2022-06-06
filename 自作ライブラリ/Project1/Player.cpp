@@ -378,29 +378,20 @@ void Player::Move()
 	}
 	else
 	{
-		Field* field = ActorManager::GetInstance()->GetFields()[0];
-
-		if (isStanding) //踏ん張り中
-		{
-			WithStand();
-		}
-		else
-		{
-			//滑り落ちる処理
-			float fallSpeed = 0.05f;
-			virtualityPlanePosition += field->GetTilt() * fallSpeed;
-			StayInTheField();
-		}
-		
-		position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), StartPos);
-	   
 		speed = walkSpeed;
 	}
 
+	if (isStanding)
+	{
+		WithStand();
+	}
+	else
+	{
+		SlidingDown();
+	}
+
 	//移動方向
-	Vector3 moveDirection = direction;
-	Vector2 stickDirection = Vector2(0, 0);
-	Vector2 lineDirection = Vector2(0, 0);
+	Vector3 moveDirection = direction;	
 
 	//移動方向決定
 	if (!isStanding && !isReturningField)
@@ -416,18 +407,16 @@ void Player::Move()
 					moveDirection = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 
 					//スティックの向き
+					Vector2 stickDirection = Vector2(0, 0);
 					auto vec = Input::GetLStickDirection();
 					stickDirection.x = (cameraDirectionX * vec.x).x;
 					stickDirection.y = (cameraDirectionZ * vec.y).z;
 					stickDirection = Vector2::Normalize(stickDirection);
 
 					//線の向き
-					auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
-					lineDirection.x = lineVec.x;
-					lineDirection.y = lineVec.z;
-					lineDirection = Vector2::Normalize(lineDirection);
+					auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();					
 
-					inputAccuracy = Vector2::Dot(stickDirection, lineDirection);
+					inputAccuracy = Vector2::Dot(stickDirection, LocusUtility::Dim3ToDim2XZ(lineVec));
 
 					if (inputAccuracy <= 0)
 					{
@@ -499,8 +488,7 @@ void Player::Move()
 		if (abs(rotY) < 55)
 		{
 			virtualityPlanePosition += moveDirection * (speed * inputAccuracy);
-			StayInTheField();
-			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), StartPos);
+			StayInTheField();			
 			isExtendLine = true;
 		}
 		else
@@ -539,8 +527,7 @@ void Player::Move()
 		myModel->PlayAnimation("stand", true);
 		if (isReturningField)
 		{
-			virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
-			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), { 0,-5,0 });
+			virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);			
 			moveEasingCount++;
 			if (moveEasingCount >= 30)
 			{
@@ -549,6 +536,9 @@ void Player::Move()
 			}
 		}
 	}
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 }
 
 void Player::CheckHit()
@@ -709,7 +699,6 @@ void Player::CheckHit()
 
 }
 
-
 void Player::MoveCamera()
 {
 	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
@@ -815,42 +804,57 @@ void Player::ResetPerform()
 	{
 		Initialize();
 	}
+}
 
+void Player::SlidingDown()
+{
+	if (isDrawing)
+	{
+		return;
+	}	
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+
+	float fallSpeed = 0.05f;
+	virtualityPlanePosition += field->GetTilt() * fallSpeed;
+	StayInTheField();
 }
 
 void Player::SelectLocus()
 {
-	if (!isDrawing)
+	if (isDrawing)
 	{
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
-		{
-			pressedButton = LocusSelecter::Button::BBUTTON;
-		}
-		else if (Input::TriggerPadButton(XINPUT_GAMEPAD_X))
-		{
-			pressedButton = LocusSelecter::Button::XBUTTON;
-		}
-		else if (Input::TriggerPadButton(XINPUT_GAMEPAD_Y))
-		{
-			pressedButton = LocusSelecter::Button::YBUTTON;
-		}
+		return;
+	}
 
-		switch (pressedButton)
-		{
-		case LocusSelecter::UNDIFINED:
-			break;
-		case LocusSelecter::XBUTTON:
-			SetLocus(locusSelecter->XbuttonLocusType());
-			break;
-		case LocusSelecter::YBUTTON:
-			SetLocus(locusSelecter->YbuttonLocusType());
-			break;
-		case LocusSelecter::BBUTTON:
-			SetLocus(locusSelecter->BbuttonLocusType());
-			break;
-		default:
-			break;
-		}
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
+	{
+		pressedButton = LocusSelecter::Button::BBUTTON;
+	}
+	else if (Input::TriggerPadButton(XINPUT_GAMEPAD_X))
+	{
+		pressedButton = LocusSelecter::Button::XBUTTON;
+	}
+	else if (Input::TriggerPadButton(XINPUT_GAMEPAD_Y))
+	{
+		pressedButton = LocusSelecter::Button::YBUTTON;
+	}
+
+	switch (pressedButton)
+	{
+	case LocusSelecter::UNDIFINED:
+		break;
+	case LocusSelecter::XBUTTON:
+		SetLocus(locusSelecter->XbuttonLocusType());
+		break;
+	case LocusSelecter::YBUTTON:
+		SetLocus(locusSelecter->YbuttonLocusType());
+		break;
+	case LocusSelecter::BBUTTON:
+		SetLocus(locusSelecter->BbuttonLocusType());
+		break;
+	default:
+		break;
 	}
 }
 
@@ -896,14 +900,15 @@ void Player::SetLocus(LocusType arg_LocusType)
 
 void Player::CreateLine()
 {
-	if (currentLineNum < nowDrawingLocus->GetMaxNumLine())
+	if (currentLineNum >= nowDrawingLocus->GetMaxNumLine())
 	{
-		Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetDirection(); //kokokokoko
-		pNowDrawingLine = new Line(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
-		ObjectManager::GetInstance()->Add(pNowDrawingLine, true);
-		vecDrawingLines.push_back(pNowDrawingLine);
+		return;
 	}
-	
+
+	Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetDirection(); //kokokokoko
+	pNowDrawingLine = new Line(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
+	ObjectManager::GetInstance()->Add(pNowDrawingLine, true);
+	vecDrawingLines.push_back(pNowDrawingLine);
 }
 
 void Player::DrawingLine()
@@ -1083,7 +1088,6 @@ void Player::HitCheckEnemy()
 
 	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();	
 
-
 	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
 	{
 		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition() - virtualityPlanePosition));
@@ -1096,7 +1100,6 @@ void Player::HitCheckEnemy()
 
 void Player::HitEnemy(StandardEnemy* arg_enemy)
 {
-	
 	static const float weightCoefficient = 0.3f;
 	//汎用化	
 	arg_enemy->IsBlow();
@@ -1130,8 +1133,6 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 	////衝突後位置
 	//Vector3 playerAfterPos = position + blowTime * playerAfterVel;
 	//Vector3 enemyAfterPos = enemyPos + standardEnemy->GetBlowTime() * enemyAfterVel;
-
-
 }
 
 void Player::HitCheckItems()
@@ -1162,6 +1163,11 @@ void Player::IsStand()
 
 void Player::WithStand()
 {
+	if (isDrawing)
+	{
+		return;
+	}	
+
 	//踏ん張り中　赤
 	Object::SetColor({ 0.6f,BGColor,BGColor,1 });
 	if (BGColor >= 0)
