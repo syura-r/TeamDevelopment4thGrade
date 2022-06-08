@@ -101,6 +101,7 @@ void Game::RoadAsset()
 		//Objモデルの読み込み
 
 		OBJLoader::LoadModelFile("floor", "floor.obj", true);
+		OBJLoader::LoadModelFile("Hexagon", "Hexagon.obj", false);
 		break;
 	case 4:
 		//FBXファイルの読み込み

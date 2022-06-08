@@ -16,10 +16,10 @@ Field::Field()
 	 angleTilt(Vector3()),
 	 localYvec(Vector3())
 {
-	Create(OBJLoader::GetModel("floor"));
+	Create(OBJLoader::GetModel("Hexagon"));
 	position = { 0,-5,0 };
-	scale = { 5,1,5 };
-	color = { 0,0.1f,0,1 };
+	scale = { 45,1,45 };
+	color = { 0.1f ,0.1f, 0.1f,1 };
 	Object::Update();
 
 	collider = new BoxCollider({ 0.0f, 0.0f, 0.0f, 0.0f }, Vector3(90.0f, 1.0f, 90.0f));
