@@ -37,6 +37,8 @@ public:
 	//残機が残っているか
 	bool IsAlive();
 
+	void EndDrawing() { isDrawing = false; }
+
 	// 敵と図形の判定のため
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
 	float GetWeight() { return weight; }
@@ -51,15 +53,6 @@ private:
 
 	ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
 
-	const float val = 0.4f;
-	
-	const float secondJumpVYFist = 0.4f*val;//二段ジャンプ時上向き初速
-	const float jumpVYFist = 0.5f * val;//ジャンプ時上向き初速
-	const float wallJumpVYFist = 0.43f * val;//壁ジャンプ時上向き初速
-
-	//下向き加速
-	const float fallAcc = -0.02f * val;
-	const float fallVYMin = -0.5f;
 
 	int walkDustCounter = 0;
 	
@@ -67,8 +60,6 @@ private:
 	const Vector3 StartPos = { 0,-5,0 };
 	//移動処理
 	void Move();
-	//当たり判定
-	void CheckHit();
 	//カメラの制御
 	void MoveCamera();
 	
@@ -109,6 +100,10 @@ private:
 	void IsStand();
 	//踏ん張り中の処理
 	void WithStand();
+	//タックルの処理
+	void Tackle();
+
+	
 	//
 	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);
 	//アイテム生成仮置き
@@ -167,6 +162,12 @@ private:
 	Vector3 returningEndPos = { 0,0,0 };
 	//復帰移動イージング用のカウント
 	int moveEasingCount = 0;
+	//タックル中
+	bool tackle = false;
+
+	Vector3 tacklePos;
+	int tackleCount = 30;
+
 
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;

@@ -178,6 +178,7 @@
     <ClCompile Include="BossMissile.cpp" />
     <ClCompile Include="BossRangeAttack.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
+    <ClCompile Include="CircularSaw.cpp" />
     <ClCompile Include="ColliderEditor.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="BossRangeAttack.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="CircleShadow.h" />
+    <ClInclude Include="CircularSaw.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionAttribute.h" />
     <ClInclude Include="CollisionInfo.h" />
