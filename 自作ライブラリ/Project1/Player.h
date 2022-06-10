@@ -33,8 +33,6 @@ public:
 	void Draw() override;
 	void DrawReady() override;
 	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }
-	void Reset();
-	bool GetReset() { return reset; }
 	
 	//残機が残っているか
 	bool IsAlive();
@@ -45,33 +43,13 @@ public:
 	Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
 	
 private:
-	struct ConstBuffData
-	{
-		float _Destruction; //分解度合い
-		float _ScaleFactor; //スケールの変化量
-		float _PositionFactor; //ポジションの変化量
-		float _RotationFactor; //回転の変化量
-		int _Tessellation;//ポリゴン分割度
-		int _OnEasing;//イージングで分解するか
-		XMFLOAT2 pad;
-	};
 	struct ConstLightCameraBuff
 	{
 		XMMATRIX viewProjection;
 		XMFLOAT3 cameraPos;
 	};
 
-	std::array<ComPtr<ID3D12Resource>, 3> constBuff; // 定数バッファ
-	ConstBuffData sendData;
 	ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
-
-	const unsigned short WALK = 0b1 << 0;
-	const unsigned short RUN = 0b1 << 1;
-	const unsigned short JUMP = 0b1 << 2;
-	const unsigned short SECONDJUMP = 0b1 << 3;
-	const unsigned short AIRSLIDE = 0b1 << 4;
-
-	unsigned short attribute = 0b0;
 
 	const float val = 0.4f;
 	
@@ -93,8 +71,6 @@ private:
 	void CheckHit();
 	//カメラの制御
 	void MoveCamera();
-	//出現消滅時の演出処理
-	void ResetPerform();
 	
 	//傾きで滑る処理
 	void SlidingDown();
@@ -218,14 +194,6 @@ private:
 	int cameraRotCount;
 	const int RotTime = 10;
 
-	bool reset = true;
-	bool appear;
-	bool resetMove;
-	int appearCounter;//出現時の演出用カウンター
-	int disappearCounter;//消滅時の演出用カウンター
-	int resetMoveCounter;
-	Vector3 resetStartPos;
-	float resetPhi;
 	
 	//BoxCollider* boxCollider;
 

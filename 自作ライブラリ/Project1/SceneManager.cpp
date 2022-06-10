@@ -24,7 +24,7 @@ void SceneManager::Add(Scene::SCENE name, Scene * scene)
 
 void SceneManager::Initialize()
 {
-	resource.reset(new TextureResource("migrateTex",{1920,1080}, DXGI_FORMAT_R8G8B8A8_UNORM,{1,1,1,1},false));
+	resource.reset(new TextureResource("migrateTex",{1920,1080}, DXGI_FORMAT_R8G8B8A8_UNORM, { 0,0,0,0 },false));
 	migrateTex = std::make_unique<Sprite>();
 	migrateStart = false;
 	for (int i = 0; i < 3; i++)

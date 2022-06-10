@@ -129,47 +129,47 @@ void ObjectManager::DrawReady()
 	{
 		for (auto& itr : it.second)
 		{
-			//視錐台カリングの判定
-			auto colliders = CollisionManager::GetInstance()->GetColliders(itr.get());
-			if (colliders == nullptr || Object3D::GetDrawShadow())
-			{
+			////視錐台カリングの判定
+			//auto colliders = CollisionManager::GetInstance()->GetColliders(itr.get());
+			//if (colliders == nullptr || Object3D::GetDrawShadow())
+			//{
+			//	itr->DrawReady();
+			//	drawObjects[it.first][itr->GetPipelineName()].push_back(itr.get());
+			//	continue;
+			//}
+			//bool draw = false;
+			//for (auto& colIt : *colliders)
+			//{
+			//	Box box;
+			//	auto max = colIt->GetMax();
+			//	auto min = colIt->GetMin();
+			//	if(min.x < max.x)
+			//		box.minPosition.x = min.x;
+			//	else
+			//		box.minPosition.x = max.x;
+			//	if (min.y < max.y)
+			//		box.minPosition.y = min.y;
+			//	else
+			//		box.minPosition.y = max.y;
+			//	if (min.z < max.z)
+			//		box.minPosition.z = min.z;
+			//	else
+			//		box.minPosition.z = max.z;
+			//	box.scale = { fabs(max.x - min.x),fabs(max.y - min.y),fabs(max.z - min.z) };
+			//	//box.minPosition = min;
+			//	Frustum frustum;
+			//	frustum.CalculateFrustumPlanes(*Object3D::GetCamera());
+			//	if (Collision::Detect(box, frustum))
+			//	{
+			//		draw = true;
+			//		break;
+			//	}
+			//}
+			//if (draw)
+			//{
 				itr->DrawReady();
 				drawObjects[it.first][itr->GetPipelineName()].push_back(itr.get());
-				continue;
-			}
-			bool draw = false;
-			for (auto& colIt : *colliders)
-			{
-				Box box;
-				auto max = colIt->GetMax();
-				auto min = colIt->GetMin();
-				if(min.x < max.x)
-					box.minPosition.x = min.x;
-				else
-					box.minPosition.x = max.x;
-				if (min.y < max.y)
-					box.minPosition.y = min.y;
-				else
-					box.minPosition.y = max.y;
-				if (min.z < max.z)
-					box.minPosition.z = min.z;
-				else
-					box.minPosition.z = max.z;
-				box.scale = { fabs(max.x - min.x),fabs(max.y - min.y),fabs(max.z - min.z) };
-				//box.minPosition = min;
-				Frustum frustum;
-				frustum.CalculateFrustumPlanes(*Object3D::GetCamera());
-				if (Collision::Detect(box, frustum))
-				{
-					draw = true;
-					break;
-				}
-			}
-			if (draw)
-			{
-				itr->DrawReady();
-				drawObjects[it.first][itr->GetPipelineName()].push_back(itr.get());
-			}
+			//}
 
 		}
 	}
