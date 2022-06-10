@@ -39,6 +39,8 @@ public:
 	//残機が残っているか
 	bool IsAlive();
 
+	void EndDrawing() { isDrawing = false; }
+
 	// 敵と図形の判定のため
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
 	float GetWeight() { return weight; }
@@ -133,6 +135,8 @@ private:
 	void IsStand();
 	//踏ん張り中の処理
 	void WithStand();
+
+	
 	//
 	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);
 	//アイテム生成仮置き

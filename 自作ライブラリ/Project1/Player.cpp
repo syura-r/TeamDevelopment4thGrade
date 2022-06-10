@@ -18,6 +18,7 @@
 #include "Field.h"
 #include "StandardEnemy.h"
 #include "EnergyItem.h"
+#include "CircularSaw.h"
 
 
 DebugCamera* Player::camera = nullptr;
@@ -224,7 +225,9 @@ void Player::Update()
 		{
 			isDrawing = true;
 			//線の生成
-			CreateLine();
+			//CreateLine();
+			ObjectManager::GetInstance()->Add(new CircularSaw(virtualityPlanePosition, nowDrawingLocus));
+
 		}
 
 		//ドローイングの処理
@@ -773,33 +776,34 @@ void Player::DecideDirection(Vector3& arg_direction)
 	//くり抜き動作中
 	if (isDrawing)
 	{
-		if (Input::CheckPadLStickAnythingDir())
-		{
-			arg_direction = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
+		arg_direction = { 0,0,0 };
+		//if (Input::CheckPadLStickAnythingDir())
+		//{
+		//	arg_direction = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 
-			//スティックの向き
-			Vector2 stickDirection = Vector2(0, 0);
-			auto vec = Input::GetLStickDirection();
-			stickDirection.x = (cameraDirectionX * vec.x).x;
-			stickDirection.y = (cameraDirectionZ * vec.y).z;
-			stickDirection = Vector2::Normalize(stickDirection);
+		//	//スティックの向き
+		//	Vector2 stickDirection = Vector2(0, 0);
+		//	auto vec = Input::GetLStickDirection();
+		//	stickDirection.x = (cameraDirectionX * vec.x).x;
+		//	stickDirection.y = (cameraDirectionZ * vec.y).z;
+		//	stickDirection = Vector2::Normalize(stickDirection);
 
-			//線の向き
-			auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
+		//	//線の向き
+		//	auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
 
-			inputAccuracy = Vector2::Dot(stickDirection, LocusUtility::Dim3ToDim2XZ(lineVec));
+		//	inputAccuracy = Vector2::Dot(stickDirection, LocusUtility::Dim3ToDim2XZ(lineVec));
 
-			if (inputAccuracy <= 0)
-			{
-				inputAccuracy = 0;
-			}
+		//	if (inputAccuracy <= 0)
+		//	{
+		//		inputAccuracy = 0;
+		//	}
 
-			inputAccuracy = Easing::EaseOutCirc(0, 1, 1, inputAccuracy);
-		}
-		else
-		{
-			inputAccuracy = 0; //スティック入力がないから動かない
-		}
+		//	inputAccuracy = Easing::EaseOutCirc(0, 1, 1, inputAccuracy);
+		//}
+		//else
+		//{
+		//	inputAccuracy = 0; //スティック入力がないから動かない
+		//}
 	}
 	else
 	{
