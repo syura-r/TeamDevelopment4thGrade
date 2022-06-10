@@ -67,23 +67,7 @@ private:
 	ConstBuffData sendData;
 	ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
 
-	const unsigned short WALK = 0b1 << 0;
-	const unsigned short RUN = 0b1 << 1;
-	const unsigned short JUMP = 0b1 << 2;
-	const unsigned short SECONDJUMP = 0b1 << 3;
-	const unsigned short AIRSLIDE = 0b1 << 4;
 
-	unsigned short attribute = 0b0;
-
-	const float val = 0.4f;
-	
-	const float secondJumpVYFist = 0.4f*val;//二段ジャンプ時上向き初速
-	const float jumpVYFist = 0.5f * val;//ジャンプ時上向き初速
-	const float wallJumpVYFist = 0.43f * val;//壁ジャンプ時上向き初速
-
-	//下向き加速
-	const float fallAcc = -0.02f * val;
-	const float fallVYMin = -0.5f;
 
 	int walkDustCounter = 0;
 	
@@ -91,8 +75,6 @@ private:
 	const Vector3 StartPos = { 0,-5,0 };
 	//移動処理
 	void Move();
-	//当たり判定
-	void CheckHit();
 	//カメラの制御
 	void MoveCamera();
 	//出現消滅時の演出処理
