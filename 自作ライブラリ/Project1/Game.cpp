@@ -138,7 +138,7 @@ void Game::CreatePipeline()
 	{
 	case 0:
 		PipelineState::CreatePipeline("Sprite", SPRITE);
-		PipelineState::CreatePipeline("DepthSprite", DepthSPRITE);
+		//PipelineState::CreatePipeline("DepthSprite", DepthSPRITE);
 
 		break;
 	case 1:
@@ -147,7 +147,7 @@ void Game::CreatePipeline()
 		break;
 	case 2:
 		PipelineState::CreatePipeline("Particle", PARTICLE, ADD);
-		PipelineState::CreatePipeline("FBXPolygonBreak", FBXPolygonBreak);
+		//PipelineState::CreatePipeline("FBXPolygonBreak", FBXPolygonBreak);
 		break;
 	case 3:
 		PipelineState::CreatePipeline("NoShade", NoShade);
@@ -157,16 +157,16 @@ void Game::CreatePipeline()
 		PipelineState::CreatePipeline("CollisionSphere", ViewCollisionSphere);
 		break;
 	case 5:
-		PipelineState::CreatePipeline("PolygonBreak", PolygonBreak);
+		//PipelineState::CreatePipeline("PolygonBreak", PolygonBreak);
 		break;
 	case 6:
-		PipelineState::CreatePipeline("FBXShadowMap", FBXShadowMap);
+		//PipelineState::CreatePipeline("FBXShadowMap", FBXShadowMap);
 		break;
 	case 7:
-		PipelineState::CreatePipeline("ShadowMap", NormalShadowMap);
+		//PipelineState::CreatePipeline("ShadowMap", NormalShadowMap);
 		break;
 	case 8:
-		PipelineState::CreatePipeline("DrawShadowOBJ", DrawShadowOBJ);
+		//PipelineState::CreatePipeline("DrawShadowOBJ", DrawShadowOBJ);
 		break;
 	case 9:
 		break; 

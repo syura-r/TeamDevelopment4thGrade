@@ -5,7 +5,7 @@
 std::vector<TextureResource*> TextureResource::nowRenderTargets = {};
 int TextureResource::bbindex = 0;
 TextureResource::TextureResource(const std::string& name, const bool noDepth)
-	: resourceWidth(1920), resourceHeight(1080), format(DXGI_FORMAT_R8G8B8A8_UNORM), clearColor{ 1,1,1,1 }, threeResource(true), noDepth(noDepth)
+	: resourceWidth(1920), resourceHeight(1080), format(DXGI_FORMAT_R8G8B8A8_UNORM), clearColor{ 0,0,0,0 }, threeResource(true), noDepth(noDepth)
 {
 	Initialize(name);
 }
