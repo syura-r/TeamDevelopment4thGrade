@@ -6,9 +6,8 @@
 #include "ActorManager.h"
 #include "Player.h"
 #include "StandardEnemy.h"
+#include "FieldPiece.h"
 
-const Vector2 Field::LOWER_LIMIT = Vector2(-45, -45);
-const Vector2 Field::UPPER_LIMIT = Vector2(45, 45);
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
 
 Field::Field()
@@ -23,6 +22,7 @@ Field::Field()
 	}
 
 	Create(OBJLoader::GetModel("Hexagon"));
+	//Create(OBJLoader::GetModel("fieldPiece"));
 	position = { 0,-5,0 };
 	scale = { 45,1,45 };
 	color = { 0.1f ,0.1f, 0.1f,1 };
@@ -37,11 +37,26 @@ Field::Field()
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Field", this);
+
+	pieces.clear();
+
+	FieldPiece* piece = new FieldPiece(position + Vector3(0, 1.0f, FieldPiece::GetLowerTimeOffset()), PieceDirection::Lower);
+	ObjectManager::GetInstance()->Add(piece);
+	pieces.push_back(piece);
+
+	FieldPiece* piece2 = new FieldPiece(position + Vector3(FieldPiece::GetSidewaysLength(), 1.0f, FieldPiece::GetUpperTimeOffset()), PieceDirection::Upper);
+	ObjectManager::GetInstance()->Add(piece2);
+	pieces.push_back(piece2);
 }
 
 Field::~Field()
 {	
 	ActorManager::GetInstance()->DeleteObject(this);
+	for (auto p : pieces)
+	{
+		p->Dead();
+	}
+	pieces.clear();
 }
 
 void Field::Initialize()
@@ -51,9 +66,9 @@ void Field::Initialize()
 }
 
 void Field::Update()
-{
+{	
 	CalcTilt();
-	SetRotation(angleTilt);
+	SetRotation(angleTilt);	
 
 	Object::Update();
 	collider->Update();

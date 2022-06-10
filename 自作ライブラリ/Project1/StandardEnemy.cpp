@@ -368,7 +368,7 @@ bool StandardEnemy::IsOnField()
 }
 
 void StandardEnemy::StayInTheField()
-{
+{ 
 	std::vector<Vector2> fieldEdges = Field::GetEdges();
 
 	for (int i = 0; i < fieldEdges.size(); i++)

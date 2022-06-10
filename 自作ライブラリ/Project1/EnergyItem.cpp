@@ -60,6 +60,11 @@ void EnergyItem::Appear()
 	}
 }
 
+float EnergyItem::GetRadius()
+{
+	return RADIUS;
+}
+
 bool EnergyItem::IsAppeared()
 {
 	return appearTimer->IsTime();

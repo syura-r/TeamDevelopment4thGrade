@@ -4,6 +4,8 @@
 #include "Quaternion.h"
 #include "LocusDef.h"
 
+class FieldPiece;
+
 class Field : public Object
 {
 public:
@@ -21,11 +23,7 @@ public:
 	static std::vector<Vector2>& GetEdges();
 	Vector3 GetAngleTilt()const;
 	Vector3 GetTilt();
-	float GetDepthMagnitude()const;
-
-	//広さ
-	static const Vector2 LOWER_LIMIT;
-	static const Vector2 UPPER_LIMIT;
+	float GetDepthMagnitude()const;	
 
 private:
 	//広さ
@@ -41,6 +39,8 @@ private:
 	Vector3 localYvec;
 	//図形の場所と重さ
 	std::vector<LocusFieldInfluence> influences;
+
+	std::vector<FieldPiece*> pieces;
 
 	//端点の用意
 	void SetEdges();

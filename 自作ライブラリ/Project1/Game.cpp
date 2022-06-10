@@ -105,6 +105,8 @@ void Game::RoadAsset()
 
 		OBJLoader::LoadModelFile("floor", "floor.obj", true);
 		OBJLoader::LoadModelFile("Hexagon", "Hexagon.obj", false);
+		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
+		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
 		break;
 	case 4:
 		//FBXÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›

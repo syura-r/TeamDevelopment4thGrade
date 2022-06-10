@@ -14,6 +14,7 @@ public:
 
 	void Appear();
 	
+	static float GetRadius();
 	bool IsAppeared();
 
 private:
@@ -21,9 +22,10 @@ private:
 	//•½–Ê‚Ì‚Ü‚Ü‚Ìposition
 	Vector3 virtualityPlanePosition;	
 
+	static const float RADIUS;
+
 	//”»’è”­¶‚Ü‚Å‚ÌŠÔ
 	Timer* appearTimer;
 
-public:
-	static const float RADIUS;
+public:	
 };

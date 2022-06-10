@@ -193,6 +193,7 @@
     <ClCompile Include="FBXManager.cpp" />
     <ClCompile Include="FBXModel.cpp" />
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="FieldPiece.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="FBXManager.h" />
     <ClInclude Include="FBXModel.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="FieldPiece.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="Game.h" />
