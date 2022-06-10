@@ -8,6 +8,7 @@
 #include "StandardEnemy.h"
 #include "FieldPiece.h"
 
+const int Field::PIECE_LAYER_NUM = 6;
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
 
 Field::Field()
@@ -39,23 +40,12 @@ Field::Field()
 	ActorManager::GetInstance()->AddObject("Field", this);
 
 	pieces.clear();
-
-	FieldPiece* piece = new FieldPiece(position + Vector3(0, 1.0f, FieldPiece::GetLowerTimeOffset()), PieceDirection::Lower);
-	ObjectManager::GetInstance()->Add(piece);
-	pieces.push_back(piece);
-
-	FieldPiece* piece2 = new FieldPiece(position + Vector3(FieldPiece::GetSidewaysLength(), 1.0f, FieldPiece::GetUpperTimeOffset()), PieceDirection::Upper);
-	ObjectManager::GetInstance()->Add(piece2);
-	pieces.push_back(piece2);
+	CreatePieces();
 }
 
 Field::~Field()
 {	
-	ActorManager::GetInstance()->DeleteObject(this);
-	for (auto p : pieces)
-	{
-		p->Dead();
-	}
+	ActorManager::GetInstance()->DeleteObject(this);	
 	pieces.clear();
 }
 
@@ -84,6 +74,11 @@ void Field::DrawReady()
 	ImGui::Text("localYvec | x : %f | y : %f | z : %f", localYvec.x, localYvec.y, localYvec.z);
 	ImGui::End();
 #endif // _DEBUG
+}
+
+void Field::Draw()
+{
+	//
 }
 
 void Field::CalcTilt()
@@ -150,6 +145,92 @@ void Field::SetEdges()
 	{
 		edges[i] = edges[i] * RADIUS;
 	}
+}
+
+void Field::CreatePieces()
+{
+	const int TOP_PIECES_NUM = PIECE_LAYER_NUM * 2 + 1;
+	const int CENTER_PIECES_NUM = PIECE_LAYER_NUM * 4 - 1;
+
+	PieceDirection createDir = PieceDirection::Upper;
+	int offsetCount = 0;
+	Vector3 offset = Vector3();
+
+	//上半分
+	for (int i = 0; i < PIECE_LAYER_NUM; i++)
+	{
+		createDir = PieceDirection::Upper;
+		offsetCount = -(TOP_PIECES_NUM + i * 2) / 2;
+		
+		for (int j = 0; j < TOP_PIECES_NUM + i * 2; j++)
+		{
+			//オフセット計算
+			offset.x = offsetCount * FieldPiece::GetSidewaysLength();
+			offset.z = (PIECE_LAYER_NUM - i - 1) * FieldPiece::GetFullOffset();
+			if (createDir == PieceDirection::Lower)
+			{
+				offset.z += FieldPiece::GetLowerTimeOffset();
+			}
+			else
+			{
+				offset.z += FieldPiece::GetUpperTimeOffset();
+			}
+			//offset.y = 1.0f;
+
+			FieldPiece* piece = new FieldPiece(position + offset, createDir);
+			ObjectManager::GetInstance()->Add(piece);
+			pieces.push_back(piece);
+
+			//生成後
+			if (createDir == PieceDirection::Lower)
+			{
+				createDir = PieceDirection::Upper;
+			}
+			else
+			{
+				createDir = PieceDirection::Lower;
+			}
+			offsetCount++;
+		}
+	}
+
+	//下半分
+	for (int i = 0; i < PIECE_LAYER_NUM; i++)
+	{
+		createDir = PieceDirection::Lower;
+		offsetCount = -(CENTER_PIECES_NUM - i * 2) / 2;
+
+		for (int j = 0; j < CENTER_PIECES_NUM - i * 2; j++)
+		{
+			//オフセット計算
+			offset.x = offsetCount * FieldPiece::GetSidewaysLength();
+			offset.z = -i * FieldPiece::GetFullOffset();
+			if (createDir == PieceDirection::Lower)
+			{
+				offset.z -= FieldPiece::GetUpperTimeOffset();
+			}
+			else
+			{
+				offset.z -= FieldPiece::GetLowerTimeOffset();
+			}
+			//offset.y = 1.0f;
+
+			FieldPiece* piece = new FieldPiece(position + offset, createDir);
+			ObjectManager::GetInstance()->Add(piece);
+			pieces.push_back(piece);
+
+			//生成後
+			if (createDir == PieceDirection::Lower)
+			{
+				createDir = PieceDirection::Upper;
+			}
+			else
+			{
+				createDir = PieceDirection::Lower;
+			}
+			offsetCount++;
+		}
+	}	
 }
 
 void Field::AddInfluence(const LocusFieldInfluence& arg_inf)

@@ -4,7 +4,7 @@
 #include "OBJLoader.h"
 #include "ActorManager.h"
 
-const float FieldPiece::SIZE = 2.0f;
+const float FieldPiece::SIZE = 7.5f / 0.866f / 2.0f;
 const float FieldPiece::SIDEWAYS_LENGTH = 0.866f * SIZE;
 const float FieldPiece::LOWER_TIME_OFFSET = 1.0f * SIZE;
 const float FieldPiece::UPPER_TIME_OFFSET = 0.5f * SIZE;

@@ -15,6 +15,7 @@ public:
 	void Initialize()override;
 	void Update()override;
 	void DrawReady()override;
+	void Draw()override;
 
 	//}Œ`Š®¬‚É‚æ‚Á‚ÄŒX‚­‚Æ‚«
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
@@ -28,6 +29,7 @@ public:
 private:
 	//L‚³
 	const float RADIUS = 45.0f;
+	static const int PIECE_LAYER_NUM;
 	static std::vector<Vector2> edges;
 	//ŒX‚«‚ğ•\‚·
 	float depthMagnitude;
@@ -44,6 +46,8 @@ private:
 
 	//’[“_‚Ì—pˆÓ
 	void SetEdges();
+	//FieldPiece¶¬
+	void CreatePieces();
 	//ŒX‚«ŒvZ
 	void CalcTilt();
 	float GetMultiplyingFactor(const float arg_length);
