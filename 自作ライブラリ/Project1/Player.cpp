@@ -1048,30 +1048,54 @@ void Player::StayInTheField()
 	if (isStanding || isReturningField)
 	{
 		return;
-	}
+	}	
 
-	//XŽ²
-	if (virtualityPlanePosition.x > Field::UPPER_LIMIT.x)
-	{
-		virtualityPlanePosition.x = Field::UPPER_LIMIT.x;
-		IsStand();
-	}
-	else if (virtualityPlanePosition.x < Field::LOWER_LIMIT.x)
-	{
-		virtualityPlanePosition.x = Field::LOWER_LIMIT.x;
-		IsStand();
-	}
-	
-	//ZŽ²
-	if (virtualityPlanePosition.z > Field::UPPER_LIMIT.y)
-	{
-		virtualityPlanePosition.z = Field::UPPER_LIMIT.y;
-		IsStand(); 
-	}
-	else if (virtualityPlanePosition.z < Field::LOWER_LIMIT.y)
-	{
-		virtualityPlanePosition.z = Field::LOWER_LIMIT.y;
-		IsStand();
+	std::vector<Vector2> fieldEdges = Field::GetEdges();
+
+	for (int i = 0; i < fieldEdges.size(); i++)
+	{		
+		Vector2 A = fieldEdges[i];
+		Vector2 B = fieldEdges[(i + 1) % fieldEdges.size()];
+		Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition) - A;
+		Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition) - B;
+		Vector2 AB = B - A;
+		Vector2 normalAB = Vector2::Normalize(AB);
+
+		//¡“–‚½‚Á‚Ä‚¢‚é‚©
+		float cross = Vector2::Cross(AO, normalAB);
+		if (fabsf(cross) > RADIUS)
+		{
+			continue;
+		}
+
+		float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
+		if (multiDot <= 0.0f)
+		{
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			IsStand();
+			break;
+		}
+
+		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
+		{
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			IsStand();
+			break;
+		}
+
+		//’Ê‚è‰ß‚¬‚½‚©
+		Vector2 start = A;
+		Vector2 end = B;
+		Vector2 pos = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition);
+		Vector2 pre = LocusUtility::Dim3ToDim2XZ(preVirtualityPlanePosition);
+
+		if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
+			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
+		{
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			IsStand();
+			break;
+		}
 	}
 
 	if (!isStanding)
@@ -1248,8 +1272,6 @@ bool Player::IsAlive()
 
 void Player::HitCheckLoci()
 {
-	static const float radius = 1.0f;
-
 	if (virtualityPlanePosition == preVirtualityPlanePosition)
 	{
 		return;
@@ -1267,7 +1289,7 @@ void Player::HitCheckLoci()
 
 			//¡“–‚½‚Á‚Ä‚¢‚é‚©
 			float cross = Vector2::Cross(AO, normalAB);
-			if (fabsf(cross) > radius)
+			if (fabsf(cross) > RADIUS)
 			{
 				continue;
 			}
@@ -1279,7 +1301,7 @@ void Player::HitCheckLoci()
 				continue;
 			}
 
-			if (Vector2::Length(AO) < radius || Vector2::Length(BO) < radius)
+			if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
 			{
 				HitLoci(line);
 				continue;

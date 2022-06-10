@@ -18,6 +18,7 @@ public:
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
 
+	static std::vector<Vector2>& GetEdges();
 	Vector3 GetAngleTilt()const;
 	Vector3 GetTilt();
 	float GetDepthMagnitude()const;
@@ -29,6 +30,7 @@ public:
 private:
 	//L‚³
 	const float RADIUS = 45.0f;
+	static std::vector<Vector2> edges;
 	//ŒX‚«‚ğ•\‚·
 	float depthMagnitude;
 	const float MAX_DEPTH_MAGNITUDE = 10.0f;
@@ -40,6 +42,8 @@ private:
 	//}Œ`‚ÌêŠ‚Æd‚³
 	std::vector<LocusFieldInfluence> influences;
 
+	//’[“_‚Ì—pˆÓ
+	void SetEdges();
 	//ŒX‚«ŒvZ
 	void CalcTilt();
 	float GetMultiplyingFactor(const float arg_length);

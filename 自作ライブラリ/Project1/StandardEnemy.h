@@ -82,6 +82,8 @@ private:
     Vector3 initPos;
     // ‰Šú‘Ìd
     float initWeight;
+
+    const float RADIUS = 1.0f;
     // ‘Ìd
     float weight;
     // ˆÚ“®‚ªŠ®—¹‚µ‚½‚©

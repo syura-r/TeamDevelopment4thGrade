@@ -9,6 +9,7 @@
 
 const Vector2 Field::LOWER_LIMIT = Vector2(-45, -45);
 const Vector2 Field::UPPER_LIMIT = Vector2(45, 45);
+std::vector<Vector2> Field::edges = std::vector<Vector2>();
 
 Field::Field()
 	:depthMagnitude(0.0f),
@@ -16,6 +17,11 @@ Field::Field()
 	 angleTilt(Vector3()),
 	 localYvec(Vector3())
 {
+	if (edges.empty())
+	{
+		SetEdges();
+	}
+
 	Create(OBJLoader::GetModel("Hexagon"));
 	position = { 0,-5,0 };
 	scale = { 45,1,45 };
@@ -114,6 +120,23 @@ float Field::GetMultiplyingFactor(const float arg_length)
 	return arg_length / 300.0f;
 }
 
+void Field::SetEdges()
+{
+	edges.clear();
+
+	edges.push_back(Vector2( 1.000f,  0.000f));
+	edges.push_back(Vector2( 0.500f, -0.866f));
+	edges.push_back(Vector2(-0.500f, -0.866f));
+	edges.push_back(Vector2(-1.000f,  0.000f));
+	edges.push_back(Vector2(-0.500f,  0.866f));
+	edges.push_back(Vector2( 0.500f,  0.866f));
+
+	for (int i = 0; i < edges.size(); i++)
+	{
+		edges[i] = edges[i] * RADIUS;
+	}
+}
+
 void Field::AddInfluence(const LocusFieldInfluence& arg_inf)
 {
 	influences.push_back(arg_inf);
@@ -127,6 +150,11 @@ void Field::ResetInfluences()
 	tiltDirection = Vector2(0, 0);
 	angleTilt = Vector3();
 	localYvec = Vector3();
+}
+
+std::vector<Vector2>& Field::GetEdges()
+{
+	return edges;
 }
 
 Vector3 Field::GetAngleTilt() const

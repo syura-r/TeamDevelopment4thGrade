@@ -169,6 +169,7 @@ private:
 	const unsigned int maxFeverQuota = 6;
 	Sprite* attackSprite;	
 
+	const float RADIUS = 1.0f;
 	//プレイヤーの重さ
 	float weight;
 	//吹っ飛び中
