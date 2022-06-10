@@ -135,6 +135,8 @@ private:
 	void IsStand();
 	//踏ん張り中の処理
 	void WithStand();
+	//タックルの処理
+	void Tackle();
 
 	
 	//
@@ -194,6 +196,12 @@ private:
 	Vector3 returningEndPos = { 0,0,0 };
 	//復帰移動イージング用のカウント
 	int moveEasingCount = 0;
+	//タックル中
+	bool tackle = false;
+
+	Vector3 tacklePos;
+	int tackleCount = 30;
+
 
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;

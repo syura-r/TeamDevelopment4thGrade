@@ -229,6 +229,10 @@ void Player::Update()
 			ObjectManager::GetInstance()->Add(new CircularSaw(virtualityPlanePosition, nowDrawingLocus));
 
 		}
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
+		{
+			tackle = true;
+		}
 
 		//ドローイングの処理
 		DrawingLine();
@@ -1228,6 +1232,16 @@ void Player::WithStand()
 		Object::SetColor({ 1,1,1,1 });
 		isStanding = false;
 	}*/
+}
+
+void Player::Tackle()
+{
+	tackleCount--;
+	if (tackleCount <= 0)
+	{
+		tackleCount = 30;
+		tackle = false;
+	}
 }
 
 Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
