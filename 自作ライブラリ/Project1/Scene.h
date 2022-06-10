@@ -8,6 +8,7 @@ public:
 		Play,
 		Ending,
 		Test,
+		ParticleTestScene,
 	};
 	Scene() {};
 	virtual ~Scene() {};
