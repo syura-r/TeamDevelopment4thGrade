@@ -120,6 +120,7 @@ private:
 	Line* pNowDrawingLine = nullptr;			
 
 	PanelCutLocus* panelCutLocus;
+	int cutPower;
 
 	//‘‚­ƒtƒ‰ƒO
 	bool drawingFlag = false;

@@ -134,6 +134,7 @@ void Player::Initialize()
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
+	cutPower = 0;
 }
 
 void Player::Update()
@@ -170,7 +171,7 @@ void Player::Update()
 	else
 	{
 		//SelectLocus();		
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && panelCutLocus->GetCutPower() > 0 && field->GetPlayerRidingPiece())
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && field->GetPlayerRidingPiece())
 		{
 			if (!tackleFlag)
 			{
@@ -223,7 +224,7 @@ void Player::Update()
 	//SetLocus(LocusType::UNDIFINED);
 	if (!drawingFlag)
 	{		
-		panelCutLocus->SetCutPower(4);
+		panelCutLocus->SetCutPower(cutPower);
 		panelCutLocus->Move(p, field->GetPlayerCuttingAngle());
 	}
 	for (auto locus : vecLocuss)
@@ -889,11 +890,23 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 
 void Player::HitCheckItems()
 {
+	if (cutPower >= 6)
+	{
+		return;
+	}
+
 	std::vector<EnergyItem*> items = ActorManager::GetInstance()->GetEnergyItems();
 
 	for (auto item : items)
 	{
-		if (false)
+		if (!item->IsAppeared())
+		{
+			continue;
+		}
+
+		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - item->GetVirtualityPlanePosition()));
+
+		if (length <= RADIUS + EnergyItem::GetRadius())
 		{
 			HitItem(item);
 		}
@@ -902,6 +915,11 @@ void Player::HitCheckItems()
 
 void Player::HitItem(EnergyItem* arg_item)
 {
+	arg_item->Dead();
+	if (cutPower < 6)
+	{
+		cutPower++;
+	}
 }
 
 void Player::IsStand()
@@ -1049,6 +1067,7 @@ void Player::EndDrawing()
 	panelCutLocus->RecordCuttedPanelPos();
 	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus->GetCuttedPanelPos());
 	weight += num * 0.5f;
+	cutPower = 0;
 }
 
 Vector3 Player::GetDirection() const

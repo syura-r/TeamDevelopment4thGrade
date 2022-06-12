@@ -14,6 +14,7 @@ public:
 
 	void Appear();
 	
+	Vector3 GetVirtualityPlanePosition();
 	static float GetRadius();
 	bool IsAppeared();
 

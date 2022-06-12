@@ -5,14 +5,14 @@
 #include "ActorManager.h"
 #include "Field.h"
 
-const float EnergyItem::RADIUS = 1.0f;
+const float EnergyItem::RADIUS = 1.5f;
 
 EnergyItem::EnergyItem(const Vector3& arg_position)
 	:virtualityPlanePosition(arg_position)
 {
 	Create(OBJLoader::GetModel("sphere"));
 
-	appearTimer = new Timer(120);
+	appearTimer = new Timer(60);
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("EnergyItem", this);
@@ -56,8 +56,13 @@ void EnergyItem::Appear()
 
 	if (appearTimer->IsTime())
 	{
-		color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		color = { 0.3f, 0.3f, 1.0f, 1.0f };
 	}
+}
+
+Vector3 EnergyItem::GetVirtualityPlanePosition()
+{
+	return virtualityPlanePosition;
 }
 
 float EnergyItem::GetRadius()
