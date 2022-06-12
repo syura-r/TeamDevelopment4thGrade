@@ -46,6 +46,7 @@ Player::Player()
 	attackSprite = new Sprite();
 
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
+	itemEmitTimer = new Timer(300);
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Player", this);
@@ -78,7 +79,8 @@ Player::Player()
 Player::~Player()
 {	
 	delete attackSprite;	
-	//delete locusSelecter;		
+	//delete locusSelecter;	
+	delete itemEmitTimer;
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -135,6 +137,7 @@ void Player::Initialize()
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
 	cutPower = 0;
+	itemEmitTimer->Reset();
 }
 
 void Player::Update()
@@ -194,7 +197,8 @@ void Player::Update()
 	}
 
 	//ƒAƒCƒeƒ€¶¬(‰¼)
-	if (Input::TriggerKey(DIK_B))
+	itemEmitTimer->Update();
+	if (itemEmitTimer->IsTime())
 	{
 		EmitEnergyItem();
 	}
@@ -1052,8 +1056,14 @@ Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_max
 
 void Player::EmitEnergyItem()
 {
-	EnergyItem* item = new EnergyItem(virtualityPlanePosition + Vector3(0, EnergyItem::GetRadius(), 0));
+	Vector3 emitPos = Vector3();
+	emitPos.y = virtualityPlanePosition.y + EnergyItem::GetRadius();
+	float angle = rand() % 360;
+	float range = rand() % 35 + 3;
+	emitPos += LocusUtility::AngleToVector2(angle) * range;
+	EnergyItem* item = new EnergyItem(emitPos);
 	pObjectManager->Add(item);
+	itemEmitTimer->Reset();
 }
 
 bool Player::IsAlive()

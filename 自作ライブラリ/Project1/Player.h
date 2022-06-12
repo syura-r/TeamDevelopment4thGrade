@@ -121,6 +121,7 @@ private:
 
 	PanelCutLocus* panelCutLocus;
 	int cutPower;
+	Timer* itemEmitTimer;
 
 	//‘‚­ƒtƒ‰ƒO
 	bool drawingFlag = false;
