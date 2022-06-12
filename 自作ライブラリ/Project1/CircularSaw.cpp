@@ -9,6 +9,7 @@
 #include "ActorManager.h"
 #include "Field.h"
 #include "Player.h"
+#include "PanelCutLocus.h"
 
 
 CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus)
@@ -54,7 +55,8 @@ void CircularSaw::Update()
 		if (currentLineNum >= nowCuttingLocus->GetMaxNumLine())
 		{
 			Dead();
-			Player* player = ActorManager::GetInstance()->GetPlayer();
+			Player* player = ActorManager::GetInstance()->GetPlayer();			
+
 			player->EndDrawing();
 
 		}

@@ -18,16 +18,20 @@ public:
 
 	void Move(const Vector3& arg_movePos, const float arg_angle)override;
 	const LocusType GetType()const override;
+	void RecordCuttedPanelPos();
 
 	int GetMaxNumLine()override;
 	int GetCutPower()const;
 	void SetCutPower(const int arg_power);
+	std::vector<Vector2>& GetCuttedPanelPos();
 
 private:
 	int cutPower;
+	std::vector<Vector2> CuttedPanelPos;
 
 	//この図形のデフォルトの情報
 	static std::unordered_map<int, std::vector<LocusPointInfo>> baseInfo;
+	static std::unordered_map<int, std::vector<Vector2>> baseCuttedDir;
 
 	//デフォルトの図形情報を一回だけ計算
 	void PointSetting()override;

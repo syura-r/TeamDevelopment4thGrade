@@ -24,9 +24,11 @@ public:
 	static float GetLowerTimeOffset();
 	static float GetUpperTimeOffset();
 	static float GetFullOffset();
+	Vector3 GetVirtualityPlanePosition()const;
 	static float GetWeight();
 	PieceDirection GetPieceDirection()const;
 	bool IsActive();
+	void ChangeIsActive(const bool arg_isActive);
 	std::vector<Vector2>& GetPoints();
 
 private:

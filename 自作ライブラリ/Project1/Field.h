@@ -20,6 +20,7 @@ public:
 	//}Œ`Š®¬‚É‚æ‚Á‚ÄŒX‚­‚Æ‚«
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
+	int CutPanel(std::vector<Vector2>& arg_vecPos);
 
 	FieldPiece* GetPlayerRidingPiece();
 	Vector3 GetPlayerCuttingStartPos();

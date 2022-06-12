@@ -5,6 +5,7 @@
 #include "Field.h"
 #include "FieldPiece.h"
 std::unordered_map<int, std::vector<LocusPointInfo>> PanelCutLocus::baseInfo = std::unordered_map<int, std::vector<LocusPointInfo>>();
+std::unordered_map<int, std::vector<Vector2>> PanelCutLocus::baseCuttedDir = std::unordered_map<int, std::vector<Vector2>>();
 
 PanelCutLocus::PanelCutLocus(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
 	:BaseLocus(arg_angle, arg_color),
@@ -18,6 +19,7 @@ PanelCutLocus::PanelCutLocus(const Vector3& arg_pos, const float arg_angle, cons
 	{
 		PointSetting();
 	}
+	CuttedPanelPos.clear();
 
 	ObjectManager* oManager = ObjectManager::GetInstance();
 
@@ -104,6 +106,20 @@ const LocusType PanelCutLocus::GetType() const
 	return LocusType::PANELCUT;
 }
 
+void PanelCutLocus::RecordCuttedPanelPos()
+{
+	CuttedPanelPos.clear();
+
+	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));
+	auto vecInfo = baseCuttedDir[cutPower];
+	int i = 0;
+	for (i = 0; i < vecInfo.size(); i++)
+	{
+		Vector3 rotatedPos = CalcPointTransform(LocusUtility::Dim2XZToDim3(vecInfo[i], -5).ConvertXMVECTOR(), rotMat);	
+		CuttedPanelPos.push_back(LocusUtility::Dim3ToDim2XZ(rotatedPos + virtualityPlanePosition));
+	}
+}
+
 int PanelCutLocus::GetMaxNumLine()
 {
 	return baseInfo[cutPower].size();
@@ -120,12 +136,18 @@ void PanelCutLocus::SetCutPower(const int arg_power)
 	Move(virtualityPlanePosition, angle);
 }
 
+std::vector<Vector2>& PanelCutLocus::GetCuttedPanelPos()
+{
+	return CuttedPanelPos;
+}
+
 void PanelCutLocus::PointSetting()
 {
 	const float sidewaysLength = FieldPiece::GetSidewaysLength();
 	const float verticalLength = FieldPiece::GetFullOffset();
 
 	std::vector<Vector3> points;
+	std::vector<Vector2> cuttedDir;
 	//1
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	points.push_back(Vector3(sidewaysLength, 0.0f, verticalLength));
@@ -134,7 +156,11 @@ void PanelCutLocus::PointSetting()
 	baseInfo.emplace(1, std::vector<LocusPointInfo>());
 	CalcBaseInfo(points, baseInfo[1]);
 
+	cuttedDir.push_back(Vector2(sidewaysLength, verticalLength * 0.5f));
+	baseCuttedDir.emplace(1, cuttedDir);
+
 	points.clear();
+	cuttedDir.clear();
 	//2
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	points.push_back(Vector3(sidewaysLength, 0.0f, verticalLength));
@@ -144,7 +170,12 @@ void PanelCutLocus::PointSetting()
 	baseInfo.emplace(2, std::vector<LocusPointInfo>());
 	CalcBaseInfo(points, baseInfo[2]);
 
+	cuttedDir.push_back(Vector2(sidewaysLength, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 2, verticalLength * 0.5f));
+	baseCuttedDir.emplace(2, cuttedDir);
+
 	points.clear();
+	cuttedDir.clear();
 	//3
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	points.push_back(Vector3(-sidewaysLength, 0.0f, verticalLength));
@@ -154,7 +185,13 @@ void PanelCutLocus::PointSetting()
 	baseInfo.emplace(3, std::vector<LocusPointInfo>());
 	CalcBaseInfo(points, baseInfo[3]);
 
+	cuttedDir.push_back(Vector2(-sidewaysLength, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 2, verticalLength * 0.5f));
+	baseCuttedDir.emplace(3, cuttedDir);
+
 	points.clear();
+	cuttedDir.clear();
 	//4
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	points.push_back(Vector3(-sidewaysLength, 0.0f, verticalLength));
@@ -167,7 +204,14 @@ void PanelCutLocus::PointSetting()
 	baseInfo.emplace(4, std::vector<LocusPointInfo>());
 	CalcBaseInfo(points, baseInfo[4]);
 
+	cuttedDir.push_back(Vector2(-sidewaysLength, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 2, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 2, verticalLength * 1.5f));
+	baseCuttedDir.emplace(4, cuttedDir);
+
 	points.clear();
+	cuttedDir.clear();
 	//5
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	points.push_back(Vector3(sidewaysLength, 0.0f, verticalLength));
@@ -180,7 +224,15 @@ void PanelCutLocus::PointSetting()
 	baseInfo.emplace(5, std::vector<LocusPointInfo>());
 	CalcBaseInfo(points, baseInfo[5]);
 
+	cuttedDir.push_back(Vector2(sidewaysLength, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength, -verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 2, -verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 3, -verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 3, verticalLength * 0.5f));
+	baseCuttedDir.emplace(5, cuttedDir);
+
 	points.clear();
+	cuttedDir.clear();
 	//6
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	points.push_back(Vector3(-sidewaysLength, 0.0f, verticalLength));
@@ -193,5 +245,14 @@ void PanelCutLocus::PointSetting()
 	baseInfo.emplace(6, std::vector<LocusPointInfo>());
 	CalcBaseInfo(points, baseInfo[6]);
 
+	cuttedDir.push_back(Vector2(0, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(0, verticalLength * 1.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength, verticalLength * 1.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 2, verticalLength * 0.5f));
+	cuttedDir.push_back(Vector2(sidewaysLength * 2, verticalLength * 1.5f));
+	baseCuttedDir.emplace(6, cuttedDir);
+
 	points.clear();
+	cuttedDir.clear();
 }

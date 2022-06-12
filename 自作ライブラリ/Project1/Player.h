@@ -46,6 +46,7 @@ public:
 	Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
 
 	Vector3 GetDirection()const;
+	PanelCutLocus* GetPanelCutLocus();
 	
 private:
 	struct ConstLightCameraBuff

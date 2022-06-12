@@ -245,42 +245,6 @@ void Field::DecidePlayerCuttingAngle()
 		playerCuttingAngle = 0;
 		return;
 	}
-
-	//Vector2 pos = LocusUtility::Dim3ToDim2XZ(playerCuttingStartPos);
-	//std::vector<Vector2> vec = playerRidingPiece->GetPoints();
-	////
-	//if (playerRidingPiece->GetPieceDirection() == PieceDirection::Lower)
-	//{
-	//	if (pos.x = vec[0].x && pos.y == vec[0].y)
-	//	{
-	//		playerCuttingAngle = 120;
-	//	}
-	//	else if (pos.x = vec[1].x && pos.y == vec[1].y)
-	//	{
-	//		playerCuttingAngle = 240;
-	//	}
-	//	else
-	//	{
-	//		playerCuttingAngle = 0;
-	//	}
-	//}
-	////
-	//else
-	//{
-
-	//	if (pos.x = vec[0].x && pos.y == vec[0].y)
-	//	{
-	//		playerCuttingAngle = 300;
-	//	}
-	//	else if (pos.x = vec[1].x && pos.y == vec[1].y)
-	//	{
-	//		playerCuttingAngle = 60;
-	//	}
-	//	else
-	//	{
-	//		playerCuttingAngle = 180;
-	//	}
-	//}
 	
 	//
 	if (playerRidingPiece->GetPieceDirection() == PieceDirection::Lower)
@@ -439,6 +403,68 @@ void Field::ResetInfluences()
 	tiltDirection = Vector2(0, 0);
 	angleTilt = Vector3();
 	localYvec = Vector3();
+
+	for (auto vec : pieces)
+	{
+		for (auto p : vec)
+		{
+			p->ChangeIsActive(true);
+		}
+	}
+}
+
+int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
+{
+	int returnVal = 0;
+	Player* player = ActorManager::GetInstance()->GetPlayer();	
+
+	for (int i = 0; i < arg_vecPos.size(); i++)
+	{
+		//óÒì¡íË
+		float adjustedZPos = -arg_vecPos[i].y + RADIUS;
+		if (adjustedZPos < 0)
+		{
+			continue;
+		}
+		else if (adjustedZPos > RADIUS * 2)
+		{
+			continue;
+		}
+		int columnNum = adjustedZPos / (RADIUS / PIECE_LAYER_NUM);
+
+		//çsì¡íË
+		for (int j = 0; j < pieces[columnNum].size(); j++)
+		{
+			std::vector<Vector2> piecePoints = pieces[columnNum][j]->GetPoints();
+
+			float cross01 = Vector2::Cross(Vector2::Normalize(piecePoints[1] - piecePoints[0]), Vector2::Normalize(arg_vecPos[i] - piecePoints[0]));
+			float cross12 = Vector2::Cross(Vector2::Normalize(piecePoints[2] - piecePoints[1]), Vector2::Normalize(arg_vecPos[i] - piecePoints[1]));
+			float cross20 = Vector2::Cross(Vector2::Normalize(piecePoints[0] - piecePoints[2]), Vector2::Normalize(arg_vecPos[i] - piecePoints[2]));
+
+			if (cross01 > 0 && cross12 > 0 && cross20 > 0)
+			{
+				if (pieces[columnNum][j]->IsActive())
+				{
+					pieces[columnNum][j]->ChangeIsActive(false);
+					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), 0.5f));
+					returnVal++;
+				}
+				break;
+			}
+			else if (cross01 < 0 && cross12 < 0 && cross20 < 0)
+			{
+				if (pieces[columnNum][j]->IsActive())
+				{
+					pieces[columnNum][j]->ChangeIsActive(false);
+					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), 0.5f));
+					returnVal++;
+				}
+				break;
+			}
+		}
+	}
+
+	return returnVal;
 }
 
 FieldPiece* Field::GetPlayerRidingPiece()

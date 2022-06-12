@@ -203,7 +203,7 @@ void Player::Update()
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
 		{
-			if (!vecLocuss.empty())
+			if (/*!vecLocuss.empty()*/true)
 			{				
 				DeleteLocuss();
 			}
@@ -1046,11 +1046,19 @@ bool Player::IsAlive()
 void Player::EndDrawing()
 {
 	drawingFlag = false;
+	panelCutLocus->RecordCuttedPanelPos();
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus->GetCuttedPanelPos());
+	weight += num * 0.5f;
 }
 
 Vector3 Player::GetDirection() const
 {
 	return direction;
+}
+
+PanelCutLocus* Player::GetPanelCutLocus()
+{
+	return panelCutLocus;
 }
 
 void Player::HitCheckLoci()

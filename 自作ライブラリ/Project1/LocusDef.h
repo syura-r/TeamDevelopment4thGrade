@@ -30,6 +30,12 @@ struct LocusFieldInfluence
 {
 	Vector3 pos;
 	float weight;
+
+	LocusFieldInfluence(const Vector3& arg_pos, const float arg_weight)
+		:pos(arg_pos),
+		 weight(arg_weight)
+	{
+	}
 };
 
 #define PI 3.14159265

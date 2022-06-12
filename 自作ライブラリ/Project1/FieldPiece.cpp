@@ -111,6 +111,11 @@ float FieldPiece::GetFullOffset()
 	return FULL_OFFSET;
 }
 
+Vector3 FieldPiece::GetVirtualityPlanePosition() const
+{
+	return virtualityPlanePosition;
+}
+
 float FieldPiece::GetWeight()
 {
 	return WEIGHT;
@@ -124,6 +129,11 @@ PieceDirection FieldPiece::GetPieceDirection() const
 bool FieldPiece::IsActive()
 {
 	return isActive;
+}
+
+void FieldPiece::ChangeIsActive(const bool arg_isActive)
+{
+	isActive = arg_isActive;
 }
 
 std::vector<Vector2>& FieldPiece::GetPoints()
