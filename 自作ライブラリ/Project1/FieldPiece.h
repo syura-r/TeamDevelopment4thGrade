@@ -25,6 +25,7 @@ public:
 	static float GetUpperTimeOffset();
 	static float GetFullOffset();
 	static float GetWeight();
+	PieceDirection GetPieceDirection()const;
 	bool IsActive();
 	std::vector<Vector2>& GetPoints();
 

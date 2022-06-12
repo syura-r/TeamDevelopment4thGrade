@@ -19,7 +19,7 @@
 #include "StandardEnemy.h"
 #include "EnergyItem.h"
 #include "CircularSaw.h"
-
+#include "PanelCutLocus.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -40,22 +40,12 @@ Player::Player()
 
 	pObjectManager = ObjectManager::GetInstance();
 
-	locusSelecter = new LocusSelecter();
+	//locusSelecter = new LocusSelecter();
 
-	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);
-	predictStar = new TestStar(Vector3(0, -5, 0), 90, predictColor);
-	predictStar->ChangeIsDraw(false);
-	predictTriforce = new TestTriforce(Vector3(0, -5, 0), 90, predictColor);
-	predictTriforce->ChangeIsDraw(false);
-	predictRibbon = new TestRibbon(Vector3(0, -5, 0), 90, predictColor);
-	predictRibbon->ChangeIsDraw(false);
-	predictTriangle = new TestTriangle(Vector3(0, -5, 0), 90, predictColor);
-	predictTriangle->ChangeIsDraw(false);
-	predictPentagon = new TestPentagon(Vector3(0, -5, 0), 90, predictColor);
-	predictPentagon->ChangeIsDraw(false);
-	predictHexagram = new TestHexagram(Vector3(0, -5, 0), 90, predictColor);
-	predictHexagram->ChangeIsDraw(false);	
-	attackSprite = new Sprite();	
+	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);	
+	attackSprite = new Sprite();
+
+	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Player", this);
@@ -88,7 +78,7 @@ Player::Player()
 Player::~Player()
 {	
 	delete attackSprite;	
-	delete locusSelecter;		
+	//delete locusSelecter;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -128,12 +118,7 @@ void Player::Initialize()
 
 	drawingFlag = false;
 	isExtendLine = false;
-	currentLineNum = 0;
-	predictTriforce->ChangeIsDraw(false);
-	predictRibbon->ChangeIsDraw(false);
-	predictTriangle->ChangeIsDraw(false);
-	predictPentagon->ChangeIsDraw(false);
-	predictHexagram->ChangeIsDraw(false);
+	currentLineNum = 0;	
 	DeleteDrawingLine();
 	for (int i = 0; i < vecLocuss.size(); i++)
 	{
@@ -141,12 +126,11 @@ void Player::Initialize()
 		vecLocuss[i] = nullptr;
 	}
 	vecLocuss.clear();
-	nowDrawingLocus = predictStar;
-	predictStar->ChangeIsDraw(true);	
+	/*nowDrawingLocus = predictStar;
+	predictStar->ChangeIsDraw(true);*/	
 	feverQuota = maxFeverQuota;		
-	locusSelecter->Initialize();
-	locusSelecter->Setting();
-	pressedButton = LocusSelecter::Button::BBUTTON;		
+	/*locusSelecter->Initialize();
+	locusSelecter->Setting();*/	
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
@@ -165,13 +149,15 @@ void Player::Update()
 	}
 #endif
 	
-	locusSelecter->Update();
+	//locusSelecter->Update();
 
 	//移動処理
 	Move();
 
 	//カメラのリセット処理
 	MoveCamera();
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
 
 	if (blowFlag)
 	{
@@ -183,16 +169,16 @@ void Player::Update()
 	}
 	else
 	{
-		SelectLocus();
-
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && nowDrawingLocus)
+		//SelectLocus();		
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && panelCutLocus->GetCutPower() > 0 && field->GetPlayerRidingPiece())
 		{
 			if (!tackleFlag)
 			{
 				drawingFlag = true;
 				//線の生成
 				//CreateLine();
-				ObjectManager::GetInstance()->Add(new CircularSaw(virtualityPlanePosition, nowDrawingLocus));
+				Vector3 p = field->GetPlayerCuttingStartPos();
+				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus));
 			}
 			
 		}
@@ -232,17 +218,13 @@ void Player::Update()
 	//他のオブジェクトとのヒットチェック
 	//CheckHit();
 	Object::Update();	
-
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	
 	Vector3 p = field->GetPlayerCuttingStartPos();
+	//SetLocus(LocusType::UNDIFINED);
 	if (!drawingFlag)
 	{		
-		predictStar->Move(p, LocusUtility::Vector3XZToAngle(direction));
-		predictRibbon->Move(p, LocusUtility::Vector3XZToAngle(direction));
-		predictTriforce->Move(p, LocusUtility::Vector3XZToAngle(direction));
-		predictTriangle->Move(p, LocusUtility::Vector3XZToAngle(direction));
-		predictPentagon->Move(p, LocusUtility::Vector3XZToAngle(direction));
-		predictHexagram->Move(p, LocusUtility::Vector3XZToAngle(direction));
+		panelCutLocus->SetCutPower(2);
+		panelCutLocus->Move(p, LocusUtility::Vector3XZToAngle(direction));
 	}
 	for (auto locus : vecLocuss)
 	{
@@ -268,7 +250,7 @@ void Player::Draw()
 			attackSprite->DrawSprite("s_LBorRB", Vector2(960, 150), 0.0f, Vector2(1.5f, 1.5f));
 		}
 		
-		locusSelecter->Draw();		
+		//locusSelecter->Draw();		
 	}
 }
 
@@ -546,92 +528,92 @@ void Player::DecideDirection(Vector3& arg_direction)
 	velocity = arg_direction;
 }
 
-void Player::SelectLocus()
-{
-	if (drawingFlag)
-	{
-		return;
-	}
+//void Player::SelectLocus()
+//{
+//	if (drawingFlag)
+//	{
+//		return;
+//	}
+//
+//	if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
+//	{
+//		pressedButton = LocusSelecter::Button::BBUTTON;
+//	}
+//	else if (Input::TriggerPadButton(XINPUT_GAMEPAD_X))
+//	{
+//		pressedButton = LocusSelecter::Button::XBUTTON;
+//	}
+//	else if (Input::TriggerPadButton(XINPUT_GAMEPAD_Y))
+//	{
+//		pressedButton = LocusSelecter::Button::YBUTTON;
+//	}
+//
+//	switch (pressedButton)
+//	{
+//	case LocusSelecter::UNDIFINED:
+//		break;
+//	case LocusSelecter::XBUTTON:
+//		SetLocus(locusSelecter->XbuttonLocusType());
+//		break;
+//	case LocusSelecter::YBUTTON:
+//		SetLocus(locusSelecter->YbuttonLocusType());
+//		break;
+//	case LocusSelecter::BBUTTON:
+//		SetLocus(locusSelecter->BbuttonLocusType());
+//		break;
+//	default:
+//		break;
+//	}
+//}
 
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
-	{
-		pressedButton = LocusSelecter::Button::BBUTTON;
-	}
-	else if (Input::TriggerPadButton(XINPUT_GAMEPAD_X))
-	{
-		pressedButton = LocusSelecter::Button::XBUTTON;
-	}
-	else if (Input::TriggerPadButton(XINPUT_GAMEPAD_Y))
-	{
-		pressedButton = LocusSelecter::Button::YBUTTON;
-	}
-
-	switch (pressedButton)
-	{
-	case LocusSelecter::UNDIFINED:
-		break;
-	case LocusSelecter::XBUTTON:
-		SetLocus(locusSelecter->XbuttonLocusType());
-		break;
-	case LocusSelecter::YBUTTON:
-		SetLocus(locusSelecter->YbuttonLocusType());
-		break;
-	case LocusSelecter::BBUTTON:
-		SetLocus(locusSelecter->BbuttonLocusType());
-		break;
-	default:
-		break;
-	}
-}
-
-void Player::SetLocus(LocusType arg_LocusType)
-{
-	if (nowDrawingLocus)
-	{
-		nowDrawingLocus->ChangeIsDraw(false);
-	}
-
-	switch (arg_LocusType)
-	{
-	case LocusType::UNDIFINED:
-		nowDrawingLocus = nullptr;
-		break;
-	case LocusType::TRIANGLE:
-		nowDrawingLocus = predictTriangle;
-		break;
-	case LocusType::RIBBON:
-		nowDrawingLocus = predictRibbon;
-		break;
-	case LocusType::PENTAGON:
-		nowDrawingLocus = predictPentagon;
-		break;
-	case LocusType::STAR:
-		nowDrawingLocus = predictStar;
-		break;
-	case LocusType::HEXAGRAM:
-		nowDrawingLocus = predictHexagram;
-		break;
-	case LocusType::TRIFORCE:
-		nowDrawingLocus = predictTriforce;
-		break;
-	default:
-		break;
-	}
-
-	if (arg_LocusType != LocusType::UNDIFINED)
-	{
-		nowDrawingLocus->ChangeIsDraw(true);
-	}
-}
+//void Player::SetLocus(LocusType arg_LocusType)
+//{
+//	if (nowDrawingLocus)
+//	{
+//		nowDrawingLocus->ChangeIsDraw(false);
+//	}
+//
+//	switch (arg_LocusType)
+//	{
+//	case LocusType::UNDIFINED:
+//		nowDrawingLocus = nullptr;
+//		break;
+//	case LocusType::TRIANGLE:
+//		nowDrawingLocus = predictTriangle;
+//		break;
+//	case LocusType::RIBBON:
+//		nowDrawingLocus = predictRibbon;
+//		break;
+//	case LocusType::PENTAGON:
+//		nowDrawingLocus = predictPentagon;
+//		break;
+//	case LocusType::STAR:
+//		nowDrawingLocus = predictStar;
+//		break;
+//	case LocusType::HEXAGRAM:
+//		nowDrawingLocus = predictHexagram;
+//		break;
+//	case LocusType::TRIFORCE:
+//		nowDrawingLocus = predictTriforce;
+//		break;
+//	default:
+//		break;
+//	}
+//
+//	if (arg_LocusType != LocusType::UNDIFINED)
+//	{
+//		nowDrawingLocus->ChangeIsDraw(true);
+//	}
+//}
 
 void Player::CreateLine()
 {
-	if (currentLineNum >= nowDrawingLocus->GetMaxNumLine())
+	if (currentLineNum >= panelCutLocus->GetMaxNumLine())
 	{
 		return;
 	}
 
-	Vector3 nowLineVel = nowDrawingLocus->GetLine(currentLineNum)->GetDirection(); //kokokokoko
+	Vector3 nowLineVel = panelCutLocus->GetLine(currentLineNum)->GetDirection(); //kokokokoko
 	pNowDrawingLine = new Line(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
 	ObjectManager::GetInstance()->Add(pNowDrawingLine, true);
 	vecDrawingLines.push_back(pNowDrawingLine);
@@ -653,60 +635,60 @@ void Player::DrawingLine()
 			}			
 
 			float lengthNowLine = pNowDrawingLine->GetLength();
-			float lengthLocusLine = nowDrawingLocus->GetLine(currentLineNum)->GetLength();
+			float lengthLocusLine = panelCutLocus->GetLine(currentLineNum)->GetLength();
 
 			if (lengthLocusLine - lengthNowLine <= 0.05f) //マジックサイコー
 			{
 				pNowDrawingLine->SetLength(lengthLocusLine);
 				currentLineNum++;
-				if (currentLineNum >= nowDrawingLocus->GetMaxNumLine())
+				if (currentLineNum >= panelCutLocus->GetMaxNumLine())
 				{
 					drawingFlag = false;
 					currentLineNum = 0;
-					static const XMFLOAT4 copyColor = XMFLOAT4(0.1f, 0.3f, 0.9f, 0.6f);
-					//ここで図形として保存する処理
-					BaseLocus* copyLocus = nullptr;
-					switch (nowDrawingLocus->GetType())
-					{
-					case LocusType::UNDIFINED:
-						break;
-					case LocusType::TRIANGLE:
-						copyLocus = new TestTriangle(*predictTriangle, copyColor);
-						break;
-					case LocusType::RIBBON:
-						copyLocus = new TestRibbon(*predictRibbon, copyColor);
-						break;
-					case LocusType::PENTAGON:
-						copyLocus = new TestPentagon(*predictPentagon, copyColor);
-						break;
-					case LocusType::STAR:
-						copyLocus = new TestStar(*predictStar, copyColor);
-						break;
-					case LocusType::HEXAGRAM:
-						copyLocus = new TestHexagram(*predictHexagram, copyColor);
-						break;
-					case LocusType::TRIFORCE:
-						copyLocus = new TestTriforce(*predictTriforce, copyColor);
-						break;
-					default:
-						break;
-					}
+					//static const XMFLOAT4 copyColor = XMFLOAT4(0.1f, 0.3f, 0.9f, 0.6f);
+					////ここで図形として保存する処理
+					//BaseLocus* copyLocus = nullptr;
+					//switch (nowDrawingLocus->GetType())
+					//{
+					//case LocusType::UNDIFINED:
+					//	break;
+					//case LocusType::TRIANGLE:
+					//	copyLocus = new TestTriangle(*predictTriangle, copyColor);
+					//	break;
+					//case LocusType::RIBBON:
+					//	copyLocus = new TestRibbon(*predictRibbon, copyColor);
+					//	break;
+					//case LocusType::PENTAGON:
+					//	copyLocus = new TestPentagon(*predictPentagon, copyColor);
+					//	break;
+					//case LocusType::STAR:
+					//	copyLocus = new TestStar(*predictStar, copyColor);
+					//	break;
+					//case LocusType::HEXAGRAM:
+					//	copyLocus = new TestHexagram(*predictHexagram, copyColor);
+					//	break;
+					//case LocusType::TRIFORCE:
+					//	copyLocus = new TestTriforce(*predictTriforce, copyColor);
+					//	break;
+					//default:
+					//	break;
+					//}
 
-					Field* field = ActorManager::GetInstance()->GetFields()[0];
-					if (field)
-					{
-						field->AddInfluence(LocusFieldInfluence{ copyLocus->GetCenterOfGravity(), copyLocus->GetWeight() });
-					}
+					//Field* field = ActorManager::GetInstance()->GetFields()[0];
+					//if (field)
+					//{
+					//	field->AddInfluence(LocusFieldInfluence{ copyLocus->GetCenterOfGravity(), copyLocus->GetWeight() });
+					//}
 					weight += 8;
-					 
-					vecLocuss.push_back(copyLocus);
+					// 
+					//vecLocuss.push_back(copyLocus);
 					
-					MoveEndDrawing(copyLocus);
+					//MoveEndDrawing(copyLocus);
 					DeleteDrawingLine();
-					locusSelecter->SetNextLocus(pressedButton);
+					//locusSelecter->SetNextLocus(pressedButton);
 					return;
 				}
-				position = nowDrawingLocus->GetLine(currentLineNum)->GetStartPos();
+				position = panelCutLocus->GetLine(currentLineNum)->GetStartPos();
 				CreateLine();
 			}
 		}
@@ -1059,6 +1041,11 @@ void Player::EmitEnergyItem()
 bool Player::IsAlive()
 {
 	return true;
+}
+
+void Player::EndDrawing()
+{
+	drawingFlag = false;
 }
 
 Vector3 Player::GetDirection() const

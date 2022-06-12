@@ -21,6 +21,7 @@
 
 class StandardEnemy;
 class EnergyItem;
+class PanelCutLocus;
 
 class Player :
 	public Object
@@ -37,7 +38,7 @@ public:
 	//残機が残っているか
 	bool IsAlive();
 
-	void EndDrawing() { drawingFlag = false; }
+	void EndDrawing();
 
 	// 敵と図形の判定のため
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
@@ -71,9 +72,9 @@ private:
 	void DecideDirection(Vector3& arg_direction);
 
 	//ドローイングする図形を選択
-	void SelectLocus();
+	//void SelectLocus();
 	//図形をセットする
-	void SetLocus(LocusType arg_LocusType);
+	//void SetLocus(LocusType arg_LocusType);
 
 	//線を生成
 	void CreateLine();
@@ -113,20 +114,11 @@ private:
 	//アイテム生成仮置き
 	void EmitEnergyItem();
 
-	ObjectManager* pObjectManager = nullptr;
-	LocusSelecter* locusSelecter = nullptr;
+	ObjectManager* pObjectManager = nullptr;	
 
-	Line* pNowDrawingLine = nullptr;
-	BaseLocus* nowDrawingLocus = nullptr;
+	Line* pNowDrawingLine = nullptr;			
 
-	TestStar* predictStar = nullptr;
-	TestTriforce* predictTriforce = nullptr;
-	TestRibbon* predictRibbon = nullptr;
-	TestTriangle* predictTriangle = nullptr;
-	TestPentagon* predictPentagon = nullptr;
-	TestHexagram* predictHexagram = nullptr;	
-
-	LocusSelecter::Button pressedButton;
+	PanelCutLocus* panelCutLocus;
 
 	//書くフラグ
 	bool drawingFlag = false;

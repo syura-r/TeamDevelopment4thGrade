@@ -19,6 +19,7 @@ public:
 	void Move(const Vector3& arg_movePos, const float arg_angle)override;
 	const LocusType GetType()const override;
 
+	int GetMaxNumLine()override;
 	int GetCutPower()const;
 	void SetCutPower(const int arg_power);
 

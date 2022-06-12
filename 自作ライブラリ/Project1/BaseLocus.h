@@ -15,7 +15,7 @@ public:
 	virtual const LocusType GetType()const = 0;
 	float GetAngle()const;
 	Line* GetLine(const int arg_num);
-	int GetMaxNumLine();
+	virtual int GetMaxNumLine();
 	bool IsDraw()const;
 	void ChangeIsDraw(const bool arg_isDraw);
 	float GetWeight()const;

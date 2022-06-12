@@ -116,6 +116,11 @@ float FieldPiece::GetWeight()
 	return WEIGHT;
 }
 
+PieceDirection FieldPiece::GetPieceDirection() const
+{
+	return dir;
+}
+
 bool FieldPiece::IsActive()
 {
 	return isActive;

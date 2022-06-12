@@ -23,14 +23,14 @@ PanelCutLocus::PanelCutLocus(const Vector3& arg_pos, const float arg_angle, cons
 
 	for (int i = 0; i < 7; i++)
 	{
-		Line* line = new Line(Vector3(), 0, 1, arg_color, Vector3(0.5f, 0.5f, 0.5f));
+		Line* line = new Line(Vector3(), 0, FieldPiece::GetSidewaysLength() * 2, arg_color, Vector3(0.5f, 0.5f, 0.5f));
 		lines.push_back(line);
 		oManager->Add(line, true);
 	}
 
 	//ˆø”‚Å‚à‚ç‚Á‚½À•WAŠp“x‚É•ÏŠ·‚µ‚ÄLine‚ğ¶¬
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));
-	auto vecInfo = baseInfo[cutPower];
+	auto vecInfo = baseInfo[5];
 	for (int i = 0; i < vecInfo.size(); i++)
 	{
 		Vector3 rotatedPos = CalcPointTransform(vecInfo[i].startPos.ConvertXMVECTOR(), rotMat);
@@ -80,13 +80,14 @@ void PanelCutLocus::Move(const Vector3& arg_movePos, const float arg_angle)
 		for (i = 0; i < vecInfo.size(); i++)
 		{
 			Vector3 rotatedPos = CalcPointTransform(vecInfo[i].startPos.ConvertXMVECTOR(), rotMat);
+			lines[i]->SetLength(vecInfo[i].length);
 			lines[i]->Move(rotatedPos + virtualityPlanePosition, angle + vecInfo[i].angle);
 			lines[i]->ChangeIsDraw(true);
 		}
 
 		for (; i < lines.size(); i++)
 		{
-			lines[i]->ChangeIsDraw(true);
+			lines[i]->ChangeIsDraw(false);
 		}
 	}
 	else
@@ -101,6 +102,11 @@ void PanelCutLocus::Move(const Vector3& arg_movePos, const float arg_angle)
 const LocusType PanelCutLocus::GetType() const
 {
 	return LocusType::PANELCUT;
+}
+
+int PanelCutLocus::GetMaxNumLine()
+{
+	return baseInfo[cutPower].size();
 }
 
 int PanelCutLocus::GetCutPower() const
