@@ -23,6 +23,7 @@ public:
 
 	FieldPiece* GetPlayerRidingPiece();
 	Vector3 GetPlayerCuttingStartPos();
+	float GetPlayerCuttingAngle();
 
 	static std::vector<Vector2>& GetEdges();
 	Vector3 GetAngleTilt()const;
@@ -47,7 +48,9 @@ private:
 
 	std::vector<std::vector<FieldPiece*>> pieces;
 	FieldPiece* playerRidingPiece;
+	int playerCuttingStartPosNum;
 	Vector3 playerCuttingStartPos;
+	float playerCuttingAngle;
 
 	//’[“_‚Ì—pˆÓ
 	void SetEdges();
@@ -59,4 +62,5 @@ private:
 
 	void DecidePlayerRidingPiece();
 	void DecidePlayerCuttingStartPos();
+	void DecidePlayerCuttingAngle();
 };

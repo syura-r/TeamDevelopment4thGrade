@@ -19,7 +19,8 @@ Field::Field()
 	 angleTilt(Vector3()),
 	 localYvec(Vector3()),
 	 playerRidingPiece(nullptr),
-	 playerCuttingStartPos(Vector3())
+	 playerCuttingStartPos(Vector3()),
+	 playerCuttingStartPosNum(0)
 {
 	if (edges.empty())
 	{
@@ -66,6 +67,7 @@ void Field::Update()
 	SetRotation(angleTilt);	
 	DecidePlayerRidingPiece();
 	DecidePlayerCuttingStartPos();
+	DecidePlayerCuttingAngle();
 
 	Object::Update();
 	collider->Update();
@@ -200,6 +202,7 @@ void Field::DecidePlayerCuttingStartPos()
 	if (!playerRidingPiece)
 	{
 		playerCuttingStartPos = playerPos;
+		playerCuttingStartPosNum = 0;
 		return;
 	}
 
@@ -232,6 +235,86 @@ void Field::DecidePlayerCuttingStartPos()
 		}
 	}
 	playerCuttingStartPos = LocusUtility::Dim2XZToDim3(piecePoints[num], position.y);
+	playerCuttingStartPosNum = num;
+}
+
+void Field::DecidePlayerCuttingAngle()
+{
+	if (!playerRidingPiece)
+	{
+		playerCuttingAngle = 0;
+		return;
+	}
+
+	//Vector2 pos = LocusUtility::Dim3ToDim2XZ(playerCuttingStartPos);
+	//std::vector<Vector2> vec = playerRidingPiece->GetPoints();
+	////
+	//if (playerRidingPiece->GetPieceDirection() == PieceDirection::Lower)
+	//{
+	//	if (pos.x = vec[0].x && pos.y == vec[0].y)
+	//	{
+	//		playerCuttingAngle = 120;
+	//	}
+	//	else if (pos.x = vec[1].x && pos.y == vec[1].y)
+	//	{
+	//		playerCuttingAngle = 240;
+	//	}
+	//	else
+	//	{
+	//		playerCuttingAngle = 0;
+	//	}
+	//}
+	////
+	//else
+	//{
+
+	//	if (pos.x = vec[0].x && pos.y == vec[0].y)
+	//	{
+	//		playerCuttingAngle = 300;
+	//	}
+	//	else if (pos.x = vec[1].x && pos.y == vec[1].y)
+	//	{
+	//		playerCuttingAngle = 60;
+	//	}
+	//	else
+	//	{
+	//		playerCuttingAngle = 180;
+	//	}
+	//}
+	
+	//
+	if (playerRidingPiece->GetPieceDirection() == PieceDirection::Lower)
+	{
+		if (playerCuttingStartPosNum == 0)
+		{
+			playerCuttingAngle = 120;
+		}
+		else if (playerCuttingStartPosNum == 1)
+		{
+			playerCuttingAngle = 240;
+		}
+		else
+		{
+			playerCuttingAngle = 0;
+		}
+	}
+	//
+	else
+	{
+
+		if (playerCuttingStartPosNum == 0)
+		{
+			playerCuttingAngle = 300;
+		}
+		else if (playerCuttingStartPosNum == 1)
+		{
+			playerCuttingAngle = 60;
+		}
+		else
+		{
+			playerCuttingAngle = 180;
+		}
+	}
 }
 
 void Field::SetEdges()
@@ -366,6 +449,11 @@ FieldPiece* Field::GetPlayerRidingPiece()
 Vector3 Field::GetPlayerCuttingStartPos()
 {
 	return playerCuttingStartPos;
+}
+
+float Field::GetPlayerCuttingAngle()
+{
+	return playerCuttingAngle;
 }
 
 std::vector<Vector2>& Field::GetEdges()

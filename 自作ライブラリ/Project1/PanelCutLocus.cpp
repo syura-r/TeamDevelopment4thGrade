@@ -157,11 +157,11 @@ void PanelCutLocus::PointSetting()
 	points.clear();
 	//4
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
+	points.push_back(Vector3(-sidewaysLength, 0.0f, verticalLength));
 	points.push_back(Vector3(sidewaysLength, 0.0f, verticalLength));
+	points.push_back(Vector3(sidewaysLength * 2, 0.0f, verticalLength * 2));
+	points.push_back(Vector3(sidewaysLength * 3, 0.0f, verticalLength));
 	points.push_back(Vector3(sidewaysLength * 2, 0.0f, 0.0f));
-	points.push_back(Vector3(sidewaysLength, 0.0f, -verticalLength));
-	points.push_back(Vector3(-sidewaysLength, 0.0f, -verticalLength));
-	points.push_back(Vector3(-sidewaysLength * 2, 0.0f, 0.0f));
 	points.push_back(Vector3(0.0f, 0.0f, 0.0f));
 	for (int i = 0; i < points.size(); i++)	
 	baseInfo.emplace(4, std::vector<LocusPointInfo>());

@@ -223,8 +223,8 @@ void Player::Update()
 	//SetLocus(LocusType::UNDIFINED);
 	if (!drawingFlag)
 	{		
-		panelCutLocus->SetCutPower(2);
-		panelCutLocus->Move(p, LocusUtility::Vector3XZToAngle(direction));
+		panelCutLocus->SetCutPower(4);
+		panelCutLocus->Move(p, field->GetPlayerCuttingAngle());
 	}
 	for (auto locus : vecLocuss)
 	{
