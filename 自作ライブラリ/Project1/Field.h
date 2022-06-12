@@ -21,6 +21,9 @@ public:
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
 
+	FieldPiece* GetPlayerRidingPiece();
+	Vector3 GetPlayerCuttingStartPos();
+
 	static std::vector<Vector2>& GetEdges();
 	Vector3 GetAngleTilt()const;
 	Vector3 GetTilt();
@@ -42,7 +45,9 @@ private:
 	//図形の場所と重さ
 	std::vector<LocusFieldInfluence> influences;
 
-	std::vector<FieldPiece*> pieces;
+	std::vector<std::vector<FieldPiece*>> pieces;
+	FieldPiece* playerRidingPiece;
+	Vector3 playerCuttingStartPos;
 
 	//端点の用意
 	void SetEdges();
@@ -51,4 +56,7 @@ private:
 	//傾き計算
 	void CalcTilt();
 	float GetMultiplyingFactor(const float arg_length);
+
+	void DecidePlayerRidingPiece();
+	void DecidePlayerCuttingStartPos();
 };

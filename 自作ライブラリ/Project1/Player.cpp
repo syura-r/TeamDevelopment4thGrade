@@ -229,14 +229,16 @@ void Player::Update()
 	//CheckHit();
 	Object::Update();	
 
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	Vector3 p = field->GetPlayerCuttingStartPos();
 	if (!isDrawing)
 	{		
-		predictStar->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
-		predictRibbon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
-		predictTriforce->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
-		predictTriangle->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
-		predictPentagon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
-		predictHexagram->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
+		predictStar->Move(p, LocusUtility::Vector3XZToAngle(direction));
+		predictRibbon->Move(p, LocusUtility::Vector3XZToAngle(direction));
+		predictTriforce->Move(p, LocusUtility::Vector3XZToAngle(direction));
+		predictTriangle->Move(p, LocusUtility::Vector3XZToAngle(direction));
+		predictPentagon->Move(p, LocusUtility::Vector3XZToAngle(direction));
+		predictHexagram->Move(p, LocusUtility::Vector3XZToAngle(direction));
 	}
 	for (auto locus : vecLocuss)
 	{
@@ -979,6 +981,11 @@ void Player::EmitEnergyItem()
 bool Player::IsAlive()
 {
 	return true;
+}
+
+Vector3 Player::GetDirection() const
+{
+	return direction;
 }
 
 void Player::HitCheckLoci()

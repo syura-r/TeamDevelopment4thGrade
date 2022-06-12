@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "StandardEnemy.h"
 #include "FieldPiece.h"
+#include "Input.h"
+#include "Easing.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
@@ -15,7 +17,9 @@ Field::Field()
 	:depthMagnitude(0.0f),
 	 tiltDirection(Vector2()),
 	 angleTilt(Vector3()),
-	 localYvec(Vector3())
+	 localYvec(Vector3()),
+	 playerRidingPiece(nullptr),
+	 playerCuttingStartPos(Vector3())
 {
 	if (edges.empty())
 	{
@@ -53,12 +57,15 @@ void Field::Initialize()
 {
 	ResetInfluences();
 	CalcTilt();
+	playerRidingPiece = nullptr;
 }
 
 void Field::Update()
 {	
 	CalcTilt();
 	SetRotation(angleTilt);	
+	DecidePlayerRidingPiece();
+	DecidePlayerCuttingStartPos();
 
 	Object::Update();
 	collider->Update();
@@ -130,6 +137,103 @@ float Field::GetMultiplyingFactor(const float arg_length)
 	return arg_length / 300.0f;
 }
 
+void Field::DecidePlayerRidingPiece()
+{	
+	if (Input::TriggerKey(DIK_P))
+	{
+		int a = 5;
+		a++;
+	}
+
+	Player* player = ActorManager::GetInstance()->GetPlayer();
+	Vector2 playerPos = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
+
+	//óÒì¡íË
+	float adjustedZPos = -playerPos.y + RADIUS;
+	if (adjustedZPos < 0)
+	{
+		adjustedZPos = 0;
+	}
+	else if (adjustedZPos > RADIUS * 2)
+	{
+		adjustedZPos > RADIUS * 2;
+	}
+	int columnNum = adjustedZPos / (RADIUS / PIECE_LAYER_NUM);
+
+	//çsì¡íË
+	for (int i = 0; i < pieces[columnNum].size(); i++)
+	{
+		std::vector<Vector2> piecePoints = pieces[columnNum][i]->GetPoints();
+		for (int j = 0; j < 3; j++)
+		{
+			if (piecePoints[j].x == playerPos.x && piecePoints[j].y == playerPos.y)
+			{
+				playerRidingPiece = pieces[columnNum][i];
+				return;
+			}
+		}
+
+		float cross01 = Vector2::Cross(Vector2::Normalize(piecePoints[1] - piecePoints[0]), Vector2::Normalize(playerPos - piecePoints[0]));
+		float cross12 = Vector2::Cross(Vector2::Normalize(piecePoints[2] - piecePoints[1]), Vector2::Normalize(playerPos - piecePoints[1]));
+		float cross20 = Vector2::Cross(Vector2::Normalize(piecePoints[0] - piecePoints[2]), Vector2::Normalize(playerPos - piecePoints[2]));
+
+		if (cross01 > 0 && cross12 > 0 && cross20 > 0)
+		{
+			playerRidingPiece = pieces[columnNum][i];
+			return;
+		}
+		else if (cross01 < 0 && cross12 < 0 && cross20 < 0)
+		{
+			playerRidingPiece = pieces[columnNum][i];
+			return;
+		}
+	}	
+
+	playerRidingPiece = nullptr;
+}
+
+void Field::DecidePlayerCuttingStartPos()
+{
+	Player* player = ActorManager::GetInstance()->GetPlayer();
+	Vector3 playerPos = player->GetVirtualityPlanePosition();
+
+	if (!playerRidingPiece)
+	{
+		playerCuttingStartPos = playerPos;
+		return;
+	}
+
+	float rateScore[3] = {0};
+	std::vector<Vector2> piecePoints = playerRidingPiece->GetPoints();
+
+	for (int i = 0; i < 3; i++)
+	{
+		//äpìx
+		float eyeAngle = LocusUtility::Vector3XZToAngle(player->GetDirection());
+		float posAngle = LocusUtility::Vector3XZToAngle(LocusUtility::Dim2XZToDim3(piecePoints[i], position.y) - player->GetVirtualityPlanePosition());
+		float angleScore = fabsf(eyeAngle - posAngle);
+		if (angleScore >= 180)
+		{
+			angleScore = 360 - angleScore;
+		}
+		rateScore[i] += Easing::Lerp(0.0f, 1.0f, angleScore / 180.0f);
+
+		//ãóó£
+		float lengthScore = Vector2::Length(LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition()) - piecePoints[i]);
+		//rateScore[i] += Easing::Lerp(0.0f, 1.0f, lengthScore / FieldPiece::GetLowerTimeOffset()) * 40.0f;
+	}
+
+	int num = 0;
+	for (int i = 1; i < 3; i++)
+	{
+		if (rateScore[num] > rateScore[i])
+		{
+			num = i;
+		}
+	}
+	playerCuttingStartPos = LocusUtility::Dim2XZToDim3(piecePoints[num], position.y);
+}
+
 void Field::SetEdges()
 {
 	edges.clear();
@@ -161,6 +265,8 @@ void Field::CreatePieces()
 	{
 		createDir = PieceDirection::Upper;
 		offsetCount = -(TOP_PIECES_NUM + i * 2) / 2;
+
+		std::vector<FieldPiece*> tmpVec;
 		
 		for (int j = 0; j < TOP_PIECES_NUM + i * 2; j++)
 		{
@@ -179,7 +285,7 @@ void Field::CreatePieces()
 
 			FieldPiece* piece = new FieldPiece(position + offset, createDir);
 			ObjectManager::GetInstance()->Add(piece);
-			pieces.push_back(piece);
+			tmpVec.push_back(piece);
 
 			//ê∂ê¨å„
 			if (createDir == PieceDirection::Lower)
@@ -192,6 +298,7 @@ void Field::CreatePieces()
 			}
 			offsetCount++;
 		}
+		pieces.push_back(tmpVec);
 	}
 
 	//â∫îºï™
@@ -199,6 +306,8 @@ void Field::CreatePieces()
 	{
 		createDir = PieceDirection::Lower;
 		offsetCount = -(CENTER_PIECES_NUM - i * 2) / 2;
+
+		std::vector<FieldPiece*> tmpVec;
 
 		for (int j = 0; j < CENTER_PIECES_NUM - i * 2; j++)
 		{
@@ -217,7 +326,7 @@ void Field::CreatePieces()
 
 			FieldPiece* piece = new FieldPiece(position + offset, createDir);
 			ObjectManager::GetInstance()->Add(piece);
-			pieces.push_back(piece);
+			tmpVec.push_back(piece);
 
 			//ê∂ê¨å„
 			if (createDir == PieceDirection::Lower)
@@ -230,6 +339,7 @@ void Field::CreatePieces()
 			}
 			offsetCount++;
 		}
+		pieces.push_back(tmpVec);
 	}	
 }
 
@@ -246,6 +356,16 @@ void Field::ResetInfluences()
 	tiltDirection = Vector2(0, 0);
 	angleTilt = Vector3();
 	localYvec = Vector3();
+}
+
+FieldPiece* Field::GetPlayerRidingPiece()
+{
+	return playerRidingPiece;
+}
+
+Vector3 Field::GetPlayerCuttingStartPos()
+{
+	return playerCuttingStartPos;
 }
 
 std::vector<Vector2>& Field::GetEdges()

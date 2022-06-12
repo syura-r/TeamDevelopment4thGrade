@@ -70,8 +70,20 @@ void FieldPiece::Draw()
 {
 	if (isActive)
 	{
-		Object::Draw();
+		color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	}
+	else
+	{
+		color = { 1.0f, 1.0f, 1.0f, 0.2f };
+	}
+
+	if (ActorManager::GetInstance()->GetFields()[0]->GetPlayerRidingPiece() == this)
+	{
+		color = { 1.0f, 0.1f, 0.1f, 1.0f };
+	}
+	//Object::Update();
+
+	Object::Draw();
 }
 
 float FieldPiece::GetSize()
@@ -107,6 +119,11 @@ float FieldPiece::GetWeight()
 bool FieldPiece::IsActive()
 {
 	return isActive;
+}
+
+std::vector<Vector2>& FieldPiece::GetPoints()
+{
+	return points;
 }
 
 void FieldPiece::SetPoints()

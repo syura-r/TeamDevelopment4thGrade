@@ -408,6 +408,9 @@
     <ClCompile Include="CircularSaw.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="PanelCutLocus.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -733,6 +736,9 @@
     </ClInclude>
     <ClInclude Include="CircularSaw.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelCutLocus.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

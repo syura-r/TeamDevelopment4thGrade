@@ -43,6 +43,8 @@ public:
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
 	float GetWeight() { return weight; }
 	Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
+
+	Vector3 GetDirection()const;
 	
 private:
 	struct ConstLightCameraBuff

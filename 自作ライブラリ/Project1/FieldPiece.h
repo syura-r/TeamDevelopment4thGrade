@@ -26,6 +26,7 @@ public:
 	static float GetFullOffset();
 	static float GetWeight();
 	bool IsActive();
+	std::vector<Vector2>& GetPoints();
 
 private:
 	static const float SIZE;

@@ -12,6 +12,7 @@ enum class LocusType
 	STAR,        //星
 	HEXAGRAM,    //簡易六芒星
 	TRIFORCE,    //トライフォース
+	PANELCUT,
 };
 
 //図形定義用　線の構造体
