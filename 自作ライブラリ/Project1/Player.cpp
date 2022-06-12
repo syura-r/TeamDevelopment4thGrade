@@ -126,7 +126,7 @@ void Player::Initialize()
 
 	camera->SetDistance(100);
 
-	isDrawing = false;
+	drawingFlag = false;
 	isExtendLine = false;
 	currentLineNum = 0;
 	predictTriforce->ChangeIsDraw(false);
@@ -173,12 +173,12 @@ void Player::Update()
 	//カメラのリセット処理
 	MoveCamera();
 
-	if (isBlow)
+	if (blowFlag)
 	{
 		blowTime--;
 		if (blowTime <= 0)
 		{
-			isBlow = false;
+			blowFlag = false;
 		}
 	}
 	else
@@ -187,19 +187,23 @@ void Player::Update()
 
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && nowDrawingLocus)
 		{
-			isDrawing = true;
-			//線の生成
-			//CreateLine();
-			ObjectManager::GetInstance()->Add(new CircularSaw(virtualityPlanePosition, nowDrawingLocus));
-
+			if (!tackleFlag)
+			{
+				drawingFlag = true;
+				//線の生成
+				//CreateLine();
+				ObjectManager::GetInstance()->Add(new CircularSaw(virtualityPlanePosition, nowDrawingLocus));
+			}
+			
 		}
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
-		{
-			tackle = true;
+		{	
+			Tackle();
 		}
 
 		//ドローイングの処理
 		DrawingLine();
+		
 	}
 
 	//アイテム生成(仮)
@@ -209,7 +213,7 @@ void Player::Update()
 	}
 	
 	//図形の消去
-	if (!isDrawing)
+	if (!drawingFlag)
 	{
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
 		{
@@ -229,7 +233,7 @@ void Player::Update()
 	//CheckHit();
 	Object::Update();	
 
-	if (!isDrawing)
+	if (!drawingFlag)
 	{		
 		predictStar->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
 		predictRibbon->Move(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(direction));
@@ -299,7 +303,7 @@ void Player::Move()
 	preVirtualityPlanePosition = virtualityPlanePosition;
 
 	//走りと歩きの切り替え処理
-	if (isDrawing)
+	if (drawingFlag)
 	{
 		speed = drawingSpeed;
 	}
@@ -308,7 +312,7 @@ void Player::Move()
 		speed = walkSpeed;
 	}
 
-	if (isStanding)
+	if (standingFlag)
 	{
 		WithStand();
 	}
@@ -318,19 +322,33 @@ void Player::Move()
 	}
 
 	//フィールド端からの復帰
-	if (isStanding || isReturningField)
+	if (standingFlag || returningFieldFlag)
 	{
 		myModel->PlayAnimation("stand", true);
-		if (isReturningField)
+		if (returningFieldFlag)
 		{
 			virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
 			moveEasingCount++;
 			if (moveEasingCount >= 30)
 			{
 				moveEasingCount = 0;
-				isReturningField = false;
+				returningFieldFlag = false;
 			}
 		}
+	}
+	//タックルの移動　ガチで月曜にplayerリファクタリングする
+	else if (tackleFlag)
+	{
+		virtualityPlanePosition = EasingMove(tackleStartPos, tackleEndPos, 1, tackleCount / 30.0f);
+		tackleCount++;
+		if (tackleCount >= 30)
+		{
+			tackleCount = 0;
+			tackleFlag = false;
+			tackleHitFlag = false;
+		}
+		StayInTheField();
+	
 	}
 	//通常の移動
 	else
@@ -386,7 +404,7 @@ void Player::Move()
 		{
 			myModel->PlayAnimation("stand", true);
 		}
-		else if (isDrawing)
+		else if (drawingFlag)
 		{
 			myModel->PlayAnimation("run", true);
 		}
@@ -436,7 +454,7 @@ void Player::MoveCamera()
 
 void Player::SlidingDown()
 {
-	if (isDrawing)
+	if (drawingFlag)
 	{
 		return;
 	}	
@@ -451,12 +469,12 @@ void Player::SlidingDown()
 void Player::DecideDirection(Vector3& arg_direction)
 {
 	//ふっとばされ中
-	if (isBlow)
+	if (blowFlag)
 	{
 		//velocityに入っている値に進むように
 		arg_direction = velocity;
 		inputAccuracy = 1;
-		speed = 0.5;
+		speed = blowSpeed;
 		return;
 	}
 
@@ -471,7 +489,7 @@ void Player::DecideDirection(Vector3& arg_direction)
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 
 	//くり抜き動作中
-	if (isDrawing)
+	if (drawingFlag)
 	{
 		arg_direction = { 0,0,0 };
 		//if (Input::CheckPadLStickAnythingDir())
@@ -528,7 +546,7 @@ void Player::DecideDirection(Vector3& arg_direction)
 
 void Player::SelectLocus()
 {
-	if (isDrawing)
+	if (drawingFlag)
 	{
 		return;
 	}
@@ -622,7 +640,7 @@ void Player::DrawingLine()
 	if (pNowDrawingLine != nullptr)
 	{
 		//ボタンを押しているかつドローイング中は線を伸ばす
-		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && isDrawing)
+		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && drawingFlag)
 		{	
 			if (isExtendLine)
 			{				
@@ -641,7 +659,7 @@ void Player::DrawingLine()
 				currentLineNum++;
 				if (currentLineNum >= nowDrawingLocus->GetMaxNumLine())
 				{
-					isDrawing = false;
+					drawingFlag = false;
 					currentLineNum = 0;
 					static const XMFLOAT4 copyColor = XMFLOAT4(0.1f, 0.3f, 0.9f, 0.6f);
 					//ここで図形として保存する処理
@@ -709,7 +727,7 @@ void Player::DeleteDrawingLine()
 
 void Player::SuspendDrawing()
 {
-	isDrawing = false;
+	drawingFlag = false;
 	currentLineNum = 0;
 	DeleteDrawingLine();
 	pNowDrawingLine = nullptr;
@@ -746,7 +764,7 @@ void Player::MoveEndDrawing(BaseLocus* arg_locus)
 
 void Player::StayInTheField()
 {
-	if (isStanding || isReturningField)
+	if (standingFlag || returningFieldFlag)
 	{
 		return;
 	}	
@@ -799,12 +817,12 @@ void Player::StayInTheField()
 		}
 	}
 
-	if (!isStanding)
+	if (!standingFlag)
 	{
 		return;
 	}
 
-	if (isDrawing)
+	if (drawingFlag)
 	{
 		SuspendDrawing();
 	}
@@ -812,7 +830,7 @@ void Player::StayInTheField()
 
 void Player::HitCheckEnemy()
 {
-	if (isBlow)
+	if (blowFlag || tackleHitFlag)
 	{
 		return;
 	}
@@ -834,7 +852,7 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 	static const float weightCoefficient = 0.3f;
 	//汎用化	
 	arg_enemy->IsBlow();
-	isBlow = true;
+	blowFlag = true;
 	
 	blowTime = 40;
 	arg_enemy->SetBlowTime(40);
@@ -843,7 +861,14 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 	Vector3 enemyVel = arg_enemy->GetVelocity();
 	float enemyWeight = arg_enemy->GetWeight() * weightCoefficient;
 
-	float totalWeight = (weight * weightCoefficient) + enemyWeight;
+	float playerWeight = weight;
+
+	if (tackleFlag)
+	{
+		playerWeight += 20;
+	}
+
+	float totalWeight = (playerWeight * weightCoefficient) + enemyWeight;
 	float refRate = (1 + 1 * 1); //反発率をプレイヤー、エネミーそれぞれ持たせる
 	Vector3 c = virtualityPlanePosition - enemyPos;
 	c.Normalize();
@@ -853,11 +878,23 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 
 	//衝突後速度ベクトル
 	Vector3  playerAfterVel = -enemyWeight * constVec + velocity;
-	Vector3  enemyAfterVel = (weight * weightCoefficient) * constVec + enemyVel;
+	Vector3  enemyAfterVel = (playerWeight * weightCoefficient) * constVec + enemyVel;
 
-
-	velocity = playerAfterVel.Normalize();
-	arg_enemy->SetVelocity(enemyAfterVel.Normalize());
+	if (tackleFlag)
+	{
+		//タックルで敵だけ飛ばす
+		blowFlag = false;
+		blowTime = 0;
+		tackleHitFlag = true;
+		SuspendTackle();
+		arg_enemy->SetVelocity(enemyAfterVel.Normalize());
+	}
+	else
+	{
+		velocity = playerAfterVel.Normalize();
+		arg_enemy->SetVelocity(enemyAfterVel.Normalize());
+	}
+	
 
 	SuspendDrawing();
 
@@ -885,7 +922,10 @@ void Player::HitItem(EnergyItem* arg_item)
 
 void Player::IsStand()
 {
-	isStanding = true;
+	standingFlag = true;
+	//タックル終了
+	SuspendTackle();
+
 	standTime = 120;
 	preStandVec = -position;
 	preStandVec.y = 0;
@@ -894,7 +934,7 @@ void Player::IsStand()
 
 void Player::WithStand()
 {
-	if (isDrawing)
+	if (drawingFlag)
 	{
 		return;
 	}	
@@ -936,8 +976,8 @@ void Player::WithStand()
 	{
 		Vector3 moveDirection = preStandVec;	
 		Object::SetColor({ 1,1,1,1 });
-		isReturningField = true;
-		isStanding = false;
+		returningFieldFlag = true;
+		standingFlag = false;
 		returningStartPos = virtualityPlanePosition;
 		returningEndPos = virtualityPlanePosition + moveDirection * 3;
 		return;
@@ -953,12 +993,50 @@ void Player::WithStand()
 
 void Player::Tackle()
 {
-	tackleCount--;
-	if (tackleCount <= 0)
+	if (tackleFlag || blowFlag || drawingFlag || standingFlag || returningFieldFlag )
 	{
-		tackleCount = 30;
-		tackle = false;
+		return;
 	}
+
+	tackleFlag = true;
+
+	//カメラのビュー行列の逆行列を計算
+	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
+	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
+	Vector2 stickDirection = {};
+	Vector3 moveDirection = {};
+	//スティックの向き
+	auto vec = Input::GetLStickDirection();
+	stickDirection.x = (cameraDirectionX * vec.x).x;
+	stickDirection.y = (cameraDirectionZ * vec.y).z;
+	stickDirection = Vector2::Normalize(stickDirection);
+
+	tackleStartPos = virtualityPlanePosition;
+
+	moveDirection = cameraDirectionX * stickDirection.x + cameraDirectionZ * stickDirection.y;
+	moveDirection.Normalize();
+	tackleEndPos = virtualityPlanePosition + moveDirection * 8;
+
+
+}
+
+void Player::SuspendTackle()
+{
+	if (standingFlag || returningFieldFlag)
+	{
+		tackleFlag = false;
+		tackleCount = 0;
+		speed = walkSpeed;
+	}
+	//タックル中
+	else
+	{
+		tackleEndPos = virtualityPlanePosition;
+		//tackleCount = 0;
+		speed = walkSpeed;
+	}
+	
 }
 
 Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
@@ -1038,7 +1116,7 @@ void Player::HitLoci(Line* arg_line)
 	position = prePos;
 	virtualityPlanePosition = preVirtualityPlanePosition;
 
-	if (isDrawing)
+	if (drawingFlag)
 	{
 		SuspendDrawing();
 	}

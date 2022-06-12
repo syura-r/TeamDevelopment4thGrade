@@ -37,7 +37,7 @@ public:
 	//残機が残っているか
 	bool IsAlive();
 
-	void EndDrawing() { isDrawing = false; }
+	void EndDrawing() { drawingFlag = false; }
 
 	// 敵と図形の判定のため
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
@@ -102,6 +102,8 @@ private:
 	void WithStand();
 	//タックルの処理
 	void Tackle();
+	//タックルの中断
+	void SuspendTackle();
 
 	
 	//
@@ -125,7 +127,7 @@ private:
 	LocusSelecter::Button pressedButton;
 
 	//書くフラグ
-	bool isDrawing = false;
+	bool drawingFlag = false;
 	//線を伸ばすフラグ
 	bool isExtendLine = true;
 	//図形の線の番号
@@ -144,11 +146,11 @@ private:
 	//プレイヤーの重さ
 	float weight;
 	//吹っ飛び中
-	bool isBlow = false;
+	bool blowFlag = false;
 	// 吹っ飛び時間
 	int blowTime = 60;
 	//踏ん張り中
-	bool isStanding = false;
+	bool standingFlag = false;
 	//踏ん張り中の猶予
 	int standTime = 120;
 	//踏ん張りになる前のベクトル
@@ -156,17 +158,19 @@ private:
 	//踏ん張り中の色を変化させるための値
 	float BGColor = 1;
 	//踏ん張り復帰中
-	bool isReturningField = false;
+	bool returningFieldFlag = false;
 	//復帰後の着地位置
 	Vector3 returningStartPos = { 0,0,0 };
 	Vector3 returningEndPos = { 0,0,0 };
 	//復帰移動イージング用のカウント
 	int moveEasingCount = 0;
 	//タックル中
-	bool tackle = false;
-
-	Vector3 tacklePos;
-	int tackleCount = 30;
+	bool tackleFlag = false;
+	bool tackleHitFlag = false;
+	//タックルの移動位置
+	Vector3 tackleStartPos;
+	Vector3 tackleEndPos;
+	int tackleCount = 0;
 
 
 	//平面のままのposition
@@ -183,6 +187,7 @@ private:
 	float speed = 0.09f;
 	const float walkSpeed = 0.18f;
 	const float drawingSpeed = 0.36f;
+	const float blowSpeed = 0.5f;
 	//走りフラグ
 	bool run = false;
 	//回転速度
