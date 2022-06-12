@@ -19,9 +19,14 @@ public:
 	void Move(const Vector3& arg_movePos, const float arg_angle)override;
 	const LocusType GetType()const override;
 
+	int GetCutPower()const;
+	void SetCutPower(const int arg_power);
+
 private:
+	int cutPower;
+
 	//この図形のデフォルトの情報
-	static std::vector<std::vector<LocusPointInfo>> baseInfo;
+	static std::unordered_map<int, std::vector<LocusPointInfo>> baseInfo;
 
 	//デフォルトの図形情報を一回だけ計算
 	void PointSetting()override;

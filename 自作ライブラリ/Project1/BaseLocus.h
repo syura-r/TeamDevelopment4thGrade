@@ -23,7 +23,7 @@ public:
 	virtual const Vector3 GetCenterOfGravity();
 	Vector3 GetVirtualityPlanePosition()const;
 
-protected:	
+protected:
 	float angle;
 	std::vector<Line*> lines;
 	bool isDraw;
