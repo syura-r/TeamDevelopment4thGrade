@@ -46,8 +46,9 @@ private:
 	Vector3 localYvec;
 	//図形の場所と重さ
 	std::vector<LocusFieldInfluence> influences;
-
+	//パネルの配列
 	std::vector<std::vector<FieldPiece*>> pieces;
+	//Playerがアクションするパネル
 	FieldPiece* playerRidingPiece;
 	int playerCuttingStartPosNum;
 	Vector3 playerCuttingStartPos;
@@ -60,7 +61,7 @@ private:
 	//傾き計算
 	void CalcTilt();
 	float GetMultiplyingFactor(const float arg_length);
-
+	//Playerがアクションするパネル断定用
 	void DecidePlayerRidingPiece();
 	void DecidePlayerCuttingStartPos();
 	void DecidePlayerCuttingAngle();

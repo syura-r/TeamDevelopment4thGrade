@@ -20,6 +20,7 @@
 #include "EnergyItem.h"
 #include "CircularSaw.h"
 #include "PanelCutLocus.h"
+#include "FieldPiece.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -1076,7 +1077,7 @@ void Player::EndDrawing()
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
 	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus->GetCuttedPanelPos());
-	weight += num * 0.5f;
+	weight += num * FieldPiece::GetWeight();
 	cutPower = 0;
 }
 

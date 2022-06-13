@@ -23,6 +23,15 @@ struct LocusPointInfo
 	//ワールドX軸正方向が0°　時計回りに増える
 	float angle = 0;
 	float length = 0;
+
+	LocusPointInfo(const Vector3& arg_start = Vector3(0, 0, 0), const Vector3& arg_end = Vector3(1, 1, 1),
+		const float arg_angle = 0, const float arg_length = 0)
+		:startPos(arg_start),
+		 endPos(arg_end),
+		 angle(arg_angle),
+		 length(arg_length)
+	{
+	}
 };
 
 //傾きに使う

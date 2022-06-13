@@ -9,7 +9,7 @@ std::unordered_map<int, std::vector<Vector2>> PanelCutLocus::baseCuttedDir = std
 
 PanelCutLocus::PanelCutLocus(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
 	:BaseLocus(arg_angle, arg_color),
-	 cutPower(5)
+	 cutPower(0)
 {
 	virtualityPlanePosition = arg_pos;
 	position = virtualityPlanePosition;

@@ -9,7 +9,7 @@ const float FieldPiece::SIDEWAYS_LENGTH = 0.866f * SIZE;
 const float FieldPiece::LOWER_TIME_OFFSET = 1.0f * SIZE;
 const float FieldPiece::UPPER_TIME_OFFSET = 0.5f * SIZE;
 const float FieldPiece::FULL_OFFSET = LOWER_TIME_OFFSET + UPPER_TIME_OFFSET;
-const float FieldPiece::WEIGHT = 3.0f;
+const float FieldPiece::WEIGHT = 1.0f;
 std::vector<Vector2> FieldPiece::basePoints = std::vector<Vector2>();
 
 FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_direction)

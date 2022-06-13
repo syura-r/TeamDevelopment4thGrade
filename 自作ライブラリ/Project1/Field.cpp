@@ -27,8 +27,7 @@ Field::Field()
 		SetEdges();
 	}
 
-	Create(OBJLoader::GetModel("Hexagon"));
-	//Create(OBJLoader::GetModel("fieldPiece"));
+	Create(OBJLoader::GetModel("Hexagon"));	
 	position = { 0,-5,0 };
 	scale = { 45,1,45 };
 	color = { 0.1f ,0.1f, 0.1f,1 };
@@ -140,13 +139,7 @@ float Field::GetMultiplyingFactor(const float arg_length)
 }
 
 void Field::DecidePlayerRidingPiece()
-{	
-	if (Input::TriggerKey(DIK_P))
-	{
-		int a = 5;
-		a++;
-	}
-
+{
 	Player* player = ActorManager::GetInstance()->GetPlayer();
 	Vector2 playerPos = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
 	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
@@ -251,7 +244,7 @@ void Field::DecidePlayerCuttingAngle()
 		return;
 	}
 	
-	//
+	//â∫å¸Ç´
 	if (playerRidingPiece->GetPieceDirection() == PieceDirection::Lower)
 	{
 		if (playerCuttingStartPosNum == 0)
@@ -267,7 +260,7 @@ void Field::DecidePlayerCuttingAngle()
 			playerCuttingAngle = 0;
 		}
 	}
-	//
+	//è„å¸Ç´
 	else
 	{
 
@@ -456,7 +449,7 @@ int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 				if (pieces[columnNum][j]->IsActive())
 				{
 					pieces[columnNum][j]->ChangeIsActive(false);
-					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), 0.5f));
+					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
 				}
 				break;
@@ -466,7 +459,7 @@ int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 				if (pieces[columnNum][j]->IsActive())
 				{
 					pieces[columnNum][j]->ChangeIsActive(false);
-					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), 0.5f));
+					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
 				}
 				break;
