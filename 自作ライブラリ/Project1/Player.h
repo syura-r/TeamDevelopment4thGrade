@@ -119,6 +119,7 @@ private:
 
 	PanelCutLocus* panelCutLocus;
 	int cutPower;	
+	int gottenPanel;
 
 	//‘‚­ƒtƒ‰ƒO
 	bool drawingFlag = false;

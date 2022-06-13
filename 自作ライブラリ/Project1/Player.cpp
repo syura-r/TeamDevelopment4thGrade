@@ -136,6 +136,7 @@ void Player::Initialize()
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
 	cutPower = 0;	
+	gottenPanel = 0;
 }
 
 void Player::Update()
@@ -730,6 +731,7 @@ void Player::DeleteLocuss()
 		field->ResetInfluences();
 	}
 	weight = 5;
+	gottenPanel = 0;
 }
 
 void Player::MoveEndDrawing(BaseLocus* arg_locus)
@@ -1056,6 +1058,7 @@ void Player::EndDrawing()
 	panelCutLocus->RecordCuttedPanelPos();
 	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus->GetCuttedPanelPos());
 	weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;
 	cutPower = 0;
 }
 
