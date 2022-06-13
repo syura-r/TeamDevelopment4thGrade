@@ -46,8 +46,7 @@ Player::Player()
 	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);	
 	attackSprite = new Sprite();
 
-	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
-	itemEmitTimer = new Timer(300);
+	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);	
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Player", this);
@@ -80,8 +79,7 @@ Player::Player()
 Player::~Player()
 {	
 	delete attackSprite;	
-	//delete locusSelecter;	
-	delete itemEmitTimer;
+	//delete locusSelecter;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -137,8 +135,7 @@ void Player::Initialize()
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
-	cutPower = 0;
-	itemEmitTimer->Reset();
+	cutPower = 0;	
 }
 
 void Player::Update()
@@ -195,14 +192,7 @@ void Player::Update()
 		//ドローイングの処理
 		DrawingLine();
 		
-	}
-
-	//アイテム生成(仮)
-	itemEmitTimer->Update();
-	if (itemEmitTimer->IsTime())
-	{
-		EmitEnergyItem();
-	}
+	}	
 	
 	//図形の消去
 	if (!drawingFlag)
@@ -1053,18 +1043,6 @@ Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_max
 	result.y = Easing::EaseOutCubic(arg_startPos.y, arg_endPos.y, arg_maxTime, arg_nowTime);
 	result.z = Easing::EaseOutCubic(arg_startPos.z, arg_endPos.z, arg_maxTime, arg_nowTime);
 	return result;
-}
-
-void Player::EmitEnergyItem()
-{
-	Vector3 emitPos = Vector3();
-	emitPos.y = virtualityPlanePosition.y + EnergyItem::GetRadius();
-	float angle = rand() % 360;
-	float range = rand() % 35 + 3;
-	emitPos += LocusUtility::AngleToVector2(angle) * range;
-	EnergyItem* item = new EnergyItem(emitPos);
-	pObjectManager->Add(item);
-	itemEmitTimer->Reset();
 }
 
 bool Player::IsAlive()

@@ -18,6 +18,7 @@
 #include "Field.h"
 
 #include "StandardEnemy.h"
+#include "ItemEmitter.h"
 
 Play::Play()
 {
@@ -146,6 +147,8 @@ void Play::Initialize()
 	StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
 	objectManager->Add(testEnemy);	
 
+	ItemEmitter::GetInstance()->Initialize();
+
 	isEnd = false;
 	pause->Initialize();
 }
@@ -182,6 +185,7 @@ void Play::Update()
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
+	ItemEmitter::GetInstance()->Update();
 	objectManager->Update();
 	collisionManager->CheckAllCollisions();
 }

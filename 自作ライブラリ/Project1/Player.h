@@ -111,17 +111,14 @@ private:
 
 	
 	//
-	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);
-	//アイテム生成仮置き
-	void EmitEnergyItem();
+	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);	
 
 	ObjectManager* pObjectManager = nullptr;	
 
 	Line* pNowDrawingLine = nullptr;			
 
 	PanelCutLocus* panelCutLocus;
-	int cutPower;
-	Timer* itemEmitTimer;
+	int cutPower;	
 
 	//書くフラグ
 	bool drawingFlag = false;
