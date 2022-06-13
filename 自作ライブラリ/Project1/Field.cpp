@@ -149,18 +149,23 @@ void Field::DecidePlayerRidingPiece()
 
 	Player* player = ActorManager::GetInstance()->GetPlayer();
 	Vector2 playerPos = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
+	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
 
 	//óÒì¡íË
-	float adjustedZPos = -playerPos.y + RADIUS;
+	float adjustedZPos = -playerPos.y + halfHeight;
 	if (adjustedZPos < 0)
 	{
 		adjustedZPos = 0;
 	}
-	else if (adjustedZPos > RADIUS * 2)
+	else if (adjustedZPos > halfHeight * 2)
 	{
-		adjustedZPos > RADIUS * 2;
+		adjustedZPos = halfHeight * 2;
 	}
-	int columnNum = adjustedZPos / (RADIUS / PIECE_LAYER_NUM);
+	int columnNum = adjustedZPos / FieldPiece::GetFullOffset();
+	if (columnNum == PIECE_LAYER_NUM * 2)
+	{
+		columnNum = PIECE_LAYER_NUM * 2 - 1;
+	}
 
 	//çsì¡íË
 	for (int i = 0; i < pieces[columnNum].size(); i++)
@@ -416,21 +421,26 @@ void Field::ResetInfluences()
 int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 {
 	int returnVal = 0;
-	Player* player = ActorManager::GetInstance()->GetPlayer();	
+	Player* player = ActorManager::GetInstance()->GetPlayer();
+	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
 
 	for (int i = 0; i < arg_vecPos.size(); i++)
 	{
 		//óÒì¡íË
-		float adjustedZPos = -arg_vecPos[i].y + RADIUS;
+		float adjustedZPos = -arg_vecPos[i].y + halfHeight;
 		if (adjustedZPos < 0)
 		{
 			continue;
 		}
-		else if (adjustedZPos > RADIUS * 2)
+		else if (adjustedZPos > halfHeight * 2)
 		{
 			continue;
 		}
-		int columnNum = adjustedZPos / (RADIUS / PIECE_LAYER_NUM);
+		int columnNum = adjustedZPos / FieldPiece::GetFullOffset();
+		if (columnNum == PIECE_LAYER_NUM * 2)
+		{
+			columnNum = PIECE_LAYER_NUM * 2 - 1;
+		}
 
 		//çsì¡íË
 		for (int j = 0; j < pieces[columnNum].size(); j++)

@@ -176,7 +176,7 @@ void Player::Update()
 		//SelectLocus();		
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && field->GetPlayerRidingPiece())
 		{
-			if (!tackleFlag)
+			if (!tackleFlag && !drawingFlag)
 			{
 				drawingFlag = true;
 				//ü‚Ì¶¬
