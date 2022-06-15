@@ -4,6 +4,7 @@
 #include "Field.h"
 #include "StandardEnemy.h"
 #include "EnergyItem.h"
+#include "PanelItem.h"
 
 ActorManager* ActorManager::GetInstance()
 {
@@ -86,6 +87,20 @@ std::vector<EnergyItem*>& ActorManager::GetEnergyItems()
 	for (auto itr = range.first; itr != range.second; itr++)
 	{
 		vec.push_back(static_cast<EnergyItem*>(itr->second));
+	}
+
+	return vec;
+}
+
+std::vector<PanelItem*>& ActorManager::GetPanelItems()
+{
+	static std::vector<PanelItem*> vec;
+	vec.clear();
+
+	auto range = mapGameObject.equal_range("PanelItem");
+	for (auto itr = range.first; itr != range.second; itr++)
+	{
+		vec.push_back(static_cast<PanelItem*>(itr->second));
 	}
 
 	return vec;

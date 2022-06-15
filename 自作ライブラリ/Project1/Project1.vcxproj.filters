@@ -414,6 +414,9 @@
     <ClCompile Include="ItemEmitter.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
+    <ClCompile Include="PanelItem.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -744,6 +747,9 @@
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
     <ClInclude Include="ItemEmitter.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelItem.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
   </ItemGroup>

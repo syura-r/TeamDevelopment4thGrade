@@ -9,6 +9,7 @@ class TestBoss;
 class Field;
 class StandardEnemy;
 class EnergyItem;
+class PanelItem;
 
 class ActorManager
 {
@@ -25,6 +26,7 @@ public:
 	std::vector<Field*>& GetFields();
 	std::vector<StandardEnemy*>& GetStandardEnemies();
 	std::vector<EnergyItem*>& GetEnergyItems();
+	std::vector<PanelItem*>& GetPanelItems();
 
 private:
 	std::unordered_multimap<std::string, Object*> mapGameObject;
