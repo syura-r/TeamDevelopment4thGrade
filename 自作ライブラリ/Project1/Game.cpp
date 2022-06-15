@@ -92,6 +92,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("restart", "restart.png");
 		Texture::LoadTexture("toTitle", "toTitle.png");
 		Texture::LoadTexture("selectInPause", "selectInPause.png");
+		Texture::LoadTexture("GamePlay_UV_Player", "GamePlay_UV_Player.png");
 	
 		break; 
 	case 2:
@@ -112,6 +113,8 @@ void Game::RoadAsset()
 		//FBXファイルの読み込み
 		FBXManager::LoadModelFile("player", "player", false);
 		FBXManager::LoadModelFile("enemy", "player", false);
+		FBXManager::LoadModelFile("GamePlay_Player", "GamePlay_Player", false);
+
 		//WAVファイルの読み込み
 		//Audio::LoadFile("test", "51e7ff6cc6b93897.wav");
 		break;

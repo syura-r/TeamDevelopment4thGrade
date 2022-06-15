@@ -27,7 +27,7 @@ DebugCamera* Player::camera = nullptr;
 Player::Player()
 {
 	//アニメーション用にモデルのポインタを格納
-	myModel = FBXManager::GetModel("player");
+	myModel = FBXManager::GetModel("GamePlay_Player");
 	//モデルの生成
 	Create(myModel);
 	//当たり判定(Box)の生成
@@ -305,7 +305,7 @@ void Player::Move()
 	//フィールド端からの復帰
 	if (standingFlag || returningFieldFlag)
 	{
-		myModel->PlayAnimation("stand", true);
+		//myModel->PlayAnimation("stand", true);
 		if (returningFieldFlag)
 		{
 			virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
@@ -385,15 +385,15 @@ void Player::Move()
 
 		if (!Input::DownWASD() && !Input::CheckPadLStickAnythingDir())
 		{
-			myModel->PlayAnimation("stand", true);
+			//myModel->PlayAnimation("stand", true);
 		}
 		else if (drawingFlag)
 		{
-			myModel->PlayAnimation("run", true);
+			//myModel->PlayAnimation("run", true);
 		}
 		else
 		{
-			myModel->PlayAnimation("walk", true);
+			//myModel->PlayAnimation("walk", true);
 		}
 	}
 
