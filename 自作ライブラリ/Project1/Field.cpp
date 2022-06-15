@@ -521,3 +521,8 @@ float Field::GetDepthMagnitude() const
 {
 	return depthMagnitude;
 }
+
+std::vector<FieldPiece*>& Field::GetGottenPieces()
+{
+	return gottenPieces;
+}

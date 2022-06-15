@@ -31,6 +31,7 @@ public:
 	Vector3 GetAngleTilt()const;
 	Vector3 GetTilt();
 	float GetDepthMagnitude()const;	
+	std::vector<FieldPiece*>& GetGottenPieces();
 
 private:
 	//çLÇ≥

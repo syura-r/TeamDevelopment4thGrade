@@ -2,6 +2,7 @@
 #include "ObjectManager.h"
 #include "EnergyItem.h"
 #include "Field.h"
+#include "FieldPiece.h"
 #include "ActorManager.h"
 
 ItemEmitter* ItemEmitter::instance = nullptr;
@@ -44,7 +45,28 @@ void ItemEmitter::Update()
 	energyItemTimer->Update();
 	if (energyItemTimer->IsTime())
 	{
-		EmitEnergyItem(GetRandomEmitPosition(3, 38));
+		Vector3 emitPos = Vector3();
+		std::vector<FieldPiece*> gottenPieces = ActorManager::GetInstance()->GetFields()[0]->GetGottenPieces();
+		bool b = true;
+
+		do
+		{
+			emitPos = GetRandomEmitPosition(1, 38);
+			for (auto p : gottenPieces)
+			{
+				if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(emitPos - p->GetVirtualityPlanePosition())) <= FieldPiece::GetSize() + EnergyItem::GetRadius())
+				{
+					b = false;
+					break;
+				}
+				else
+				{
+					b = true;
+				}
+			}
+		} while (!b);
+
+		EmitEnergyItem(emitPos);
 	}
 }
 
