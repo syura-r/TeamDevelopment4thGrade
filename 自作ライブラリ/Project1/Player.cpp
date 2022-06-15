@@ -821,6 +821,10 @@ void Player::StayOnRemainPanels()
 	if (field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS, piece))
 	{
 		virtualityPlanePosition = preVirtualityPlanePosition;
+		if (tackleFlag)
+		{
+			SuspendTackle();
+		}
 	}
 }
 
