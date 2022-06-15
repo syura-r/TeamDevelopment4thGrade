@@ -13,6 +13,9 @@ public:
 	void Update()override;
 
 	void Appear();
+	void SlidingDown();
+	void StayInTheField();
+	void StayOnRemainPanels();
 	
 	Vector3 GetVirtualityPlanePosition();
 	static float GetRadius();
@@ -21,7 +24,8 @@ public:
 private:
 
 	//•½–Ê‚Ì‚Ü‚Ü‚Ìposition
-	Vector3 virtualityPlanePosition;	
+	Vector3 virtualityPlanePosition;
+	Vector3 preVirtualityPlanePosition;
 
 	static const float RADIUS;
 
