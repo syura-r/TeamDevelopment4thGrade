@@ -329,6 +329,7 @@ void Player::Move()
 			tackleHitFlag = false;
 		}
 		StayInTheField();
+		StayOnRemainPanels();
 	
 	}
 	//’Êí‚ÌˆÚ“®
@@ -361,6 +362,7 @@ void Player::Move()
 		{
 			virtualityPlanePosition += moveDirection * (speed * inputAccuracy);
 			StayInTheField();
+			StayOnRemainPanels();
 			isExtendLine = true;
 		}
 		else
@@ -445,6 +447,7 @@ void Player::SlidingDown()
 	float fallSpeed = 0.05f;
 	virtualityPlanePosition += field->GetTilt() * fallSpeed;
 	StayInTheField();
+	StayOnRemainPanels();
 }
 
 void Player::DecideDirection(Vector3& arg_direction)
@@ -807,6 +810,17 @@ void Player::StayInTheField()
 	if (drawingFlag)
 	{
 		SuspendDrawing();
+	}
+}
+
+void Player::StayOnRemainPanels()
+{
+	FieldPiece* piece = nullptr;
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+
+	if (field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS, piece))
+	{
+		virtualityPlanePosition = preVirtualityPlanePosition;
 	}
 }
 

@@ -93,7 +93,8 @@ private:
 	void HitCheckLoci();
 	void HitLoci(Line* arg_line);	
 	//フィールドから落ちない処理
-	void StayInTheField();	
+	void StayInTheField();
+	void StayOnRemainPanels();
 	//敵との当たり判定
 	void HitCheckEnemy();
 	void HitEnemy(StandardEnemy* arg_enemy);

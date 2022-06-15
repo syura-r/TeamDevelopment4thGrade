@@ -86,6 +86,56 @@ void FieldPiece::Draw()
 	Object::Draw();
 }
 
+bool FieldPiece::IsRidden(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius)
+{
+	for (int i = 0; i < points.size(); i++)
+	{
+		if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - arg_pos)) > SIZE + arg_radius)
+		{
+			continue;
+		}
+
+		Vector2 A = points[i];
+		Vector2 B = points[(i + 1) % points.size()];
+		Vector2 AO = LocusUtility::Dim3ToDim2XZ(arg_pos) - A;
+		Vector2 BO = LocusUtility::Dim3ToDim2XZ(arg_pos) - B;
+		Vector2 AB = B - A;
+		Vector2 normalAB = Vector2::Normalize(AB);
+
+		//¡“–‚½‚Á‚Ä‚¢‚é‚©
+		float cross = Vector2::Cross(AO, normalAB);
+		if (fabsf(cross) > arg_radius)
+		{
+			continue;
+		}
+
+		float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
+		if (multiDot <= 0.0f)
+		{						
+			return true;
+		}
+
+		if (Vector2::Length(AO) < arg_radius || Vector2::Length(BO) < arg_radius)
+		{
+			return true;
+		}
+
+		//’Ê‚è‰ß‚¬‚½‚©
+		Vector2 start = A;
+		Vector2 end = B;
+		Vector2 pos = LocusUtility::Dim3ToDim2XZ(arg_pos);
+		Vector2 pre = LocusUtility::Dim3ToDim2XZ(arg_prePos);
+
+		if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
+			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 float FieldPiece::GetSize()
 {
 	return SIZE;

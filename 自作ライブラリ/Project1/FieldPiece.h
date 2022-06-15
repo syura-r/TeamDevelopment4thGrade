@@ -19,6 +19,8 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	bool IsRidden(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius);
+
 	static float GetSize();
 	static float GetSidewaysLength();
 	static float GetLowerTimeOffset();

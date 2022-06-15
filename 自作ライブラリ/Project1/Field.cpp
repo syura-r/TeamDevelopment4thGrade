@@ -44,6 +44,7 @@ Field::Field()
 	ActorManager::GetInstance()->AddObject("Field", this);
 
 	pieces.clear();
+	gottenPieces.clear();
 	CreatePieces();
 }
 
@@ -409,6 +410,7 @@ void Field::ResetInfluences()
 			p->ChangeIsActive(true);
 		}
 	}
+	gottenPieces.clear();
 }
 
 int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
@@ -451,6 +453,7 @@ int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 					pieces[columnNum][j]->ChangeIsActive(false);
 					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
+					gottenPieces.push_back(pieces[columnNum][j]);
 				}
 				break;
 			}
@@ -461,6 +464,7 @@ int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 					pieces[columnNum][j]->ChangeIsActive(false);
 					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
+					gottenPieces.push_back(pieces[columnNum][j]);
 				}
 				break;
 			}
@@ -483,6 +487,19 @@ Vector3 Field::GetPlayerCuttingStartPos()
 float Field::GetPlayerCuttingAngle()
 {
 	return playerCuttingAngle;
+}
+
+bool Field::IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius, FieldPiece* return_piece)
+{
+	for (auto p : gottenPieces)
+	{
+		if (p->IsRidden(arg_pos, arg_prePos, arg_radius))
+		{
+			return_piece = p;
+			return true;
+		}		
+	}
+	return false;
 }
 
 std::vector<Vector2>& Field::GetEdges()
