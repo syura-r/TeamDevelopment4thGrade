@@ -205,6 +205,7 @@
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="GSShaderTestObj.cpp" />
     <ClCompile Include="HitPointGauge.cpp" />
+    <ClCompile Include="InGameTimer.cpp" />
     <ClCompile Include="ItemEmitter.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
     <ClCompile Include="LightCamera.cpp" />
@@ -314,6 +315,7 @@
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />
     <ClInclude Include="HitPointGauge.h" />
+    <ClInclude Include="InGameTimer.h" />
     <ClInclude Include="ItemEmitter.h" />
     <ClInclude Include="LevelEditor.h" />
     <ClInclude Include="LightCamera.h" />

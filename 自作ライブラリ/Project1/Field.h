@@ -40,7 +40,7 @@ private:
 	//ŒX‚«‚ð•\‚·
 	float depthMagnitude;
 	const float MAX_DEPTH_MAGNITUDE = 10.0f;
-	const float DEGREE_COEFFICIENT = 5.0f;
+	const float DEGREE_COEFFICIENT = 3.0f;
 	Vector2 tiltDirection;
 	//‚Ç‚Ì•ûŒü‚ÉŒX‚¢‚Ä‚¢‚é‚©
 	Vector3 angleTilt;
