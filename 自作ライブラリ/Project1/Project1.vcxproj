@@ -258,6 +258,7 @@
     <ClCompile Include="TestTriforce.cpp" />
     <ClCompile Include="TextureResource.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TimeLimit.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="TitleText.cpp" />
@@ -377,6 +378,7 @@
     <ClInclude Include="TestTriforce.h" />
     <ClInclude Include="TextureResource.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TimeLimit.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="TitleText.h" />

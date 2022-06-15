@@ -14,6 +14,7 @@
 
 #include "ActorManager.h"
 #include "Pause.h"
+#include "TimeLimit.h"
 
 
 class TouchAbleObject;
@@ -60,5 +61,6 @@ private:
 	std::array<float, 3> lightAtten = { 1,1,1 };
 
 	Pause* pause = nullptr;
+	TimeLimit* timeLimit = nullptr;
 };
 

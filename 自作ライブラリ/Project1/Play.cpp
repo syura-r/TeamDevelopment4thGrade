@@ -120,6 +120,7 @@ Play::Play()
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
+	timeLimit = new TimeLimit(180 * 60);
 }
 
 
@@ -127,6 +128,7 @@ Play::~Play()
 {
 	LevelEditor::GetInstance()->Clear();
 	delete pause;
+	delete timeLimit;
 }
 
 void Play::Initialize()
@@ -151,6 +153,7 @@ void Play::Initialize()
 
 	isEnd = false;
 	pause->Initialize();
+	timeLimit->Initialize();
 }
 
 void Play::Update()
@@ -188,11 +191,13 @@ void Play::Update()
 	ItemEmitter::GetInstance()->Update();
 	objectManager->Update();
 	collisionManager->CheckAllCollisions();
+	timeLimit->Update();
 }
 
 void Play::PreDraw()
 {
 	pause->Draw();
+	timeLimit->Draw();
 
 		objectManager->DrawReady();
 #ifdef _DEBUG

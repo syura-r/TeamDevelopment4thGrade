@@ -132,10 +132,10 @@ void EnergyItem::StayOnRemainPanels()
 		return;
 	}
 
-	FieldPiece* piece = nullptr;
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, 0.01f);
 
-	if (field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, 0.01f, piece))
+	if (piece)
 	{
 		Dead();
 	}
