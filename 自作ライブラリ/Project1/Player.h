@@ -102,7 +102,7 @@ private:
 	void HitCheckItems();
 	void HitItem(EnergyItem* arg_item);
 	//“¥‚ñ’£‚è‚É‚È‚é
-	void IsStand();
+	void StartStand(bool arg_outField = true, Vector3 arg_velocity = {});
 	//“¥‚ñ’£‚è’†‚Ìˆ—
 	void WithStand();
 	//ƒ^ƒbƒNƒ‹‚Ìˆ—
