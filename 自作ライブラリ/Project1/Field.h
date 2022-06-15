@@ -25,7 +25,7 @@ public:
 	FieldPiece* GetPlayerRidingPiece();
 	Vector3 GetPlayerCuttingStartPos();
 	float GetPlayerCuttingAngle();
-	bool IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius, FieldPiece* return_piece);
+	FieldPiece* IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius);
 
 	static std::vector<Vector2>& GetEdges();
 	Vector3 GetAngleTilt()const;

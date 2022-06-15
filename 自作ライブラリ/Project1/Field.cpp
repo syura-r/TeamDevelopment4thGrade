@@ -489,17 +489,16 @@ float Field::GetPlayerCuttingAngle()
 	return playerCuttingAngle;
 }
 
-bool Field::IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius, FieldPiece* return_piece)
+FieldPiece* Field::IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius)
 {
 	for (auto p : gottenPieces)
 	{
 		if (p->IsRidden(arg_pos, arg_prePos, arg_radius))
 		{
-			return_piece = p;
-			return true;
+			return p;
 		}		
 	}
-	return false;
+	return nullptr;
 }
 
 std::vector<Vector2>& Field::GetEdges()

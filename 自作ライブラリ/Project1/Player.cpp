@@ -776,14 +776,14 @@ void Player::StayInTheField()
 		if (multiDot <= 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			IsStand();
+			StartStand();
 			break;
 		}
 
 		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			IsStand();
+			StartStand();
 			break;
 		}
 
@@ -797,7 +797,7 @@ void Player::StayInTheField()
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			IsStand();
+			StartStand();
 			break;
 		}
 	}
@@ -815,12 +815,19 @@ void Player::StayInTheField()
 
 void Player::StayOnRemainPanels()
 {
-	FieldPiece* piece = nullptr;
+	
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS);
 
-	if (field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS, piece))
+	if (piece)
 	{
 		virtualityPlanePosition = preVirtualityPlanePosition;
+
+		Vector3 outPieceVec = {};
+		outPieceVec = position - piece->GetVirtualityPlanePosition();
+		outPieceVec.Normalize();
+		StartStand(false, outPieceVec);
+
 		if (tackleFlag)
 		{
 			SuspendTackle();
@@ -937,14 +944,24 @@ void Player::HitItem(EnergyItem* arg_item)
 	}
 }
 
-void Player::IsStand()
+void Player::StartStand(bool arg_outField, Vector3 arg_velocity)
 {
 	standingFlag = true;
 	//タックル終了
 	SuspendTackle();
 
 	standTime = 120;
-	preStandVec = -position;
+
+	//場外か図形か
+	if (arg_outField)
+	{
+		preStandVec = -position; //中央に向かう
+	}
+	else
+	{
+		preStandVec = arg_velocity; //パネルの中心からプレイヤーに向かうベクトル
+	}
+	
 	preStandVec.y = 0;
 	preStandVec.Normalize();
 }
@@ -989,7 +1006,7 @@ void Player::WithStand()
 		accuracy = 0;
 	}
 
-	if (accuracy >= 0.7f)
+	if (accuracy >= 0.55f)
 	{
 		Vector3 moveDirection = preStandVec;	
 		Object::SetColor({ 1,1,1,1 });
