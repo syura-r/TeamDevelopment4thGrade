@@ -396,9 +396,6 @@
     <ClCompile Include="EnergyItem.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
-    <ClCompile Include="Pause.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="ParticleTestScene.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
@@ -410,6 +407,12 @@
     </ClCompile>
     <ClCompile Include="PanelCutLocus.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeLimit.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="Pause.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -725,9 +728,6 @@
     <ClInclude Include="EnergyItem.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
-    <ClInclude Include="Pause.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ParticleTestScene.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
@@ -739,6 +739,12 @@
     </ClInclude>
     <ClInclude Include="PanelCutLocus.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeLimit.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="Pause.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

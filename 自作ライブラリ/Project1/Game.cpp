@@ -92,6 +92,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("restart", "restart.png");
 		Texture::LoadTexture("toTitle", "toTitle.png");
 		Texture::LoadTexture("selectInPause", "selectInPause.png");
+		Texture::LoadTexture("GamePlay_UI_Number", "GamePlay_UI_Number.png");
+		Texture::LoadTexture("GamePlay_UI_Colon", "GamePlay_UI_Colon.png");
 	
 		break; 
 	case 2:
