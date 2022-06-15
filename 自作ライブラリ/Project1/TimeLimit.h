@@ -1,6 +1,6 @@
 #pragma once
 #include "Timer.h"
-#include "Sprite.h"
+#include "NumberSprite.h"
 #include "Vector.h"
 
 class TimeLimit
@@ -13,25 +13,20 @@ public:
 	void Update();
 	void Draw();
 
-private:
-	void RectChange();
+	bool GetLimit() { timer->IsTime(); }
 
+private:
 	int limit;
+	float minute;
+	float seconds;
 
 	Timer* timer;
 
 	//•ª•\¦
-	Sprite* minute_sprite;
+	NumberSprite* minute_sprite;
 	//ƒRƒƒ“
 	Sprite* colon_sprite;
-
-	//•b‚ÌŒ…”
-	static const int secondsDigits = 2;
 	//•b•\¦
-	Sprite* seconds_sprite[secondsDigits];
-
-	const std::string numberTexName = "GamePlay_UI_Number";
-	//”š1‚Â•ª‚Ì‘å‚«‚³
-	const Vector2 numberTexSize = { 47.0f,86.0f };
+	NumberSprite* seconds_sprite;
 };
 

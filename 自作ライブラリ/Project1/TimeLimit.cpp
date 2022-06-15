@@ -3,14 +3,13 @@
 TimeLimit::TimeLimit(const unsigned int arg_limit)
 {
 	limit = arg_limit;
+	minute = limit / 60;
+	seconds = limit % 60;
 	timer = new Timer(arg_limit);
 
-	minute_sprite = new Sprite();
+	minute_sprite = new NumberSprite(minute);
 	colon_sprite = new Sprite();
-	for (int i = 0; i < secondsDigits; i++)
-	{
-		seconds_sprite[i] = new Sprite();
-	}
+	seconds_sprite = new NumberSprite(seconds);
 }
 
 TimeLimit::~TimeLimit()
@@ -18,10 +17,7 @@ TimeLimit::~TimeLimit()
 	delete timer;
 	delete minute_sprite;
 	delete colon_sprite;
-	for (int i = 0; i < secondsDigits; i++)
-	{
-		delete seconds_sprite[i];
-	}
+	delete seconds_sprite;
 }
 
 void TimeLimit::Initialize()
@@ -31,56 +27,29 @@ void TimeLimit::Initialize()
 
 void TimeLimit::Update()
 {
-	timer->Update();
+	//残り時間（秒）
+	const int nowTime = timer->GetRealTime(TimerPerformance::Down);
+	//表示時間（分）
+	minute = nowTime / 60;
+	//表示時間（秒）
+	seconds = nowTime % 60;
 
-	RectChange();
+	timer->Update();
 }
 
 void TimeLimit::Draw()
 {
-	//分の左上座標
-	Vector2 position = { 1920 - ((numberTexSize.x * 3.5f) + 30),10 };
-	const Vector2 scale = { 1,1 };
-	const Vector4 color = { 1,1,1,1 };
+	//画像サイズ（数字1つ分）
+	const Vector2 numberTexSize = { 47.0f, 86.0f };
 
-	minute_sprite->DrawSprite(numberTexName, position, 0.0f, scale, color, { 0,0 });
+	//全体の左上座標
+	Vector2 position = { 1920 - (numberTexSize.x * 3) - 50, numberTexSize.y / 2 + 30 };
 
-	//１桁分ずらす
-	position.x += numberTexSize.x;
-	colon_sprite->DrawSprite("GamePlay_UI_Colon", position, 0.0f, scale, color, { 0,0 });
+	minute_sprite->Draw(1, "GamePlay_UI_Number", position);
 
-	//コロンの大きさずらす
-	position.x += numberTexSize.x / 2;
-	for (int i = 0; i < secondsDigits; i++)
-	{
-		seconds_sprite[i]->DrawSprite(numberTexName, position, 0.0f, scale, color, { 0,0 });
-		//１桁分ずらす
-		position.x += numberTexSize.x;
-	}
-}
+	position.x += (numberTexSize.x / 4) * 3;
+	colon_sprite->DrawSprite("GamePlay_UI_Colon", position);
 
-void TimeLimit::RectChange()
-{
-	//残り時間（秒）
-	const int nowTime = timer->GetRealTime(TimerPerformance::Down);
-	//1分は60秒
-	const int secondsToMinute = 60;
-	//表示時間（分）
-	const int minuteTime = nowTime / secondsToMinute;
-	//表示時間（秒）
-	const int secondsTime = nowTime % secondsToMinute;
-
-	//桁ごとの数（秒）
-	const int secondsDigitsNum[secondsDigits] = { secondsTime / 10, secondsTime % 10 };
-
-	//画像切り抜き
-	minute_sprite->SpriteSetTextureRect(numberTexName,
-		numberTexSize.x * minuteTime, 0,
-		numberTexSize.x, numberTexSize.y);
-	for (int i = 0; i < secondsDigits; i++)
-	{
-		seconds_sprite[i]->SpriteSetTextureRect(numberTexName,
-			numberTexSize.x * secondsDigitsNum[i], 0,
-			numberTexSize.x, numberTexSize.y);
-	}
+	position.x += (numberTexSize.x / 4) * 5;
+	seconds_sprite->Draw(2, "GamePlay_UI_Number", position);
 }
