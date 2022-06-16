@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Input.h"
 #include "Field.h"
+#include "PanelCountBoard.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -37,6 +38,8 @@ StandardEnemy::StandardEnemy(Vector3 arg_position, float arg_hitWeight)
 	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
 
 	panelCountUI = new PanelCountUI();
+
+	ObjectManager::GetInstance()->Add(new PanelCountBoard(this));
 
 	Initialize();
 }
