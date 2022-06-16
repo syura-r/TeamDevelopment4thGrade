@@ -264,6 +264,7 @@
     <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="TouchAbleObject.cpp" />
     <ClCompile Include="Tree.cpp" />
+    <ClCompile Include="UnableThroughBlock.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
@@ -384,6 +385,7 @@
     <ClInclude Include="TitleText.h" />
     <ClInclude Include="TouchAbleObject.h" />
     <ClInclude Include="Tree.h" />
+    <ClInclude Include="UnableThroughBlock.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="XAudio2VoiceCallback.h" />

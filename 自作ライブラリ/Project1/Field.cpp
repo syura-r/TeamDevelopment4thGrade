@@ -27,9 +27,9 @@ Field::Field()
 		SetEdges();
 	}
 
-	Create(OBJLoader::GetModel("Hexagon"));	
+	Create(OBJLoader::GetModel("fieldEdge"));
 	position = { 0,-5,0 };
-	scale = { 45,1,45 };
+	scale = { RADIUS,1,RADIUS };
 	color = { 0.1f ,0.1f, 0.1f,1 };
 	Object::Update();
 
@@ -87,7 +87,7 @@ void Field::DrawReady()
 
 void Field::Draw()
 {
-	//
+	Object::Draw();
 }
 
 void Field::CalcTilt()

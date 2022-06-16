@@ -36,7 +36,7 @@ public:
 
 private:
 	//L‚³
-	const float RADIUS = 45.0f;
+	const float RADIUS = 50.0f;
 	static const int PIECE_LAYER_NUM;
 	static std::vector<Vector2> edges;
 	//ŒX‚«‚ğ•\‚·
