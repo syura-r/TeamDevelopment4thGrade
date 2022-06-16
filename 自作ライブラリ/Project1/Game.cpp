@@ -102,6 +102,7 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("box", "box.obj", false);
 		OBJLoader::LoadModelFile("sphere", "sphere.obj", true);
 		OBJLoader::LoadModelFile("obBox", "bottomOriginBox.obj", false);
+
 		break;
 	case 3:
 		//Objモデルの読み込み
@@ -110,6 +111,7 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("Hexagon", "Hexagon.obj", false);
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
+		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
 		break;
 	case 4:
 		//FBXファイルの読み込み

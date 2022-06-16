@@ -402,9 +402,6 @@
     <ClCompile Include="FieldPiece.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
-    <ClCompile Include="CircularSaw.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="PanelCutLocus.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
@@ -424,6 +421,9 @@
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
     <ClCompile Include="UnableThroughBlock.cpp">
+		<Filter>ソース ファイル\GameObject\proto_second</Filter>
+	</ClCompile>
+    <ClCompile Include="CircularSaw.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
   </ItemGroup>
@@ -746,9 +746,6 @@
     <ClInclude Include="FieldPiece.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
-    <ClInclude Include="CircularSaw.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="PanelCutLocus.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
@@ -768,6 +765,9 @@
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
     <ClInclude Include="UnableThroughBlock.h">
+		<Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+	</ClInclude>
+    <ClInclude Include="CircularSaw.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
   </ItemGroup>

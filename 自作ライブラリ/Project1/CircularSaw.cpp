@@ -12,9 +12,10 @@
 #include "PanelCutLocus.h"
 
 
+
 CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus)
 {
-	Create(OBJLoader::GetModel("box"));
+	Create(OBJLoader::GetModel("Saw"));
 	virtualityPlanePosition = arg_virtualityPlanePosition;
 	nowCuttingLocus = arg_nowCuttingLocus;
 	Initialize();
@@ -26,10 +27,10 @@ CircularSaw::~CircularSaw()
 
 void CircularSaw::Initialize()
 {
-	speed = 0.5f;
+	speed = 0.3f;
 	length = 0;
 	currentLineNum = 0;
-	scale = { 1,1,1 };
+	scale = { 5,5,5 };
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 	Object::Update();
@@ -46,6 +47,11 @@ void CircularSaw::Update()
 	virtualityPlanePosition = virtualityPlanePosition + velocity * speed;
 
 	float lengthLocusLine = nowCuttingLocus->GetLine(currentLineNum)->GetLength();
+
+	float angle = nowCuttingLocus->GetLine(currentLineNum)->GetAngle();
+
+	rotation.y = angle + 90;
+	rotation.x += 3;
 
 	if (lengthLocusLine - length <= 0.05f) //マジックサイコー
 	{
