@@ -95,6 +95,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UV_Player", "GamePlay_UV_Player.png");
 		Texture::LoadTexture("GamePlay_UI_Number", "GamePlay_UI_Number.png");
 		Texture::LoadTexture("GamePlay_UI_Colon", "GamePlay_UI_Colon.png");
+		Texture::LoadTexture("GamePlay_UI_Gettriangle_Player", "GamePlay_UI_Gettriangle_Player.png");
+		Texture::LoadTexture("GamePlay_UI_Gettriangle_Enemy", "GamePlay_UI_Gettriangle_Enemy.png");
 	
 		break; 
 	case 2:

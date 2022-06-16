@@ -226,6 +226,7 @@
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Object3D.cpp" />
+    <ClCompile Include="PanelCountUI.cpp" />
     <ClCompile Include="PanelCutLocus.cpp" />
     <ClCompile Include="PanelItem.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
@@ -339,6 +340,7 @@
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Object3D.h" />
+    <ClInclude Include="PanelCountUI.h" />
     <ClInclude Include="PanelCutLocus.h" />
     <ClInclude Include="PanelItem.h" />
     <ClInclude Include="Particle.h" />

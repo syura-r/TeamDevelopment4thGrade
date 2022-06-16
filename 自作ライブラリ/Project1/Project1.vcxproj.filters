@@ -416,12 +416,15 @@
     </ClCompile>
     <ClCompile Include="InGameTimer.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="TimeLimit.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
     <ClCompile Include="Pause.cpp">
       <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelCountUI.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -757,12 +760,15 @@
     </ClInclude>
     <ClInclude Include="InGameTimer.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="TimeLimit.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
     <ClInclude Include="Pause.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelCountUI.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

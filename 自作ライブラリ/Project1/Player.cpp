@@ -51,6 +51,8 @@ Player::Player()
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Player", this);
 
+	panelCountUI = new PanelCountUI();
+
 	Initialize();
 
 	//定数バッファの作成
@@ -79,6 +81,7 @@ Player::Player()
 Player::~Player()
 {	
 	delete attackSprite;	
+	delete panelCountUI;
 	//delete locusSelecter;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
@@ -137,6 +140,8 @@ void Player::Initialize()
 	weight = 10;
 	cutPower = 0;	
 	gottenPanel = 0;
+
+	panelCountUI->Initialize();
 }
 
 void Player::Update()
@@ -227,6 +232,8 @@ void Player::Update()
 	{
 		locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 	}
+
+	panelCountUI->Update(gottenPanel);
 }
 
 void Player::Draw()
@@ -249,6 +256,7 @@ void Player::Draw()
 		
 		//locusSelecter->Draw();		
 	}
+	panelCountUI->Draw();
 }
 
 void Player::DrawReady()
