@@ -13,7 +13,6 @@
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
 
-DebugCamera* SamplePlayer::camera = nullptr;
 
 SamplePlayer::SamplePlayer()
 {
@@ -25,7 +24,6 @@ SamplePlayer::SamplePlayer()
 	pObjectManager = ObjectManager::GetInstance();
 
 	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);
-	attackSprite = new Sprite();
 
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
 
@@ -34,32 +32,10 @@ SamplePlayer::SamplePlayer()
 
 	Initialize();
 
-	//定数バッファの作成
-	HRESULT result;
-	result = DirectXLib::GetInstance()->GetDevice()->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstLightCameraBuff) + 0xff) & ~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constCameraBuff));
-	assert(SUCCEEDED(result));
-
-
-	//デプスシャドウ用のカメラ情報を設定
-	ConstLightCameraBuff* constMap2 = nullptr;
-	result = constCameraBuff->Map(0, nullptr, (void**)&constMap2);
-	assert(SUCCEEDED(result));
-	constMap2->cameraPos = Object3D::GetLightCamera()->GetEye();
-	constMap2->viewProjection = XMMatrixLookAtLH(Vector3(Object3D::GetLightCamera()->GetEye()).ConvertXMVECTOR(), Vector3(Object3D::GetLightCamera()->GetTarget()).ConvertXMVECTOR(), Vector3(Object3D::GetLightCamera()->GetUp()).ConvertXMVECTOR()) * XMMatrixOrthographicLH(100, 100, 1.0f, 1000.0f);
-	constCameraBuff->Unmap(0, nullptr);
-
-
 }
 
 SamplePlayer::~SamplePlayer()
 {
-	delete attackSprite;
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -71,30 +47,6 @@ void SamplePlayer::Initialize()
 	rotation = 0;
 	prePos = position;
 	direction = { 0,0,1 };
-	cameraRotCount = 0;
-	rotCamera = false;
-	radY = 0;
-	camera->SetTarget(position + Vector3{ 0, 1, 0 });
-
-	camera->Update();
-	//----------カメラの回転角度を算出---------------
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	float cosA = Vector3(0, 0, 1).Dot(cameraDirectionZ);
-	if (cosA > 1.0f)
-		cosA = 1.0f;
-	else if (cosA < -1.0f)
-		cosA = -1.0f;
-	float rad = acos(cosA);
-	const Vector3 CrossVec = Vector3(0, 0, 1).Cross(cameraDirectionZ);
-	if (CrossVec.y < 0)
-		rad *= -1;
-	//-----------------------------------------------
-	//カメラの回転
-	camera->SetTheta(120);
-
-
-	camera->SetDistance(100);
 
 	drawingFlag = false;
 	isExtendLine = false;
@@ -111,22 +63,8 @@ void SamplePlayer::Initialize()
 
 void SamplePlayer::Update()
 {
-#ifdef _DEBUG
-	//パーティクル確認用
-	if (Input::TriggerKey(DIK_RETURN))
-	{
-		ParticleEmitter::CreateExplosion(position);
-		ParticleEmitter::CreateAir(position);
-		ParticleEmitter::CreateGetEffect(position);
-
-	}
-#endif
-
 	//移動処理
 	Move();
-
-	//カメラのリセット処理
-	MoveCamera();
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 
@@ -149,7 +87,6 @@ void SamplePlayer::Update()
 				Vector3 p = field->GetPlayerCuttingStartPos();
 				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus));
 			}
-
 		}
 
 		// Bボタンを押したら
@@ -188,14 +125,6 @@ void SamplePlayer::Update()
 
 void SamplePlayer::Draw()
 {
-
-	if (!Object3D::GetDrawShadow())
-	{
-		HRESULT result;
-
-		//定数バッファをセット
-		DirectXLib::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(1, constCameraBuff->GetGPUVirtualAddress());
-	}
 	CustomDraw(true, true);
 }
 
@@ -204,11 +133,7 @@ void SamplePlayer::DrawReady()
 #ifdef _DEBUG
 	if (!Object3D::GetDrawShadow() && DrawMode::GetDrawImGui())
 	{
-		XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-		Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]);
-		cameraDirectionZ.Normalize();
 		ImGui::Begin("PlayerStatus");
-		ImGui::Text("CameraDirection : {%f, %f, %f }\n", cameraDirectionZ.x, cameraDirectionZ.y, cameraDirectionZ.z);
 		ImGui::Text("Direction : {%f, %f, %f }\n", direction.x, direction.y, direction.z);
 		ImGui::Text("Position : {%f, %f, %f }\n", position.x, position.y, position.z);
 		ImGui::Text("Rot : {%f, %f, %f }\n", rotation.x, rotation.y, rotation.z);
@@ -336,39 +261,6 @@ void SamplePlayer::Move()
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 }
 
-void SamplePlayer::MoveCamera()
-{
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-
-	//カメラのリセット処理
-	if (Input::TriggerKey(DIK_C) && !rotCamera)
-	{
-		rotCamera = true;
-		float cosA = direction.Dot(cameraDirectionZ);
-		if (cosA > 1.0f)
-			cosA = 1.0f;
-		else if (cosA < -1.0f)
-			cosA = -1.0f;
-		radY = acos(cosA);
-		const Vector3 CrossVec = direction.Cross(cameraDirectionZ);
-		if (CrossVec.y < 0)
-			radY *= -1;
-		cameraRotCount = 0;
-		//camera->AddPhi(radY);
-	}
-
-	//カメラの回転処理
-	if (rotCamera)
-	{
-		cameraRotCount++;
-		float rad = radY / RotTime;
-		camera->AddPhi(rad);
-		if (cameraRotCount >= RotTime)
-			rotCamera = false;
-	}
-}
-
 void SamplePlayer::SlidingDown()
 {
 	if (drawingFlag)
@@ -401,11 +293,6 @@ void SamplePlayer::DecideDirection(Vector3& arg_direction)
 		return;
 	}
 
-	//カメラのビュー行列の逆行列を計算
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
-
 	//くり抜き動作中
 	if (drawingFlag)
 	{
@@ -413,20 +300,20 @@ void SamplePlayer::DecideDirection(Vector3& arg_direction)
 	}
 	else
 	{
-		if (Input::DownKey(DIK_A))
-			arg_direction += cameraDirectionX * -1;
-		if (Input::DownKey(DIK_D))
-			arg_direction += cameraDirectionX;
-		if (Input::DownKey(DIK_S))
-			arg_direction += cameraDirectionZ * -1;
-		if (Input::DownKey(DIK_W))
-			arg_direction += cameraDirectionZ;
-		if (Input::CheckPadLStickAnythingDir())
-		{
-			auto vec = Input::GetLStickDirection();
+		//if (Input::DownKey(DIK_A))
+		//	arg_direction += cameraDirectionX * -1;
+		//if (Input::DownKey(DIK_D))
+		//	arg_direction += cameraDirectionX;
+		//if (Input::DownKey(DIK_S))
+		//	arg_direction += cameraDirectionZ * -1;
+		//if (Input::DownKey(DIK_W))
+		//	arg_direction += cameraDirectionZ;
+		//if (Input::CheckPadLStickAnythingDir())
+		//{
+		//	auto vec = Input::GetLStickDirection();
 
-			arg_direction = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
-		}
+		//	arg_direction = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
+		//}
 		inputAccuracy = 1;
 	}
 
@@ -686,15 +573,11 @@ void SamplePlayer::WithStand()
 		BGColor = 1;
 	}
 
-	//カメラのビュー行列の逆行列を計算
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 	Vector2 stickDirection = {};
 	//スティックの向き
 	auto vec = Input::GetLStickDirection();
-	stickDirection.x = (cameraDirectionX * vec.x).x;
-	stickDirection.y = (cameraDirectionZ * vec.y).z;
+	//stickDirection.x = (cameraDirectionX * vec.x).x;
+	//stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
 
 	float accuracy = 0;
@@ -729,21 +612,17 @@ void SamplePlayer::Tackle()
 
 	tackleFlag = true;
 
-	//カメラのビュー行列の逆行列を計算
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 	Vector2 stickDirection = {};
 	Vector3 moveDirection = {};
 	//スティックの向き
 	auto vec = Input::GetLStickDirection();
-	stickDirection.x = (cameraDirectionX * vec.x).x;
-	stickDirection.y = (cameraDirectionZ * vec.y).z;
+	//stickDirection.x = (cameraDirectionX * vec.x).x;
+	//stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
 
 	tackleStartPos = virtualityPlanePosition;
 
-	moveDirection = cameraDirectionX * stickDirection.x + cameraDirectionZ * stickDirection.y;
+	//moveDirection = cameraDirectionX * stickDirection.x + cameraDirectionZ * stickDirection.y;
 	moveDirection.Normalize();
 	tackleEndPos = virtualityPlanePosition + moveDirection * 8;
 
@@ -761,7 +640,6 @@ void SamplePlayer::SuspendTackle()
 	else
 	{
 		tackleEndPos = virtualityPlanePosition;
-		//tackleCount = 0;
 		speed = walkSpeed;
 	}
 

@@ -22,7 +22,6 @@ public:
 	void Update()override;
 	void Draw() override;
 	void DrawReady() override;
-	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }
 
 	//残機が残っているか
 	bool IsAlive();
@@ -37,23 +36,11 @@ public:
 	PanelCutLocus* GetPanelCutLocus();
 
 private:
-	struct ConstLightCameraBuff
-	{
-		XMMATRIX viewProjection;
-		XMFLOAT3 cameraPos;
-	};
-
-	ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
-
-
-	int walkDustCounter = 0;
 
 	//初期位置
 	const Vector3 StartPos = { 0,-5,0 };
 	//移動処理
 	void Move();
-	//カメラの制御
-	void MoveCamera();
 
 	//傾きで滑る処理
 	void SlidingDown();
@@ -105,7 +92,6 @@ private:
 	std::vector<Line*> vecDrawingLines;
 	unsigned int feverQuota;
 	const unsigned int maxFeverQuota = 6;
-	Sprite* attackSprite;
 
 	const float RADIUS = 1.0f;
 	//プレイヤーの重さ
@@ -137,7 +123,6 @@ private:
 	Vector3 tackleEndPos;
 	int tackleCount = 0;
 
-
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;
 	Vector3 preVirtualityPlanePosition;
@@ -158,15 +143,7 @@ private:
 	//回転速度
 	float rotateSpeed = 17.5f;
 	Vector3 prePos;
-	//カメラ回転中
-	bool rotCamera;
-	//カメラの回転度合い
-	float radY;
-	int cameraRotCount;
-	const int RotTime = 10;
 
 	FBXModel* myModel = nullptr;
-private://静的メンバ変数
-	static DebugCamera* camera;
 
 };

@@ -116,6 +116,7 @@ void Game::RoadAsset()
 		FBXManager::LoadModelFile("player", "player", false);
 		FBXManager::LoadModelFile("enemy", "player", false);
 		FBXManager::LoadModelFile("GamePlay_Player", "GamePlay_Player", false);
+		FBXManager::LoadModelFile("GamePlay_Enemy", "GamePlay_Enemy", false);
 
 		//WAVƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
 		//Audio::LoadFile("test", "51e7ff6cc6b93897.wav");

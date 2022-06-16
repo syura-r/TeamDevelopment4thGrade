@@ -4,6 +4,8 @@
 class FBXModel;
 class Timer;
 class Line;
+class EnergyItem;
+class PanelCutLocus;
 
 enum class EnemyState
 {
@@ -11,7 +13,8 @@ enum class EnemyState
     RandomMove,             // ランダムな方向に移動
     RushAttack,             // タックル
     CoolAfterRushAttack,    // タックルの後隙
-    Straddle                // 踏ん張り
+    Straddle,               // 踏ん張り
+    Cutting                 // 切り抜き
 };
 
 class StandardEnemy :
@@ -54,14 +57,53 @@ private:
 
     // 各当たり判定チェック
     void HitCheck();
-    // 図形との判定
-    bool HitCheckLoci();
-    void HitLoci(Line* arg_line);
+    //// 図形との判定
+    //bool HitCheckLoci();
+    //void HitLoci(Line* arg_line);
     // プレイヤーとの当たり判定
     bool RangeCheckPlayer();
     // フィールド上に居るか
     bool IsOnField();
     void StayInTheField();
+    void StayOnRemainPanels();
+
+    //---------------------------------------------------------
+    // プレイヤーの位置を取る
+    void ConfirmPlayerPos();
+    // 一番近いアイテムの位置を確認する
+    void ConfirmItemPos();
+    // プレイヤーの位置
+    Vector3 playerPos;
+    // アイテムの位置
+    Vector3 itemPos;
+
+    //アイテムとの当たり判定
+    void HitCheckItems();
+    void HitItem(EnergyItem* arg_item);
+
+    // 丸のこ所持数
+    int cutPower;
+    // 切り抜きを実行する数
+    int cuttingSowNum = 1;
+
+    // ランダムな方向の決定
+    Vector2 RandomDir();
+    // アイテム、プレイヤーの位置を見て移動方向を決める
+    Vector3 ThinkDir();
+    // 丸のこの生成（切り抜き）
+    void Cutting();
+    // 予測線
+    PanelCutLocus* panelCutLocus;
+    // 切るフラグ
+    bool cuttingFlag;
+
+    // 獲得したパネル
+    int gottenPanel;
+
+    //切り抜きの中断
+    void SuspendCutting();
+
+    //---------------------------------------------------------
 
     // デバッグ用操作
     void DebugControl();
@@ -112,7 +154,7 @@ private:
     //復帰移動イージング用のカウント
     int moveEasingCount = 0;
 
-    // 切り抜き中ｋｓ
+    // 切り抜き中か
     bool isCutting = false;
     // 操作するか
     bool isControl = false;

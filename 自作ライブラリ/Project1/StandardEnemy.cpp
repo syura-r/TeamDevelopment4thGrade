@@ -1,4 +1,5 @@
 #include "StandardEnemy.h"
+
 #include "Timer.h"
 #include "FBXModel.h"
 #include "FBXManager.h"
@@ -8,6 +9,10 @@
 #include "Player.h"
 #include "Input.h"
 #include "Field.h"
+#include "FieldPiece.h"
+#include "EnergyItem.h"
+#include "CircularSaw.h"
+#include "PanelCutLocus.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -18,17 +23,13 @@ StandardEnemy::StandardEnemy(Vector3 arg_position, float arg_hitWeight)
 	initWeight = arg_hitWeight;
 
 	//アニメーション用にモデルのポインタを格納
-	myModel = FBXManager::GetModel("enemy");
+	myModel = FBXManager::GetModel("GamePlay_Enemy");
 	//モデルの生成
 	Create(myModel);
-	////当たり判定(Box)の生成
-	//BoxCollider* boxCollider = new BoxCollider();
-	//boxCollider->SetObject(this);
-	//boxCollider->SetScale({ 0.2f,0.5f,0.2f });
-	//boxCollider->SetOffset({ 0,0.5f,0 ,0 });
-	//SetCollider(boxCollider);
-	//collider->SetAttribute(COLLISION_ATTR_ENEMYS);
-	//collider->SetMove(true);
+
+	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);
+
+	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
 
 	actionTimer = new Timer(INTERVAL_ACTIONTIMER);
 	walkingTimer = new Timer(WALKING);
@@ -55,7 +56,7 @@ void StandardEnemy::Initialize()
 	rotation = { 0,0,0 };
 	velocity = { 0,0,0 };
 	aceel = { 0,0,0 };
-	color = { 1,0,0.1f,1 };
+	color = { 1,1,1,1 };
 
 	actionTimer->Initialize();
 	walkingTimer->Initialize();
@@ -71,30 +72,35 @@ void StandardEnemy::Initialize()
 	isStraddle = false;
 	isControl = false;
 	isAttacked = false;
+	cuttingFlag = false;
+	cutPower = 0;
+	gottenPanel = 0;
+	playerPos = { 0,0,0 };
+	itemPos = { 0,0,0 };
 }
 
 void StandardEnemy::Update()
 {
-	// モーション
-	if (state == EnemyState::Wait)
-	{
-		myModel->PlayAnimation("stand", true, 1, false);
-	}
-	else
-	{
-		myModel->PlayAnimation("walk", true);
-	}
-
+	// タイマー更新
 	actionTimer->Update();
 	walkingTimer->Update();
+	// position保存
 	prePos = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
+	// 自分以外の位置を更新
+	ConfirmPlayerPos();
+	ConfirmItemPos();
 
 	//滑り落ちる処理
 	float fallSpeed = 0.05f;
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	virtualityPlanePosition += field->GetTilt() * fallSpeed;
+	// フィールド上にとどまる処理
 	StayInTheField();
+	StayOnRemainPanels();
+
+	// 当たり判定系
+	HitCheckItems();
 
 	// 自分で操作したい時用(imguiで選択)
 	if (isControl)
@@ -102,15 +108,12 @@ void StandardEnemy::Update()
 		DebugControl();
 	}
 
-	if (HitCheckLoci())
-	{
-		state = EnemyState::Straddle;
-	}
-
 	if (isBlow)
 	{
 		virtualityPlanePosition += velocity * speed;
 		StayInTheField();
+		StayOnRemainPanels();
+
 		blowTime--;
 		if (blowTime <= 0)
 		{
@@ -137,7 +140,11 @@ void StandardEnemy::Update()
 		//{
 		//	state = EnemyState::Wait;
 		//}
-
+		// 丸のこ所持数を見て切り抜き
+		if (cutPower >= cuttingSowNum && (!isAttacked && !cuttingFlag))
+		{
+			state = EnemyState::Cutting;
+		}
 
 		// 決まったパターンによって分岐
 		switch (state)
@@ -166,12 +173,24 @@ void StandardEnemy::Update()
 
 			break;
 
+		case EnemyState::Cutting:
+			Cutting();
+
+			break;
 		default:
 			break;
 		}
 	}
 
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), Vector3(0, -5, 0));
+
+	//Vector3 p = field->/*GetPlayerCuttingStartPos()*/;	// ←敵版作ろう
+
+	//if (!cuttingFlag)
+	//{
+	//	panelCutLocus->SetCutPower(cutPower);
+	//	panelCutLocus->Move(p, field->GetPlayerCuttingAngle());
+	//}
 
 	object->Update();
 }
@@ -209,16 +228,13 @@ void StandardEnemy::Move()
 		WithStand();
 	}
 
-
 	if (isMoved == true)
 	{
 		//ランダムな向きを決定
-		Vector2 moveDir = { 0,0 };
-		moveDir.x = (float)((rand() % 20 - 10) / 10.0f);
-		moveDir.y = (float)((rand() % 20 - 10) / 10.0f);
+		//Vector2 moveDir = RandomDir();
+		Vector2 moveDir = { ThinkDir().x,ThinkDir().z };
 
 		velocity = { moveDir.x,0,moveDir.y };
-		velocity.Normalize();
 
 		speed = 0.2f;
 
@@ -228,7 +244,10 @@ void StandardEnemy::Move()
 
 	virtualityPlanePosition += velocity * speed;
 	StayInTheField();
+	StayOnRemainPanels();
+
 	MatchDir();
+
 	// 移動しきるか他の行動に移ったらactionTimerをリセット
 	if (walkingTimer->IsTime())
 	{
@@ -267,38 +286,12 @@ void StandardEnemy::WithStand()
 		return;
 	}
 
-	////踏ん張り中　赤
-	//Object::SetColor({ 0.6f,BGColor,BGColor,1 });
-	//if (BGColor >= 0)
-	//{
-	//	BGColor -= 0.02f;
-	//}
-	//else
-	//{
-	//	BGColor = 1;
-	//}
-
-	////カメラのビュー行列の逆行列を計算
-	//XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	//const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	//const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
-	//Vector2 stickDirection = {};
-	////スティックの向き
-	//auto vec = Input::GetLStickDirection();
-	//stickDirection.x = (cameraDirectionX * vec.x).x;
-	//stickDirection.y = (cameraDirectionZ * vec.y).z;
-	//stickDirection = Vector2::Normalize(stickDirection);
-	//ランダムな向きを決定
-	Vector2 moveDir = { 0,0 };
-	moveDir.x = (float)((rand() % 20 - 10) / 10.0f);
-	moveDir.y = (float)((rand() % 20 - 10) / 10.0f);
-	moveDir = Vector2::Normalize(moveDir);
+	Vector2 moveDir = RandomDir();
 
 	float accuracy = 0;
 
 	Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preStandVec);
 
-	//accuracy = Vector2::Dot(stickDirection, correctVec);
 	accuracy = Vector2::Dot(moveDir, correctVec);
 
 	if (accuracy <= 0)
@@ -356,75 +349,6 @@ void StandardEnemy::SuspendTackle()
 void StandardEnemy::HitCheck()
 {
 
-}
-
-bool StandardEnemy::HitCheckLoci()
-{
-	static const float radius = 1.0f;
-	bool b = false;
-
-	// プレイヤーから書いた線のデータを引っ張ってくる
-	std::vector<BaseLocus*> vecLocuss = ActorManager::GetInstance()->GetPlayer()->GetVecLocuss();
-
-	if (virtualityPlanePosition == preVirtualityPlanePosition)
-	{
-		return b;
-	}
-
-	for (auto locus : vecLocuss)
-	{
-		for (int i = 0; i < locus->GetMaxNumLine(); i++)
-		{
-			Line* line = locus->GetLine(i);
-			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneStartPos());
-			Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneEndPos());
-			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos() - line->GetVirtualityPlaneStartPos());
-			Vector2 normalAB = Vector2::Normalize(AB);
-
-			//今当たっているか
-			float cross = Vector2::Cross(AO, normalAB);
-			if (fabsf(cross) > radius)
-			{
-				continue;
-			}
-
-			float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
-			if (multiDot <= 0.0f)
-			{
-				HitLoci(line);
-				b = true;
-				continue;
-			}
-
-			if (Vector2::Length(AO) < radius || Vector2::Length(BO) < radius)
-			{
-				HitLoci(line);
-				b = true;
-				continue;
-			}
-
-			//通り過ぎたか
-			Vector2 start = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneStartPos());
-			Vector2 end = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos());
-			Vector2 pos = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition);
-			Vector2 pre = LocusUtility::Dim3ToDim2XZ(preVirtualityPlanePosition);
-
-			if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
-				LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
-			{
-				HitLoci(line);
-				b = true;
-			}
-		}
-	}
-
-	return b;
-}
-
-void StandardEnemy::HitLoci(Line* arg_line)
-{
-	position = prePos;
-	virtualityPlanePosition = preVirtualityPlanePosition;
 }
 
 bool StandardEnemy::RangeCheckPlayer()
@@ -498,6 +422,146 @@ void StandardEnemy::StayInTheField()
 	}
 }
 
+void StandardEnemy::StayOnRemainPanels()
+{
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS);
+
+	if (piece)
+	{
+		virtualityPlanePosition = preVirtualityPlanePosition;
+
+		Vector3 outPieceVec = {};
+		outPieceVec = position - piece->GetVirtualityPlanePosition();
+		outPieceVec.Normalize();
+		StartStand(false, outPieceVec);
+
+		if (isAttacked)
+		{
+			SuspendTackle();
+		}
+	}
+}
+
+void StandardEnemy::ConfirmPlayerPos()
+{
+	playerPos = ActorManager::GetInstance()->GetPlayer()->GetVirtualityPlanePosition();
+}
+
+void StandardEnemy::ConfirmItemPos()
+{
+	// ActorManagerからItem vectorをもらう
+	std::vector<EnergyItem*> items = ActorManager::GetInstance()->GetEnergyItems();
+	// vectorが空だったら
+	if (items.size() <= 0)
+	{
+		return;
+	}
+
+	Vector3 itemDistance;
+	Vector3 nearestItemDistance = items[0]->GetPosition() - position;
+
+	// 全アイテムを走査
+	for (auto item : items)
+	{
+		itemDistance = item->GetPosition() - position;
+
+		// より自分に近いアイテムが見つかったら
+		if (itemDistance.Length() < nearestItemDistance.Length())
+		{
+			// 距離の更新
+			nearestItemDistance = itemDistance;
+			// 一番近いアイテムの位置を更新
+			itemPos = item->GetPosition();
+		}
+	}
+}
+
+void StandardEnemy::HitCheckItems()
+{
+	if (cutPower >= 6)
+	{
+		return;
+	}
+
+	std::vector<EnergyItem*> items = ActorManager::GetInstance()->GetEnergyItems();
+
+	for (auto item : items)
+	{
+		if (!item->IsAppeared())
+		{
+			continue;
+		}
+
+		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - item->GetVirtualityPlanePosition()));
+
+		if (length <= RADIUS + EnergyItem::GetRadius())
+		{
+			HitItem(item);
+		}
+	}
+}
+
+void StandardEnemy::HitItem(EnergyItem* arg_item)
+{
+	arg_item->Dead();
+	if (cutPower < 6)
+	{
+		cutPower++;
+	}
+}
+
+Vector2 StandardEnemy::RandomDir()
+{
+	Vector2 dir = { 0,0 };
+
+	dir.x = (float)((rand() % 20 - 10) / 10.0f);
+	dir.y = (float)((rand() % 20 - 10) / 10.0f);
+	dir = Vector2::Normalize(dir);
+
+	return dir;
+}
+
+Vector3 StandardEnemy::ThinkDir()
+{
+	Vector3 itemRange = itemPos - position;
+	Vector3 playerRange = playerPos - position;
+	Vector3 dir;
+	// アイテムが近かったらアイテムの方へ
+	// プレイヤーが近かったらプレイヤーの方へ
+	if (itemRange.Length() < playerRange.Length())
+	{
+		dir = itemPos - position;
+		dir.Normalize();
+		velocity = dir;
+	}
+	else
+	{
+		dir = playerPos - position;
+		dir.Normalize();
+		velocity = dir;
+	}
+	
+	return velocity;
+}
+
+void StandardEnemy::Cutting()
+{
+	cuttingFlag = true;
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+
+	//丸のこをオブジェクトマネージャーに追加
+	//Vector3 p = field->GetPlayerCuttingStartPos();	// ←敵版作ろう
+	//ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus));
+
+	state = EnemyState::Wait;
+}
+
+void StandardEnemy::SuspendCutting()
+{
+	cuttingFlag = false;
+}
+
 void StandardEnemy::DebugControl()
 {
 	if (isBlow) { return; }
@@ -516,6 +580,7 @@ void StandardEnemy::DebugControl()
 
 	virtualityPlanePosition += velocity * speed;
 	StayInTheField();
+	StayOnRemainPanels();
 }
 
 void StandardEnemy::MatchDir()
