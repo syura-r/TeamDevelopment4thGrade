@@ -19,6 +19,7 @@
 #include "StandardEnemy.h"
 #include "EnergyItem.h"
 #include "CircularSaw.h"
+#include "PanelCountBoard.h"
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
 #include "ItemEmitter.h"
@@ -52,6 +53,10 @@ Player::Player()
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Player", this);
 
+	panelCountUI = new PanelCountUI();
+
+	pObjectManager->Add(new PanelCountBoard(this));
+
 	Initialize();
 
 	//定数バッファの作成
@@ -80,6 +85,7 @@ Player::Player()
 Player::~Player()
 {	
 	delete attackSprite;	
+	delete panelCountUI;
 	//delete locusSelecter;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
@@ -138,6 +144,8 @@ void Player::Initialize()
 	weight = 10;
 	cutPower = 0;	
 	gottenPanel = 0;
+
+	panelCountUI->Initialize();
 }
 
 void Player::Update()
@@ -228,6 +236,8 @@ void Player::Update()
 	{
 		locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 	}
+
+	panelCountUI->Update(gottenPanel);
 }
 
 void Player::Draw()
@@ -250,6 +260,7 @@ void Player::Draw()
 		
 		//locusSelecter->Draw();		
 	}
+	panelCountUI->Draw();
 }
 
 void Player::DrawReady()

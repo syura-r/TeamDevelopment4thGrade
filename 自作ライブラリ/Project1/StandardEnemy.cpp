@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Input.h"
 #include "Field.h"
+#include "PanelCountBoard.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -36,6 +37,10 @@ StandardEnemy::StandardEnemy(Vector3 arg_position, float arg_hitWeight)
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
 
+	panelCountUI = new PanelCountUI();
+
+	ObjectManager::GetInstance()->Add(new PanelCountBoard(this));
+
 	Initialize();
 }
 
@@ -43,6 +48,7 @@ StandardEnemy::~StandardEnemy()
 {
 	delete actionTimer;
 	delete walkingTimer;
+	delete panelCountUI;
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -71,6 +77,8 @@ void StandardEnemy::Initialize()
 	isStraddle = false;
 	isControl = false;
 	isAttacked = false;
+
+	panelCountUI->Initialize();
 }
 
 void StandardEnemy::Update()
@@ -174,6 +182,8 @@ void StandardEnemy::Update()
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), Vector3(0, -5, 0));
 
 	object->Update();
+
+	panelCountUI->Update(0);//player‚ÌgottenPanel‚Ì–ðŠ„‚ð‚·‚é•Ï”‚ð“ü‚ê‚é
 }
 
 void StandardEnemy::Draw()
@@ -185,6 +195,8 @@ void StandardEnemy::Draw()
 	PipelineState::SetPipeline("FBX");
 
 	object->Draw(true);
+
+	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
 }
 
 void StandardEnemy::DrawReady()

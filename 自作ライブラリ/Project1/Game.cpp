@@ -95,6 +95,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UV_Player", "GamePlay_UV_Player.png");
 		Texture::LoadTexture("GamePlay_UI_Number", "GamePlay_UI_Number.png");
 		Texture::LoadTexture("GamePlay_UI_Colon", "GamePlay_UI_Colon.png");
+		Texture::LoadTexture("GamePlay_UI_Gettriangle_Player", "GamePlay_UI_Gettriangle_Player.png");
+		Texture::LoadTexture("GamePlay_UI_Gettriangle_Enemy", "GamePlay_UI_Gettriangle_Enemy.png");
 	
 		break; 
 	case 2:
@@ -112,6 +114,8 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
+		OBJLoader::LoadModelFile("getPanelBoard_Player", "getPanelBoard_Player.obj", false);
+		OBJLoader::LoadModelFile("getPanelBoard_Enemy", "getPanelBoard_Enemy.obj", false);
 		break;
 	case 4:
 		//FBXÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›

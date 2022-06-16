@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "PanelCountUI.h"
 
 class FBXModel;
 class Timer;
@@ -104,4 +105,7 @@ private:
     const float AttackRange = 6.0f;
     // タックルの勢い
     const float AttackPower = 5.0f;
+
+    //パネル所持数表示
+    PanelCountUI* panelCountUI = nullptr;
 };
