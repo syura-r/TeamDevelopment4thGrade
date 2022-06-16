@@ -21,6 +21,7 @@
 #include "CircularSaw.h"
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
+#include "ItemEmitter.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -887,6 +888,9 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 	Vector3  playerAfterVel = -enemyWeight * constVec + velocity;
 	Vector3  enemyAfterVel = (playerWeight * weightCoefficient) * constVec + enemyVel;
 
+	
+	DischargeGottenPanel(arg_enemy);
+
 	if (tackleFlag)
 	{
 		//ƒ^ƒbƒNƒ‹‚Å“G‚¾‚¯”ò‚Î‚·
@@ -1075,6 +1079,23 @@ void Player::SuspendTackle()
 
 void Player::DischargeGottenPanel(StandardEnemy* arg_enemy)
 {
+	ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
+	int maxEmit = 0;
+	if (gottenPanel == 1)
+	{
+		maxEmit = 1;
+	}
+	else
+	{
+		maxEmit = gottenPanel / 2;
+	}
+	
+	for (int i = 0; i < maxEmit; i++)
+	{
+		itemEmitter->EmitPanelItem(virtualityPlanePosition);
+		gottenPanel--;
+		weight -= FieldPiece::GetWeight();
+	}
 
 }
 
