@@ -65,7 +65,7 @@ void PanelItem::Bounce()
 	if (IsEndBounce())
 	{
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
-		virtualityPlanePosition.y = field->GetPosition().y;
+		virtualityPlanePosition.y = field->GetPosition().y + RADIUS;
 	}
 }
 
