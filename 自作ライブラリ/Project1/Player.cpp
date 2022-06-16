@@ -1073,6 +1073,11 @@ void Player::SuspendTackle()
 	
 }
 
+void Player::DischargeGottenPanel(StandardEnemy* arg_enemy)
+{
+
+}
+
 Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
 {
 	Vector3 result = {};

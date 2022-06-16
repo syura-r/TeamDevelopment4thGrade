@@ -21,6 +21,7 @@ public:
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
 	int CutPanel(std::vector<Vector2>& arg_vecPos);
+	void ReviveGottenPanel(FieldPiece* arg_piece);
 
 	FieldPiece* GetPlayerRidingPiece();
 	Vector3 GetPlayerCuttingStartPos();

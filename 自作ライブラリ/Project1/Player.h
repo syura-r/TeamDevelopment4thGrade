@@ -109,6 +109,8 @@ private:
 	void Tackle();
 	//ƒ^ƒbƒNƒ‹‚Ì’†’f
 	void SuspendTackle();
+	//
+	void DischargeGottenPanel(StandardEnemy* arg_enemy);
 
 	
 	//

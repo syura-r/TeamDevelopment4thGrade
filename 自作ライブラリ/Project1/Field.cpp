@@ -474,6 +474,19 @@ int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 	return returnVal;
 }
 
+void Field::ReviveGottenPanel(FieldPiece* arg_piece)
+{
+	for (auto itr = gottenPieces.begin(); itr != gottenPieces.end(); itr++)
+	{
+		if (*itr == arg_piece)
+		{
+			(*itr)->ChangeIsActive(true);
+			gottenPieces.erase(itr);
+			break;
+		}
+	}
+}
+
 FieldPiece* Field::GetPlayerRidingPiece()
 {
 	return playerRidingPiece;
