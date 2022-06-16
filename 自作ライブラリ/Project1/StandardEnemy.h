@@ -38,14 +38,19 @@ public:
     void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
 
 private:
-    // 待機
 
     // 移動
     void Move();
+
+
+    //踏ん張りになる
+    void StartStand(bool arg_outField = true, Vector3 arg_velocity = {});
+    //踏ん張り中の処理
+    void WithStand();
     // タックル
-    void RushAttack();
-    // 踏ん張り
-    void Straddle();
+    void Tackle();
+    //タックルの中断
+    void SuspendTackle();
 
     // 各当たり判定チェック
     void HitCheck();
@@ -90,8 +95,25 @@ private:
     bool isMoved = true;
     // 速度調整用
     float speed = 0.2f;
+
     // 踏ん張り状態か
     bool isStraddle = false;
+    //踏ん張り中の猶予
+    int standTime = 120;
+    //踏ん張りになる前のベクトル
+    Vector3 preStandVec;
+    //踏ん張り中の色を変化させるための値
+    float BGColor = 1;
+    //踏ん張り復帰中
+    bool returningFieldFlag = false;
+    //復帰後の着地位置
+    Vector3 returningStartPos = { 0,0,0 };
+    Vector3 returningEndPos = { 0,0,0 };
+    //復帰移動イージング用のカウント
+    int moveEasingCount = 0;
+
+    // 切り抜き中ｋｓ
+    bool isCutting = false;
     // 操作するか
     bool isControl = false;
     // 吹っ飛び中

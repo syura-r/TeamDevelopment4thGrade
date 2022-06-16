@@ -243,6 +243,7 @@
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Result.cpp" />
+    <ClCompile Include="SamplePlayer.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SmartPtr.cpp" />
@@ -361,6 +362,7 @@
     <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="RaycastHit.h" />
     <ClInclude Include="Result.h" />
+    <ClInclude Include="SamplePlayer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShadowMap.h" />

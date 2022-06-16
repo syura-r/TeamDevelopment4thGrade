@@ -152,7 +152,7 @@ void StandardEnemy::Update()
 			break;
 
 		case EnemyState::RushAttack:				// タックル
-			RushAttack();
+			Tackle();
 
 			break;
 
@@ -162,7 +162,7 @@ void StandardEnemy::Update()
 			break;
 
 		case EnemyState::Straddle:					// 踏ん張り
-			Straddle();
+			// 踏ん張り開始
 
 			break;
 
@@ -204,6 +204,12 @@ void StandardEnemy::Move()
 		return;
 	}
 
+	if (isStraddle)
+	{
+		WithStand();
+	}
+
+
 	if (isMoved == true)
 	{
 		//ランダムな向きを決定
@@ -232,7 +238,87 @@ void StandardEnemy::Move()
 	}
 }
 
-void StandardEnemy::RushAttack()
+void StandardEnemy::StartStand(bool arg_outField, Vector3 arg_velocity)
+{
+	isStraddle = true;
+	//タックル終了
+	SuspendTackle();
+
+	standTime = 120;
+
+	//場外か図形か
+	if (arg_outField)
+	{
+		preStandVec = -position; //中央に向かう
+	}
+	else
+	{
+		preStandVec = arg_velocity; //パネルの中心からプレイヤーに向かうベクトル
+	}
+
+	preStandVec.y = 0;
+	preStandVec.Normalize();
+}
+
+void StandardEnemy::WithStand()
+{
+	if (isCutting)
+	{
+		return;
+	}
+
+	////踏ん張り中　赤
+	//Object::SetColor({ 0.6f,BGColor,BGColor,1 });
+	//if (BGColor >= 0)
+	//{
+	//	BGColor -= 0.02f;
+	//}
+	//else
+	//{
+	//	BGColor = 1;
+	//}
+
+	////カメラのビュー行列の逆行列を計算
+	//XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
+	//const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	//const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
+	//Vector2 stickDirection = {};
+	////スティックの向き
+	//auto vec = Input::GetLStickDirection();
+	//stickDirection.x = (cameraDirectionX * vec.x).x;
+	//stickDirection.y = (cameraDirectionZ * vec.y).z;
+	//stickDirection = Vector2::Normalize(stickDirection);
+	//ランダムな向きを決定
+	Vector2 moveDir = { 0,0 };
+	moveDir.x = (float)((rand() % 20 - 10) / 10.0f);
+	moveDir.y = (float)((rand() % 20 - 10) / 10.0f);
+	moveDir = Vector2::Normalize(moveDir);
+
+	float accuracy = 0;
+
+	Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preStandVec);
+
+	//accuracy = Vector2::Dot(stickDirection, correctVec);
+	accuracy = Vector2::Dot(moveDir, correctVec);
+
+	if (accuracy <= 0)
+	{
+		accuracy = 0;
+	}
+
+	if (accuracy >= 0.55f)
+	{
+		Vector3 moveDirection = preStandVec;
+		Object::SetColor({ 1,1,1,1 });
+		returningFieldFlag = true;
+		isStraddle = false;
+		returningStartPos = virtualityPlanePosition;
+		returningEndPos = virtualityPlanePosition + moveDirection * 3;
+		return;
+	}
+}
+
+void StandardEnemy::Tackle()
 {
 	if (isControl)
 	{
@@ -263,11 +349,8 @@ void StandardEnemy::RushAttack()
 	}
 }
 
-void StandardEnemy::Straddle()
+void StandardEnemy::SuspendTackle()
 {
-	// スマブラの崖際のよろけのイメージ
-	// 一定時間踏ん張った後→落下しそうな方向と反対に移動して待機へ戻る
-	// 踏ん張っている途中にプレイヤーがぶつかってきた場合→飛ばされて落ちる
 }
 
 void StandardEnemy::HitCheck()
