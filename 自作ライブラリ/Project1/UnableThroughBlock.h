@@ -9,7 +9,7 @@ class FieldPiece;
 class UnableThroughBlock : public Object
 {
 public:
-	UnableThroughBlock(const Vector3& arg_position, const float arg_height, const FieldPiece* arg_piece);
+	UnableThroughBlock(const Vector3& arg_position, const float arg_height, FieldPiece* arg_piece);
 	~UnableThroughBlock();
 
 	void Initialize()override;
@@ -25,5 +25,6 @@ private:
 	Vector3 virtualityPlanePosition;
 	Vector3 preVirtualityPlanePosition;	
 	PieceDirection dir;	
-	std::vector<Vector2> points;	
+	std::vector<Vector2> points;
+	FieldPiece* parentPiece;
 };
