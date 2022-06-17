@@ -1,114 +1,230 @@
 #pragma once
+#include <array>
+
+#include "BoxCollider.h"
+#include "DebugCamera.h"
+#include "FBXModel.h"
 #include "Object.h"
+#include "ObjectManager.h"
+#include "Line.h"
+#include "TestStar.h"
+#include "TestRibbon.h"
+#include "TestTriforce.h"
+#include "TestTriangle.h"
+#include "TestPentagon.h"
+#include "TestHexagram.h"
+#include "BaseLocus.h"
+#include "NormalWaveMeasurer.h"
+#include "LocusSelecter.h"
+#include "NumberSprite.h"
 #include "PanelCountUI.h"
+#include "Timer.h"
 
-class FBXModel;
-class Timer;
-class Line;
+class EnergyItem;
+class PanelCutLocus;
 
-enum class EnemyState
-{
-    Wait,                   // 待機
-    RandomMove,             // ランダムな方向に移動
-    RushAttack,             // タックル
-    CoolAfterRushAttack,    // タックルの後隙
-    Straddle                // 踏ん張り
-};
-
-class StandardEnemy :
-	public Object
+class StandardEnemy
+	:public Object
 {
 public:
-    StandardEnemy(Vector3 arg_position, float arg_hitWeight);
-    ~StandardEnemy();
+	StandardEnemy();
+	~StandardEnemy();
+	void Initialize()override;
+	void Update()override;
+	void Draw() override;
+	void DrawReady() override;
 
-    void Initialize()override;
-    void Update()override;
-    void Draw()override;
-    void DrawReady() override;
+	//残機が残っているか
+	bool IsAlive();
 
-    void IsBlow();
+	void EndDrawing();
 
-    // getter
-    float GetWeight() { return weight; }
-    Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
-    int GetBlowTime() { return blowTime; }
-    Vector3 GetDirection()const;
+	// 敵と図形の判定のため
+	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
+	float GetWeight() { return weight; }
+	Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
 
-    // setter
-    void SetWeight(float arg_weight) { weight = arg_weight; }
-    void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
+	Vector3 GetDirection()const;
+	PanelCutLocus* GetPanelCutLocus();
+
+	// 吹っ飛び
+	void IsBlow();
+	void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
 
 private:
-    // 待機
+	struct ConstLightCameraBuff
+	{
+		XMMATRIX viewProjection;
+		XMFLOAT3 cameraPos;
+	};
 
-    // 移動
-    void Move();
-    // タックル
-    void RushAttack();
-    // 踏ん張り
-    void Straddle();
+	//ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
 
-    // 各当たり判定チェック
-    void HitCheck();
-    // 図形との判定
-    bool HitCheckLoci();
-    void HitLoci(Line* arg_line);
-    // プレイヤーとの当たり判定
-    bool RangeCheckPlayer();
-    // フィールド上に居るか
-    bool IsOnField();
-    void StayInTheField();
+	int walkDustCounter = 0;
 
-    // デバッグ用操作
-    void DebugControl();
-    // 移動とモデルの向きを合わせる
-    void MatchDir();
+	//初期位置
+	const Vector3 StartPos = { 0,-5,-15 };
+	//移動処理
+	void Move();
 
-    // モデル
-    FBXModel* myModel = nullptr;
+	//傾きで滑る処理
+	void SlidingDown();
+	//移動方向の決定
+	void DecideDirection(Vector3& arg_direction);
 
-    // どんな行動をしているか
-    EnemyState state;
-    // 時間
-    Timer* actionTimer = nullptr;
-    Timer* walkingTimer = nullptr;
+	//書き終わった線を消す
+	void DeleteDrawingLine();
+	//ドローイングの中断
+	void SuspendDrawing();
+	//書いた図形を一気に消す ブレイクと名付けたい※関数名要相談
+	void DeleteLocuss();
+	//図形を描いた後に瞬間移動させる
+	void MoveEndDrawing(BaseLocus* arg_locus);
+	//既存の図形との当たり判定
+	void HitCheckLoci();
+	void HitLoci(Line* arg_line);
+	//フィールドから落ちない処理
+	void StayInTheField();
+	void StayOnRemainPanels();
+	//敵との当たり判定
+	void HitCheckEnemy();
+	void HitEnemy(StandardEnemy* arg_enemy);
+	//アイテムとの当たり判定
+	void HitCheckItems();
+	void HitItem(EnergyItem* arg_item);
+	//踏ん張りになる
+	void StartStand(bool arg_outField = true, Vector3 arg_velocity = {});
+	//踏ん張り中の処理
+	void WithStand();
+	//タックルの処理
+	void Tackle();
+	//タックルの中断
+	void SuspendTackle();
+	//
+	void DischargeGottenPanel(StandardEnemy* arg_enemy);
 
-    Vector3 prePos;
+	//
+	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);
 
-    //平面のままのposition
-    Vector3 virtualityPlanePosition;
-    Vector3 preVirtualityPlanePosition;
+	ObjectManager* pObjectManager = nullptr;
 
-    // 初期位置
-    Vector3 initPos;
-    // 初期体重
-    float initWeight;
+	Line* pNowDrawingLine = nullptr;
 
-    const float RADIUS = 1.0f;
-    // 体重
-    float weight;
-    // 移動が完了したか
-    bool isMoved = true;
-    // 速度調整用
-    float speed = 0.2f;
-    // 踏ん張り状態か
-    bool isStraddle = false;
-    // 操作するか
-    bool isControl = false;
-    // 吹っ飛び中
-    bool isBlow = false;
-    // 吹っ飛び時間
-    int blowTime = 60;
-    // 攻撃動作に入ったか
-    bool isAttacked = false;
-    // タックルの索敵半径
-    const float AttackRange = 6.0f;
-    // タックルの勢い
-    const float AttackPower = 5.0f;
+	PanelCutLocus* panelCutLocus;
+	int cutPower;
+	int gottenPanel;
 
-    //パネル所持数表示
-    PanelCountUI* panelCountUI = nullptr;
+	//書くフラグ
+	bool drawingFlag = false;
+	//線を伸ばすフラグ
+	bool isExtendLine = true;
+	//図形の線の番号
+	int currentLineNum = 0;
+	//線の向きとスティック入力の正確さ 0～1 speedにかける
+	float inputAccuracy = 0;
+	//ドローイングし終わった図形
+	std::vector<BaseLocus*> vecLocuss;
+	//線を一時的に保存しておくvector
+	std::vector<Line*> vecDrawingLines;
+	unsigned int feverQuota;
+	const unsigned int maxFeverQuota = 6;
+	Sprite* attackSprite;
 
-    int gottenPanel;
+	const float RADIUS = 1.0f;
+	//プレイヤーの重さ
+	float weight;
+	//吹っ飛び中
+	bool blowFlag = false;
+	// 吹っ飛び時間
+	int blowTime = 60;
+	//踏ん張り中
+	bool standingFlag = false;
+	//踏ん張り中の猶予
+	int standTime = 120;
+	//踏ん張りになる前のベクトル
+	Vector3 preStandVec;
+	//踏ん張り中の色を変化させるための値
+	float BGColor = 1;
+	//踏ん張り復帰中
+	bool returningFieldFlag = false;
+	//復帰後の着地位置
+	Vector3 returningStartPos = { 0,0,0 };
+	Vector3 returningEndPos = { 0,0,0 };
+	//復帰移動イージング用のカウント
+	int moveEasingCount = 0;
+	//タックル中
+	bool tackleFlag = false;
+	bool tackleHitFlag = false;
+	//タックルの移動位置
+	Vector3 tackleStartPos;
+	Vector3 tackleEndPos;
+	int tackleCount = 0;
+
+
+	//平面のままのposition
+	Vector3 virtualityPlanePosition;
+	Vector3 preVirtualityPlanePosition;
+
+	//接地フラグ
+	bool onGround = true;
+	//落下ベクトル
+	XMVECTOR fallV;
+	//現在向いてる方向
+	Vector3 direction;
+	//移動速度
+	float speed = 0.09f;
+	const float walkSpeed = 0.18f;
+	const float drawingSpeed = 0.36f;
+	const float blowSpeed = 0.5f;
+	//走りフラグ
+	bool run = false;
+	//回転速度
+	float rotateSpeed = 17.5f;
+	Vector3 prePos;
+	//カメラ回転中
+	bool rotCamera;
+	//カメラの回転度合い
+	float radY;
+	int cameraRotCount;
+	const int RotTime = 10;
+
+	FBXModel* myModel = nullptr;
+
+	//パネル所持数表示
+	PanelCountUI* panelCountUI = nullptr;
+
+	//--------------------------------------
+	// 時間
+	Timer* actionTimer = nullptr;
+	Timer* walkingTimer = nullptr;
+
+	// ランダムな方向の決定
+	Vector2 RandomDir();
+	// 近くにある物への方向
+	Vector2 NearObjDir();
+
+	// 切り抜きを実行する数
+	int cutPowerLimit = 3;
+	// プレイヤーの位置
+	Vector3 playerPos;
+	// 一番近いアイテムの位置
+	Vector3 itemPos;
+
+	// プレイヤーの位置を取る
+	void ConfirmPlayerPos();
+	// 一番近いアイテムの位置を確認する
+	void ConfirmItemPos();
+
+	// タックルの索敵半径
+	const float AttackRange = 10.0f;
+	// タックルの勢い
+	const float AttackPower = 5.0f;
+
+	// プレイヤーがタックルの射程に入ったか
+	bool RangeCheckPlayer();
+	// 移動方向
+	Vector2 moveDir;
+
+	//--------------------------------------
+
 };

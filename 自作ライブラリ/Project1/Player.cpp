@@ -156,6 +156,17 @@ void Player::Update()
 {
 	//locusSelecter->Update();
 
+//#ifdef _DEBUG
+//	//パーティクル確認用
+//	if (Input::TriggerKey(DIK_RETURN))
+//	{
+//		ParticleEmitter::CreateExplosion(position);
+//		ParticleEmitter::CreateAir(position);
+//		ParticleEmitter::CreateGetEffect(position);
+//
+//	}
+//#endif	
+
 	if (fallFlag)
 	{
 		Fall();
@@ -163,16 +174,7 @@ void Player::Update()
 	else
 	{
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
-		CuttingInfo* info = field->GetCuttingInfo(this);
-		//SelectLocus();		
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece)
-		{
-			drawingFlag = true;
-			//線の生成
-			//CreateLine();
-			Vector3 p = info->cuttingStartPos;
-			ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER));
-		}
+		CuttingInfo* info = field->GetCuttingInfo(this);		
 
 		//移動処理
 		Move();
@@ -199,7 +201,7 @@ void Player::Update()
 					//線の生成
 					//CreateLine();
 					Vector3 p = info->cuttingStartPos;
-					ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER));
+					ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER, this));
 				}
 
 			}

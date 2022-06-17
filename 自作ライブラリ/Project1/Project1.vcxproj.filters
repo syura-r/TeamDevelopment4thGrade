@@ -390,9 +390,6 @@
     <ClCompile Include="Field.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
-    <ClCompile Include="StandardEnemy.cpp">
-      <Filter>ソース ファイル\GameObject\proto_second</Filter>
-    </ClCompile>
     <ClCompile Include="EnergyItem.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
@@ -421,6 +418,9 @@
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
     <ClCompile Include="CircularSaw.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardEnemy.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
     <ClCompile Include="PanelCountUI.cpp">
@@ -746,9 +746,6 @@
     <ClInclude Include="Field.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
-    <ClInclude Include="StandardEnemy.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
-    </ClInclude>
     <ClInclude Include="EnergyItem.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
@@ -777,6 +774,9 @@
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
     <ClInclude Include="CircularSaw.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardEnemy.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
     <ClInclude Include="PanelCountUI.h">

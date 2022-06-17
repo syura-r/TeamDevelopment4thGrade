@@ -11,6 +11,7 @@ class StandardEnemy;
 class EnergyItem;
 class PanelItem;
 class UnableThroughBlock;
+class StandardEnemy;
 
 class ActorManager
 {
@@ -29,6 +30,7 @@ public:
 	std::vector<EnergyItem*>& GetEnergyItems();
 	std::vector<PanelItem*>& GetPanelItems();
 	std::vector<UnableThroughBlock*>& GetUnableThroughBlocks();
+	std::vector<StandardEnemy*>& GetSamplePlayers();
 
 private:
 	std::unordered_multimap<std::string, Object*> mapGameObject;

@@ -9,11 +9,13 @@
 #include "ActorManager.h"
 #include "Field.h"
 #include "Player.h"
+#include "StandardEnemy.h"
 #include "PanelCutLocus.h"
 
 #include "ParticleEmitter.h"
 
-CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType)
+CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType, Object* arg_object)
+	:parentObj(arg_object)
 {
 	Create(OBJLoader::GetModel("Saw"));
 	virtualityPlanePosition = arg_virtualityPlanePosition;
@@ -66,9 +68,10 @@ void CircularSaw::Update()
 			switch (objectType)
 			{
 			case GAMEOBJECTTYPE::PLAYER:
-				ActorManager::GetInstance()->GetPlayer()->EndDrawing();
+				static_cast<Player*>(parentObj)->EndDrawing();
 				break;
 			case GAMEOBJECTTYPE::ENEMY:
+				static_cast<StandardEnemy*>(parentObj)->EndDrawing();
 				break;
 			default:
 				break;
