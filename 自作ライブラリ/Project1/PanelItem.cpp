@@ -30,7 +30,7 @@ PanelItem::~PanelItem()
 void PanelItem::Initialize()
 {
 	name = typeid(*this).name();
-	virtualityPlanePosition.y += (RADIUS + 0.001f);
+	virtualityPlanePosition.y += (RADIUS + 1.0f);
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	position = virtualityPlanePosition;
 	scale = Vector3(RADIUS, RADIUS, RADIUS);
@@ -151,7 +151,9 @@ Vector3 PanelItem::GetVirtualityPlanePosition()
 
 bool PanelItem::IsEndBounce()
 {
+	//Vector3 A = {};
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	//A = field->GetPosition().y + RADIUS;
 	return virtualityPlanePosition.y <= field->GetPosition().y + RADIUS;
 }
 

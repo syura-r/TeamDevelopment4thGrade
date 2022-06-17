@@ -65,10 +65,10 @@ void CircularSaw::Update()
 		
 			switch (objectType)
 			{
-			case CircularSaw::PLAYER:
+			case GAMEOBJECTTYPE::PLAYER:
 				ActorManager::GetInstance()->GetPlayer()->EndDrawing();
 				break;
-			case CircularSaw::ENEMY:
+			case GAMEOBJECTTYPE::ENEMY:
 				break;
 			default:
 				break;
