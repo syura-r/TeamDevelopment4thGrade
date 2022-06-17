@@ -4,6 +4,7 @@
 #include"DirectXLib.h"
 #include"PipelineState.h"
 #include"Texture.h"
+
 ParticleManager * ParticleManager::GetInstance()
 {
 	static ParticleManager instance;
