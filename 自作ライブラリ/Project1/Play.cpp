@@ -190,7 +190,7 @@ void Play::Update()
 	if (Input::TriggerKey(DIK_E))//I—¹ˆ—
 	{
 		ShutDown();
-		Ending::SetScore(100);//ƒpƒlƒ‹Žæ“¾”‚ð“ü‚ê‚é
+		Ending::SetScore(actorManager->GetPlayer()->GetGottenPanel());
 	}
 #endif
 

@@ -37,7 +37,8 @@ void Ending::Initialize()
 
 	selectState = SelectState::Restart;
 	drawScore = 0.0f;
-	score = 50.0f;//計算入れる
+	score = 0.0f;
+	ScoreCalculation();
 	isCountEnd_score = false;
 
 	drawPanelNum = 0.0f;
@@ -79,11 +80,23 @@ void Ending::Update()
 
 void Ending::PreDraw()
 {
-	sp_score->DrawSprite("Result_UI_Gettriangle_text", pos_spScore);//画像変える
-	numSp_score->Draw(6, "GamePlay_UI_Number", pos_numScore);
+	const Vector2 textTexSize = { 640,225 };
+	const Vector2 numTexSize = { 47,86 };
 
-	sp_panel->DrawSprite("Result_UI_Gettriangle_text", pos_spPanel);
-	numSp_panel->Draw(6, "GamePlay_UI_Number", pos_numPanel);
+	const int digit = 6;
+
+	//score
+	const Vector2 pos_spScore = { 700, 300 };
+	const Vector2 pos_numScore = { pos_spScore.x + (textTexSize.x / 2) + (numTexSize.x / 2 * (digit * 2 - 1)), pos_spScore.y };
+	sp_score->DrawSprite("Result_UI_Totalscore_Text", pos_spScore);
+	numSp_score->Draw(digit, "GamePlay_UI_Number", pos_numScore);
+
+	//panel
+	const Vector2 pos_spPanel = { pos_spScore.x, 500 };
+	const Vector2 pos_numPanel = { pos_numScore.x, pos_spPanel.y };
+	const Vector2 scale_panel = { 0.7f, 0.7f };
+	sp_panel->DrawSprite("Result_UI_Gettriangle_text", pos_spPanel, 0.0f, scale_panel);
+	numSp_panel->Draw(digit, "GamePlay_UI_Number", pos_numPanel, scale_panel);
 
 	sp_restart->DrawSprite("restart", pos_restart);
 	sp_title->DrawSprite("toTitle", pos_title);
@@ -149,4 +162,15 @@ void Ending::SelectMenu()
 		}
 		ShutDown();
 	}
+}
+
+void Ending::ScoreCalculation()
+{
+	int result = 0;
+
+	//パネル取得数加点
+	const int panelAdd = 100;
+	result += panelNum * panelAdd;
+
+	score = result;
 }

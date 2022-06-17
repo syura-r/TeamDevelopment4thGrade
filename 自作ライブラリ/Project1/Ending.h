@@ -20,6 +20,8 @@ public:
 
 private:
 	void SelectMenu();
+	//スコア計算
+	void ScoreCalculation();
 
 	enum SelectState
 	{
@@ -33,18 +35,15 @@ private:
 
 	//累計スコア
 	Sprite* sp_score = nullptr;
-	const Vector2 pos_spScore = { 700, 300 };
+
 	NumberSprite* numSp_score = nullptr;
-	const Vector2 pos_numScore = { pos_spScore.x + (640 / 2) + (47 / 2 * 11), pos_spScore.y };
 	float score = 0.0f;
 	float drawScore = 0.0f;
 	bool isCountEnd_score = false;
 
 	//最終取得パネル数
 	Sprite* sp_panel = nullptr;
-	const Vector2 pos_spPanel = { pos_spScore.x, 600 };
 	NumberSprite* numSp_panel = nullptr;
-	const Vector2 pos_numPanel = { pos_numScore.x, pos_spPanel.y };
 	float drawPanelNum = 0.0f;
 	bool isCountEnd_panel = false;
 
