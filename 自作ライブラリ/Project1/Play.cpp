@@ -185,13 +185,18 @@ void Play::Update()
 		ParticleEmitter::CutEffect(Vector3(0, 0, 0), Vector3(1,0,0));
 	}
 
+	timeLimit->Update();
+	if (timeLimit->GetLimit())
+	{
+		Field* field = actorManager->GetFields()[0];
+		//Field‚ÉŽw—ßo‚·
+	}
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
 	ItemEmitter::GetInstance()->Update();
 	objectManager->Update();
 	collisionManager->CheckAllCollisions();
-	timeLimit->Update();
 }
 
 void Play::PreDraw()

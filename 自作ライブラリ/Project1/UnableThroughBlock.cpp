@@ -33,7 +33,7 @@ UnableThroughBlock::~UnableThroughBlock()
 void UnableThroughBlock::Initialize()
 {
 	scale = Vector3(FieldPiece::GetSize(), 30, FieldPiece::GetSize());
-	color = { 0.3f, 0.3f, 0.3f, 0.3f };
+	color = { 0.3f, 0.3f, 0.3f, 0.1f };
 	if (dir == PieceDirection::Lower)
 	{
 		rotation = Vector3(0, 0, 0);

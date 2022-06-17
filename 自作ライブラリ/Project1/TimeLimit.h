@@ -12,7 +12,7 @@ public:
 	void Update();
 	void Draw();
 
-	bool GetLimit() { timer->IsTime(); }
+	bool GetLimit() { return timer->IsTime(); }
 
 private:
 	int limit;

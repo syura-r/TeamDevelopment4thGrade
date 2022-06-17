@@ -3,8 +3,10 @@
 #include "BoxCollider.h"
 #include "Quaternion.h"
 #include "LocusDef.h"
+#include "Timer.h"
 
 class FieldPiece;
+class UnableThroughBlock;
 
 struct CuttingInfo
 {
@@ -38,7 +40,7 @@ public:
 	void ResetInfluences();
 	int CutPanel(std::vector<Vector2>& arg_vecPos);
 	void ReviveGottenPanel(FieldPiece* arg_piece);
-
+	void StartFallingBlock();
 
 	CuttingInfo* GetCuttingInfo(Object* arg_pObject);
 	FieldPiece* IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius);
@@ -70,6 +72,19 @@ private:
 	//Playerがアクションするパネル	
 	std::unordered_map<Object*, CuttingInfo> infos;
 
+	//タイムアップ時用
+	bool isFallingBlock;
+	int fallingLayerNum;
+	int innerRemainLayerNum;
+	int topLayerPieceNum;
+	int onesidePieceNum;	
+	int fallingBlockCount;
+	int fallingBlockCountMax;
+	Timer* fallIntervalTimer;
+	const int INTERVAL_CREATE = 0.1f * 60;
+	const int INTERVAL_WAIT = 5 * 60;
+	std::vector<UnableThroughBlock*> blocks;
+
 	//端点の用意
 	void SetEdges();
 	//FieldPiece生成
@@ -84,4 +99,6 @@ private:
 	void DecideRidingPiece(Object* arg_obj, const Vector3& arg_pos);
 	void DecideCuttingStartPos(Object* arg_obj, const Vector3& arg_pos, const Vector3& arg_dir);
 	void DecideCuttingAngle(Object* arg_obj);
+	//
+	void FallingBlock();
 };
