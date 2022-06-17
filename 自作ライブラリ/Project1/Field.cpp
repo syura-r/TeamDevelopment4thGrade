@@ -9,6 +9,7 @@
 #include "FieldPiece.h"
 #include "Input.h"
 #include "Easing.h"
+#include "UnableThroughBlock.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
@@ -68,6 +69,12 @@ void Field::Update()
 	DecidePlayerRidingPiece();
 	DecidePlayerCuttingStartPos();
 	DecidePlayerCuttingAngle();
+
+	if (Input::TriggerKey(DIK_L))
+	{
+		UnableThroughBlock* block = new UnableThroughBlock(pieces[0][0]->GetVirtualityPlanePosition(), 50, pieces[0][0]);
+		ObjectManager::GetInstance()->Add(block);
+	}
 
 	Object::Update();
 	collider->Update();
