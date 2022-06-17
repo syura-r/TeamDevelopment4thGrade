@@ -9,6 +9,7 @@
 #include "FieldPiece.h"
 #include "Input.h"
 #include "Easing.h"
+#include "UnableThroughBlock.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
@@ -18,9 +19,7 @@ Field::Field()
 	 tiltDirection(Vector2()),
 	 angleTilt(Vector3()),
 	 localYvec(Vector3()),
-	 playerRidingPiece(nullptr),
-	 playerCuttingStartPos(Vector3()),
-	 playerCuttingStartPosNum(0)
+	 info(CuttingInfo())
 {
 	if (edges.empty())
 	{
@@ -58,7 +57,7 @@ void Field::Initialize()
 {
 	ResetInfluences();
 	CalcTilt();
-	playerRidingPiece = nullptr;
+	info.ridingPiece = nullptr;
 }
 
 void Field::Update()
@@ -68,6 +67,12 @@ void Field::Update()
 	DecidePlayerRidingPiece();
 	DecidePlayerCuttingStartPos();
 	DecidePlayerCuttingAngle();
+
+	if (Input::TriggerKey(DIK_L))
+	{
+		UnableThroughBlock* block = new UnableThroughBlock(pieces[0][0]->GetVirtualityPlanePosition(), 50, pieces[0][0]);
+		ObjectManager::GetInstance()->Add(block);
+	}
 
 	Object::Update();
 	collider->Update();
@@ -169,7 +174,7 @@ void Field::DecidePlayerRidingPiece()
 		{
 			if (piecePoints[j].x == playerPos.x && piecePoints[j].y == playerPos.y)
 			{
-				playerRidingPiece = pieces[columnNum][i];
+				info.ridingPiece = pieces[columnNum][i];
 				return;
 			}
 		}
@@ -180,17 +185,17 @@ void Field::DecidePlayerRidingPiece()
 
 		if (cross01 > 0 && cross12 > 0 && cross20 > 0)
 		{
-			playerRidingPiece = pieces[columnNum][i];
+			info.ridingPiece = pieces[columnNum][i];
 			return;
 		}
 		else if (cross01 < 0 && cross12 < 0 && cross20 < 0)
 		{
-			playerRidingPiece = pieces[columnNum][i];
+			info.ridingPiece = pieces[columnNum][i];
 			return;
 		}
 	}	
 
-	playerRidingPiece = nullptr;
+	info.ridingPiece = nullptr;
 }
 
 void Field::DecidePlayerCuttingStartPos()
@@ -198,15 +203,15 @@ void Field::DecidePlayerCuttingStartPos()
 	Player* player = ActorManager::GetInstance()->GetPlayer();
 	Vector3 playerPos = player->GetVirtualityPlanePosition();
 
-	if (!playerRidingPiece)
+	if (!info.ridingPiece)
 	{
-		playerCuttingStartPos = playerPos;
-		playerCuttingStartPosNum = 0;
+		info.cuttingStartPos = playerPos;
+		info.cuttingStartPosNum = 0;
 		return;
 	}
 
 	float rateScore[3] = {0};
-	std::vector<Vector2> piecePoints = playerRidingPiece->GetPoints();
+	std::vector<Vector2> piecePoints = info.ridingPiece->GetPoints();
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -233,49 +238,49 @@ void Field::DecidePlayerCuttingStartPos()
 			num = i;
 		}
 	}
-	playerCuttingStartPos = LocusUtility::Dim2XZToDim3(piecePoints[num], position.y);
-	playerCuttingStartPosNum = num;
+	info.cuttingStartPos = LocusUtility::Dim2XZToDim3(piecePoints[num], position.y);
+	info.cuttingStartPosNum = num;
 }
 
 void Field::DecidePlayerCuttingAngle()
 {
-	if (!playerRidingPiece)
+	if (!info.ridingPiece)
 	{
-		playerCuttingAngle = 0;
+		info.cuttingAngle = 0;
 		return;
 	}
 	
 	//â∫å¸Ç´
-	if (playerRidingPiece->GetPieceDirection() == PieceDirection::Lower)
+	if (info.ridingPiece->GetPieceDirection() == PieceDirection::Lower)
 	{
-		if (playerCuttingStartPosNum == 0)
+		if (info.cuttingStartPosNum == 0)
 		{
-			playerCuttingAngle = 120;
+			info.cuttingAngle = 120;
 		}
-		else if (playerCuttingStartPosNum == 1)
+		else if (info.cuttingStartPosNum == 1)
 		{
-			playerCuttingAngle = 240;
+			info.cuttingAngle = 240;
 		}
 		else
 		{
-			playerCuttingAngle = 0;
+			info.cuttingAngle = 0;
 		}
 	}
 	//è„å¸Ç´
 	else
 	{
 
-		if (playerCuttingStartPosNum == 0)
+		if (info.cuttingStartPosNum == 0)
 		{
-			playerCuttingAngle = 300;
+			info.cuttingAngle = 300;
 		}
-		else if (playerCuttingStartPosNum == 1)
+		else if (info.cuttingStartPosNum == 1)
 		{
-			playerCuttingAngle = 60;
+			info.cuttingAngle = 60;
 		}
 		else
 		{
-			playerCuttingAngle = 180;
+			info.cuttingAngle = 180;
 		}
 	}
 }
@@ -489,17 +494,17 @@ void Field::ReviveGottenPanel(FieldPiece* arg_piece)
 
 FieldPiece* Field::GetPlayerRidingPiece()
 {
-	return playerRidingPiece;
+	return info.ridingPiece;
 }
 
 Vector3 Field::GetPlayerCuttingStartPos()
 {
-	return playerCuttingStartPos;
+	return info.cuttingStartPos;
 }
 
 float Field::GetPlayerCuttingAngle()
 {
-	return playerCuttingAngle;
+	return info.cuttingAngle;
 }
 
 FieldPiece* Field::IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius)
