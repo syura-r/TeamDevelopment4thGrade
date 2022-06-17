@@ -35,11 +35,12 @@ void Title::Update()
 
 void Title::PreDraw()
 {
-	const Vector2 windowCenterPosition = { 960,540 };
-	const float startcharPlusPositionY = 250;
+	const Vector2 windowCenterPosition = { 960,500 };
+	const float startcharPlusPositionY = 280;
 
-	titleLogo->DrawSprite("titlelogo", windowCenterPosition);
-	titleStart->DrawSprite("titlestart", { windowCenterPosition.x, windowCenterPosition.y + startcharPlusPositionY });
+	const float scale = 2.0f;
+	titleLogo->DrawSprite("titlelogo", windowCenterPosition, 0.0f, { scale, scale });
+	titleStart->DrawSprite("titlestart", { windowCenterPosition.x, windowCenterPosition.y + startcharPlusPositionY }, 0.0f, {1.5f, 1.5f});
 }
 
 void Title::PostDraw()
