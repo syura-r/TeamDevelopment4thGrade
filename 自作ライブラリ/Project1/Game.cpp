@@ -96,6 +96,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Colon", "GamePlay_UI_Colon.png");
 		Texture::LoadTexture("GamePlay_UI_Gettriangle_Player", "GamePlay_UI_Gettriangle_Player.png");
 		Texture::LoadTexture("GamePlay_UI_Gettriangle_Enemy", "GamePlay_UI_Gettriangle_Enemy.png");
+		Texture::LoadTexture("Result_UI_Gettriangle_text", "Result_UI_Gettriangle_text.png");
+		Texture::LoadTexture("Result_UI_Totalscore_Text", "Result_UI_Totalscore_Text.png");
 	
 		break; 
 	case 2:
@@ -112,6 +114,8 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("Hexagon", "Hexagon.obj", false);
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
+		OBJLoader::LoadModelFile("stadium", "stadium.obj", false);
+
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
 		OBJLoader::LoadModelFile("getPanelBoard_Player", "getPanelBoard_Player.obj", false);
 		OBJLoader::LoadModelFile("getPanelBoard_Enemy", "getPanelBoard_Enemy.obj", false);
@@ -218,7 +222,7 @@ void Game::LoadFinish()
 	sceneManeger->Initialize();
 	sceneManeger->Add(Scene::SCENE::Title, new Title());
 	sceneManeger->Add(Scene::SCENE::Play, new Play());
-	//sceneManeger->Add(Scene::SCENE::Ending, new Ending());
+	sceneManeger->Add(Scene::SCENE::Ending, new Ending());
 
 	sceneManeger->Change(Scene::SCENE::Title);
 
@@ -300,9 +304,6 @@ void Game::Run()
 
 		else if (!nowLoading)
 		{
-			Object::SetBbIndex();
-			TextureResource::SetBbIndex();
-			Sprite::SetBbIndex();
 			Input::Update();
 			Alpha::Update();
 			if (Input::TriggerKey(DIK_1))

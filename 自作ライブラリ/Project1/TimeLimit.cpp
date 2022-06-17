@@ -47,14 +47,14 @@ void TimeLimit::Draw()
 	//余白
 	const Vector2 spaceSize = { 50.0f, 30.0f };
 
-	//全体の左上座標
+	//分の中心座標
 	Vector2 position = { windowSize.x - (numberTexSize.x * 3) - spaceSize.x, (numberTexSize.y / 2) + spaceSize.y };
 
 	minute_sprite->Draw(1, "GamePlay_UI_Number", position);
 
-	position.x += (numberTexSize.x / 4) * 3;
+	position.x += (numberTexSize.x / 4) * 3;//コロンの中心座標に
 	colon_sprite->DrawSprite("GamePlay_UI_Colon", position);
 
-	position.x += (numberTexSize.x / 4) * 5;
+	position.x += (numberTexSize.x / 4) * 5;//秒の中心座標に
 	seconds_sprite->Draw(2, "GamePlay_UI_Number", position);
 }

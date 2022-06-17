@@ -8,6 +8,8 @@
 #include"MeshCollider.h"
 #include "SphereCollider.h"
 using namespace DirectX;
+bool SettingParam::viewCollision = true;
+
 CollisionManager * CollisionManager::GetInstance()
 {
 	static CollisionManager instance;
@@ -589,8 +591,6 @@ void CollisionManager::DrawCollider()
 	
 	if (!SettingParam::GetViewCollision())
 		return;
-	int bbIndex = DirectXLib::GetInstance()->GetBbIndex();
-
 	auto cmdlist = DirectXLib::GetInstance()->GetCommandList();
 	//定数バッファの送信
 	SendConstBuff();
@@ -604,10 +604,10 @@ void CollisionManager::DrawCollider()
 	//cmdlist->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	// 頂点バッファの設定
-	cmdlist->IASetVertexBuffers(0, 1, &boxVbView[bbIndex]);
+	cmdlist->IASetVertexBuffers(0, 1, &boxVbView);
 
 	// 定数バッファビューをセット
-	cmdlist->SetGraphicsRootConstantBufferView(0, constBuff[bbIndex]->GetGPUVirtualAddress());
+	cmdlist->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 
 	// 描画コマンド
 	cmdlist->DrawInstanced(drawBoxNum, 1, 0, 0);
@@ -621,10 +621,10 @@ void CollisionManager::DrawCollider()
 	//cmdlist->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	// 頂点バッファの設定
-	cmdlist->IASetVertexBuffers(0, 1, &sphereVbView[bbIndex]);
+	cmdlist->IASetVertexBuffers(0, 1, &sphereVbView);
 
 	// 定数バッファビューをセット
-	cmdlist->SetGraphicsRootConstantBufferView(0, constBuff[bbIndex]->GetGPUVirtualAddress());
+	cmdlist->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 
 	// 描画コマンド
 	cmdlist->DrawInstanced(drawSphere, 1, 0, 0);
@@ -646,16 +646,16 @@ void CollisionManager::CreateVBV()
 			&CD3DX12_RESOURCE_DESC::Buffer(sizeof(BoxVBData) * vertexCount),
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(&boxVertBuff[i]));
+			IID_PPV_ARGS(&boxVertBuff));
 		if (FAILED(result)) {
 			assert(0);
 			return;
 		}
 
 		// 頂点バッファビューの作成
-		boxVbView[i].BufferLocation = boxVertBuff[i]->GetGPUVirtualAddress();
-		boxVbView[i].SizeInBytes = sizeof(BoxVBData) * vertexCount;
-		boxVbView[i].StrideInBytes = sizeof(BoxVBData);
+		boxVbView.BufferLocation = boxVertBuff->GetGPUVirtualAddress();
+		boxVbView.SizeInBytes = sizeof(BoxVBData) * vertexCount;
+		boxVbView.StrideInBytes = sizeof(BoxVBData);
 
 		//-----------------------------------------------------------------------------
 		//---------------------------------球体----------------------------------------
@@ -666,16 +666,16 @@ void CollisionManager::CreateVBV()
 			&CD3DX12_RESOURCE_DESC::Buffer(sizeof(SphereVBData) * vertexCount),
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(&sphereVertBuff[i]));
+			IID_PPV_ARGS(&sphereVertBuff));
 		if (FAILED(result)) {
 			assert(0);
 			return;
 		}
 
 		// 頂点バッファビューの作成
-		sphereVbView[i].BufferLocation = sphereVertBuff[i]->GetGPUVirtualAddress();
-		sphereVbView[i].SizeInBytes = sizeof(SphereVBData) * vertexCount;
-		sphereVbView[i].StrideInBytes = sizeof(SphereVBData);
+		sphereVbView.BufferLocation = sphereVertBuff->GetGPUVirtualAddress();
+		sphereVbView.SizeInBytes = sizeof(SphereVBData) * vertexCount;
+		sphereVbView.StrideInBytes = sizeof(SphereVBData);
 
 		//------------------------------------------------------------------------------
 	}
@@ -691,7 +691,7 @@ void CollisionManager::CreateConstBuff()
 			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBuffData) + 0xff) & ~0xff),
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(&constBuff[i]));
+			IID_PPV_ARGS(&constBuff));
 		if (FAILED(result)) {
 			assert(0);
 		}
@@ -700,13 +700,12 @@ void CollisionManager::CreateConstBuff()
 
 void CollisionManager::SendBoxBuffers(UINT& num)
 {
-	int bbIndex = DirectXLib::GetInstance()->GetBbIndex();
 	// 頂点バッファへデータ転送
 	int vertCount = 0;
 	SphereVBData* vertMap2 = nullptr;
 	//auto result = sphereVertBuff->Map(0, nullptr, (void**)&vertMap2);
 	BoxVBData* vertMap = nullptr;
-	auto result = boxVertBuff[bbIndex]->Map(0, nullptr, (void**)&vertMap);
+	auto result = boxVertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result)) {
 		for (auto& it : colliders)
 		{
@@ -744,7 +743,7 @@ void CollisionManager::SendBoxBuffers(UINT& num)
 				}
 			}
 		}
-		boxVertBuff[bbIndex]->Unmap(0, nullptr);
+		boxVertBuff->Unmap(0, nullptr);
 		
 	}
 	num = vertCount;
@@ -752,11 +751,10 @@ void CollisionManager::SendBoxBuffers(UINT& num)
 
 void CollisionManager::SendSphereBuffers(UINT& num)
 {
-	int bbIndex = DirectXLib::GetInstance()->GetBbIndex();
 	// 頂点バッファへデータ転送
 	int vertCount = 0;
 	SphereVBData* vertMap = nullptr;
-	auto result = sphereVertBuff[bbIndex]->Map(0, nullptr, (void**)&vertMap);
+	auto result = sphereVertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result)) {
 		for (auto& it : colliders)
 		{
@@ -774,21 +772,19 @@ void CollisionManager::SendSphereBuffers(UINT& num)
 				}
 			}
 		}
-		sphereVertBuff[bbIndex]->Unmap(0, nullptr);
+		sphereVertBuff->Unmap(0, nullptr);
 	}
 	num = vertCount;
 }
 
 void CollisionManager::SendConstBuff()
 {
-	int bbIndex = DirectXLib::GetInstance()->GetBbIndex();
-
 	// 定数バッファへデータ転送
 	ConstBuffData* constMap = nullptr;
-	auto result = constBuff[bbIndex]->Map(0, nullptr, (void**)&constMap);
+	auto result = constBuff->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result))
 	{
 		constMap->mat = Object3D::GetCamera()->GetMatViewProjection();
-		constBuff[bbIndex]->Unmap(0, nullptr);
+		constBuff->Unmap(0, nullptr);
 	}
 }

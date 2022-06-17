@@ -5,8 +5,8 @@
 Camera* Object3D::camera = nullptr;
 LightCamera* Object3D::lightCamera = nullptr;
 bool Object3D::drawShadow = false;
+bool Object3D::screenDraw = false;
 LightGroup* Object3D::lightGroup = nullptr;
-int Object3D::bbIndex = 0;
 XMMATRIX Object3D::lightViewProjection = {};
 Object3D * Object3D::Create(Model* model,Vector3& pos, Vector3& scale, Vector3& rot, XMFLOAT4& color)
 {
@@ -46,8 +46,6 @@ Object3D::Object3D(Vector3 & pos, Vector3 & scale, Vector3 & rot, XMFLOAT4 & col
 bool Object3D::Initialize()
 {
 	HRESULT result;
-	for (int i = 0; i < 3; i++)
-	{
 		// 定数バッファの生成
 		result = DirectXLib::GetInstance()->GetDevice()->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
@@ -55,8 +53,19 @@ bool Object3D::Initialize()
 			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff),
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(&constBuff[i]));
+			IID_PPV_ARGS(&constBuff));
 		assert(SUCCEEDED(result));
+
+		result = DirectXLib::GetInstance()->GetDevice()->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&constBuff2));
+		assert(SUCCEEDED(result));
+
+
 
 		// 定数バッファの生成
 		result = DirectXLib::GetInstance()->GetDevice()->CreateCommittedResource(
@@ -65,7 +74,7 @@ bool Object3D::Initialize()
 			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(LightCameraCBData) + 0xff) & ~0xff),
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(&lCameraConstBuff[i]));
+			IID_PPV_ARGS(&lCameraConstBuff));
 		assert(SUCCEEDED(result));
 
 		result = DirectXLib::GetInstance()->GetDevice()->CreateCommittedResource(
@@ -74,9 +83,8 @@ bool Object3D::Initialize()
 			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstLightCameraBuff) + 0xff) & ~0xff),
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(&constCameraBuff[i]));
+			IID_PPV_ARGS(&constCameraBuff));
 		assert(SUCCEEDED(result));
-	}
 	return true;
 }
 
@@ -188,35 +196,52 @@ void Object3D::Draw(const bool fbx, const bool shade, BLENDTYPE type, const bool
 	{
 		// 定数バッファへデータ転送
 		LightCameraCBData* constMap = nullptr;
-		result = lCameraConstBuff[bbIndex]->Map(0, nullptr, (void**)&constMap);
+		result = lCameraConstBuff->Map(0, nullptr, (void**)&constMap);
 		assert(SUCCEEDED(result));
 		constMap->viewprojection = lightViewProjection;
 		constMap->world = matWorld;
-		lCameraConstBuff[bbIndex]->Unmap(0, nullptr);
+		lCameraConstBuff->Unmap(0, nullptr);
 
 	}
 	else
 	{
-		// 定数バッファへデータ転送
-		ConstBufferData* constMap = nullptr;
-		result = constBuff[bbIndex]->Map(0, nullptr, (void**)&constMap);
-		assert(SUCCEEDED(result));
-		//constMap->mat = matWorld * matViewProjection;	// 行列の合成
-		constMap->viewprojection = matViewProjection;
-		constMap->lightViewProjection = lightCamera->GetMatViewProjection();
-		constMap->cameraPos = cameraPos;
-		constMap->world = matWorld;
-		constMap->color = color;
-		constBuff[bbIndex]->Unmap(0, nullptr);
+		if (!screenDraw)
+		{
+			// 定数バッファへデータ転送
+			ConstBufferData* constMap = nullptr;
+			result = constBuff->Map(0, nullptr, (void**)&constMap);
+			assert(SUCCEEDED(result));
+			//constMap->mat = matWorld * matViewProjection;	// 行列の合成
+			constMap->viewprojection = matViewProjection;
+			constMap->lightViewProjection = lightCamera->GetMatViewProjection();
+			constMap->cameraPos = cameraPos;
+			constMap->world = matWorld;
+			constMap->color = color;
+			constBuff->Unmap(0, nullptr);
+		}
 
-		
+		else
+		{
+			// 定数バッファへデータ転送
+			ConstBufferData* constMap3 = nullptr;
+			result = constBuff2->Map(0, nullptr, (void**)&constMap3);
+			assert(SUCCEEDED(result));
+			//constMap->mat = matWorld * matViewProjection;	// 行列の合成
+			constMap3->viewprojection = matViewProjection;
+			constMap3->lightViewProjection = lightCamera->GetMatViewProjection();
+			constMap3->cameraPos = cameraPos;
+			constMap3->world = matWorld;
+			constMap3->color = color;
+			constBuff2->Unmap(0, nullptr);
+		}
+
 		ConstLightCameraBuff* constMap2 = nullptr;
-		auto result = constCameraBuff[bbIndex]->Map(0, nullptr, (void**)&constMap2);
+		auto result = constCameraBuff->Map(0, nullptr, (void**)&constMap2);
 		assert(SUCCEEDED(result));
 		constMap2->cameraPos = lightCamera->GetEye();
 		constMap2->viewProjection = lightViewProjection;
 
-		constCameraBuff[bbIndex]->Unmap(0, nullptr);
+		constCameraBuff->Unmap(0, nullptr);
 
 	}
 	if (!fbx && !customPipeline && !drawShadow && shade)
@@ -227,9 +252,14 @@ void Object3D::Draw(const bool fbx, const bool shade, BLENDTYPE type, const bool
 
 	if (drawShadow)
 		// 定数バッファビューをセット
-		cmdList->SetGraphicsRootConstantBufferView(0, lCameraConstBuff[bbIndex]->GetGPUVirtualAddress());
+		cmdList->SetGraphicsRootConstantBufferView(0, lCameraConstBuff->GetGPUVirtualAddress());
 	else
-		cmdList->SetGraphicsRootConstantBufferView(0, constBuff[bbIndex]->GetGPUVirtualAddress());
+	{
+		if (screenDraw)
+			cmdList->SetGraphicsRootConstantBufferView(0, constBuff2->GetGPUVirtualAddress());
+		else
+			cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
+	}
 	if (!drawShadow && shade)
 		//ライトの描画
 		lightGroup->Draw(lightRootParameterIndex);

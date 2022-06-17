@@ -19,7 +19,7 @@ public:
 private:
 	//アイコン
 	Sprite* icon_sprite;
-	//取得数表示
+	//所持数表示
 	NumberSprite* getPanel_sprite;
 	float panelNum = 0;
 };

@@ -3,15 +3,20 @@
 #include "DirectXLib.h"
 #include "Texture.h"
 std::vector<TextureResource*> TextureResource::nowRenderTargets = {};
-int TextureResource::bbindex = 0;
 TextureResource::TextureResource(const std::string& name, const bool noDepth)
-	: resourceWidth(1920), resourceHeight(1080), format(DXGI_FORMAT_R8G8B8A8_UNORM), clearColor{ 0,0,0,0 }, threeResource(true), noDepth(noDepth)
+	: resourceWidth(1920), resourceHeight(1080), format(DXGI_FORMAT_R8G8B8A8_UNORM), clearColor{ 0,0,0,0 }, noDepth(noDepth)
 {
 	Initialize(name);
 }
 
-TextureResource::TextureResource(const std::string& name, const Vector2& size, const DXGI_FORMAT resourceFormat, const DirectX::XMFLOAT4& arg_clearColor, const bool arg_threeResource, const bool noDepth)
-	: resourceWidth(size.x), resourceHeight(size.y), format(resourceFormat), clearColor{ arg_clearColor.x,arg_clearColor.y, arg_clearColor.z, arg_clearColor.w }, threeResource(arg_threeResource), noDepth(noDepth)
+TextureResource::TextureResource(const std::string& name, const bool noDepth, const bool changeTex)
+	: resourceWidth(1920), resourceHeight(1080), format(DXGI_FORMAT_R8G8B8A8_UNORM), clearColor{ 0,0,0,1 }, noDepth(noDepth),changeTex(changeTex)
+{
+	Initialize(name);
+}
+
+TextureResource::TextureResource(const std::string& name, const Vector2& size, const DXGI_FORMAT resourceFormat, const DirectX::XMFLOAT4& arg_clearColor, const bool noDepth)
+	: resourceWidth(size.x), resourceHeight(size.y), format(resourceFormat), clearColor{ arg_clearColor.x,arg_clearColor.y, arg_clearColor.z, arg_clearColor.w }, noDepth(noDepth)
 {
 	Initialize(name);
 }
@@ -35,38 +40,17 @@ void TextureResource::Initialize(const std::string& name)
 
 	HRESULT result;
 
-	if (threeResource)
-	{
-		//リソース作成
-		for (int i = 0; i < 3; i++)
-		{
-			result = dev->CreateCommittedResource(
-				&heapProp,
-				D3D12_HEAP_FLAG_NONE,
-				&resDesc,
-				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-				&clearValue,
-				IID_PPV_ARGS(resource[i].ReleaseAndGetAddressOf()));
-			if (result != S_OK)
-				assert(0);
-		}
-		//RTV用ヒープを作る
-		heapDesc.NumDescriptors = 3;
-	}
-	else
-	{
-		result = dev->CreateCommittedResource(
-			&heapProp,
-			D3D12_HEAP_FLAG_NONE,
-			&resDesc,
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			&clearValue,
-			IID_PPV_ARGS(resource[0].ReleaseAndGetAddressOf()));
-		if (result != S_OK)
-			assert(0);
-		//RTV用ヒープを作る
-		heapDesc.NumDescriptors = 1;
-	}
+	result = dev->CreateCommittedResource(
+		&heapProp,
+		D3D12_HEAP_FLAG_NONE,
+		&resDesc,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		&clearValue,
+		IID_PPV_ARGS(resource.ReleaseAndGetAddressOf()));
+	if (result != S_OK)
+		assert(0);
+	//RTV用ヒープを作る
+	heapDesc.NumDescriptors = 1;
 	result = dev->CreateDescriptorHeap(
 		&heapDesc,
 		IID_PPV_ARGS(peraRTVHeap.ReleaseAndGetAddressOf()));
@@ -77,33 +61,15 @@ void TextureResource::Initialize(const std::string& name)
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 	rtvDesc.Format = format;
 
-	if (threeResource)
-	{
-		//レンダーターゲットビューを作る
-		for (int i = 0; i < 3; i++)
-		{
-			dev->CreateRenderTargetView(
-				resource[i].Get(),
-				&rtvDesc,
-				CD3DX12_CPU_DESCRIPTOR_HANDLE(
-					peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), i,
-					dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)));
-		}
-		//SRV用ヒープを作る
-		heapDesc.NumDescriptors = 3;
-	}
-	else
-	{
-		dev->CreateRenderTargetView(
-			resource[0].Get(),
-			&rtvDesc,
-			CD3DX12_CPU_DESCRIPTOR_HANDLE(
-				peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), 0,
-				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)));
+	dev->CreateRenderTargetView(
+		resource.Get(),
+		&rtvDesc,
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), 0,
+			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)));
 
-		//SRV用ヒープを作る
-		heapDesc.NumDescriptors = 1;
-	}
+	//SRV用ヒープを作る
+	heapDesc.NumDescriptors = 1;
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
@@ -121,30 +87,13 @@ void TextureResource::Initialize(const std::string& name)
 	srvDesc.Texture2D.MipLevels = 1;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-	if (threeResource)
-	{
-		//シェーダーリソースビューを作る
-		for (int i = 0; i < 3; i++)
-		{
-			dev->CreateShaderResourceView(
-				resource[i].Get(),
-				&srvDesc,
-				CD3DX12_CPU_DESCRIPTOR_HANDLE(
-					peraSRVHeap->GetCPUDescriptorHandleForHeapStart(), i,
-					dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV))
-			);
-		}
-	}
-	else
-	{
-		dev->CreateShaderResourceView(
-			resource[0].Get(),
-			&srvDesc,
-			CD3DX12_CPU_DESCRIPTOR_HANDLE(
-				peraSRVHeap->GetCPUDescriptorHandleForHeapStart(), 0,
-				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV))
-		);
-	}
+	dev->CreateShaderResourceView(
+		resource.Get(),
+		&srvDesc,
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			peraSRVHeap->GetCPUDescriptorHandleForHeapStart(), 0,
+			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV))
+	);
 	//深度値用ヒーププロパティ
 	//D3D12_HEAP_PROPERTIES depthHeapProp{};
 	//depthHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
@@ -186,38 +135,29 @@ void TextureResource::Initialize(const std::string& name)
 			&dsvDesc,
 			dsvHeap->GetCPUDescriptorHandleForHeapStart());
 	}
-	if (threeResource)
+	if (changeTex)
 	{
-		for (int i = 0; i < 3; i++)
-		{
-			Texture::AddTexture(name + std::to_string(i), resource[i].Get());
-		}
+		Texture::ChangeTexture(name, resource.Get());
+		return;
 	}
-	else
-	{
-		Texture::AddTexture(name, resource[0].Get());
-	}
-
+		Texture::AddTexture(name, resource.Get());
 }
 
 void TextureResource::PreDraw(const UINT arg_numRTD, const float topLeftX, const float topLeftY, const float width, const float height,
 	const LONG& left, const LONG& top, const LONG& right, const LONG& bottom)
 {
 	numRTD = arg_numRTD;
-	int bbIndex = 0;
-	if (threeResource)
-		bbIndex = TextureResource::bbindex;
 	nowRenderTargets.push_back(this);
 
 	//リソースバリア変更
-	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(resource[bbIndex].Get(),
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(resource.Get(),
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_RENDER_TARGET));
 	if (numRTD == 1)
 	{
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHeapPointer;
 		rtvHeapPointer = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-			peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), bbIndex,
+			peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), 0,
 			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
 		);
 		D3D12_CPU_DESCRIPTOR_HANDLE dsvH;
@@ -246,19 +186,12 @@ void TextureResource::PreDraw(const UINT arg_numRTD, const float topLeftX, const
 		for (int i = arg_numRTD - 1; i >= 0; i--)
 		{
 			rtvHeapPointer[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-				(*it)->peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), bbIndex,
+				(*it)->peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), 0,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
 			if (it == nowRenderTargets.begin())
 				break;
 			it--;
 		}
-
-		//rtvHeapPointer[0] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-		//	mainResource->peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), bbIndex,
-		//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
-		//rtvHeapPointer[1] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-		//	peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), bbIndex,
-		//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
 
 		std::vector <CD3DX12_VIEWPORT> viewports;
 		std::vector <CD3DX12_RECT> scissorRects;
@@ -280,6 +213,54 @@ void TextureResource::PreDraw(const UINT arg_numRTD, const float topLeftX, const
 
 		//cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	}
+}
+
+void TextureResource::DirectPreDraw(const UINT arg_numRTD, const float topLeftX, const float topLeftY, const float width, const float height, const LONG& left, const LONG& top, const LONG& right, const LONG& bottom)
+{
+	numRTD = arg_numRTD;
+	nowRenderTargets.push_back(this);
+
+	//リソースバリア変更
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(resource.Get(),
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_RENDER_TARGET));
+	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHeapPointer;
+	rtvHeapPointer.resize(arg_numRTD);
+
+	auto it = nowRenderTargets.end();
+	it--;
+
+	for (int i = arg_numRTD - 1; i >= 1; i--)
+	{
+		rtvHeapPointer[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			(*it)->peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), 0,
+			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
+		if (it == nowRenderTargets.begin())
+			break;
+		it--;
+	}
+	rtvHeapPointer[0] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		DirectXLib::GetInstance()->GetRtvHeaps()->GetCPUDescriptorHandleForHeapStart(), 0,
+		dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
+
+
+	std::vector <CD3DX12_VIEWPORT> viewports;
+	std::vector <CD3DX12_RECT> scissorRects;
+	viewports.resize(arg_numRTD);
+	scissorRects.resize(arg_numRTD);
+
+	for (int i = 0; i < arg_numRTD; i++)
+	{
+		viewports[i] = CD3DX12_VIEWPORT(topLeftX, topLeftY, width, height);
+		scissorRects[i] = CD3DX12_RECT(left, top, right, bottom);
+	}
+
+	auto dsvH = DirectXLib::GetInstance()->GetDsvHeap()->GetCPUDescriptorHandleForHeapStart();
+	cmdList->OMSetRenderTargets(arg_numRTD, rtvHeapPointer.data(), false, &dsvH);
+	cmdList->RSSetViewports(arg_numRTD, viewports.data());
+	cmdList->RSSetScissorRects(arg_numRTD, scissorRects.data());
+
+	cmdList->ClearRenderTargetView(rtvHeapPointer[arg_numRTD - 1], clearColor.data(), 0, nullptr);
 }
 
 void TextureResource::DepthClear()
@@ -305,11 +286,8 @@ void TextureResource::ResetRenderTarget()
 
 void TextureResource::PostDraw(const bool renderTargetReset)
 {
-	int bbIndex = 0;
-	if (threeResource)
-		bbIndex = TextureResource::bbindex;
 
-	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(resource[bbIndex].Get(),
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(resource.Get(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 	nowRenderTargets.pop_back();
 	if (!renderTargetReset)

@@ -32,7 +32,7 @@ private:
 		DirectX::XMFLOAT3 pad;
 	};
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff[3];//定数バッファ
+	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff;//定数バッファ
 
 	std::unordered_map<Scene::SCENE, std::unique_ptr<Scene>>scenes;
 	Scene* currentScene = nullptr;

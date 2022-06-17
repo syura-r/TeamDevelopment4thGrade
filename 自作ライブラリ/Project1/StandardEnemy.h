@@ -109,4 +109,6 @@ private:
 
     //ƒpƒlƒ‹Š”•\¦
     PanelCountUI* panelCountUI = nullptr;
+
+    int gottenPanel;
 };

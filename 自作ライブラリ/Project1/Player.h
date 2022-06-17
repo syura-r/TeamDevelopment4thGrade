@@ -47,6 +47,7 @@ public:
 
 	// “G‚Æ}Œ`‚Ì”»’è‚Ì‚½‚ß
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
+	int GetGottenPanel() { return gottenPanel; }
 	float GetWeight() { return weight; }
 	Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
 

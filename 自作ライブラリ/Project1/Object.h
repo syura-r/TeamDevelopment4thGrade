@@ -23,13 +23,7 @@ protected:
 	//当たり判定用Box
 	HitBox hitBox;
 	static int bbIndex;
-public:
-	static void SetBbIndex()
-	{
-		bbIndex = DirectXLib::GetInstance()->GetBbIndex();
-		Object3D::SetBbIndex(bbIndex);
-	}
-	
+public:	
 	Object() = default;
 	virtual ~Object();
 	void Create(Model* model);
@@ -68,6 +62,7 @@ public:
 	inline const bool IsDead() { return dead; }
 	inline const void Dead() { dead = true; }
 	inline const char* GetName()const { return name; }
+	void SetBillboardType(const BILLBOARD_TYPE billboardType) { this->billboardType = billboardType; }
 	
 protected:
 	std::unique_ptr<Object3D> object;
@@ -84,5 +79,7 @@ protected:
 	const char* name = nullptr;
 	//コライダー
 	BaseCollider* collider = nullptr;
+	//ビルボード
+	BILLBOARD_TYPE billboardType = BILLBOARD_TYPE::NONE;
 };
 
