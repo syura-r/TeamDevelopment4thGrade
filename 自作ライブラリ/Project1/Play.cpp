@@ -19,12 +19,16 @@
 
 #include "StandardEnemy.h"
 #include "ItemEmitter.h"
-
+#include "Stadium.h"
+#include "PtrDelete.h"
+#include"ScreenCamera.h"
 Play::Play()
 {
 	next = Ending;
 	camera = std::make_unique<DebugCamera>();
 	Object3D::SetCamera(camera.get());
+	screenCamera = new ScreenCamera();
+	
 	//ParticleEmitter::Initialize(camera.get());
 	ParticleManager::GetInstance()->SetCamera(camera.get());
 	Player::SetDebugCamera(camera.get());
@@ -42,85 +46,13 @@ Play::Play()
 	actorManager->Initialize();
 
 	result = std::make_unique<Result>();
-//---------------------------------仮実装------------------------------------------
-	std::string filepath = "Resources/Map/Report" + std::to_string(0) + ".txt";
-	std::ifstream file;
-	file.open(filepath.c_str());
-	if (!file.is_open())
-		return;
-	std::string line;
-	std::vector<Vector3>positions;
-	std::vector<Vector3>scales;
-	std::vector<Vector3>rotations;
-	std::vector<Object*>loadObjects;
-
-	//for (int i = 0; i < 9; i++)
-	//{
-	//	lightGroup->SetPointLightActive(i, true);
-	//	lightGroup->SetPointLightPos(i, lightPos[i].data() - Vector3{ 0,3,0 });
-	//}
-
-	while (getline(file, line))
-	{
-		//1行分の文字列をストリームに変換して解析しやすくする
-		std::istringstream line_stream(line);
-
-		//半角スペース区切りで行の先頭文字を取得
-		std::string key;
-		getline(line_stream, key, ' ');
-
-		//クラス名
-		if (key == "class")
-		{
-			std::string name;
-			line_stream >> name;
-		}
-		//ポジション
-		if (key == "position")
-		{
-			Vector3 position;
-			line_stream >> position.x;
-			line_stream >> position.y;
-			line_stream >> position.z;
-
-			positions.push_back(position);
-		}
-		//スケール
-		if (key == "scale")
-		{
-			Vector3 scale;
-			line_stream >> scale.x;
-			line_stream >> scale.y;
-			line_stream >> scale.z;
-
-			scales.push_back(scale);
-		}
-		//回転
-		if (key == "rotation")
-		{
-			Vector3 rotation;
-			line_stream >> rotation.x;
-			line_stream >> rotation.y;
-			line_stream >> rotation.z;
-
-			rotations.push_back(rotation);
-		}
-	}
-	file.close();
-
-	int i = 0;
-	for (auto& it : loadObjects) {
-		it->SetPosition(positions[i]);
-		it->SetScale(scales[i]);
-		it->SetRotation(rotations[i]);
-		ObjectManager::GetInstance()->Add(it);
-		i++;
-	}
-//---------------------------------------------------------------------------
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
 	timeLimit = new TimeLimit(180 * 60);
+
+	screenResource = new TextureResource("screen.png",false, true);
+	stadium = new Stadium();
 }
 
 
@@ -129,6 +61,9 @@ Play::~Play()
 	LevelEditor::GetInstance()->Clear();
 	delete pause;
 	delete timeLimit;
+	PtrDelete(stadium);
+	PtrDelete(screenResource);
+	PtrDelete(screenCamera);
 }
 
 void Play::Initialize()
@@ -148,6 +83,8 @@ void Play::Initialize()
 
 	StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
 	objectManager->Add(testEnemy);	
+
+	screenCamera->SetTargetObj(player);
 
 	ItemEmitter::GetInstance()->Initialize();
 
@@ -178,18 +115,15 @@ void Play::Update()
 	if (pause->GetUsePause())
 		return;
 
-	camera->Update();
-
-	if (Input::TriggerKey(DIK_7))
-	{
-		ParticleEmitter::CreateExplosion(Vector3(0, 0, 0));
-	}
-
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
 	ItemEmitter::GetInstance()->Update();
 	objectManager->Update();
+	stadium->Update();
+	camera->Update();
+	screenCamera->Update();
+
 	collisionManager->CheckAllCollisions();
 	timeLimit->Update();
 }
@@ -211,7 +145,17 @@ void Play::PreDraw()
 			LevelEditor::GetInstance()->Draw();
 		}
 #endif
+
+		screenResource->PreDraw();
+		Object3D::SetCamera(screenCamera);
+		Object3D::SetScreenDraw(true);
 		objectManager->PreDraw();
+		Object3D::SetScreenDraw(false);
+		Object3D::SetCamera(camera.get());
+		screenResource->PostDraw();
+
+		objectManager->PreDraw();
+		stadium->Draw();
 }
 
 void Play::PostDraw()

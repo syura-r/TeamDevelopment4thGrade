@@ -416,12 +416,18 @@
     </ClCompile>
     <ClCompile Include="InGameTimer.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="TimeLimit.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
     <ClCompile Include="Pause.cpp">
       <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="Stadium.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenCamera.cpp">
+      <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -757,12 +763,18 @@
     </ClInclude>
     <ClInclude Include="InGameTimer.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="TimeLimit.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
     <ClInclude Include="Pause.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="Stadium.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenCamera.h">
+      <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

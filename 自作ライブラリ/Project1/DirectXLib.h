@@ -24,7 +24,7 @@ private:
 	~DirectXLib() = default;
 	DirectXLib& operator=(const DirectXLib&) = delete;
 
-	static const int FrameCount = 3;
+	static const int FrameCount = 2;
 	
 	Window* window;
 

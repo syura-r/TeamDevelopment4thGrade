@@ -18,6 +18,8 @@
 
 
 class TouchAbleObject;
+class Stadium;
+class ScreenCamera;
 class Play :public Scene
 {
 public:
@@ -41,8 +43,14 @@ private:
 	ObjectManager* objectManager = nullptr;	
 	std::unique_ptr<Menu> menu;
 
+	Stadium* stadium = nullptr;
+
+	TextureResource* screenResource = nullptr;
+
 	ActorManager* actorManager = nullptr;
-		
+	
+	ScreenCamera* screenCamera = nullptr;
+
 	std::unique_ptr<Result> result;
 	std::unique_ptr<DebugCamera> camera;
 	std::array<std::array<float,3>,9>lightPos = 

@@ -38,6 +38,8 @@ public:
 	///<param name="name">リストのキー用の名前</param>
 	///<param name="color">色配列のポインタ</param>
 	static void SendColor(const std::string& name, XMFLOAT4* color);
+	static void ChangeTexture(const std::string& name, ID3D12Resource* texBuff);
+
 	static void Initialize();
 	static const char& GetTexIndex(const std::string& name) { return texIndexes[name]; };
 	inline static ComPtr < ID3D12Resource> GetTexBuff(std::string name) { return texbuffs[name]; };

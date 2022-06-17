@@ -36,6 +36,8 @@ public://静的メンバ関数
 	static void SetLightCamera(LightCamera* camera) { lightCamera = camera; }
 	static void SetLightGroup(LightGroup* lightGroup) { Object3D::lightGroup = lightGroup; }
 	static void SetDrawShadow(const bool flag) { drawShadow = flag; }
+	static void SetScreenDraw(const bool flag) { screenDraw = flag; }
+
 	inline static bool GetDrawShadow() { return drawShadow; }
 	static LightGroup* GetLightGroup() { return Object3D::lightGroup; }
 
@@ -51,6 +53,7 @@ private://静的メンバ変数
 	static LightCamera* lightCamera;
 	//ライトカメラを使って描画を行うか
 	static bool drawShadow;
+	static bool screenDraw;
 	static LightGroup* lightGroup;
 	static int bbIndex;
 	static XMMATRIX  lightViewProjection;
@@ -94,6 +97,7 @@ public:
 	void SetParent(Object3D* parent) { this->parent = parent; }
 private://メンバ変数
 	std::array<ComPtr<ID3D12Resource>, 3> constBuff; // 定数バッファ
+	std::array<ComPtr<ID3D12Resource>, 3> constBuff2; // 定数バッファ
 	std::array<ComPtr<ID3D12Resource>,3> lCameraConstBuff; // 定数バッファ
 	std::array<ComPtr<ID3D12Resource>,3> constCameraBuff;
 	// ローカルワールド変換行列

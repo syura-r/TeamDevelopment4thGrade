@@ -10,6 +10,12 @@ TextureResource::TextureResource(const std::string& name, const bool noDepth)
 	Initialize(name);
 }
 
+TextureResource::TextureResource(const std::string& name, const bool noDepth, const bool changeTex)
+	: resourceWidth(1920), resourceHeight(1080), format(DXGI_FORMAT_R8G8B8A8_UNORM), clearColor{ 0,0,0,1 }, threeResource(true), noDepth(noDepth),changeTex(changeTex)
+{
+	Initialize(name);
+}
+
 TextureResource::TextureResource(const std::string& name, const Vector2& size, const DXGI_FORMAT resourceFormat, const DirectX::XMFLOAT4& arg_clearColor, const bool arg_threeResource, const bool noDepth)
 	: resourceWidth(size.x), resourceHeight(size.y), format(resourceFormat), clearColor{ arg_clearColor.x,arg_clearColor.y, arg_clearColor.z, arg_clearColor.w }, threeResource(arg_threeResource), noDepth(noDepth)
 {
@@ -186,6 +192,11 @@ void TextureResource::Initialize(const std::string& name)
 			&dsvDesc,
 			dsvHeap->GetCPUDescriptorHandleForHeapStart());
 	}
+	if (changeTex)
+	{
+		Texture::ChangeTexture(name, resource[0].Get());
+		return;
+	}
 	if (threeResource)
 	{
 		for (int i = 0; i < 3; i++)
@@ -253,13 +264,6 @@ void TextureResource::PreDraw(const UINT arg_numRTD, const float topLeftX, const
 			it--;
 		}
 
-		//rtvHeapPointer[0] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-		//	mainResource->peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), bbIndex,
-		//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
-		//rtvHeapPointer[1] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-		//	peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), bbIndex,
-		//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
-
 		std::vector <CD3DX12_VIEWPORT> viewports;
 		std::vector <CD3DX12_RECT> scissorRects;
 		viewports.resize(arg_numRTD);
@@ -280,6 +284,57 @@ void TextureResource::PreDraw(const UINT arg_numRTD, const float topLeftX, const
 
 		//cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	}
+}
+
+void TextureResource::DirectPreDraw(const UINT arg_numRTD, const float topLeftX, const float topLeftY, const float width, const float height, const LONG& left, const LONG& top, const LONG& right, const LONG& bottom)
+{
+	numRTD = arg_numRTD;
+	int bbIndex = 0;
+	if (threeResource)
+		bbIndex = TextureResource::bbindex;
+	nowRenderTargets.push_back(this);
+
+	//リソースバリア変更
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(resource[bbIndex].Get(),
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_RENDER_TARGET));
+	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHeapPointer;
+	rtvHeapPointer.resize(arg_numRTD);
+
+	auto it = nowRenderTargets.end();
+	it--;
+
+	for (int i = arg_numRTD - 1; i >= 1; i--)
+	{
+		rtvHeapPointer[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			(*it)->peraRTVHeap->GetCPUDescriptorHandleForHeapStart(), bbIndex,
+			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
+		if (it == nowRenderTargets.begin())
+			break;
+		it--;
+	}
+	rtvHeapPointer[0] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		DirectXLib::GetInstance()->GetRtvHeaps()->GetCPUDescriptorHandleForHeapStart(), bbIndex,
+		dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
+
+
+	std::vector <CD3DX12_VIEWPORT> viewports;
+	std::vector <CD3DX12_RECT> scissorRects;
+	viewports.resize(arg_numRTD);
+	scissorRects.resize(arg_numRTD);
+
+	for (int i = 0; i < arg_numRTD; i++)
+	{
+		viewports[i] = CD3DX12_VIEWPORT(topLeftX, topLeftY, width, height);
+		scissorRects[i] = CD3DX12_RECT(left, top, right, bottom);
+	}
+
+	auto dsvH = DirectXLib::GetInstance()->GetDsvHeap()->GetCPUDescriptorHandleForHeapStart();
+	cmdList->OMSetRenderTargets(arg_numRTD, rtvHeapPointer.data(), false, &dsvH);
+	cmdList->RSSetViewports(arg_numRTD, viewports.data());
+	cmdList->RSSetScissorRects(arg_numRTD, scissorRects.data());
+
+	cmdList->ClearRenderTargetView(rtvHeapPointer[arg_numRTD - 1], clearColor.data(), 0, nullptr);
 }
 
 void TextureResource::DepthClear()
