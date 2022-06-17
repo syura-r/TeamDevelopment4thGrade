@@ -45,6 +45,8 @@ public:
 	
 	bool IsFall() { return fallFlag; }
 
+	bool IsGameEnd() { return gameEnd; }
+
 	// “G‚Æ}Œ`‚Ì”»’è‚Ì‚½‚ß
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
 	int GetGottenPanel() { return gottenPanel; }
@@ -192,7 +194,8 @@ private:
 	int nextInputStartCount;
 	//‚ß‚ñ‚Ç‚¢
 	int count;
-	
+	//ƒQ[ƒ€ƒGƒ“ƒh
+	bool gameEnd;
 
 
 	//•½–Ê‚Ì‚Ü‚Ü‚Ìposition

@@ -150,6 +150,7 @@ void Player::Initialize()
 	fallEasingCount = 0;
 	nextInputStartCount = 60;
 	count = 0;
+	gameEnd = false;
 }
 
 void Player::Update()
@@ -170,6 +171,10 @@ void Player::Update()
 	if (fallFlag)
 	{
 		Fall();
+		if (virtualityPlanePosition.y <= -65)
+		{
+			gameEnd = true;
+		}
 	}
 	else
 	{
