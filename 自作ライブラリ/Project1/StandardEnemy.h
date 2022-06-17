@@ -200,6 +200,30 @@ private:
 
 	// ランダムな方向の決定
 	Vector2 RandomDir();
+	// 近くにある物への方向
+	Vector2 NearObjDir();
+
+	// 切り抜きを実行する数
+	int cutPowerLimit = 3;
+	// プレイヤーの位置
+	Vector3 playerPos;
+	// 一番近いアイテムの位置
+	Vector3 itemPos;
+
+	// プレイヤーの位置を取る
+	void ConfirmPlayerPos();
+	// 一番近いアイテムの位置を確認する
+	void ConfirmItemPos();
+
+	// タックルの索敵半径
+	const float AttackRange = 10.0f;
+	// タックルの勢い
+	const float AttackPower = 5.0f;
+
+	// プレイヤーがタックルの射程に入ったか
+	bool RangeCheckPlayer();
+	// 移動方向
+	Vector2 moveDir;
 
 	//--------------------------------------
 
