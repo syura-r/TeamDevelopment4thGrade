@@ -185,6 +185,14 @@ private:
 	Vector3 fallStartPos;
 	Vector3 fallEndPos;
 
+	//入力開始までのインターバル
+	int inputStartCount;
+	//基本60
+	int nextInputStartCount;
+	//めんどい
+	int count;
+	
+
 
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;

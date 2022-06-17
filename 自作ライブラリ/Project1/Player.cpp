@@ -148,6 +148,8 @@ void Player::Initialize()
 	panelCountUI->Initialize();
 	fallFlag = false;
 	fallEasingCount = 0;
+	nextInputStartCount = 60;
+	count = 0;
 }
 
 void Player::Update()
@@ -469,6 +471,17 @@ void Player::SlidingDown()
 	virtualityPlanePosition += field->GetTilt() * fallSpeed;
 	StayInTheField();
 	StayOnRemainPanels();
+
+	if (nextInputStartCount > 60)
+	{
+		count++;
+		if (count >= 60)
+		{
+			count = 0;
+			nextInputStartCount -= 2;
+		}
+	}
+	
 }
 
 void Player::DecideDirection(Vector3& arg_direction)
@@ -999,6 +1012,7 @@ void Player::StartStand(bool arg_outField, Vector3 arg_velocity)
 	//タックル終了
 	SuspendTackle();
 
+	inputStartCount = nextInputStartCount;
 	standTime = 120;
 
 	//場外か図形か
@@ -1033,48 +1047,61 @@ void Player::WithStand()
 		BGColor = 1;
 	}
 
-	//カメラのビュー行列の逆行列を計算
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
-	Vector2 stickDirection = {};
-	//スティックの向き
-	auto vec = Input::GetLStickDirection();
-	stickDirection.x = (cameraDirectionX * vec.x).x;
-	stickDirection.y = (cameraDirectionZ * vec.y).z;
-	stickDirection = Vector2::Normalize(stickDirection);
+	
 
-	float accuracy = 0;
 
-	Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preStandVec);
-
-	accuracy = Vector2::Dot(stickDirection, correctVec);
-
-	if (accuracy <= 0)
+	if (inputStartCount <= 0)
 	{
-		accuracy = 0;
+		//カメラのビュー行列の逆行列を計算
+		XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
+		const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+		const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
+		Vector2 stickDirection = {};
+		//スティックの向き
+		auto vec = Input::GetLStickDirection();
+		stickDirection.x = (cameraDirectionX * vec.x).x;
+		stickDirection.y = (cameraDirectionZ * vec.y).z;
+		stickDirection = Vector2::Normalize(stickDirection);
+
+		float accuracy = 0;
+
+		Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preStandVec);
+
+		accuracy = Vector2::Dot(stickDirection, correctVec);
+
+		if (accuracy <= 0)
+		{
+			accuracy = 0;
+		}
+
+		if (accuracy >= 0.55f)
+		{
+			Vector3 moveDirection = preStandVec;
+			Object::SetColor({ 1,1,1,1 });
+			returningFieldFlag = true;
+			standingFlag = false;
+			returningStartPos = virtualityPlanePosition;
+			returningEndPos = virtualityPlanePosition + moveDirection * 3;
+			nextInputStartCount = nextInputStartCount + 30;
+			return;
+		}
+
+		standTime--;
+		if (standTime <= 0)
+		{
+			Object::SetColor({ 1,1,1,1 });
+			standingFlag = false;
+			fallFlag = true;
+			fallStartPos = virtualityPlanePosition;
+			fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+		}
+	}
+	else
+	{
+		inputStartCount--;
 	}
 
-	if (accuracy >= 0.55f)
-	{
-		Vector3 moveDirection = preStandVec;	
-		Object::SetColor({ 1,1,1,1 });
-		returningFieldFlag = true;
-		standingFlag = false;
-		returningStartPos = virtualityPlanePosition;
-		returningEndPos = virtualityPlanePosition + moveDirection * 3;
-		return;
-	}
-
-	standTime--;
-	if (standTime <= 0)
-	{
-		Object::SetColor({ 1,1,1,1 });
-		standingFlag = false;
-		fallFlag = true;
-		fallStartPos = virtualityPlanePosition;
-		fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
-	}
+	
 }
 
 void Player::Tackle()
@@ -1166,9 +1193,10 @@ void Player::Fall()
 	{
 		virtualityPlanePosition.y -= 2;
 	}
+	
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition()); 
 	
 	
 }
