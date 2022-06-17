@@ -78,16 +78,13 @@ void StandardEnemy::Initialize()
 	isStraddle = false;
 	isControl = false;
 	isAttacked = false;
-<<<<<<< HEAD
 	cuttingFlag = false;
 	cutPower = 0;
 	gottenPanel = 0;
 	playerPos = { 0,0,0 };
 	itemPos = { 0,0,0 };
-=======
 
 	panelCountUI->Initialize();
->>>>>>> master
 }
 
 void StandardEnemy::Update()

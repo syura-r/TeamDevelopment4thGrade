@@ -18,6 +18,7 @@
 #include "Field.h"
 
 #include "StandardEnemy.h"
+#include "SamplePlayer.h"
 #include "ItemEmitter.h"
 
 Play::Play()
@@ -146,7 +147,8 @@ void Play::Initialize()
 	Player* player = new Player();
 	objectManager->Add(player);	
 
-	StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
+	//StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
+	SamplePlayer* testEnemy = new SamplePlayer();
 	objectManager->Add(testEnemy);	
 
 	ItemEmitter::GetInstance()->Initialize();

@@ -38,7 +38,7 @@ public:
 private:
 
 	//‰ŠúˆÊ’u
-	const Vector3 StartPos = { 0,-5,0 };
+	const Vector3 StartPos = { 0,-5,-5 };
 	//ˆÚ“®ˆ—
 	void Move();
 

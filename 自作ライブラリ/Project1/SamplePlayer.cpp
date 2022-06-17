@@ -17,7 +17,7 @@
 SamplePlayer::SamplePlayer()
 {
 	//アニメーション用にモデルのポインタを格納
-	myModel = FBXManager::GetModel("GamePlay_Player");
+	myModel = FBXManager::GetModel("GamePlay_Enemy");
 	//モデルの生成
 	Create(myModel);
 
@@ -28,7 +28,7 @@ SamplePlayer::SamplePlayer()
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("Player", this);
+	ActorManager::GetInstance()->AddObject("Enemy", this);
 
 	Initialize();
 
@@ -78,19 +78,19 @@ void SamplePlayer::Update()
 	}
 	else
 	{
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && field->GetPlayerRidingPiece())
+		if (Input::TriggerKey(DIK_U) && cutPower > 0 && field->GetPlayerRidingPiece())
 		{
 			if (!tackleFlag && !drawingFlag)
 			{
 				drawingFlag = true;
 				//丸のこをオブジェクトマネージャーに追加
 				Vector3 p = field->GetPlayerCuttingStartPos();
-				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus));
+				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER));
 			}
 		}
 
 		// Bボタンを押したら
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
+		if (Input::TriggerKey(DIK_O))
 		{
 			// タックル
 			Tackle();
@@ -100,7 +100,7 @@ void SamplePlayer::Update()
 
 	if (!drawingFlag)
 	{
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		if (Input::TriggerKey(DIK_P))
 		{
 			// 図形の消去、フィールドのリセット
 			DeleteLocuss();
@@ -125,11 +125,6 @@ void SamplePlayer::Update()
 
 void SamplePlayer::Draw()
 {
-	CustomDraw(true, true);
-}
-
-void SamplePlayer::DrawReady()
-{
 #ifdef _DEBUG
 	if (!Object3D::GetDrawShadow() && DrawMode::GetDrawImGui())
 	{
@@ -142,13 +137,14 @@ void SamplePlayer::DrawReady()
 		ImGui::End();
 	}
 #endif
+	PipelineState::SetPipeline("FBX");
 
-	if (Object3D::GetDrawShadow())
-		pipelineName = "FBXShadowMap";
-	else
-	{
-		pipelineName = "FBX";
-	}
+	object->Draw(true);
+}
+
+void SamplePlayer::DrawReady()
+{
+	pipelineName = "FBX";
 }
 
 void SamplePlayer::Move()
@@ -225,7 +221,7 @@ void SamplePlayer::Move()
 		const Vector3 CrossVec = direction.Cross(moveDirection);
 
 		//入力がないので0にする
-		if (!Input::DownWASD() && !Input::CheckPadLStickAnythingDir())
+		if (!Input::DownKey(DIK_I)|| !Input::DownKey(DIK_J) || !Input::DownKey(DIK_K) || !Input::DownKey(DIK_L))
 		{
 			moveDirection = Vector3(0, 0, 0);
 		}
@@ -288,10 +284,15 @@ void SamplePlayer::DecideDirection(Vector3& arg_direction)
 		return;
 	}
 
-	if (!Input::DownWASD() && !Input::CheckPadLStickAnythingDir())
+	if (!Input::DownKey(DIK_I) || !Input::DownKey(DIK_J) || !Input::DownKey(DIK_K) || !Input::DownKey(DIK_L))
 	{
 		return;
 	}
+
+	//カメラのビュー行列の逆行列を計算
+	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
+	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 
 	//くり抜き動作中
 	if (drawingFlag)
@@ -300,14 +301,14 @@ void SamplePlayer::DecideDirection(Vector3& arg_direction)
 	}
 	else
 	{
-		//if (Input::DownKey(DIK_A))
-		//	arg_direction += cameraDirectionX * -1;
-		//if (Input::DownKey(DIK_D))
-		//	arg_direction += cameraDirectionX;
-		//if (Input::DownKey(DIK_S))
-		//	arg_direction += cameraDirectionZ * -1;
-		//if (Input::DownKey(DIK_W))
-		//	arg_direction += cameraDirectionZ;
+		if (Input::DownKey(DIK_J))
+			arg_direction += cameraDirectionX * -1;
+		if (Input::DownKey(DIK_L))
+			arg_direction += cameraDirectionX;
+		if (Input::DownKey(DIK_K))
+			arg_direction += cameraDirectionZ * -1;
+		if (Input::DownKey(DIK_I))
+			arg_direction += cameraDirectionZ;
 		//if (Input::CheckPadLStickAnythingDir())
 		//{
 		//	auto vec = Input::GetLStickDirection();
@@ -573,11 +574,15 @@ void SamplePlayer::WithStand()
 		BGColor = 1;
 	}
 
+	//カメラのビュー行列の逆行列を計算
+	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
+	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 	Vector2 stickDirection = {};
 	//スティックの向き
 	auto vec = Input::GetLStickDirection();
-	//stickDirection.x = (cameraDirectionX * vec.x).x;
-	//stickDirection.y = (cameraDirectionZ * vec.y).z;
+	stickDirection.x = (cameraDirectionX * vec.x).x;
+	stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
 
 	float accuracy = 0;
@@ -612,17 +617,21 @@ void SamplePlayer::Tackle()
 
 	tackleFlag = true;
 
+	//カメラのビュー行列の逆行列を計算
+	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
+	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 	Vector2 stickDirection = {};
 	Vector3 moveDirection = {};
 	//スティックの向き
 	auto vec = Input::GetLStickDirection();
-	//stickDirection.x = (cameraDirectionX * vec.x).x;
-	//stickDirection.y = (cameraDirectionZ * vec.y).z;
+	stickDirection.x = (cameraDirectionX * vec.x).x;
+	stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
 
 	tackleStartPos = virtualityPlanePosition;
 
-	//moveDirection = cameraDirectionX * stickDirection.x + cameraDirectionZ * stickDirection.y;
+	moveDirection = cameraDirectionX * stickDirection.x + cameraDirectionZ * stickDirection.y;
 	moveDirection.Normalize();
 	tackleEndPos = virtualityPlanePosition + moveDirection * 8;
 
