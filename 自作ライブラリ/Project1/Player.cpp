@@ -1002,10 +1002,9 @@ void Player::HitItem(EnergyItem* arg_item)
 
 void Player::HitPanelItem(PanelItem* arg_panelItem)
 {
-	arg_panelItem->Dead();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus->GetCuttedPanelPos());
-	weight += num * FieldPiece::GetWeight();
-	gottenPanel += num;
+	arg_panelItem->Dead();	
+	weight += FieldPiece::GetWeight();
+	gottenPanel++;
 }
 
 void Player::StartStand(bool arg_outField, Vector3 arg_velocity)

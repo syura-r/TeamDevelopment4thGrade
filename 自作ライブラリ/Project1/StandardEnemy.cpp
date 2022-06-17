@@ -207,7 +207,7 @@ void StandardEnemy::Draw()
 
 	object->Draw(true);
 
-	panelCountUI->Draw();
+	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
 }
 
 void StandardEnemy::DrawReady()
