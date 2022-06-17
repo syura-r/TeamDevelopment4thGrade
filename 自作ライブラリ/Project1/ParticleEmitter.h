@@ -4,24 +4,18 @@
 class ParticleEmitter
 {
 private:
-	static ParticleManager* particleManager;
+    static ParticleManager* particleManager;
+
 public:
-	//static void Initialize(Camera* camera);
-	static void Initialize();
+    static void Initialize();
 
-	static void CreateExplosion(const Vector3& pos);
-	static void CreateShock(const Vector3& pos, const Vector3& arg_rotation = { XM_PI * 0.5f,0,0 });
-	static void CreateGetEffect(const Vector3& pos);
-	static void CreateJumpDust(const Vector3& pos);
-	static void CreateWalkDust(const Vector3& pos, const Vector3& direction);
-	static void CreateRunDust(const Vector3& pos, const Vector3& direction);
+    static void CreateExplosion(const Vector3& pos);
+    static void CreateShock(const Vector3& pos, const Vector3& arg_rotation = { XM_PI * 0.5f,0,0 });
+    static void CreateGetEffect(const Vector3& pos);
+    static void CreateRunDust(const Vector3& pos, const Vector3& direction);
 
-	static void CreateAir(const Vector3& pos, const Vector3& direction = { 0,0,1 });
-	
-	static void CreateHanabi(const Vector3& pos, int rank);
+    //パネルカット時のエフェクト(arg_pos:生成場所, arg_vec:進行方向)
+    static void CutEffect(const Vector3& arg_pos, const Vector3& arg_vec);
 
-	static void Draw();
-	static void Update();
-	static void End();
+    static float GetRandom(float arg_min, float arg_max);
 };
-

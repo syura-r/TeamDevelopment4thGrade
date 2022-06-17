@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "PanelCutLocus.h"
 
-
+#include "ParticleEmitter.h"
 
 CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType)
 {
@@ -82,6 +82,9 @@ void CircularSaw::Update()
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 
 	Object::Update();
+
+	//Particle
+	ParticleEmitter::CutEffect(position, velocity);
 }
 
 void CircularSaw::DrawReady()
