@@ -219,43 +219,97 @@ void ParticleEmitter::CreateRunDust(const Vector3& pos, const Vector3& direction
 
 void ParticleEmitter::CutEffect(const Vector3& arg_pos, const Vector3& arg_vec)
 {
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 75; i++)
     {
-        //加速度
-        Vector3 acc = { (std::rand() % 100 - 50) * 0.005f,(std::rand() % 100 - 50) * 0.005f,(std::rand() % 100 - 50) * 0.005f };
+        //飛んでいく方向
+        Vector2 vecRange = { -0.15f,0.15f };
+        float vecRangeX = GetRandom(vecRange.x, vecRange.y);
+        float vecRangeZ = GetRandom(vecRange.x, vecRange.y);
+        
+        Vector3 vel = { (arg_vec.x + vecRangeX), arg_vec.y, (arg_vec.z + vecRangeZ) };
+        vel *= -1.0f;
+        vel *= GetRandom(1.0f, 5.0f) * 0.5f;
+        vel.y = GetRandom(0.5f, 1.0f);
 
-        //進行方向から火花の範囲計算
+        Vector3 acc = { 0.0f,-0.1f,0.0f };
+
+        //発生範囲
         Vector3 vec = Vector3::Normalize(arg_vec);
-        float range = GetRandom(-10.0f, 10.0f);
-
+        float range = GetRandom(-1.0f, 0.0f);
         Vector3 position = arg_pos + (vec * range);
 
         Particle* particle = new Particle();
 
         particle->parameter.accel = acc;
-        particle->parameter.num_frame = 30;
+        particle->parameter.num_frame = 5;
         particle->parameter.s_alpha = 1.0f;
         particle->parameter.e_alpha = 1.0f;
         particle->parameter.scaleAce = { 0,0 };
         particle->parameter.s_scale = 0.5f;
-        particle->parameter.e_scale = 0.0f;
-        particle->parameter.s_color = { 255.0f, 1, 1.0f };
-        particle->parameter.e_color = { 255.0f, 1, 1.0f };
+        particle->parameter.e_scale = 0.5f;
+        particle->parameter.s_color = { (255.0f / 255.0f),  (100.0f / 255.0f),  (1.0f / 255.0f) };
+        particle->parameter.e_color = { (255.0f / 255.0f),  (1.0f / 255.0f),  (1.0f / 255.0f) };
         particle->parameter.s_rotation = { 0,0,0 };
         particle->parameter.e_rotation = { 0,0,0 };
 
         particle->vsParam.position = position;
-        particle->vsParam.velocity = Vector3(0, 0, 0);
+        particle->vsParam.velocity = vel;
         particle->vsParam.rotation = Vector3(0, 0, 0);
-        particle->vsParam.scale = 0.5f;
+        particle->vsParam.scale = 0.25f;
         particle->vsParam.scaleVel = (particle->parameter.e_scale - particle->parameter.s_scale) / particle->parameter.num_frame;
         particle->vsParam.billboardActive = 1;
-        particle->vsParam.color = { 255.0f, 1, 1.0f, 1.0f };
+        particle->vsParam.color = { (255.0f / 255.0f),  (100.0f / 255.0f),  (1.0f / 255.0f), 1.0f };
         particle->vsParam.frame = 0;
         particle->vsParam.isDead = false;
 
         particleManager->Add(particle, "particle");
     }
+    for (int i = 0; i < 25; i++)
+    {
+        //飛んでいく方向
+        Vector2 vecRange = { -0.15f,0.15f };
+        float vecRangeX = GetRandom(vecRange.x, vecRange.y);
+        float vecRangeZ = GetRandom(vecRange.x, vecRange.y);
+
+        Vector3 vel = { (arg_vec.x + vecRangeX), arg_vec.y, (arg_vec.z + vecRangeZ) };
+        vel *= -1.0f;
+        vel *= GetRandom(1.0f, 5.0f) * 0.5f;
+        vel.y = GetRandom(0.5f, 1.0f);
+
+        Vector3 acc = { 0.0f,-0.1f,0.0f };
+
+        //発生範囲
+        Vector3 vec = Vector3::Normalize(arg_vec);
+        float range = GetRandom(-1.0f, 0.0f);
+        Vector3 position = arg_pos + (vec * range);
+
+        Particle* particle = new Particle();
+
+        particle->parameter.accel = acc;
+        particle->parameter.num_frame = 3;
+        particle->parameter.s_alpha = 1.0f;
+        particle->parameter.e_alpha = 1.0f;
+        particle->parameter.scaleAce = { 0,0 };
+        particle->parameter.s_scale = 0.5f;
+        particle->parameter.e_scale = 0.5f;
+        particle->parameter.s_color = { (255.0f / 255.0f),  (255.0f / 255.0f),  (255.0f / 255.0f) };
+        particle->parameter.e_color = { (255.0f / 255.0f),  (255.0f / 255.0f),  (255.0f / 255.0f) };
+        particle->parameter.s_rotation = { 0,0,0 };
+        particle->parameter.e_rotation = { 0,0,0 };
+
+        particle->vsParam.position = position;
+        particle->vsParam.velocity = vel;
+        particle->vsParam.rotation = Vector3(0, 0, 0);
+        particle->vsParam.scale = 0.25f;
+        particle->vsParam.scaleVel = (particle->parameter.e_scale - particle->parameter.s_scale) / particle->parameter.num_frame;
+        particle->vsParam.billboardActive = 1;
+        particle->vsParam.color = { (255.0f / 255.0f),  (255.0f / 255.0f),  (255.0f / 255.0f), 1.0f };
+        particle->vsParam.frame = 0;
+        particle->vsParam.isDead = false;
+
+        particleManager->Add(particle, "particle");
+    }
+
 }
 
 float ParticleEmitter::GetRandom(float arg_min, float arg_max)
