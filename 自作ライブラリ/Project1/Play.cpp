@@ -122,13 +122,15 @@ void Play::Update()
 	}
 	if (pause->GetUsePause())
 		return;
-
-
 #ifdef _DEBUG
 	if (Input::TriggerKey(DIK_E))//I—¹ˆ—
 	{
 		ShutDown();
 		Ending::SetScore(actorManager->GetPlayer()->GetGottenPanel());
+	}
+	if (Input::TriggerKey(DIK_7))
+	{
+		ParticleEmitter::ShockEffect(Vector3(0, 0, 0),Vector3(255.0f,255.0f,255.0f));
 	}
 #endif
 
