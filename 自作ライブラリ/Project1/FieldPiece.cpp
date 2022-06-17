@@ -74,7 +74,9 @@ void FieldPiece::Draw()
 	}
 
 	color = { 0.3f, 0.3f, 0.3f, 1.0f };
-	if (ActorManager::GetInstance()->GetFields()[0]->GetPlayerRidingPiece() == this)
+	ActorManager* aManager = ActorManager::GetInstance();
+	CuttingInfo* info = aManager->GetFields()[0]->GetCuttingInfo((Object*)aManager->GetPlayer());
+	if (info->ridingPiece == this)
 	{
 		color = { 0.8f, 0.1f, 0.1f, 1.0f };
 	}	

@@ -39,9 +39,8 @@ public:
 	int CutPanel(std::vector<Vector2>& arg_vecPos);
 	void ReviveGottenPanel(FieldPiece* arg_piece);
 
-	FieldPiece* GetPlayerRidingPiece();
-	Vector3 GetPlayerCuttingStartPos();
-	float GetPlayerCuttingAngle();
+
+	CuttingInfo* GetCuttingInfo(Object* arg_pObject);
 	FieldPiece* IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius);
 
 	static std::vector<Vector2>& GetEdges();
@@ -68,8 +67,8 @@ private:
 	//パネルの配列
 	std::vector<std::vector<FieldPiece*>> pieces;
 	std::vector<FieldPiece*> gottenPieces;
-	//Playerがアクションするパネル
-	CuttingInfo info;
+	//Playerがアクションするパネル	
+	std::unordered_map<Object*, CuttingInfo> infos;
 
 	//端点の用意
 	void SetEdges();

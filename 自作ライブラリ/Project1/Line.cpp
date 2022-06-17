@@ -52,13 +52,6 @@ void Line::Update()
 
 void Line::Draw()
 {
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	FieldPiece* piece = field->GetPlayerRidingPiece();
-	if (!piece)
-	{
-		return;
-	}
-
 	if (isDraw)
 	{
 		Object::Draw();

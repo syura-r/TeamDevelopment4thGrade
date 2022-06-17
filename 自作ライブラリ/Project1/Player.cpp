@@ -170,6 +170,7 @@ void Player::Update()
 	MoveCamera();
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
 
 	if (blowFlag)
 	{
@@ -182,14 +183,14 @@ void Player::Update()
 	else
 	{
 		//SelectLocus();		
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && field->GetPlayerRidingPiece())
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece)
 		{
 			if (!tackleFlag && !drawingFlag)
 			{
 				drawingFlag = true;
 				//ü‚Ì¶¬
 				//CreateLine();
-				Vector3 p = field->GetPlayerCuttingStartPos();
+				Vector3 p = info->cuttingStartPos;
 				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus,CircularSaw::PLAYER));
 			}
 			
@@ -225,12 +226,12 @@ void Player::Update()
 	//CheckHit();
 	Object::Update();	
 	
-	Vector3 p = field->GetPlayerCuttingStartPos();
+	Vector3 p = info->cuttingStartPos;
 	//SetLocus(LocusType::UNDIFINED);
 	if (!drawingFlag)
 	{		
 		panelCutLocus->SetCutPower(cutPower);
-		panelCutLocus->Move(p, field->GetPlayerCuttingAngle());
+		panelCutLocus->Move(p, info->cuttingAngle);
 	}
 	for (auto locus : vecLocuss)
 	{

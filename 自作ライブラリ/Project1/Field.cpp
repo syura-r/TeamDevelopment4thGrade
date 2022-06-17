@@ -18,8 +18,7 @@ Field::Field()
 	:depthMagnitude(0.0f),
 	 tiltDirection(Vector2()),
 	 angleTilt(Vector3()),
-	 localYvec(Vector3()),
-	 info(CuttingInfo())
+	 localYvec(Vector3())
 {
 	if (edges.empty())
 	{
@@ -45,6 +44,9 @@ Field::Field()
 	pieces.clear();
 	gottenPieces.clear();
 	CreatePieces();
+	infos.clear();
+
+	Initialize();
 }
 
 Field::~Field()
@@ -57,7 +59,7 @@ void Field::Initialize()
 {
 	ResetInfluences();
 	CalcTilt();
-	info.ridingPiece = nullptr;
+	infos.clear();
 }
 
 void Field::Update()
@@ -149,6 +151,7 @@ void Field::DecidePlayerRidingPiece()
 	Player* player = ActorManager::GetInstance()->GetPlayer();
 	Vector2 playerPos = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
 	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
+	CuttingInfo* info = GetCuttingInfo(player);
 
 	//—ñ“Á’è
 	float adjustedZPos = -playerPos.y + halfHeight;
@@ -174,7 +177,7 @@ void Field::DecidePlayerRidingPiece()
 		{
 			if (piecePoints[j].x == playerPos.x && piecePoints[j].y == playerPos.y)
 			{
-				info.ridingPiece = pieces[columnNum][i];
+				info->ridingPiece = pieces[columnNum][i];
 				return;
 			}
 		}
@@ -185,33 +188,34 @@ void Field::DecidePlayerRidingPiece()
 
 		if (cross01 > 0 && cross12 > 0 && cross20 > 0)
 		{
-			info.ridingPiece = pieces[columnNum][i];
+			info->ridingPiece = pieces[columnNum][i];
 			return;
 		}
 		else if (cross01 < 0 && cross12 < 0 && cross20 < 0)
 		{
-			info.ridingPiece = pieces[columnNum][i];
+			info->ridingPiece = pieces[columnNum][i];
 			return;
 		}
 	}	
 
-	info.ridingPiece = nullptr;
+	info->ridingPiece = nullptr;
 }
 
 void Field::DecidePlayerCuttingStartPos()
 {
 	Player* player = ActorManager::GetInstance()->GetPlayer();
 	Vector3 playerPos = player->GetVirtualityPlanePosition();
+	CuttingInfo* info = GetCuttingInfo(player);
 
-	if (!info.ridingPiece)
+	if (!info->ridingPiece)
 	{
-		info.cuttingStartPos = playerPos;
-		info.cuttingStartPosNum = 0;
+		info->cuttingStartPos = playerPos;
+		info->cuttingStartPosNum = 0;
 		return;
 	}
 
 	float rateScore[3] = {0};
-	std::vector<Vector2> piecePoints = info.ridingPiece->GetPoints();
+	std::vector<Vector2> piecePoints = info->ridingPiece->GetPoints();
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -238,49 +242,52 @@ void Field::DecidePlayerCuttingStartPos()
 			num = i;
 		}
 	}
-	info.cuttingStartPos = LocusUtility::Dim2XZToDim3(piecePoints[num], position.y);
-	info.cuttingStartPosNum = num;
+	info->cuttingStartPos = LocusUtility::Dim2XZToDim3(piecePoints[num], position.y);
+	info->cuttingStartPosNum = num;
 }
 
 void Field::DecidePlayerCuttingAngle()
 {
-	if (!info.ridingPiece)
+	Player* player = ActorManager::GetInstance()->GetPlayer();
+	CuttingInfo* info = GetCuttingInfo(player);
+
+	if (!info->ridingPiece)
 	{
-		info.cuttingAngle = 0;
+		info->cuttingAngle = 0;
 		return;
 	}
 	
 	//‰ºŒü‚«
-	if (info.ridingPiece->GetPieceDirection() == PieceDirection::Lower)
+	if (info->ridingPiece->GetPieceDirection() == PieceDirection::Lower)
 	{
-		if (info.cuttingStartPosNum == 0)
+		if (info->cuttingStartPosNum == 0)
 		{
-			info.cuttingAngle = 120;
+			info->cuttingAngle = 120;
 		}
-		else if (info.cuttingStartPosNum == 1)
+		else if (info->cuttingStartPosNum == 1)
 		{
-			info.cuttingAngle = 240;
+			info->cuttingAngle = 240;
 		}
 		else
 		{
-			info.cuttingAngle = 0;
+			info->cuttingAngle = 0;
 		}
 	}
 	//ãŒü‚«
 	else
 	{
 
-		if (info.cuttingStartPosNum == 0)
+		if (info->cuttingStartPosNum == 0)
 		{
-			info.cuttingAngle = 300;
+			info->cuttingAngle = 300;
 		}
-		else if (info.cuttingStartPosNum == 1)
+		else if (info->cuttingStartPosNum == 1)
 		{
-			info.cuttingAngle = 60;
+			info->cuttingAngle = 60;
 		}
 		else
 		{
-			info.cuttingAngle = 180;
+			info->cuttingAngle = 180;
 		}
 	}
 }
@@ -492,19 +499,16 @@ void Field::ReviveGottenPanel(FieldPiece* arg_piece)
 	}
 }
 
-FieldPiece* Field::GetPlayerRidingPiece()
+CuttingInfo* Field::GetCuttingInfo(Object* arg_pObject)
 {
-	return info.ridingPiece;
-}
+	auto itr = infos.find(arg_pObject);
 
-Vector3 Field::GetPlayerCuttingStartPos()
-{
-	return info.cuttingStartPos;
-}
+	if (itr == infos.end())
+	{		
+		itr = infos.emplace(arg_pObject, CuttingInfo()).first;		
+	}	
 
-float Field::GetPlayerCuttingAngle()
-{
-	return info.cuttingAngle;
+	return &itr->second;
 }
 
 FieldPiece* Field::IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius)
