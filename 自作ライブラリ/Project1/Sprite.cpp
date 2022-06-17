@@ -4,7 +4,6 @@
 #include"Texture.h"
 Window* Sprite::window = nullptr;
 XMMATRIX Sprite::spriteMatProjection = {};
-int Sprite::bbIndex = 0;
 Sprite::Sprite()
 {
 	CreateSprite();
@@ -47,18 +46,14 @@ void Sprite::CreateSprite()
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = sizeof(vertices);
 	vbView.StrideInBytes = sizeof(vertices[0]);
-
-	for (int i = 0; i < 3; i++)
-	{
 		//定数バッファの作成
 		result = dev->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			D3D12_HEAP_FLAG_NONE,
 			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDate) + 0xff) & ~0xff),
 			D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-			IID_PPV_ARGS(&constBuff[i]));
+			IID_PPV_ARGS(&constBuff));
 		assert(SUCCEEDED(result));
-	}
 }
 
 void Sprite::DrawSprite(const std::string & name, const XMFLOAT2 & position, const float & rotation, const XMFLOAT2 & scale, const XMFLOAT4 & color, const XMFLOAT2 & anchorPoint, const std::string& pipelineName, BLENDTYPE type)
@@ -101,10 +96,10 @@ void Sprite::DrawSprite(const std::string & name, const XMFLOAT2 & position, con
 	spriteMatWorld *= spritePosition;
 
 	ConstBufferDate* constMap = nullptr;
-	result = constBuff[bbIndex]->Map(0, nullptr, (void**)&constMap);
+	result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = spriteMatWorld * spriteMatProjection;//行列の合成
 	constMap->color = color;
-	constBuff[bbIndex]->Unmap(0, nullptr);
+	constBuff->Unmap(0, nullptr);
 
 	PipelineState::SetPipeline(pipelineName,type);
 
@@ -112,7 +107,7 @@ void Sprite::DrawSprite(const std::string & name, const XMFLOAT2 & position, con
 	ID3D12DescriptorHeap* ppHeaps[] = { Texture::GetBasicDescHeap().Get() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuff[bbIndex]->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 	//インデックスバッファのセットコマンド
 	cmdList->SetGraphicsRootDescriptorTable(1, Texture::GetGpuDescHandleSRV(name)); 
 
@@ -160,16 +155,16 @@ void Sprite::NoPipelineDraw(const std::string& name, const XMFLOAT2& position, c
 	spriteMatWorld *= spritePosition;
 
 	ConstBufferDate* constMap = nullptr;
-	result = constBuff[bbIndex]->Map(0, nullptr, (void**)&constMap);
+	result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = spriteMatWorld * spriteMatProjection;//行列の合成
 	constMap->color = color;
-	constBuff[bbIndex]->Unmap(0, nullptr);
+	constBuff->Unmap(0, nullptr);
 
 	//デスクリプタヒープの配列
 	ID3D12DescriptorHeap* ppHeaps[] = { Texture::GetBasicDescHeap().Get() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuff[bbIndex]->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 	//インデックスバッファのセットコマンド
 	cmdList->SetGraphicsRootDescriptorTable(2, Texture::GetGpuDescHandleSRV(name));
 

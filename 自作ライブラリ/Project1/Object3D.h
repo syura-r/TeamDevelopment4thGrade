@@ -43,10 +43,6 @@ public://静的メンバ関数
 
 	inline static Camera* GetCamera() { return Object3D::camera; }
 	inline static LightCamera* GetLightCamera() { return Object3D::lightCamera; }
-	static void SetBbIndex(const int arg_index)
-	{
-		bbIndex = arg_index;
-	}
 	static void ClucLightViewProjection();
 private://静的メンバ変数
 	static Camera* camera;
@@ -55,7 +51,6 @@ private://静的メンバ変数
 	static bool drawShadow;
 	static bool screenDraw;
 	static LightGroup* lightGroup;
-	static int bbIndex;
 	static XMMATRIX  lightViewProjection;
 public:
 //構造体
@@ -96,10 +91,10 @@ public:
 	//親オブジェクトをセット
 	void SetParent(Object3D* parent) { this->parent = parent; }
 private://メンバ変数
-	std::array<ComPtr<ID3D12Resource>, 3> constBuff; // 定数バッファ
-	std::array<ComPtr<ID3D12Resource>, 3> constBuff2; // 定数バッファ
-	std::array<ComPtr<ID3D12Resource>,3> lCameraConstBuff; // 定数バッファ
-	std::array<ComPtr<ID3D12Resource>,3> constCameraBuff;
+	ComPtr<ID3D12Resource> constBuff; // 定数バッファ
+	ComPtr<ID3D12Resource> constBuff2; // 定数バッファ
+	ComPtr<ID3D12Resource>lCameraConstBuff; // 定数バッファ
+	ComPtr<ID3D12Resource>constCameraBuff;
 	// ローカルワールド変換行列
 	XMMATRIX matWorld;
 	//ワールド行列に対する回転角度

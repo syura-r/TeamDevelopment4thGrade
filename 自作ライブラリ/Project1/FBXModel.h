@@ -102,12 +102,7 @@ private:
 //FBXシーン
 	FbxScene* fbxScene = nullptr;
 	//static int bbIndex;
-public://メンバ関数
-	//static void SetBbIndex()
-	//{
-	//	bbIndex = DirectXLib::GetInstance()->GetBbIndex();
-	//}
-	~FBXModel();
+public://メンバ関数	~FBXModel();
 	//描画
 	void Draw()override;
 	//getter

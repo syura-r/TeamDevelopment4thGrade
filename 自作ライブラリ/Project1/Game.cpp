@@ -298,9 +298,6 @@ void Game::Run()
 
 		else if (!nowLoading)
 		{
-			Object::SetBbIndex();
-			TextureResource::SetBbIndex();
-			Sprite::SetBbIndex();
 			Input::Update();
 			Alpha::Update();
 			if (Input::TriggerKey(DIK_1))

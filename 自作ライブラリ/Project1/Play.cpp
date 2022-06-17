@@ -16,7 +16,7 @@
 #include "Floor.h"
 #include "TestBoss.h"
 #include "Field.h"
-
+#include "TextureResource.h"
 #include "StandardEnemy.h"
 #include "ItemEmitter.h"
 #include "Stadium.h"
@@ -39,13 +39,13 @@ Play::Play()
 	//ƒ‰ƒCƒgF‚ðÝ’è
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, XMFLOAT3(color0));
-	menu = std::make_unique<Menu>();
+	//menu = std::make_unique<Menu>();
 	collisionManager = CollisionManager::GetInstance();
 	objectManager = ObjectManager::GetInstance();
 	actorManager = ActorManager::GetInstance();
 	actorManager->Initialize();
 
-	result = std::make_unique<Result>();
+	//result = std::make_unique<Result>();
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
@@ -146,13 +146,13 @@ void Play::PreDraw()
 		}
 #endif
 
-		screenResource->PreDraw();
-		Object3D::SetCamera(screenCamera);
-		Object3D::SetScreenDraw(true);
-		objectManager->PreDraw();
-		Object3D::SetScreenDraw(false);
-		Object3D::SetCamera(camera.get());
-		screenResource->PostDraw();
+		//screenResource->PreDraw();
+		//Object3D::SetCamera(screenCamera);
+		//Object3D::SetScreenDraw(true);
+		//objectManager->PreDraw();
+		//Object3D::SetScreenDraw(false);
+		//Object3D::SetCamera(camera.get());
+		//screenResource->PostDraw();
 
 		objectManager->PreDraw();
 		stadium->Draw();
