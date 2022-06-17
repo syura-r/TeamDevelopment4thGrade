@@ -180,9 +180,9 @@ void Play::Update()
 
 	camera->Update();
 
-	if (Input::TriggerKey(DIK_7))
+	if (Input::DownKey(DIK_7))
 	{
-		ParticleEmitter::CreateExplosion(Vector3(0, 0, 0));
+		ParticleEmitter::CutEffect(Vector3(0, 0, 0), Vector3(1,0,0));
 	}
 
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));

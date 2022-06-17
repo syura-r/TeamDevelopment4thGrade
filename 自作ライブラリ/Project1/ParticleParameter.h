@@ -1,8 +1,9 @@
 #pragma once
 #include <intsafe.h>
+#include <string>
 
 #include"Vector.h"
-#include<string>
+
 struct ParticleParameter
 {
 	// ‰Á‘¬“x
@@ -43,5 +44,4 @@ struct OutputData
 
 	Vector3 velocity;
 	UINT frame;
-
 };
