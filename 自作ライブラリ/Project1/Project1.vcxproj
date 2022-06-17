@@ -249,6 +249,7 @@
     <ClCompile Include="SmartPtr.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Sprite3D.cpp" />
     <ClCompile Include="Stadium.cpp" />
     <ClCompile Include="StandardEnemy.cpp" />
     <ClCompile Include="TestBoss.cpp" />
@@ -371,6 +372,7 @@
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Sprite3D.h" />
     <ClInclude Include="Stadium.h" />
     <ClInclude Include="StandardEnemy.h" />
     <ClInclude Include="TestBoss.h" />

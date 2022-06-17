@@ -27,6 +27,8 @@ Play::Play()
 	next = Ending;
 	camera = std::make_unique<DebugCamera>();
 	Object3D::SetCamera(camera.get());
+	Sprite3D::SetCamera(camera.get());
+
 	screenCamera = new ScreenCamera();
 	
 	//ParticleEmitter::Initialize(camera.get());
@@ -53,6 +55,8 @@ Play::Play()
 
 	screenResource = new TextureResource("screen.png",false, true);
 	stadium = new Stadium();
+
+	//test = new Sprite3D();
 }
 
 
@@ -64,6 +68,7 @@ Play::~Play()
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
+	//PtrDelete(test);
 }
 
 void Play::Initialize()
@@ -162,8 +167,37 @@ void Play::PostDraw()
 {
 	//if (migrate)
 	//	return;
-		objectManager->PostDraw();
-	if ( !Object3D::GetDrawShadow())
+	objectManager->PostDraw();
+
+	static Vector3 pos = { 0,0,0 };
+
+	if (Input::DownKey(DIK_RIGHT))
+	{
+		pos.x += 0.3f;
+	}
+	if (Input::DownKey(DIK_LEFT))
+	{
+		pos.x -= 0.3f;
+	}
+	if (Input::DownKey(DIK_UP))
+	{
+		pos.z += 0.3f;
+	}
+	if (Input::DownKey(DIK_DOWN))
+	{
+		pos.z -= 0.3f;
+	}
+	if (Input::DownKey(DIK_K))
+	{
+		pos.y -= 0.3f;
+	}
+	if (Input::DownKey(DIK_I))
+	{
+		pos.y += 0.3f;
+	}
+	//test->SpriteSetTextureRect("stadiumMap.png", 100, 100, 300, 300);
+	//test->DrawSprite("stadiumMap.png", pos);
+	if (!Object3D::GetDrawShadow())
 	{
 		DirectXLib::GetInstance()->DepthClear();
 	}
