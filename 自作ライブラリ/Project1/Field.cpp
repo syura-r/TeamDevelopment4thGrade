@@ -27,9 +27,9 @@ Field::Field()
 		SetEdges();
 	}
 
-	Create(OBJLoader::GetModel("Hexagon"));	
+	Create(OBJLoader::GetModel("fieldEdge"));
 	position = { 0,-5,0 };
-	scale = { 45,1,45 };
+	scale = { RADIUS,1,RADIUS };
 	color = { 0.1f ,0.1f, 0.1f,1 };
 	Object::Update();
 
@@ -87,7 +87,7 @@ void Field::DrawReady()
 
 void Field::Draw()
 {
-	//
+	Object::Draw();
 }
 
 void Field::CalcTilt()
@@ -472,6 +472,19 @@ int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 	}
 
 	return returnVal;
+}
+
+void Field::ReviveGottenPanel(FieldPiece* arg_piece)
+{
+	for (auto itr = gottenPieces.begin(); itr != gottenPieces.end(); itr++)
+	{
+		if (*itr == arg_piece)
+		{
+			(*itr)->ChangeIsActive(true);
+			gottenPieces.erase(itr);
+			break;
+		}
+	}
 }
 
 FieldPiece* Field::GetPlayerRidingPiece()

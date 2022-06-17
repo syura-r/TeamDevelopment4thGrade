@@ -18,6 +18,7 @@
 #include "NormalWaveMeasurer.h"
 #include "LocusSelecter.h"
 #include "NumberSprite.h"
+#include "PanelCountUI.h"
 
 class StandardEnemy;
 class EnergyItem;
@@ -109,6 +110,8 @@ private:
 	void Tackle();
 	//タックルの中断
 	void SuspendTackle();
+	//
+	void DischargeGottenPanel(StandardEnemy* arg_enemy);
 
 	
 	//
@@ -200,6 +203,10 @@ private:
 	//BoxCollider* boxCollider;
 
 	FBXModel* myModel = nullptr;
+
+	//パネル所持数表示
+	PanelCountUI* panelCountUI = nullptr;
+
 private://静的メンバ変数
 	static DebugCamera* camera;
 

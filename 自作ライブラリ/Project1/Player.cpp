@@ -19,8 +19,10 @@
 #include "StandardEnemy.h"
 #include "EnergyItem.h"
 #include "CircularSaw.h"
+#include "PanelCountBoard.h"
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
+#include "ItemEmitter.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -51,6 +53,10 @@ Player::Player()
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Player", this);
 
+	panelCountUI = new PanelCountUI();
+
+	pObjectManager->Add(new PanelCountBoard(this));
+
 	Initialize();
 
 	//定数バッファの作成
@@ -79,6 +85,7 @@ Player::Player()
 Player::~Player()
 {	
 	delete attackSprite;	
+	delete panelCountUI;
 	//delete locusSelecter;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
@@ -137,6 +144,8 @@ void Player::Initialize()
 	weight = 10;
 	cutPower = 0;	
 	gottenPanel = 0;
+
+	panelCountUI->Initialize();
 }
 
 void Player::Update()
@@ -227,6 +236,8 @@ void Player::Update()
 	{
 		locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 	}
+
+	panelCountUI->Update(gottenPanel);
 }
 
 void Player::Draw()
@@ -249,6 +260,7 @@ void Player::Draw()
 		
 		//locusSelecter->Draw();		
 	}
+	panelCountUI->Draw();
 }
 
 void Player::DrawReady()
@@ -887,6 +899,9 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 	Vector3  playerAfterVel = -enemyWeight * constVec + velocity;
 	Vector3  enemyAfterVel = (playerWeight * weightCoefficient) * constVec + enemyVel;
 
+	
+	DischargeGottenPanel(arg_enemy);
+
 	if (tackleFlag)
 	{
 		//タックルで敵だけ飛ばす
@@ -1071,6 +1086,28 @@ void Player::SuspendTackle()
 		speed = walkSpeed;
 	}
 	
+}
+
+void Player::DischargeGottenPanel(StandardEnemy* arg_enemy)
+{
+	ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
+	int maxEmit = 0;
+	if (gottenPanel == 1)
+	{
+		maxEmit = 1;
+	}
+	else
+	{
+		maxEmit = gottenPanel / 2;
+	}
+	
+	for (int i = 0; i < maxEmit; i++)
+	{
+		itemEmitter->EmitPanelItem(virtualityPlanePosition);
+		gottenPanel--;
+		weight -= FieldPiece::GetWeight();
+	}
+
 }
 
 Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)

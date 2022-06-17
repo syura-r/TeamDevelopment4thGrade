@@ -13,6 +13,7 @@
 #include "EnergyItem.h"
 #include "CircularSaw.h"
 #include "PanelCutLocus.h"
+#include "PanelCountBoard.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -37,6 +38,10 @@ StandardEnemy::StandardEnemy(Vector3 arg_position, float arg_hitWeight)
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
 
+	panelCountUI = new PanelCountUI();
+
+	ObjectManager::GetInstance()->Add(new PanelCountBoard(this));
+
 	Initialize();
 }
 
@@ -44,6 +49,7 @@ StandardEnemy::~StandardEnemy()
 {
 	delete actionTimer;
 	delete walkingTimer;
+	delete panelCountUI;
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -72,11 +78,16 @@ void StandardEnemy::Initialize()
 	isStraddle = false;
 	isControl = false;
 	isAttacked = false;
+<<<<<<< HEAD
 	cuttingFlag = false;
 	cutPower = 0;
 	gottenPanel = 0;
 	playerPos = { 0,0,0 };
 	itemPos = { 0,0,0 };
+=======
+
+	panelCountUI->Initialize();
+>>>>>>> master
 }
 
 void StandardEnemy::Update()
@@ -193,6 +204,8 @@ void StandardEnemy::Update()
 	//}
 
 	object->Update();
+
+	panelCountUI->Update(0);//player‚ÌgottenPanel‚Ì–ðŠ„‚ð‚·‚é•Ï”‚ð“ü‚ê‚é
 }
 
 void StandardEnemy::Draw()
@@ -204,6 +217,8 @@ void StandardEnemy::Draw()
 	PipelineState::SetPipeline("FBX");
 
 	object->Draw(true);
+
+	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
 }
 
 void StandardEnemy::DrawReady()

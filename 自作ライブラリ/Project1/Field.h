@@ -21,6 +21,7 @@ public:
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
 	int CutPanel(std::vector<Vector2>& arg_vecPos);
+	void ReviveGottenPanel(FieldPiece* arg_piece);
 
 	FieldPiece* GetPlayerRidingPiece();
 	Vector3 GetPlayerCuttingStartPos();
@@ -35,7 +36,7 @@ public:
 
 private:
 	//çLÇ≥
-	const float RADIUS = 45.0f;
+	const float RADIUS = 50.0f;
 	static const int PIECE_LAYER_NUM;
 	static std::vector<Vector2> edges;
 	//åXÇ´Çï\Ç∑

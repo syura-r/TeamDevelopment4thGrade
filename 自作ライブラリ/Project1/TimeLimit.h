@@ -1,7 +1,6 @@
 #pragma once
 #include "Timer.h"
 #include "NumberSprite.h"
-#include "Vector.h"
 
 class TimeLimit
 {

@@ -95,6 +95,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UV_Player", "GamePlay_UV_Player.png");
 		Texture::LoadTexture("GamePlay_UI_Number", "GamePlay_UI_Number.png");
 		Texture::LoadTexture("GamePlay_UI_Colon", "GamePlay_UI_Colon.png");
+		Texture::LoadTexture("GamePlay_UI_Gettriangle_Player", "GamePlay_UI_Gettriangle_Player.png");
+		Texture::LoadTexture("GamePlay_UI_Gettriangle_Enemy", "GamePlay_UI_Gettriangle_Enemy.png");
 	
 		break; 
 	case 2:
@@ -102,6 +104,7 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("box", "box.obj", false);
 		OBJLoader::LoadModelFile("sphere", "sphere.obj", true);
 		OBJLoader::LoadModelFile("obBox", "bottomOriginBox.obj", false);
+
 		break;
 	case 3:
 		//Objモデルの読み込み
@@ -110,6 +113,9 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("Hexagon", "Hexagon.obj", false);
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
+		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
+		OBJLoader::LoadModelFile("getPanelBoard_Player", "getPanelBoard_Player.obj", false);
+		OBJLoader::LoadModelFile("getPanelBoard_Enemy", "getPanelBoard_Enemy.obj", false);
 		break;
 	case 4:
 		//FBXファイルの読み込み

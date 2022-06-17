@@ -420,11 +420,25 @@
     <ClCompile Include="Pause.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="CircularSaw.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
     <ClCompile Include="SamplePlayer.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
+=======
+    <ClCompile Include="UnableThroughBlock.cpp">
+		<Filter>ソース ファイル\GameObject\proto_second</Filter>
+	</ClCompile>
+    <ClCompile Include="CircularSaw.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+	</ClCompile>
+    <ClCompile Include="PanelCountUI.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelCountBoard.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+>>>>>>> master
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -764,11 +778,25 @@
     <ClInclude Include="Pause.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="CircularSaw.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
     <ClInclude Include="SamplePlayer.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+=======
+    <ClInclude Include="UnableThroughBlock.h">
+		<Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+	</ClInclude>
+    <ClInclude Include="CircularSaw.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+	</ClInclude>
+    <ClInclude Include="PanelCountUI.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelCountBoard.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+>>>>>>> master
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

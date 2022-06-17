@@ -1,0 +1,25 @@
+#pragma once
+#include "NumberSprite.h"
+
+enum GAMEOBJECT_TYPE
+{
+	PLAYER,
+	ENEMY,
+};
+class PanelCountUI
+{
+public:
+	PanelCountUI();
+	~PanelCountUI();
+
+	void Initialize();
+	void Update(const int panelNum);
+	void Draw(const GAMEOBJECT_TYPE type = GAMEOBJECT_TYPE::PLAYER);
+
+private:
+	//アイコン
+	Sprite* icon_sprite;
+	//取得数表示
+	NumberSprite* getPanel_sprite;
+	float panelNum = 0;
+};

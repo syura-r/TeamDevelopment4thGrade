@@ -1,4 +1,5 @@
 #include "TimeLimit.h"
+#include "Vector.h"
 
 TimeLimit::TimeLimit(const unsigned int arg_limit)
 {
@@ -41,9 +42,13 @@ void TimeLimit::Draw()
 {
 	//画像サイズ（数字1つ分）
 	const Vector2 numberTexSize = { 47.0f, 86.0f };
+	//画面サイズ
+	const Vector2 windowSize = { 1920.0f, 1080.0f };
+	//余白
+	const Vector2 spaceSize = { 50.0f, 30.0f };
 
 	//全体の左上座標
-	Vector2 position = { 1920 - (numberTexSize.x * 3) - 50, numberTexSize.y / 2 + 30 };
+	Vector2 position = { windowSize.x - (numberTexSize.x * 3) - spaceSize.x, (numberTexSize.y / 2) + spaceSize.y };
 
 	minute_sprite->Draw(1, "GamePlay_UI_Number", position);
 

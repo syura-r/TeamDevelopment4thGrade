@@ -14,6 +14,7 @@ public:
 	void Update();
 
 	void EmitEnergyItem(const Vector3& arg_pos);
+	void EmitPanelItem(const Vector3& arg_pos);
 
 private:
 	ItemEmitter();
