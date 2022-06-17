@@ -36,6 +36,7 @@ public:
     float GetWeight() { return weight; }
     Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
     int GetBlowTime() { return blowTime; }
+    Vector3 GetDirection()const;
 
     // setter
     void SetWeight(float arg_weight) { weight = arg_weight; }

@@ -49,4 +49,5 @@ private:
 	static std::vector<Vector2> basePoints;
 
 	void SetPoints();
+	void ChangeColorForRidden();
 };
