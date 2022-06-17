@@ -68,20 +68,16 @@ void FieldPiece::Update()
 
 void FieldPiece::Draw()
 {
-	if (isActive)
+	if (!isActive)
 	{
-		color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	}
-	else
-	{
-		color = { 1.0f, 1.0f, 1.0f, 0.2f };
+		return;
 	}
 
+	color = { 0.3f, 0.3f, 0.3f, 1.0f };
 	if (ActorManager::GetInstance()->GetFields()[0]->GetPlayerRidingPiece() == this)
 	{
-		color = { 1.0f, 0.1f, 0.1f, 1.0f };
-	}
-	//Object::Update();
+		color = { 0.8f, 0.1f, 0.1f, 1.0f };
+	}	
 
 	Object::Draw();
 }
