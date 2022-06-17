@@ -6,9 +6,15 @@
 class CircularSaw :
     public Object
 {
+	
 public:
+	enum GAMEOBJECTTYPE
+	{
+		PLAYER,
+		ENEMY,
+	};
 
-	CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus);
+	CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType);
 	~CircularSaw();
 	void Initialize()override;
 	void Update()override;
@@ -16,11 +22,14 @@ public:
 
 	void CopyLocus();
 
+	
 private:
 
 	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);
 
 	LocusType cutLocusNum;
+
+	GAMEOBJECTTYPE objectType;
 
 	BaseLocus* nowCuttingLocus;
 

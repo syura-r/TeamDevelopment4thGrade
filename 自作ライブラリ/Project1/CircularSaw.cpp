@@ -13,11 +13,12 @@
 
 
 
-CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus)
+CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType)
 {
 	Create(OBJLoader::GetModel("Saw"));
 	virtualityPlanePosition = arg_virtualityPlanePosition;
 	nowCuttingLocus = arg_nowCuttingLocus;
+	objectType = arg_objecType;
 	Initialize();
 }
 
@@ -57,13 +58,22 @@ void CircularSaw::Update()
 	{
 		currentLineNum++;
 		length = 0;
-
+		
 		if (currentLineNum >= nowCuttingLocus->GetMaxNumLine())
 		{
 			Dead();
-			Player* player = ActorManager::GetInstance()->GetPlayer();			
-
-			player->EndDrawing();
+		
+			switch (objectType)
+			{
+			case CircularSaw::PLAYER:
+				ActorManager::GetInstance()->GetPlayer()->EndDrawing();
+				break;
+			case CircularSaw::ENEMY:
+				break;
+			default:
+				break;
+			}
+		
 
 		}
 	}

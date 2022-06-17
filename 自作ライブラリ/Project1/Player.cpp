@@ -190,7 +190,7 @@ void Player::Update()
 				//ü‚Ì¶¬
 				//CreateLine();
 				Vector3 p = field->GetPlayerCuttingStartPos();
-				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus));
+				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus,CircularSaw::PLAYER));
 			}
 			
 		}
