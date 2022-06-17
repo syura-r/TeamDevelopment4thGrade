@@ -11,6 +11,10 @@ float4 PSmain(VSOutput input) : SV_TARGET
     	//テクスチャマッピング
     float4 texcolor = tex0.Sample(smp0, input.uv);
 
+    if (texcolor.w == 0)
+    {
+        discard;
+    }
 
     const float zlnLVP = input.shadowPos.z / input.shadowPos.w;
 	

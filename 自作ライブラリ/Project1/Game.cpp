@@ -96,6 +96,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Colon", "GamePlay_UI_Colon.png");
 		Texture::LoadTexture("GamePlay_UI_Gettriangle_Player", "GamePlay_UI_Gettriangle_Player.png");
 		Texture::LoadTexture("GamePlay_UI_Gettriangle_Enemy", "GamePlay_UI_Gettriangle_Enemy.png");
+		Texture::LoadTexture("Result_UI_Gettriangle_text", "Result_UI_Gettriangle_text.png");
+		Texture::LoadTexture("Result_UI_Totalscore_Text", "Result_UI_Totalscore_Text.png");
 	
 		break; 
 	case 2:
@@ -218,7 +220,7 @@ void Game::LoadFinish()
 	sceneManeger->Initialize();
 	sceneManeger->Add(Scene::SCENE::Title, new Title());
 	sceneManeger->Add(Scene::SCENE::Play, new Play());
-	//sceneManeger->Add(Scene::SCENE::Ending, new Ending());
+	sceneManeger->Add(Scene::SCENE::Ending, new Ending());
 
 	sceneManeger->Change(Scene::SCENE::Title);
 

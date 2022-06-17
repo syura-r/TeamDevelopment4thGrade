@@ -26,7 +26,11 @@ void Object::Initialize()
 
 void Object::Update()
 {
-	object->Update();
+	if(billboardType != BILLBOARD_TYPE::NONE)
+		object->Update(billboardType);
+	else
+		object->Update();
+
 	if (collider)
 		collider->Update();
 }
