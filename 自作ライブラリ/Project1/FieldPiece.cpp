@@ -73,13 +73,7 @@ void FieldPiece::Draw()
 		return;
 	}
 
-	color = { 0.3f, 0.3f, 0.3f, 1.0f };
-	ActorManager* aManager = ActorManager::GetInstance();
-	CuttingInfo* info = aManager->GetFields()[0]->GetCuttingInfo((Object*)aManager->GetPlayer());
-	if (info->ridingPiece == this)
-	{
-		color = { 0.8f, 0.1f, 0.1f, 1.0f };
-	}	
+	ChangeColorForRidden();
 
 	Object::Draw();
 }
@@ -210,5 +204,32 @@ void FieldPiece::SetPoints()
 		}
 
 		points[i] += LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition);
+	}
+}
+
+void FieldPiece::ChangeColorForRidden()
+{
+	color = { 0.3f, 0.3f, 0.3f, 1.0f };
+	ActorManager* aManager = ActorManager::GetInstance();
+	Field* field = aManager->GetFields()[0];
+
+	//Player
+	CuttingInfo* info = aManager->GetFields()[0]->GetCuttingInfo((Object*)aManager->GetPlayer());
+	if (info->ridingPiece == this)
+	{
+		color = { 0.8f, 0.1f, 0.1f, 1.0f };
+		return;
+	}
+
+	//Enemy
+	auto enemies = aManager->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		info = aManager->GetFields()[0]->GetCuttingInfo((Object*)e);
+		if (info->ridingPiece == this)
+		{
+			color = { 0.8f, 0.1f, 0.1f, 1.0f };
+			return;
+		}
 	}
 }

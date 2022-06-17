@@ -78,7 +78,10 @@ private:
 	void CalcTilt();
 	float GetMultiplyingFactor(const float arg_length);
 	//Playerがアクションするパネル断定用
-	void DecidePlayerRidingPiece();
-	void DecidePlayerCuttingStartPos();
-	void DecidePlayerCuttingAngle();
+	void DecideAllRidingPiece();
+	void DecideAllCuttingStartPos();
+	void DecideAllCuttingAngle();
+	void DecideRidingPiece(Object* arg_obj, const Vector3& arg_pos);
+	void DecideCuttingStartPos(Object* arg_obj, const Vector3& arg_pos, const Vector3& arg_dir);
+	void DecideCuttingAngle(Object* arg_obj);
 };

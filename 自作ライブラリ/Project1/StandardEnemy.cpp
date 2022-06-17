@@ -209,6 +209,11 @@ void StandardEnemy::IsBlow()
 	isBlow = true;
 }
 
+Vector3 StandardEnemy::GetDirection() const
+{
+	return LocusUtility::AngleToVector2(rotation.y + 90);
+}
+
 void StandardEnemy::Move()
 {
 	if (isControl)

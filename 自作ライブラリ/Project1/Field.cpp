@@ -65,10 +65,10 @@ void Field::Initialize()
 void Field::Update()
 {	
 	CalcTilt();
-	SetRotation(angleTilt);	
-	DecidePlayerRidingPiece();
-	DecidePlayerCuttingStartPos();
-	DecidePlayerCuttingAngle();
+	SetRotation(angleTilt);		
+	DecideAllRidingPiece();
+	DecideAllCuttingStartPos();
+	DecideAllCuttingAngle();
 
 	if (Input::TriggerKey(DIK_L))
 	{
@@ -146,12 +146,53 @@ float Field::GetMultiplyingFactor(const float arg_length)
 	return arg_length / 300.0f;
 }
 
-void Field::DecidePlayerRidingPiece()
+void Field::DecideAllRidingPiece()
 {
+	//Player
 	Player* player = ActorManager::GetInstance()->GetPlayer();
-	Vector2 playerPos = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
+	DecideRidingPiece(player, player->GetVirtualityPlanePosition());
+
+	//Enemy
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		DecideRidingPiece(e, e->GetVirtualityPlanePosition());
+	}
+}
+
+void Field::DecideAllCuttingStartPos()
+{
+	//Player
+	Player* player = ActorManager::GetInstance()->GetPlayer();
+	DecideCuttingStartPos(player, player->GetVirtualityPlanePosition(), player->GetDirection());
+
+	//Enemy
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		DecideCuttingStartPos(e, e->GetVirtualityPlanePosition(), e->GetDirection());
+	}
+}
+
+void Field::DecideAllCuttingAngle()
+{
+	//Player
+	Player* player = ActorManager::GetInstance()->GetPlayer();
+	DecideCuttingAngle(player);
+
+	//Enemy
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		DecideCuttingAngle(e);
+	}
+}
+
+void Field::DecideRidingPiece(Object* arg_obj, const Vector3& arg_pos)
+{	
+	Vector2 playerPos = LocusUtility::Dim3ToDim2XZ(arg_pos);
 	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
-	CuttingInfo* info = GetCuttingInfo(player);
+	CuttingInfo* info = GetCuttingInfo(arg_obj);
 
 	//—ñ“Á’è
 	float adjustedZPos = -playerPos.y + halfHeight;
@@ -201,15 +242,13 @@ void Field::DecidePlayerRidingPiece()
 	info->ridingPiece = nullptr;
 }
 
-void Field::DecidePlayerCuttingStartPos()
-{
-	Player* player = ActorManager::GetInstance()->GetPlayer();
-	Vector3 playerPos = player->GetVirtualityPlanePosition();
-	CuttingInfo* info = GetCuttingInfo(player);
+void Field::DecideCuttingStartPos(Object* arg_obj, const Vector3& arg_pos, const Vector3& arg_dir)
+{		
+	CuttingInfo* info = GetCuttingInfo(arg_obj);
 
 	if (!info->ridingPiece)
 	{
-		info->cuttingStartPos = playerPos;
+		info->cuttingStartPos = arg_pos;
 		info->cuttingStartPosNum = 0;
 		return;
 	}
@@ -220,8 +259,8 @@ void Field::DecidePlayerCuttingStartPos()
 	for (int i = 0; i < 3; i++)
 	{
 		//Šp“x
-		float eyeAngle = LocusUtility::Vector3XZToAngle(player->GetDirection());
-		float posAngle = LocusUtility::Vector3XZToAngle(LocusUtility::Dim2XZToDim3(piecePoints[i], position.y) - player->GetVirtualityPlanePosition());
+		float eyeAngle = LocusUtility::Vector3XZToAngle(arg_dir);
+		float posAngle = LocusUtility::Vector3XZToAngle(LocusUtility::Dim2XZToDim3(piecePoints[i], position.y) - arg_pos);
 		float angleScore = fabsf(eyeAngle - posAngle);
 		if (angleScore >= 180)
 		{
@@ -230,7 +269,7 @@ void Field::DecidePlayerCuttingStartPos()
 		rateScore[i] += Easing::Lerp(0.0f, 1.0f, angleScore / 180.0f);
 
 		//‹——£
-		float lengthScore = Vector2::Length(LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition()) - piecePoints[i]);
+		float lengthScore = Vector2::Length(LocusUtility::Dim3ToDim2XZ(arg_pos) - piecePoints[i]);
 		//rateScore[i] += Easing::Lerp(0.0f, 1.0f, lengthScore / FieldPiece::GetLowerTimeOffset()) * 40.0f;
 	}
 
@@ -246,10 +285,9 @@ void Field::DecidePlayerCuttingStartPos()
 	info->cuttingStartPosNum = num;
 }
 
-void Field::DecidePlayerCuttingAngle()
-{
-	Player* player = ActorManager::GetInstance()->GetPlayer();
-	CuttingInfo* info = GetCuttingInfo(player);
+void Field::DecideCuttingAngle(Object* arg_obj)
+{	
+	CuttingInfo* info = GetCuttingInfo(arg_obj);
 
 	if (!info->ridingPiece)
 	{
