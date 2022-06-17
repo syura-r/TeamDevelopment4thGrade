@@ -16,6 +16,7 @@
 #include "Floor.h"
 #include "TestBoss.h"
 #include "Field.h"
+#include "Ending.h"
 
 #include "StandardEnemy.h"
 #include "ItemEmitter.h"
@@ -184,6 +185,14 @@ void Play::Update()
 	{
 		ParticleEmitter::CreateExplosion(Vector3(0, 0, 0));
 	}
+
+#ifdef _DEBUG
+	if (Input::TriggerKey(DIK_E))//I—¹ˆ—
+	{
+		ShutDown();
+		Ending::SetScore(100);//ƒpƒlƒ‹Žæ“¾”‚ð“ü‚ê‚é
+	}
+#endif
 
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
