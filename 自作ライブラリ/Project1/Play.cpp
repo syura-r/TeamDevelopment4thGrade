@@ -148,6 +148,12 @@ void Play::Update()
 	screenCamera->Update();
 
 	collisionManager->CheckAllCollisions();
+
+	if (ActorManager::GetInstance()->GetPlayer()->IsGameEnd() )
+	{
+		ShutDown();
+		Ending::SetScore(actorManager->GetPlayer()->GetGottenPanel());
+	}
 }
 
 void Play::PreDraw()
