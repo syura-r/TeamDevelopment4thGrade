@@ -18,10 +18,10 @@ void Sprite3D::CreateSprite3D()
 	vertices[2].normal = { 0.0f,0.0f,1.0f };
 	vertices[3].normal = { 0.0f,0.0f,1.0f };
 
-	vertices[0].uv = { 0.0f,1.0f };
-	vertices[1].uv = { 0.0f,0.0f };
-	vertices[2].uv = { 1.0f,1.0f };
-	vertices[3].uv = { 1.0f,0.0f };
+	vertices[0].uv = { 0.0f,0.0f };
+	vertices[1].uv = { 0.0f,1.0f };
+	vertices[2].uv = { 1.0f,0.0f };
+	vertices[3].uv = { 1.0f,1.0f };
 
 	auto dev = DirectXLib::GetInstance()->GetDevice();
 
