@@ -9,7 +9,6 @@ public:
 	~PanelCountBoard();
 	void Initialize()override;
 	void Update()override;
-	void DrawReady()override;
 
 private:
 	Object* parentObject = nullptr;

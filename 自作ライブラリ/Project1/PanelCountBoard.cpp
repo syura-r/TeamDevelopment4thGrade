@@ -26,20 +26,16 @@ PanelCountBoard::~PanelCountBoard()
 void PanelCountBoard::Initialize()
 {
 	position = parentObject->GetPosition();
+	SetBillboardType(BILLBOARD_TYPE::Y_AXIS);
 	Object::Update();
 }
 
 void PanelCountBoard::Update()
 {
-
 	const Vector3 parentAddPosition = { 0,4,0 };
 	position = parentObject->GetPosition() + parentAddPosition;
 
 	//panelNum = ActorManager::GetInstance()->GetPlayer()->GetGottenPanel();
 
 	Object::Update();
-}
-
-void PanelCountBoard::DrawReady()
-{
 }

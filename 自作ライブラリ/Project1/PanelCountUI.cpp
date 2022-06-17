@@ -35,6 +35,7 @@ void PanelCountUI::Draw(const GAMEOBJECT_TYPE type)
 	const Vector2 spaceSize = { 50.0f, 30.0f };
 
 	Vector2 position = { (iconTexSize.x / 2) + (numberTexSize.x * 2) + spaceSize.x, windowSize.y - (iconTexSize.y / 2) - spaceSize.y };
+	Vector2 iconScale = { 0.3f, 0.3f };
 	std::string iconTexName = "GamePlay_UI_Gettriangle_Player";
 
 	//“G—p
@@ -44,7 +45,7 @@ void PanelCountUI::Draw(const GAMEOBJECT_TYPE type)
 		iconTexName = "GamePlay_UI_Gettriangle_Enemy";
 	}
 
-	icon_sprite->DrawSprite(iconTexName, position);
+	icon_sprite->DrawSprite(iconTexName, position, 0.0f, iconScale);
 	position.x += (iconTexSize.x / 2) + ((numberTexSize.x / 2) * 2);
 	getPanel_sprite->Draw(2, "GamePlay_UI_Number", position);
 }
