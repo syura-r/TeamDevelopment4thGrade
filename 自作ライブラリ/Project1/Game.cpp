@@ -27,11 +27,10 @@
 #include "Sprite.h"
 #include "TextureResource.h"
 
-#include "ParticleTestScene.h"
-
 DrawMode::MODE DrawMode::mode = DrawMode::None;
 bool DrawMode::drawImGui = true;
 TextureResource* TextureResource::mainResource = nullptr;
+
 Game::Game()
 {
 	win = std::make_unique<Window>(1920,1080);
@@ -219,7 +218,6 @@ void Game::LoadFinish()
 	sceneManeger->Initialize();
 	sceneManeger->Add(Scene::SCENE::Title, new Title());
 	sceneManeger->Add(Scene::SCENE::Play, new Play());
-	sceneManeger->Add(Scene::SCENE::ParticleTestScene, new ParticleTestScene());
 	//sceneManeger->Add(Scene::SCENE::Ending, new Ending());
 
 	sceneManeger->Change(Scene::SCENE::Title);
@@ -324,7 +322,7 @@ void Game::Run()
 			lightCamera->Update();
 			Object3D::ClucLightViewProjection();
 			sceneManeger->Update();
-			ParticleEmitter::Update();
+			ParticleManager::GetInstance()->Update();
 			directX->ComputeBegin();
 			//2.画面クリアコマンドここまで
 			//Object3D::SetDrawShadow(true);
@@ -349,7 +347,7 @@ void Game::Run()
 			//directX->DepthClear();
 
 			sceneManeger->PostDraw();
-			ParticleEmitter::Draw();
+			ParticleManager::GetInstance()->Draw();
 		}
 		directX->EndDraw();
 
@@ -370,7 +368,7 @@ void Game::End()
 	}
 	directX->End();
 	computeWrapper->End();
-	ParticleEmitter::End();
+	ParticleManager::GetInstance()->End();
 #ifdef _DEBUG
 	DebugText::End();
 #endif // _DEBUG

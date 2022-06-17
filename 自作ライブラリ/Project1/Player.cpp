@@ -150,17 +150,6 @@ void Player::Initialize()
 
 void Player::Update()
 {
-#ifdef _DEBUG
-	//パーティクル確認用
-	if (Input::TriggerKey(DIK_RETURN))
-	{
-		ParticleEmitter::CreateExplosion(position);
-		ParticleEmitter::CreateAir(position);
-		ParticleEmitter::CreateGetEffect(position);
-
-	}
-#endif
-	
 	//locusSelecter->Update();
 
 	//移動処理
