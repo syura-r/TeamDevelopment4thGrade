@@ -146,65 +146,96 @@ void Player::Initialize()
 	gottenPanel = 0;
 
 	panelCountUI->Initialize();
+	fallFlag = false;
+	fallEasingCount = 0;
 }
 
 void Player::Update()
 {
 	//locusSelecter->Update();
 
-	//移動処理
-	Move();
-
-	//カメラのリセット処理
-	MoveCamera();
-
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	CuttingInfo* info = field->GetCuttingInfo(this);
-
-	if (blowFlag)
+	if (fallFlag)
 	{
-		blowTime--;
-		if (blowTime <= 0)
-		{
-			blowFlag = false;
-		}
+		Fall();
 	}
 	else
 	{
+		Field* field = ActorManager::GetInstance()->GetFields()[0];
+		CuttingInfo* info = field->GetCuttingInfo(this);
 		//SelectLocus();		
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece)
 		{
-			if (!tackleFlag && !drawingFlag)
-			{
-				drawingFlag = true;
-				//線の生成
-				//CreateLine();
-				Vector3 p = info->cuttingStartPos;
-				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus,CircularSaw::PLAYER));
-			}
-			
-		}
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
-		{	
-			Tackle();
+			drawingFlag = true;
+			//線の生成
+			//CreateLine();
+			Vector3 p = info->cuttingStartPos;
+			ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER));
 		}
 
-		//ドローイングの処理
-		DrawingLine();
-		
-	}	
-	
-	//図形の消去
-	if (!drawingFlag)
-	{
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		//移動処理
+		Move();
+
+		//カメラのリセット処理
+		MoveCamera();
+
+		if (blowFlag)
 		{
-			if (/*!vecLocuss.empty()*/true)
-			{				
-				DeleteLocuss();
+			blowTime--;
+			if (blowTime <= 0)
+			{
+				blowFlag = false;
 			}
 		}
+		else
+		{
+			//SelectLocus();		
+			if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece)
+			{
+				if (!tackleFlag && !drawingFlag)
+				{
+					drawingFlag = true;
+					//線の生成
+					//CreateLine();
+					Vector3 p = info->cuttingStartPos;
+					ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER));
+				}
+
+			}
+			if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
+			{
+				Tackle();
+			}
+
+			//ドローイングの処理
+			DrawingLine();
+
+		}
+
+		//図形の消去
+		if (!drawingFlag)
+		{
+			if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+			{
+				if (/*!vecLocuss.empty()*/true)
+				{
+					DeleteLocuss();
+				}
+			}
+		}
+
+		Vector3 p = info->cuttingStartPos;
+		//SetLocus(LocusType::UNDIFINED);
+		if (!drawingFlag)
+		{
+			panelCutLocus->SetCutPower(cutPower);
+			panelCutLocus->Move(p, info->cuttingAngle);
+		}
+		for (auto locus : vecLocuss)
+		{
+			locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
+		}
 	}
+	
 	
 	//当たり判定系
 	HitCheckLoci();	
@@ -214,18 +245,6 @@ void Player::Update()
 	//他のオブジェクトとのヒットチェック
 	//CheckHit();
 	Object::Update();	
-	
-	Vector3 p = info->cuttingStartPos;
-	//SetLocus(LocusType::UNDIFINED);
-	if (!drawingFlag)
-	{		
-		panelCutLocus->SetCutPower(cutPower);
-		panelCutLocus->Move(p, info->cuttingAngle);
-	}
-	for (auto locus : vecLocuss)
-	{
-		locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
-	}
 
 	panelCountUI->Update(gottenPanel);
 }
@@ -938,6 +957,23 @@ void Player::HitCheckItems()
 			HitItem(item);
 		}
 	}
+
+	std::vector<PanelItem*> panelItems = ActorManager::GetInstance()->GetPanelItems();
+
+	for (auto panelItem : panelItems)
+	{
+		if (!panelItem->IsEndBounce())
+		{
+			continue;
+		}
+
+		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - panelItem->GetVirtualityPlanePosition()));
+
+		if (length <= RADIUS + PanelItem::GetRadius())
+		{
+			HitPanelItem(panelItem);
+		}
+	}
 }
 
 void Player::HitItem(EnergyItem* arg_item)
@@ -947,6 +983,14 @@ void Player::HitItem(EnergyItem* arg_item)
 	{
 		cutPower++;
 	}
+}
+
+void Player::HitPanelItem(PanelItem* arg_panelItem)
+{
+	arg_panelItem->Dead();
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus->GetCuttedPanelPos());
+	weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;
 }
 
 void Player::StartStand(bool arg_outField, Vector3 arg_velocity)
@@ -1022,12 +1066,15 @@ void Player::WithStand()
 		return;
 	}
 
-	/*standTime--;
+	standTime--;
 	if (standTime <= 0)
 	{
 		Object::SetColor({ 1,1,1,1 });
-		isStanding = false;
-	}*/
+		standingFlag = false;
+		fallFlag = true;
+		fallStartPos = virtualityPlanePosition;
+		fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+	}
 }
 
 void Player::Tackle()
@@ -1098,6 +1145,32 @@ void Player::DischargeGottenPanel(StandardEnemy* arg_enemy)
 		weight -= FieldPiece::GetWeight();
 	}
 
+}
+
+void Player::Fall()
+{
+	if (!fallFlag)
+	{
+		return;
+	}
+	
+	
+
+
+	if (fallEasingCount <= 30)
+	{
+		fallEasingCount++;
+		virtualityPlanePosition = EasingMove(fallStartPos, fallEndPos, 1, fallEasingCount / 30.0f);
+	}
+	else
+	{
+		virtualityPlanePosition.y -= 2;
+	}
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+	
+	
 }
 
 Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)

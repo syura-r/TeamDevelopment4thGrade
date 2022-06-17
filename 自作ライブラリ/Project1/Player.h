@@ -19,6 +19,8 @@
 #include "LocusSelecter.h"
 #include "NumberSprite.h"
 #include "PanelCountUI.h"
+#include "PanelItem.h"
+
 
 class StandardEnemy;
 class EnergyItem;
@@ -40,6 +42,8 @@ public:
 	bool IsAlive();
 
 	void EndDrawing();
+	
+	bool IsFall() { return fallFlag; }
 
 	// 敵と図形の判定のため
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
@@ -102,6 +106,7 @@ private:
 	//アイテムとの当たり判定
 	void HitCheckItems();
 	void HitItem(EnergyItem* arg_item);
+	void HitPanelItem(PanelItem* arg_panelItem);
 	//踏ん張りになる
 	void StartStand(bool arg_outField = true, Vector3 arg_velocity = {});
 	//踏ん張り中の処理
@@ -112,6 +117,8 @@ private:
 	void SuspendTackle();
 	//
 	void DischargeGottenPanel(StandardEnemy* arg_enemy);
+	//場外に落下
+	void Fall();
 
 	
 	//
@@ -170,6 +177,13 @@ private:
 	Vector3 tackleStartPos;
 	Vector3 tackleEndPos;
 	int tackleCount = 0;
+	//落下フラグ
+	bool fallFlag;
+	//落下までの猶予
+	int fallEasingCount;
+
+	Vector3 fallStartPos;
+	Vector3 fallEndPos;
 
 
 	//平面のままのposition
