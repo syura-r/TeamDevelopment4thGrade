@@ -6,6 +6,22 @@
 
 class FieldPiece;
 
+struct CuttingInfo
+{
+	FieldPiece* ridingPiece;
+	int cuttingStartPosNum;
+	Vector3 cuttingStartPos;
+	float cuttingAngle;
+
+	CuttingInfo(FieldPiece* arg_piece = nullptr, const int arg_posNum = 0, const Vector3& arg_startPos = Vector3(), const float arg_angle = 0)
+		:ridingPiece(arg_piece),
+		 cuttingStartPosNum(arg_posNum),
+		 cuttingStartPos(arg_startPos),
+		 cuttingAngle(arg_angle)
+	{
+	}
+};
+
 class Field : public Object
 {
 public:
@@ -53,10 +69,7 @@ private:
 	std::vector<std::vector<FieldPiece*>> pieces;
 	std::vector<FieldPiece*> gottenPieces;
 	//Playerがアクションするパネル
-	FieldPiece* playerRidingPiece;
-	int playerCuttingStartPosNum;
-	Vector3 playerCuttingStartPos;
-	float playerCuttingAngle;
+	CuttingInfo info;
 
 	//端点の用意
 	void SetEdges();
