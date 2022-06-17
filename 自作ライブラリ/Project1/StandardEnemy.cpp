@@ -39,7 +39,7 @@ StandardEnemy::StandardEnemy(Vector3 arg_position, float arg_hitWeight)
 
 	panelCountUI = new PanelCountUI();
 
-	ObjectManager::GetInstance()->Add(new PanelCountBoard(this));
+	ObjectManager::GetInstance()->Add(new PanelCountBoard(position, name, gottenPanel));
 
 	Initialize();
 }
@@ -183,7 +183,7 @@ void StandardEnemy::Update()
 
 	object->Update();
 
-	panelCountUI->Update(0);//player‚ÌgottenPanel‚Ì–ðŠ„‚ð‚·‚é•Ï”‚ð“ü‚ê‚é
+	panelCountUI->Update(gottenPanel);
 }
 
 void StandardEnemy::Draw()

@@ -55,7 +55,7 @@ Player::Player()
 
 	panelCountUI = new PanelCountUI();
 
-	pObjectManager->Add(new PanelCountBoard(this));
+	pObjectManager->Add(new PanelCountBoard(position, name, gottenPanel));
 
 	Initialize();
 
