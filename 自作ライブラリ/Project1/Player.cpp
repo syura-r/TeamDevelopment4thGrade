@@ -161,8 +161,6 @@ void Player::Update()
 	}
 #endif
 	
-	//locusSelecter->Update();
-
 	//ˆÚ“®ˆ—
 	Move();
 
@@ -182,18 +180,15 @@ void Player::Update()
 	}
 	else
 	{
-		//SelectLocus();		
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece)
 		{
 			if (!tackleFlag && !drawingFlag)
 			{
 				drawingFlag = true;
 				//ü‚Ì¶¬
-				//CreateLine();
 				Vector3 p = info->cuttingStartPos;
-				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus,CircularSaw::PLAYER));
-			}
-			
+				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus,CircularSaw::PLAYER, this));
+			}		
 		}
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
 		{	

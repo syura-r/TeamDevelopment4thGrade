@@ -14,7 +14,7 @@ public:
 		ENEMY,
 	};
 
-	CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType);
+	CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType, Object* arg_object);
 	~CircularSaw();
 	void Initialize()override;
 	void Update()override;
@@ -41,6 +41,6 @@ private:
 
 	Vector3 virtualityPlanePosition;
 
-	
+	Object* parentObj;
 };
 

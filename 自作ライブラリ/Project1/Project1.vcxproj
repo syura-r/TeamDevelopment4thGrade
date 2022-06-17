@@ -245,13 +245,12 @@
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Result.cpp" />
-    <ClCompile Include="SamplePlayer.cpp" />
+    <ClCompile Include="StandardEnemy.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SmartPtr.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="StandardEnemy.cpp" />
     <ClCompile Include="TestBoss.cpp" />
     <ClCompile Include="TestHexagram.cpp" />
     <ClCompile Include="TestPentagon.cpp" />
@@ -367,7 +366,7 @@
     <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="RaycastHit.h" />
     <ClInclude Include="Result.h" />
-    <ClInclude Include="SamplePlayer.h" />
+    <ClInclude Include="StandardEnemy.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShadowMap.h" />
@@ -375,7 +374,6 @@
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="StandardEnemy.h" />
     <ClInclude Include="TestBoss.h" />
     <ClInclude Include="TestHexagram.h" />
     <ClInclude Include="TestPentagon.h" />

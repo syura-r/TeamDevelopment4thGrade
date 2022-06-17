@@ -120,3 +120,17 @@ std::vector<UnableThroughBlock*>& ActorManager::GetUnableThroughBlocks()
 
 	return vec;
 }
+
+std::vector<StandardEnemy*>& ActorManager::GetSamplePlayers()
+{
+	static std::vector<StandardEnemy*> vec;
+	vec.clear();
+
+	auto range = mapGameObject.equal_range("SamplePlayer");
+	for (auto itr = range.first; itr != range.second; itr++)
+	{
+		vec.push_back(static_cast<StandardEnemy*>(itr->second));
+	}
+
+	return vec;
+}
