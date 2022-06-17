@@ -18,14 +18,21 @@
 #include "Field.h"
 #include "Ending.h"
 
+#include "TextureResource.h"
 #include "StandardEnemy.h"
 #include "ItemEmitter.h"
-
+#include "Stadium.h"
+#include "PtrDelete.h"
+#include"ScreenCamera.h"
 Play::Play()
 {
 	next = Ending;
 	camera = std::make_unique<DebugCamera>();
 	Object3D::SetCamera(camera.get());
+	Sprite3D::SetCamera(camera.get());
+
+	screenCamera = new ScreenCamera();
+	
 	//ParticleEmitter::Initialize(camera.get());
 	ParticleManager::GetInstance()->SetCamera(camera.get());
 	Player::SetDebugCamera(camera.get());
@@ -36,92 +43,22 @@ Play::Play()
 	//ライト色を設定
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, XMFLOAT3(color0));
-	menu = std::make_unique<Menu>();
+	//menu = std::make_unique<Menu>();
 	collisionManager = CollisionManager::GetInstance();
 	objectManager = ObjectManager::GetInstance();
 	actorManager = ActorManager::GetInstance();
 	actorManager->Initialize();
 
-	result = std::make_unique<Result>();
-//---------------------------------仮実装------------------------------------------
-	std::string filepath = "Resources/Map/Report" + std::to_string(0) + ".txt";
-	std::ifstream file;
-	file.open(filepath.c_str());
-	if (!file.is_open())
-		return;
-	std::string line;
-	std::vector<Vector3>positions;
-	std::vector<Vector3>scales;
-	std::vector<Vector3>rotations;
-	std::vector<Object*>loadObjects;
-
-	//for (int i = 0; i < 9; i++)
-	//{
-	//	lightGroup->SetPointLightActive(i, true);
-	//	lightGroup->SetPointLightPos(i, lightPos[i].data() - Vector3{ 0,3,0 });
-	//}
-
-	while (getline(file, line))
-	{
-		//1行分の文字列をストリームに変換して解析しやすくする
-		std::istringstream line_stream(line);
-
-		//半角スペース区切りで行の先頭文字を取得
-		std::string key;
-		getline(line_stream, key, ' ');
-
-		//クラス名
-		if (key == "class")
-		{
-			std::string name;
-			line_stream >> name;
-		}
-		//ポジション
-		if (key == "position")
-		{
-			Vector3 position;
-			line_stream >> position.x;
-			line_stream >> position.y;
-			line_stream >> position.z;
-
-			positions.push_back(position);
-		}
-		//スケール
-		if (key == "scale")
-		{
-			Vector3 scale;
-			line_stream >> scale.x;
-			line_stream >> scale.y;
-			line_stream >> scale.z;
-
-			scales.push_back(scale);
-		}
-		//回転
-		if (key == "rotation")
-		{
-			Vector3 rotation;
-			line_stream >> rotation.x;
-			line_stream >> rotation.y;
-			line_stream >> rotation.z;
-
-			rotations.push_back(rotation);
-		}
-	}
-	file.close();
-
-	int i = 0;
-	for (auto& it : loadObjects) {
-		it->SetPosition(positions[i]);
-		it->SetScale(scales[i]);
-		it->SetRotation(rotations[i]);
-		ObjectManager::GetInstance()->Add(it);
-		i++;
-	}
-//---------------------------------------------------------------------------
+	//result = std::make_unique<Result>();
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
 	timeLimit = new TimeLimit(180 * 60);
+
+	screenResource = new TextureResource("screen.png",false, true);
+	stadium = new Stadium();
+
+	//test = new Sprite3D();
 }
 
 
@@ -130,6 +67,10 @@ Play::~Play()
 	LevelEditor::GetInstance()->Clear();
 	delete pause;
 	delete timeLimit;
+	PtrDelete(stadium);
+	PtrDelete(screenResource);
+	PtrDelete(screenCamera);
+	//PtrDelete(test);
 }
 
 void Play::Initialize()
@@ -149,6 +90,8 @@ void Play::Initialize()
 
 	StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
 	objectManager->Add(testEnemy);	
+
+	screenCamera->SetTargetObj(player);
 
 	ItemEmitter::GetInstance()->Initialize();
 
@@ -179,12 +122,6 @@ void Play::Update()
 	if (pause->GetUsePause())
 		return;
 
-	camera->Update();
-
-	if (Input::DownKey(DIK_7))
-	{
-		ParticleEmitter::CutEffect(Vector3(0, 0, 0), Vector3(1,0,0));
-	}
 
 #ifdef _DEBUG
 	if (Input::TriggerKey(DIK_E))//終了処理
@@ -199,6 +136,10 @@ void Play::Update()
 	lightGroup->Update();
 	ItemEmitter::GetInstance()->Update();
 	objectManager->Update();
+	stadium->Update();
+	camera->Update();
+	screenCamera->Update();
+
 	collisionManager->CheckAllCollisions();
 	timeLimit->Update();
 }
@@ -220,15 +161,54 @@ void Play::PreDraw()
 			LevelEditor::GetInstance()->Draw();
 		}
 #endif
+
+		//screenResource->PreDraw();
+		//Object3D::SetCamera(screenCamera);
+		//Object3D::SetScreenDraw(true);
+		//objectManager->PreDraw();
+		//Object3D::SetScreenDraw(false);
+		//Object3D::SetCamera(camera.get());
+		//screenResource->PostDraw();
+
 		objectManager->PreDraw();
+		stadium->Draw();
 }
 
 void Play::PostDraw()
 {
 	//if (migrate)
 	//	return;
-		objectManager->PostDraw();
-	if ( !Object3D::GetDrawShadow())
+	objectManager->PostDraw();
+
+	static Vector3 pos = { 0,0,0 };
+
+	if (Input::DownKey(DIK_RIGHT))
+	{
+		pos.x += 0.3f;
+	}
+	if (Input::DownKey(DIK_LEFT))
+	{
+		pos.x -= 0.3f;
+	}
+	if (Input::DownKey(DIK_UP))
+	{
+		pos.z += 0.3f;
+	}
+	if (Input::DownKey(DIK_DOWN))
+	{
+		pos.z -= 0.3f;
+	}
+	if (Input::DownKey(DIK_K))
+	{
+		pos.y -= 0.3f;
+	}
+	if (Input::DownKey(DIK_I))
+	{
+		pos.y += 0.3f;
+	}
+	//test->SpriteSetTextureRect("stadiumMap.png", 100, 100, 300, 300);
+	//test->DrawSprite("stadiumMap.png", pos);
+	if (!Object3D::GetDrawShadow())
 	{
 		DirectXLib::GetInstance()->DepthClear();
 	}

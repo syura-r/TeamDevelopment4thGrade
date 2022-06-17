@@ -24,20 +24,17 @@ void SceneManager::Add(Scene::SCENE name, Scene * scene)
 
 void SceneManager::Initialize()
 {
-	resource.reset(new TextureResource("migrateTex",{1920,1080}, DXGI_FORMAT_R8G8B8A8_UNORM, { 0,0,0,0 },false));
+	resource.reset(new TextureResource("migrateTex", { 1920,1080 }, DXGI_FORMAT_R8G8B8A8_UNORM, { 0,0,0,0 }, false));
 	migrateTex = std::make_unique<Sprite>();
 	migrateStart = false;
-	for (int i = 0; i < 3; i++)
-	{
-		//定数バッファの作成
-		auto result = DirectXLib::GetInstance()->GetDevice()->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDate) + 0xff) & ~0xff),
-			D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-			IID_PPV_ARGS(&constBuff[i]));
-		assert(SUCCEEDED(result));
-	}
+	//定数バッファの作成
+	auto result = DirectXLib::GetInstance()->GetDevice()->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDate) + 0xff) & ~0xff),
+		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+		IID_PPV_ARGS(&constBuff));
+	assert(SUCCEEDED(result));
 	migrateTime = 1.0f;
 	migrateCounter = 0;
 }
@@ -107,14 +104,13 @@ void SceneManager::PostDraw()
 	if(migrateStart|| currentScene->GetIsEnd() && !Object3D::GetDrawShadow())
 	{
 		auto libPtr = DirectXLib::GetInstance();
-		auto bbIndex = libPtr->GetBbIndex();
 		ConstBufferDate* constMap = nullptr;
-		auto result = constBuff[bbIndex]->Map(0, nullptr, (void**)&constMap);
+		auto result = constBuff->Map(0, nullptr, (void**)&constMap);
 		constMap->migrateTime = migrateTime;
-		constBuff[bbIndex]->Unmap(0, nullptr);
+		constBuff->Unmap(0, nullptr);
 
 		PipelineState::SetPipeline("Migrate");
-		libPtr->GetCommandList()->SetGraphicsRootConstantBufferView(1, constBuff[bbIndex]->GetGPUVirtualAddress());
+		libPtr->GetCommandList()->SetGraphicsRootConstantBufferView(1, constBuff->GetGPUVirtualAddress());
 		migrateTex->NoPipelineDraw("migrateTex", { 960,540 }, 0, { 1,1 }, { 1,1,1,1 }, { 0.5f, 0.5f });
 
 	}

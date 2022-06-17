@@ -85,10 +85,6 @@ void FBXModel::CreateBuffers()
 	isPlay = true;
 }
 
-FBXModel::~FBXModel()
-{
-}
-
 void FBXModel::Draw()
 {
 

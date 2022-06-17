@@ -15,9 +15,13 @@
 #include "ActorManager.h"
 #include "Pause.h"
 #include "TimeLimit.h"
+#include "Sprite3D.h"
 
 
 class TouchAbleObject;
+class Stadium;
+class ScreenCamera;
+class TextureResource;
 class Play :public Scene
 {
 public:
@@ -39,11 +43,19 @@ private:
 	bool targetSphere = false;
 	CollisionManager* collisionManager = nullptr;
 	ObjectManager* objectManager = nullptr;	
-	std::unique_ptr<Menu> menu;
+	//std::unique_ptr<Menu> menu;
+
+	Stadium* stadium = nullptr;
+
+	TextureResource* screenResource = nullptr;
 
 	ActorManager* actorManager = nullptr;
-		
-	std::unique_ptr<Result> result;
+	
+	ScreenCamera* screenCamera = nullptr;
+
+
+	//Sprite3D* test = nullptr;
+	//std::unique_ptr<Result> result;
 	std::unique_ptr<DebugCamera> camera;
 	std::array<std::array<float,3>,9>lightPos = 
 	{

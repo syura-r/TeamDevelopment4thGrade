@@ -20,10 +20,6 @@ public:
 	void NoPipelineDraw(const std::string& name, const XMFLOAT2& position, const float& rotation, const XMFLOAT2& scale, const XMFLOAT4& color, const XMFLOAT2& anchorPoint);
 
 	void SpriteSetTextureRect(const std::string& name,const float& tex_x,const float& tex_y,const float& tex_width,const float& tex_height);
-	static void SetBbIndex()
-	{
-		bbIndex = DirectXLib::GetInstance()->GetBbIndex();
-	}
 protected:
 	void CreateSprite();
 
@@ -50,7 +46,7 @@ protected:
 	XMMATRIX spriteMatWorld{};
 	std::array<VERTEX,4> vertices;
 	ComPtr<ID3D12Resource> vertBuff;//頂点バッファ
-	std::array<ComPtr<ID3D12Resource>, 3> constBuff;//定数バッファ
+	ComPtr<ID3D12Resource> constBuff;//定数バッファ
 	D3D12_VERTEX_BUFFER_VIEW vbView{};//頂点バッファビュー
 	
 	bool rect = false;//切り出しをしているかどうか

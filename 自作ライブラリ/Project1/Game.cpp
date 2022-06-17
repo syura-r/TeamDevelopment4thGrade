@@ -114,6 +114,8 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("Hexagon", "Hexagon.obj", false);
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
+		OBJLoader::LoadModelFile("stadium", "stadium.obj", false);
+
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
 		OBJLoader::LoadModelFile("getPanelBoard_Player", "getPanelBoard_Player.obj", false);
 		OBJLoader::LoadModelFile("getPanelBoard_Enemy", "getPanelBoard_Enemy.obj", false);
@@ -302,9 +304,6 @@ void Game::Run()
 
 		else if (!nowLoading)
 		{
-			Object::SetBbIndex();
-			TextureResource::SetBbIndex();
-			Sprite::SetBbIndex();
 			Input::Update();
 			Alpha::Update();
 			if (Input::TriggerKey(DIK_1))

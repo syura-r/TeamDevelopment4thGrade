@@ -173,6 +173,28 @@ void Texture::SendColor(const std::string& name, XMFLOAT4* color)
 	);
 }
 
+void Texture::ChangeTexture(const std::string& name, ID3D12Resource* texBuff)
+{
+	if (texbuffs[name] == nullptr)
+		assert(0);
+	auto dev = DirectXLib::GetInstance()->GetDevice();
+
+	texbuffs[name] = texBuff;
+
+	//シェーダリソースビュー作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
+	srvDesc.Format = texBuff->GetDesc().Format;//RGBA
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+	srvDesc.Texture2D.MipLevels = 1;
+
+
+	dev->CreateShaderResourceView(texbuffs[name].Get(),//ビューと関連付けるバッファ
+		&srvDesc,//テクスチャ設定情報
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(basicDescHeape->GetCPUDescriptorHandleForHeapStart(),
+			texIndexes[name], dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)));
+}
+
 
 void Texture::Initialize()
 {

@@ -23,13 +23,7 @@ protected:
 	//“–‚½‚è”»’è—pBox
 	HitBox hitBox;
 	static int bbIndex;
-public:
-	static void SetBbIndex()
-	{
-		bbIndex = DirectXLib::GetInstance()->GetBbIndex();
-		Object3D::SetBbIndex(bbIndex);
-	}
-	
+public:	
 	Object() = default;
 	virtual ~Object();
 	void Create(Model* model);

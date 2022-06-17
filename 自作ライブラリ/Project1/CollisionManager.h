@@ -73,11 +73,11 @@ private:
 
 	bool viewCollider;
 	const int vertexCount = 500;
-	std::array<ComPtr<ID3D12Resource>,3> boxVertBuff;
-	std::array<D3D12_VERTEX_BUFFER_VIEW, 3> boxVbView;
-	std::array<ComPtr<ID3D12Resource>, 3> constBuff;
-	std::array<ComPtr<ID3D12Resource>, 3> sphereVertBuff;
-	std::array<D3D12_VERTEX_BUFFER_VIEW, 3> sphereVbView;
+	ComPtr<ID3D12Resource> boxVertBuff;
+	D3D12_VERTEX_BUFFER_VIEW boxVbView;
+	ComPtr<ID3D12Resource> constBuff;
+	ComPtr<ID3D12Resource> sphereVertBuff;
+	D3D12_VERTEX_BUFFER_VIEW sphereVbView;
 	struct BoxVBData
 	{
 		XMFLOAT3 center;
