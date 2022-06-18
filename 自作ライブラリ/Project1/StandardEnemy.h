@@ -54,6 +54,8 @@ public:
 
 	void StartFall();
 
+	bool GetOutField() { return outFieldFlag; }
+
 	// êÅÇ¡îÚÇ—
 	void StartBlow();
 	void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
@@ -211,6 +213,8 @@ private:
 
 	Vector3 fallStartPos;
 	Vector3 fallEndPos;
+
+	bool outFieldFlag;
 
 	//--------------------------------------
 	// éûä‘

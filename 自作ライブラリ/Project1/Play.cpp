@@ -154,6 +154,22 @@ void Play::Update()
 		ShutDown();
 		Ending::SetScore(actorManager->GetPlayer()->GetGottenPanel());
 	}
+
+	bool allEnemiesOutField = true;
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		if (!e->GetOutField())
+		{
+			allEnemiesOutField = false;
+			break;
+		}
+	}
+	if (allEnemiesOutField)
+	{
+		ShutDown();
+		Ending::SetScore(actorManager->GetPlayer()->GetGottenPanel());
+	}
 }
 
 void Play::PreDraw()

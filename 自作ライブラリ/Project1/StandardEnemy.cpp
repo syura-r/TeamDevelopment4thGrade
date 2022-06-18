@@ -112,6 +112,8 @@ void StandardEnemy::Initialize()
 
 	fallFlag = false;
 	fallEasingCount = 0;
+	outFieldFlag = false;
+
 }
 
 void StandardEnemy::Update()
@@ -125,11 +127,14 @@ void StandardEnemy::Update()
 
 	if (fallFlag)
 	{
-		Fall();
-		if (virtualityPlanePosition.y <= -65)
+		if (outFieldFlag)
 		{
-			//gameEnd = true;
-			Dead();
+			return;
+		}
+		Fall();
+		if (virtualityPlanePosition.y <= -100)
+		{
+			outFieldFlag = true;
 		}
 	}
 	else
