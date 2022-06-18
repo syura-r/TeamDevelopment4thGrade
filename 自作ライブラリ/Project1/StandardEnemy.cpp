@@ -125,6 +125,7 @@ void StandardEnemy::Update()
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	CuttingInfo* info = field->GetCuttingInfo(this);
+	field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
 
 	if (blowFlag)
 	{

@@ -22,6 +22,8 @@
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
 #include "ItemEmitter.h"
+#include "UnableThroughEdge.h"
+#include "UnableThroughBlock.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -148,6 +150,7 @@ void Player::Initialize()
 	panelCountSprite3D->Initialize();
 	fallFlag = false;
 	fallEasingCount = 0;
+	pressFlag = false;
 	nextInputStartCount = 60;
 	count = 0;
 	gameEnd = false;
@@ -176,6 +179,15 @@ void Player::Update()
 			gameEnd = true;
 		}
 	}
+	else if (pressFlag)
+	{
+		static int pressCount = 0;
+		pressCount++;
+		if (pressCount >= 30)
+		{
+			gameEnd = true;
+		}
+	}
 	else
 	{
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
@@ -186,6 +198,8 @@ void Player::Update()
 
 		//カメラのリセット処理
 		MoveCamera();
+
+		field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
 
 		if (blowFlag)
 		{
@@ -243,13 +257,14 @@ void Player::Update()
 		{
 			locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 		}
+
+		//当たり判定系
+		HitCheckLoci();
+		HitCheckEnemy();
+		HitCheckItems();
+		HitCheckUnableThroughEdge();
+		HitCheckUnableThroughBlock();
 	}
-	
-	
-	//当たり判定系
-	HitCheckLoci();	
-	HitCheckEnemy();
-	HitCheckItems();	
 	
 	//他のオブジェクトとのヒットチェック
 	//CheckHit();
@@ -1012,6 +1027,62 @@ void Player::HitPanelItem(PanelItem* arg_panelItem)
 	arg_panelItem->Dead();	
 	weight += FieldPiece::GetWeight();
 	gottenPanel++;
+}
+
+void Player::HitCheckUnableThroughEdge()
+{
+	auto edges = ActorManager::GetInstance()->GetUnableThroughEdges();
+	if (edges.empty())
+	{
+		return;
+	}
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);	
+
+	if (!info->ridingPiece)
+	{
+		if (edges[0]->IsEndFallDown())
+		{
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+		}
+		else if (edges[0]->GetPosition().y <= field->GetPosition().y + UnableThroughEdge::GetHeightMagnification() * 2)
+		{
+			pressFlag = true;
+		}
+	}	
+}
+
+void Player::HitUnableThroughEdge()
+{
+}
+
+void Player::HitCheckUnableThroughBlock()
+{
+	auto blocks = ActorManager::GetInstance()->GetUnableThroughBlocks();
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
+
+	for (auto b : blocks)
+	{
+		if (info->ridingPiece == b->GetParentPiece())
+		{
+			if (b->IsEndFallDown())
+			{
+				virtualityPlanePosition = preVirtualityPlanePosition;
+				position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+			}
+			else if (b->GetVirtualityPlanePosition().y <= field->GetPosition().y + UnableThroughBlock::GetHeightMagnification() * 2)
+			{
+				pressFlag = true;
+			}
+		}
+	}
+}
+
+void Player::HitUnableThroughBlock()
+{
 }
 
 void Player::StartStand(bool arg_outField, Vector3 arg_velocity)

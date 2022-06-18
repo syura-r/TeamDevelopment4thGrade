@@ -111,6 +111,12 @@ private:
 	void HitCheckItems();
 	void HitItem(EnergyItem* arg_item);
 	void HitPanelItem(PanelItem* arg_panelItem);
+	//降ってくる端ブロック
+	void HitCheckUnableThroughEdge();
+	void HitUnableThroughEdge();
+	//降ってくるパネル
+	void HitCheckUnableThroughBlock();
+	void HitUnableThroughBlock();
 	//踏ん張りになる
 	void StartStand(bool arg_outField = true, Vector3 arg_velocity = {});
 	//踏ん張り中の処理
@@ -188,6 +194,9 @@ private:
 
 	Vector3 fallStartPos;
 	Vector3 fallEndPos;
+
+	//上から降ってくるブロックなどに押しつぶされたかどうか
+	bool pressFlag;
 
 	//入力開始までのインターバル
 	int inputStartCount;

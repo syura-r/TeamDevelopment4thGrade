@@ -21,6 +21,7 @@ public:
 	Vector3 GetVirtualityPlanePosition()const;	
 	PieceDirection GetPieceDirection()const;
 	std::vector<Vector2>& GetPoints();
+	FieldPiece* GetParentPiece();
 	static float GetWeight();
 	static float GetHeightMagnification();
 	bool IsEndFallDown()const;

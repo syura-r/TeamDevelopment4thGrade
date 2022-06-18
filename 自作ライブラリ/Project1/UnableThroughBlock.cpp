@@ -95,6 +95,7 @@ void UnableThroughBlock::FallDown()
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
 		virtualityPlanePosition.y = field->GetPosition().y + HEIGHT_MAGNIFICATION;
 		position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+		parentPiece->ChangeIsBlockade(true);
 	}
 }
 
@@ -111,6 +112,11 @@ PieceDirection UnableThroughBlock::GetPieceDirection() const
 std::vector<Vector2>& UnableThroughBlock::GetPoints()
 {
 	return points;
+}
+
+FieldPiece* UnableThroughBlock::GetParentPiece()
+{
+	return parentPiece;
 }
 
 float UnableThroughBlock::GetWeight()

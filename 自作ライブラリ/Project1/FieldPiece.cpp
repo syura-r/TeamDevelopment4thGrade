@@ -15,7 +15,8 @@ std::vector<Vector2> FieldPiece::basePoints = std::vector<Vector2>();
 FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_direction)
 	:virtualityPlanePosition(arg_position),
 	 dir(arg_direction),
-	 isActive(true)
+	 isActive(true),
+	 isBlockade(false)
 {
 	SetPoints();
 	position = virtualityPlanePosition;
@@ -42,6 +43,11 @@ void FieldPiece::Initialize()
 
 void FieldPiece::Update()
 {
+	if (!isActive || isBlockade)
+	{
+		return;
+	}
+
 	if (dir == PieceDirection::Lower)
 	{
 		rotation = Vector3(0, 0, 0);
@@ -68,7 +74,7 @@ void FieldPiece::Update()
 
 void FieldPiece::Draw()
 {
-	if (!isActive)
+	if (!isActive || isBlockade)
 	{
 		return;
 	}
@@ -176,6 +182,16 @@ bool FieldPiece::IsActive()
 void FieldPiece::ChangeIsActive(const bool arg_isActive)
 {
 	isActive = arg_isActive;
+}
+
+bool FieldPiece::IsBlockade()
+{
+	return isBlockade;
+}
+
+void FieldPiece::ChangeIsBlockade(const bool arg_isBlockade)
+{
+	isBlockade = arg_isBlockade;
 }
 
 std::vector<Vector2>& FieldPiece::GetPoints()

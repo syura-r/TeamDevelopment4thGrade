@@ -6,6 +6,7 @@
 #include "EnergyItem.h"
 #include "PanelItem.h"
 #include "UnableThroughBlock.h"
+#include "UnableThroughEdge.h"
 
 ActorManager* ActorManager::GetInstance()
 {
@@ -121,15 +122,15 @@ std::vector<UnableThroughBlock*>& ActorManager::GetUnableThroughBlocks()
 	return vec;
 }
 
-std::vector<StandardEnemy*>& ActorManager::GetSamplePlayers()
+std::vector<UnableThroughEdge*>& ActorManager::GetUnableThroughEdges()
 {
-	static std::vector<StandardEnemy*> vec;
+	static std::vector<UnableThroughEdge*> vec;
 	vec.clear();
 
-	auto range = mapGameObject.equal_range("SamplePlayer");
+	auto range = mapGameObject.equal_range("UnableThroughEdge");
 	for (auto itr = range.first; itr != range.second; itr++)
 	{
-		vec.push_back(static_cast<StandardEnemy*>(itr->second));
+		vec.push_back(static_cast<UnableThroughEdge*>(itr->second));
 	}
 
 	return vec;

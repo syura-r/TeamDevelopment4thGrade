@@ -98,9 +98,9 @@ void Field::Update()
 
 	CalcTilt();
 	SetRotation(angleTilt);		
-	DecideAllRidingPiece();
+	/*DecideAllRidingPiece();
 	DecideAllCuttingStartPos();
-	DecideAllCuttingAngle();
+	DecideAllCuttingAngle();*/
 
 	Object::Update();
 	collider->Update();
@@ -721,6 +721,13 @@ void Field::StartFallingBlock()
 	fallingBlockCountMax = (topLayerPieceNum + onesidePieceNum) * 2;
 	fallIntervalTimer->SetLimit(INTERVAL_CREATE, true);
 	blocks.clear();
+}
+
+void Field::DecideCuttingInfo(Object* arg_object, const Vector3& arg_pos, const Vector3& arg_dir)
+{
+	DecideRidingPiece(arg_object, arg_pos);
+	DecideCuttingStartPos(arg_object, arg_pos, arg_dir);
+	DecideCuttingAngle(arg_object);
 }
 
 CuttingInfo* Field::GetCuttingInfo(Object* arg_pObject)

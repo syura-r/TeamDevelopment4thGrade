@@ -43,6 +43,7 @@ public:
 	void ReviveGottenPanel(FieldPiece* arg_piece);
 	void StartFallingBlock();
 
+	void DecideCuttingInfo(Object* arg_object, const Vector3& arg_pos, const Vector3& arg_dir);
 	CuttingInfo* GetCuttingInfo(Object* arg_pObject);
 	FieldPiece* IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius);
 
