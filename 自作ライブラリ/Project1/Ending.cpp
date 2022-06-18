@@ -1,6 +1,5 @@
 #include "Ending.h"
-
-float Ending::panelNum = 0.0f;
+#include "ScoreManager.h"
 
 Ending::Ending()
 {
@@ -36,11 +35,11 @@ void Ending::Initialize()
 	isEnd = false;
 
 	selectState = SelectState::Restart;
+	score = ScoreManager::GetInstance()->GetTotalScore();
 	drawScore = 0.0f;
-	score = 0.0f;
-	ScoreCalculation();
 	isCountEnd_score = false;
 
+	panelNum = ScoreManager::GetInstance()->GetStockPanelNum_Last();
 	drawPanelNum = 0.0f;
 	isCountEnd_panel = false;
 
@@ -108,11 +107,6 @@ void Ending::PostDraw()
 {
 }
 
-void Ending::SetScore(const float panelNum)
-{
-	Ending::panelNum = panelNum;
-}
-
 void Ending::SelectMenu()
 {
 	bool isSelectMove = false;//選択を変えたか
@@ -162,15 +156,4 @@ void Ending::SelectMenu()
 		}
 		ShutDown();
 	}
-}
-
-void Ending::ScoreCalculation()
-{
-	int result = 0;
-
-	//パネル取得数加点
-	const int panelAdd = 100;
-	result += panelNum * panelAdd;
-
-	score = result;
 }

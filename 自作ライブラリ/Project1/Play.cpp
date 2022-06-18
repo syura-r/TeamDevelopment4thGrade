@@ -17,6 +17,7 @@
 #include "TestBoss.h"
 #include "Field.h"
 #include "Ending.h"
+#include "ScoreManager.h"
 
 #include "TextureResource.h"
 #include "StandardEnemy.h"
@@ -71,6 +72,7 @@ Play::~Play()
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
 	//PtrDelete(test);
+	ScoreManager::GetInstance()->Finalize();
 }
 
 void Play::Initialize()
@@ -99,6 +101,8 @@ void Play::Initialize()
 	isEnd = false;
 	pause->Initialize();
 	timeLimit->Initialize();
+
+	ScoreManager::GetInstance()->Inisitlize();
 }
 
 void Play::Update()
@@ -128,7 +132,7 @@ void Play::Update()
 	if (Input::TriggerKey(DIK_E))//I—¹ˆ—
 	{
 		ShutDown();
-		Ending::SetScore(actorManager->GetPlayer()->GetGottenPanel());
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
 	}
 #endif
 
@@ -152,7 +156,7 @@ void Play::Update()
 	if (ActorManager::GetInstance()->GetPlayer()->IsGameEnd() )
 	{
 		ShutDown();
-		Ending::SetScore(actorManager->GetPlayer()->GetGottenPanel());
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
 	}
 }
 
