@@ -39,12 +39,12 @@ Field::Field()
 	color = { 0.1f ,0.1f, 0.1f,1 };
 	Object::Update();
 
-	collider = new BoxCollider({ 0.0f, 0.0f, 0.0f, 0.0f }, Vector3(90.0f, 1.0f, 90.0f));
+	/*collider = new BoxCollider({ 0.0f, 0.0f, 0.0f, 0.0f }, Vector3(90.0f, 1.0f, 90.0f));
 	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 	collider->SetMove(true);
 	collider->SetObject(this);
 	collider->Update();
-	CollisionManager::GetInstance()->AddCollider(collider);
+	CollisionManager::GetInstance()->AddCollider(collider);*/
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Field", this);
@@ -103,7 +103,7 @@ void Field::Update()
 	DecideAllCuttingAngle();*/
 
 	Object::Update();
-	collider->Update();
+	//collider->Update();
 }
 
 void Field::DrawReady()
@@ -138,10 +138,10 @@ void Field::CalcTilt()
 	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();
 	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
 	{
-		/*if (!(*itr)->IsFall())
+		if ((*itr)->IsFall())
 		{
 			continue;
-		}*/
+		}
 
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * (*itr)->GetWeight() * GetMultiplyingFactor(Vector3::Length((*itr)->GetVirtualityPlanePosition()));

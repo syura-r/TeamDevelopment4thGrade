@@ -34,13 +34,13 @@ Player::Player()
 	//ƒ‚ƒfƒ‹‚Ì¶¬
 	Create(myModel);
 	//“–‚½‚è”»’è(Box)‚Ì¶¬
-	BoxCollider* boxCollider = new BoxCollider();
+	/*BoxCollider* boxCollider = new BoxCollider();
 	boxCollider->SetObject(this);
 	boxCollider->SetScale({0.2f,0.5f,0.2f});
 	boxCollider->SetOffset({ 0,0.5f,0 ,0 });
 	SetCollider(boxCollider);
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
-	collider->SetMove(true);
+	collider->SetMove(true);*/
 
 	pObjectManager = ObjectManager::GetInstance();
 
@@ -915,12 +915,30 @@ void Player::HitCheckEnemy()
 void Player::HitEnemy(StandardEnemy* arg_enemy)
 {
 	static const float weightCoefficient = 0.3f;
+	
+	if (arg_enemy->IsFall())
+	{
+		return;
+	}
+
 	//”Ä—p‰»	
-	arg_enemy->IsBlow();
+	if (arg_enemy->GetStanding() && tackleFlag)
+	{
+		arg_enemy->StartFall();
+
+	}
+	else
+	{
+		arg_enemy->StartBlow();
+		arg_enemy->SetBlowTime(40);
+	}
+
+
+
 	blowFlag = true;
 	
 	blowTime = 40;
-	arg_enemy->SetBlowTime(40);
+	
 
 	Vector3 enemyPos = arg_enemy->GetVirtualityPlanePosition();
 	Vector3 enemyVel = arg_enemy->GetVelocity();

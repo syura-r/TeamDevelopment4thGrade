@@ -48,8 +48,16 @@ public:
 	Vector3 GetDirection()const;
 	PanelCutLocus* GetPanelCutLocus();
 
+	bool GetStanding() { return standingFlag; }
+
+	bool IsFall() { return fallFlag; }
+
+	void StartFall();
+
+	bool GetOutField() { return outFieldFlag; }
+
 	// 吹っ飛び
-	void IsBlow();
+	void StartBlow();
 	void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
 
 private:
@@ -103,6 +111,9 @@ private:
 	void SuspendTackle();
 	//
 	void DischargeGottenPanel(StandardEnemy* arg_enemy);
+
+
+	void Fall();
 
 	//
 	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);
@@ -194,6 +205,16 @@ private:
 	//パネル所持数表示
 	PanelCountUI* panelCountUI = nullptr;
 	PanelCountSprite3D* panelCountSprite3D = nullptr;
+
+	//落下フラグ
+	bool fallFlag;
+	//落下までの猶予
+	int fallEasingCount;
+
+	Vector3 fallStartPos;
+	Vector3 fallEndPos;
+
+	bool outFieldFlag;
 
 	//--------------------------------------
 	// 時間
