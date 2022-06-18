@@ -438,6 +438,9 @@
     <ClCompile Include="PanelCountSprite3D.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="UnableThroughEdge.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -793,6 +796,9 @@
     </ClInclude>
     <ClInclude Include="PanelCountSprite3D.h">
       <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="UnableThroughEdge.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
