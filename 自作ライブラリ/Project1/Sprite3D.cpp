@@ -192,10 +192,10 @@ void Sprite3D::SpriteSetTextureRect(const std::string& name, const float& tex_x,
 	float tex_top = tex_y / resDesc.Height;
 	float tex_bottom = (tex_y + tex_height) / resDesc.Height;
 
-	vertices[0].uv = { tex_left,tex_bottom };
-	vertices[1].uv = { tex_left,tex_top };
-	vertices[2].uv = { tex_right,tex_bottom };
-	vertices[3].uv = { tex_right,tex_top };
+	vertices[0].uv = { tex_left,tex_top };
+	vertices[1].uv = { tex_left,tex_bottom };
+	vertices[2].uv = { tex_right,tex_top };
+	vertices[3].uv = { tex_right,tex_bottom };
 
 	rectTexSize.x = tex_width;
 	rectTexSize.y = tex_height;

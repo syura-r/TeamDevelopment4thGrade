@@ -117,8 +117,6 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("stadium", "stadium.obj", false);
 
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
-		OBJLoader::LoadModelFile("getPanelBoard_Player", "getPanelBoard_Player.obj", false);
-		OBJLoader::LoadModelFile("getPanelBoard_Enemy", "getPanelBoard_Enemy.obj", false);
 		break;
 	case 4:
 		//FBXƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ

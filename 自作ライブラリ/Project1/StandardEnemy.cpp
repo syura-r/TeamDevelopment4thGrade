@@ -18,7 +18,6 @@
 #include "Field.h"
 #include "EnergyItem.h"
 #include "CircularSaw.h"
-#include "PanelCountBoard.h"
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
 #include "ItemEmitter.h"
@@ -45,8 +44,6 @@ StandardEnemy::StandardEnemy()
 	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
 
 	panelCountUI = new PanelCountUI();
-
-	pObjectManager->Add(new PanelCountBoard(position, name, gottenPanel));
 
 	Initialize();
 
