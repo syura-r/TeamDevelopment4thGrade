@@ -44,6 +44,7 @@ StandardEnemy::StandardEnemy()
 	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
 
 	panelCountUI = new PanelCountUI();
+	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 
 	Initialize();
 
@@ -55,6 +56,7 @@ StandardEnemy::~StandardEnemy()
 	delete walkingTimer;
 	delete attackSprite;
 	delete panelCountUI;
+	delete panelCountSprite3D;
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -106,6 +108,7 @@ void StandardEnemy::Initialize()
 	walkingTimer->Initialize();
 
 	panelCountUI->Initialize();
+	panelCountSprite3D->Initialize();
 }
 
 void StandardEnemy::Update()
@@ -181,6 +184,7 @@ void StandardEnemy::Update()
 	}
 
 	panelCountUI->Update(gottenPanel);
+	panelCountSprite3D->Update();
 }
 
 void StandardEnemy::Draw()
@@ -205,6 +209,7 @@ void StandardEnemy::Draw()
 	object->Draw(true);
 
 	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
+	panelCountSprite3D->Draw();
 }
 
 void StandardEnemy::DrawReady()

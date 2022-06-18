@@ -226,7 +226,6 @@
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Object3D.cpp" />
-    <ClCompile Include="PanelCountBoard.cpp" />
     <ClCompile Include="PanelCountSprite3D.cpp" />
     <ClCompile Include="PanelCountUI.cpp" />
     <ClCompile Include="PanelCutLocus.cpp" />
@@ -345,7 +344,6 @@
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Object3D.h" />
-    <ClInclude Include="PanelCountBoard.h" />
     <ClInclude Include="PanelCountSprite3D.h" />
     <ClInclude Include="PanelCountUI.h" />
     <ClInclude Include="PanelCutLocus.h" />

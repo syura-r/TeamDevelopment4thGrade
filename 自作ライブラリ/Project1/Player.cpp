@@ -53,6 +53,7 @@ Player::Player()
 	ActorManager::GetInstance()->AddObject("Player", this);
 
 	panelCountUI = new PanelCountUI();
+	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 
 	Initialize();
 
@@ -83,6 +84,7 @@ Player::~Player()
 {	
 	delete attackSprite;	
 	delete panelCountUI;
+	delete panelCountSprite3D;
 	//delete locusSelecter;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
@@ -143,6 +145,7 @@ void Player::Initialize()
 	gottenPanel = 0;
 
 	panelCountUI->Initialize();
+	panelCountSprite3D->Initialize();
 	fallFlag = false;
 	fallEasingCount = 0;
 	nextInputStartCount = 60;
@@ -253,6 +256,7 @@ void Player::Update()
 	Object::Update();	
 
 	panelCountUI->Update(gottenPanel);
+	panelCountSprite3D->Update();
 }
 
 void Player::Draw()
@@ -276,6 +280,7 @@ void Player::Draw()
 		//locusSelecter->Draw();		
 	}
 	panelCountUI->Draw();
+	panelCountSprite3D->Draw();
 }
 
 void Player::DrawReady()

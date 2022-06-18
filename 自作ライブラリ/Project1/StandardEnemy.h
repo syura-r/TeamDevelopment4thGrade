@@ -18,6 +18,7 @@
 #include "LocusSelecter.h"
 #include "NumberSprite.h"
 #include "PanelCountUI.h"
+#include "PanelCountSprite3D.h"
 #include "Timer.h"
 
 class EnergyItem;
@@ -192,6 +193,7 @@ private:
 
 	//ƒpƒlƒ‹Š”•\¦
 	PanelCountUI* panelCountUI = nullptr;
+	PanelCountSprite3D* panelCountSprite3D = nullptr;
 
 	//--------------------------------------
 	// ŠÔ

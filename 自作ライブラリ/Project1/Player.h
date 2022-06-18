@@ -19,6 +19,7 @@
 #include "LocusSelecter.h"
 #include "NumberSprite.h"
 #include "PanelCountUI.h"
+#include "PanelCountSprite3D.h"
 #include "PanelItem.h"
 
 
@@ -232,6 +233,7 @@ private:
 
 	//パネル所持数表示
 	PanelCountUI* panelCountUI = nullptr;
+	PanelCountSprite3D* panelCountSprite3D = nullptr;
 
 private://静的メンバ変数
 	static DebugCamera* camera;

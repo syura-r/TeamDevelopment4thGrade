@@ -21,8 +21,6 @@ PanelCountSprite3D::PanelCountSprite3D(Vector3& parentPosition, const std::strin
 	{
 		num_sp3D[i] = new Sprite3D();
 	}
-
-	Initialize();
 }
 
 PanelCountSprite3D::~PanelCountSprite3D()
