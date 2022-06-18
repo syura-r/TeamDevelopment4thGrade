@@ -109,6 +109,9 @@ void StandardEnemy::Initialize()
 
 	panelCountUI->Initialize();
 	panelCountSprite3D->Initialize();
+
+	fallFlag = false;
+	fallEasingCount = 0;
 }
 
 void StandardEnemy::Update()
@@ -120,48 +123,78 @@ void StandardEnemy::Update()
 	ConfirmPlayerPos();
 	ConfirmItemPos();
 
-	//移動処理
-	Move();
-
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	CuttingInfo* info = field->GetCuttingInfo(this);
-
-	if (blowFlag)
+	if (fallFlag)
 	{
-		blowTime--;
-		if (blowTime <= 0)
+		Fall();
+		if (virtualityPlanePosition.y <= -65)
 		{
-			blowFlag = false;
+			//gameEnd = true;
+			Dead();
 		}
 	}
 	else
 	{
-		// 丸のこの所持数が一定以上だったら切り抜き
-		if ((Input::TriggerKey(DIK_U) || cutPower >= cutPowerLimit) && cutPower > 0 && info->ridingPiece)
+		//移動処理
+		Move();
+
+		Field* field = ActorManager::GetInstance()->GetFields()[0];
+		CuttingInfo* info = field->GetCuttingInfo(this);
+
+		if (blowFlag)
 		{
-			if (!tackleFlag && !drawingFlag)
+			blowTime--;
+			if (blowTime <= 0)
 			{
-				drawingFlag = true;
-				//線の生成
-				Vector3 p = info->cuttingStartPos;
-				ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+				blowFlag = false;
+			}
+		}
+		else
+		{
+			// 丸のこの所持数が一定以上だったら切り抜き
+			if ((Input::TriggerKey(DIK_U) || cutPower >= cutPowerLimit) && cutPower > 0 && info->ridingPiece)
+			{
+				if (!tackleFlag && !drawingFlag)
+				{
+					drawingFlag = true;
+					//線の生成
+					Vector3 p = info->cuttingStartPos;
+					ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+				}
+
 			}
 
+			// 敵が近くに居たらタックル
+			if (Input::TriggerKey(DIK_O) || RangeCheckPlayer())
+			{
+				Tackle();
+			}
 		}
 
-		// 敵が近くに居たらタックル
-		if (Input::TriggerKey(DIK_O) || RangeCheckPlayer())
+		//図形の消去
+		if (!drawingFlag)
 		{
-			Tackle();
+			if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+			{
+				DeleteLocuss();
+			}
 		}
-	}
 
-	//図形の消去
-	if (!drawingFlag)
-	{
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		////当たり判定系
+		//HitCheckItems();
+
+		////他のオブジェクトとのヒットチェック
+		//Object::Update();
+
+		Vector3 p = info->cuttingStartPos;
+		//SetLocus(LocusType::UNDIFINED);
+		if (!drawingFlag)
 		{
-			DeleteLocuss();
+			panelCutLocus->SetCutPower(cutPower);
+			panelCutLocus->Move(p, info->cuttingAngle);
+		}
+		for (auto locus : vecLocuss)
+		{
+			locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 		}
 	}
 
@@ -170,18 +203,6 @@ void StandardEnemy::Update()
 
 	//他のオブジェクトとのヒットチェック
 	Object::Update();
-
-	Vector3 p = info->cuttingStartPos;
-	//SetLocus(LocusType::UNDIFINED);
-	if (!drawingFlag)
-	{
-		panelCutLocus->SetCutPower(cutPower);
-		panelCutLocus->Move(p, info->cuttingAngle);
-	}
-	for (auto locus : vecLocuss)
-	{
-		locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
-	}
 
 	panelCountUI->Update(gottenPanel);
 	panelCountSprite3D->Update();
@@ -727,7 +748,38 @@ void StandardEnemy::DischargeGottenPanel(StandardEnemy* arg_enemy)
 
 }
 
-void StandardEnemy::IsBlow()
+void StandardEnemy::Fall()
+{
+	if (!fallFlag)
+	{
+		return;
+	}
+
+
+	if (fallEasingCount <= 30)
+	{
+		fallEasingCount++;
+		virtualityPlanePosition = EasingMove(fallStartPos, fallEndPos, 1, fallEasingCount / 30.0f);
+	}
+	else
+	{
+		virtualityPlanePosition.y -= 2;
+	}
+
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+
+}
+
+void StandardEnemy::StartFall()
+{
+	fallFlag = true;
+	fallStartPos = virtualityPlanePosition;
+	fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+}
+
+void StandardEnemy::StartBlow()
 {
 	blowFlag = true;
 }

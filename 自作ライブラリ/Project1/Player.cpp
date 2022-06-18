@@ -900,12 +900,30 @@ void Player::HitCheckEnemy()
 void Player::HitEnemy(StandardEnemy* arg_enemy)
 {
 	static const float weightCoefficient = 0.3f;
+	
+	if (arg_enemy->IsFall())
+	{
+		return;
+	}
+
 	//”Ä—p‰»	
-	arg_enemy->IsBlow();
+	if (arg_enemy->GetStanding() && tackleFlag)
+	{
+		arg_enemy->StartFall();
+
+	}
+	else
+	{
+		arg_enemy->StartBlow();
+		arg_enemy->SetBlowTime(40);
+	}
+
+
+
 	blowFlag = true;
 	
 	blowTime = 40;
-	arg_enemy->SetBlowTime(40);
+	
 
 	Vector3 enemyPos = arg_enemy->GetVirtualityPlanePosition();
 	Vector3 enemyVel = arg_enemy->GetVelocity();
