@@ -4,6 +4,7 @@
 #include "Easing.h"
 #include "ActorManager.h"
 #include "Field.h"
+#include "FieldPiece.h"
 
 const float PanelItem::RADIUS = 1.5f;
 const float PanelItem::BOUNCE_SPEED = 0.3f;
@@ -81,7 +82,7 @@ void PanelItem::SlidingDown()
 
 void PanelItem::StayInTheField()
 {
-	std::vector<Vector2> fieldEdges = Field::GetEdges();
+	std::vector<Vector2> fieldEdges = Field::GetEdges();	
 
 	for (int i = 0; i < fieldEdges.size(); i++)
 	{
@@ -94,6 +95,12 @@ void PanelItem::StayInTheField()
 
 		//¡“–‚½‚Á‚Ä‚¢‚é‚©
 		float cross = Vector2::Cross(AO, normalAB);
+		if (cross < 0)
+		{
+			Dead();
+			return;
+		}
+
 		if (fabsf(cross) > 0.01f)
 		{
 			continue;
@@ -141,6 +148,42 @@ void PanelItem::StayOnRemainPanels()
 	{
 		ActorManager::GetInstance()->GetFields()[0]->ReviveGottenPanel(piece);
 		Dead();
+	}
+
+	auto gottenPieces = field->GetGottenPieces();
+	for (auto p : gottenPieces)
+	{
+		bool isFall = true;
+
+		if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - p->GetVirtualityPlanePosition())) > RADIUS + FieldPiece::GetLowerTimeOffset())
+		{
+			continue;
+		}
+
+		auto points = p->GetPoints();
+		for (int i = 0; i < points.size(); i++)
+		{
+			Vector2 A = points[i];
+			Vector2 B = points[(i + 1) % points.size()];
+			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition) - A;			
+			Vector2 AB = B - A;
+			Vector2 normalAB = Vector2::Normalize(AB);
+
+			//¡“–‚½‚Á‚Ä‚¢‚é‚©
+			float cross = Vector2::Cross(AO, normalAB);
+			if (cross < 0)
+			{
+				isFall = false;
+				break;
+			}
+		}
+
+		if (isFall)
+		{
+			ActorManager::GetInstance()->GetFields()[0]->ReviveGottenPanel(p);
+			Dead();
+			return;
+		}
 	}
 }
 
