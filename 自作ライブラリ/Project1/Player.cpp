@@ -22,6 +22,7 @@
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
 #include "ItemEmitter.h"
+#include "ScoreManager.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -1231,6 +1232,8 @@ void Player::EndDrawing()
 	weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;
 	cutPower = 0;
+
+	ScoreManager::GetInstance()->AddScore(num);
 }
 
 Vector3 Player::GetDirection() const

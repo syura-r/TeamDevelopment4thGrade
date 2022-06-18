@@ -28,7 +28,7 @@ void ScoreManager::AddScore(const int oncePanelNum)
 	//ˆê–‡‚ ‚½‚è‚Ì‘f“_
 	const int rawScore = 1000;
 	//“¯Ø‚è”²‚«”{—¦
-	const float onceBonus = 1 + (oncePanelNum / 10);
+	const float onceBonus = 1.0f + ((float)oncePanelNum / 10.0f);
 
 	result = rawScore * onceBonus * oncePanelNum;
 
