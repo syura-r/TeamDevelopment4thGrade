@@ -236,16 +236,16 @@ void Player::Update()
 		}
 
 		//図形の消去
-		if (!drawingFlag)
-		{
-			if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
-			{
-				if (/*!vecLocuss.empty()*/true)
-				{
-					DeleteLocuss();
-				}
-			}
-		}
+		//if (!drawingFlag)
+		//{
+		//	if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		//	{
+		//		if (/*!vecLocuss.empty()*/true)
+		//		{
+		//			DeleteLocuss();
+		//		}
+		//	}
+		//}
 
 		Vector3 p = info->cuttingStartPos;
 		//SetLocus(LocusType::UNDIFINED);
@@ -456,6 +456,7 @@ void Player::MoveCamera()
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
 
 	//カメラのリセット処理
+#ifdef _DEBUG
 	if (Input::TriggerKey(DIK_C) && !rotCamera)
 	{
 		rotCamera = true;
@@ -471,6 +472,7 @@ void Player::MoveCamera()
 		cameraRotCount = 0;
 		//camera->AddPhi(radY);
 	}
+#endif // _DEBUG
 	
 	//カメラの回転処理
 	if (rotCamera)

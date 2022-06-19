@@ -82,6 +82,7 @@ void Field::Initialize()
 void Field::Update()
 {	
 	static bool b = false;
+#ifdef _DEBUG
 	if (Input::TriggerKey(DIK_L))
 	{
 		if (!b)
@@ -90,6 +91,7 @@ void Field::Update()
 			b = true;
 		}
 	}
+#endif // _DEBUG
 
 	if (isFallingBlock)
 	{

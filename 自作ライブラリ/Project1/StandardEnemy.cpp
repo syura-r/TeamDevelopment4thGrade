@@ -163,33 +163,53 @@ void StandardEnemy::Update()
 		else
 		{
 			// ŠÛ‚Ì‚±‚ÌŠŽ”‚ªˆê’èˆÈã‚¾‚Á‚½‚çØ‚è”²‚«
-			if ((Input::TriggerKey(DIK_U) || cutPower >= cutPowerLimit) && cutPower > 0 && info->ridingPiece)
+			if (cutPower > 0 && info->ridingPiece)
 			{
-				if (!tackleFlag && !drawingFlag)
+				if (cutPower >= cutPowerLimit)
 				{
-					drawingFlag = true;
-					//ü‚Ì¶¬
-					Vector3 p = info->cuttingStartPos;
-					ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+					if (!tackleFlag && !drawingFlag)
+					{
+						drawingFlag = true;
+						//ü‚Ì¶¬
+						Vector3 p = info->cuttingStartPos;
+						ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+					}
 				}
-
-			}
+#ifdef _DEBUG
+				else if (Input::TriggerKey(DIK_U))
+				{
+					if (!tackleFlag && !drawingFlag)
+					{
+						drawingFlag = true;
+						//ü‚Ì¶¬
+						Vector3 p = info->cuttingStartPos;
+						ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+					}
+				}
+#endif // _DEBUG
+			}			
 
 			// “G‚ª‹ß‚­‚É‹‚½‚çƒ^ƒbƒNƒ‹
-			if (Input::TriggerKey(DIK_O) || RangeCheckPlayer())
+			if (RangeCheckPlayer())
 			{
 				Tackle();
 			}
+#ifdef _DEBUG
+			else if (Input::TriggerKey(DIK_O))
+			{
+				Tackle();
+			}
+#endif // _DEBUG
 		}
 
 		//}Œ`‚ÌÁ‹Ž
-		if (!drawingFlag)
+		/*if (!drawingFlag)
 		{
 			if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
 			{
 				DeleteLocuss();
 			}
-		}		
+		}*/		
 
 		Vector3 p = info->cuttingStartPos;
 		//SetLocus(LocusType::UNDIFINED);
