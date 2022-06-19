@@ -74,5 +74,6 @@ private:
 
 	Pause* pause = nullptr;
 	TimeLimit* timeLimit = nullptr;
+	int gameEndCount;
 };
 

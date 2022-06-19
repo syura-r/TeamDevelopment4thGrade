@@ -101,6 +101,7 @@ void Play::Initialize()
 	isEnd = false;
 	pause->Initialize();
 	timeLimit->Initialize();
+	gameEndCount = 0;
 
 	ScoreManager::GetInstance()->Inisitlize();
 }
@@ -135,12 +136,22 @@ void Play::Update()
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
 	}
 #endif
-
+	
 	timeLimit->Update();
 	if (timeLimit->GetLimit())
 	{
-		Field* field = actorManager->GetFields()[0];
-		//Fieldに指令出す
+		//Field* field = actorManager->GetFields()[0];
+		////Fieldに指令出す
+
+		gameEndCount++;
+
+		if (gameEndCount >= 60)
+		{
+			ShutDown();
+			ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+		}
+
+		return;
 	}
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
