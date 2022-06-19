@@ -31,6 +31,8 @@ public:
 	PieceDirection GetPieceDirection()const;
 	bool IsActive();
 	void ChangeIsActive(const bool arg_isActive);
+	bool IsBlockade();
+	void ChangeIsBlockade(const bool arg_isBlockade);
 	std::vector<Vector2>& GetPoints();
 
 private:
@@ -44,6 +46,7 @@ private:
 	static const float WEIGHT;
 	PieceDirection dir;
 	bool isActive;
+	bool isBlockade;
 
 	std::vector<Vector2> points;
 	static std::vector<Vector2> basePoints;

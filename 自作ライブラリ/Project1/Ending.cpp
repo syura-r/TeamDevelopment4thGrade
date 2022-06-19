@@ -1,6 +1,6 @@
 #include "Ending.h"
-
-float Ending::panelNum = 0.0f;
+#include "ScoreManager.h"
+#include "Audio.h"
 
 Ending::Ending()
 {
@@ -36,15 +36,17 @@ void Ending::Initialize()
 	isEnd = false;
 
 	selectState = SelectState::Restart;
+	score = ScoreManager::GetInstance()->GetTotalScore();
 	drawScore = 0.0f;
-	score = 0.0f;
-	ScoreCalculation();
 	isCountEnd_score = false;
 
+	panelNum = ScoreManager::GetInstance()->GetStockPanelNum_Last();
 	drawPanelNum = 0.0f;
 	isCountEnd_panel = false;
 
 	pos_select = pos_restart;
+
+	//Audio::PlayWave("BGM_Result", 0.1f, true);
 }
 
 void Ending::Update()
@@ -108,22 +110,19 @@ void Ending::PostDraw()
 {
 }
 
-void Ending::SetScore(const float panelNum)
-{
-	Ending::panelNum = panelNum;
-}
-
 void Ending::SelectMenu()
 {
 	bool isSelectMove = false;//選択を変えたか
 
 	if (Input::TriggerPadLStickLeft())
 	{
+		Audio::PlayWave("SE_Select");
 		selectState = SelectState::Restart;
 		isSelectMove = true;
 	}
 	else if (Input::TriggerPadLStickRight())
 	{
+		Audio::PlayWave("SE_Select");
 		selectState = SelectState::ToTitle;
 		isSelectMove = true;
 	}
@@ -160,17 +159,8 @@ void Ending::SelectMenu()
 		default:
 			break;
 		}
+		Audio::PlayWave("SE_Decision");
+		//Audio::StopWave("BGM_Result");
 		ShutDown();
 	}
-}
-
-void Ending::ScoreCalculation()
-{
-	int result = 0;
-
-	//パネル取得数加点
-	const int panelAdd = 100;
-	result += panelNum * panelAdd;
-
-	score = result;
 }

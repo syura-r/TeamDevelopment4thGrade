@@ -19,11 +19,14 @@
 #include "StandardEnemy.h"
 #include "EnergyItem.h"
 #include "CircularSaw.h"
-#include "PanelCountBoard.h"
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
 #include "ItemEmitter.h"
 #include "ParticleEmitter.h"
+#include "UnableThroughEdge.h"
+#include "UnableThroughBlock.h"
+#include "ScoreManager.h"
+#include "Audio.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -34,13 +37,13 @@ Player::Player()
 	//モデルの生成
 	Create(myModel);
 	//当たり判定(Box)の生成
-	BoxCollider* boxCollider = new BoxCollider();
+	/*BoxCollider* boxCollider = new BoxCollider();
 	boxCollider->SetObject(this);
 	boxCollider->SetScale({0.2f,0.5f,0.2f});
 	boxCollider->SetOffset({ 0,0.5f,0 ,0 });
 	SetCollider(boxCollider);
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
-	collider->SetMove(true);
+	collider->SetMove(true);*/
 
 	pObjectManager = ObjectManager::GetInstance();
 
@@ -55,8 +58,7 @@ Player::Player()
 	ActorManager::GetInstance()->AddObject("Player", this);
 
 	panelCountUI = new PanelCountUI();
-
-	pObjectManager->Add(new PanelCountBoard(position, name, gottenPanel));
+	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 
 	Initialize();
 
@@ -87,6 +89,7 @@ Player::~Player()
 {	
 	delete attackSprite;	
 	delete panelCountUI;
+	delete panelCountSprite3D;
 	//delete locusSelecter;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
@@ -147,10 +150,15 @@ void Player::Initialize()
 	gottenPanel = 0;
 
 	panelCountUI->Initialize();
+	panelCountSprite3D->Initialize();
 	fallFlag = false;
 	fallEasingCount = 0;
+	pressFlag = false;
 	nextInputStartCount = 60;
 	count = 0;
+	gameEnd = false;
+
+	fallSoundFlag = false;
 }
 
 void Player::Update()
@@ -171,6 +179,24 @@ void Player::Update()
 	if (fallFlag)
 	{
 		Fall();
+		if (virtualityPlanePosition.y <= -65)
+		{
+			if (!fallSoundFlag)
+			{
+				Audio::PlayWave("SE_Fall", 1.0f);
+				fallSoundFlag = true;
+			}
+			gameEnd = true;
+		}
+	}
+	else if (pressFlag)
+	{
+		static int pressCount = 0;
+		pressCount++;
+		if (pressCount >= 30)
+		{
+			gameEnd = true;
+		}
 	}
 	else
 	{
@@ -182,6 +208,8 @@ void Player::Update()
 
 		//カメラのリセット処理
 		MoveCamera();
+
+		field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
 
 		if (blowFlag)
 		{
@@ -239,19 +267,21 @@ void Player::Update()
 		{
 			locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 		}
+
+		//当たり判定系
+		HitCheckLoci();
+		HitCheckEnemy();
+		HitCheckItems();
+		HitCheckUnableThroughEdge();
+		HitCheckUnableThroughBlock();
 	}
-	
-	
-	//当たり判定系
-	HitCheckLoci();	
-	HitCheckEnemy();
-	HitCheckItems();	
 	
 	//他のオブジェクトとのヒットチェック
 	//CheckHit();
 	Object::Update();	
 
 	panelCountUI->Update(gottenPanel);
+	panelCountSprite3D->Update();
 }
 
 void Player::Draw()
@@ -275,6 +305,7 @@ void Player::Draw()
 		//locusSelecter->Draw();		
 	}
 	panelCountUI->Draw();
+	panelCountSprite3D->Draw();
 }
 
 void Player::DrawReady()
@@ -893,12 +924,33 @@ void Player::HitCheckEnemy()
 void Player::HitEnemy(StandardEnemy* arg_enemy)
 {
 	static const float weightCoefficient = 0.3f;
+	
+	if (arg_enemy->IsFall())
+	{
+		return;
+	}
+
+	Audio::PlayWave("SE_Collision", 1.0f);
+
+
 	//汎用化	
-	arg_enemy->IsBlow();
+	if (arg_enemy->GetStanding() && tackleFlag)
+	{
+		arg_enemy->StartFall();
+
+	}
+	else
+	{
+		arg_enemy->StartBlow();
+		arg_enemy->SetBlowTime(40);
+	}
+
+
+
 	blowFlag = true;
 	
 	blowTime = 40;
-	arg_enemy->SetBlowTime(40);
+	
 
 	Vector3 enemyPos = arg_enemy->GetVirtualityPlanePosition();
 	Vector3 enemyVel = arg_enemy->GetVelocity();
@@ -996,6 +1048,7 @@ void Player::HitCheckItems()
 
 void Player::HitItem(EnergyItem* arg_item)
 {
+	Audio::PlayWave("SE_GetTriangle");
 	arg_item->Dead();
 	if (cutPower < 6)
 	{
@@ -1008,6 +1061,62 @@ void Player::HitPanelItem(PanelItem* arg_panelItem)
 	arg_panelItem->Dead();	
 	weight += FieldPiece::GetWeight();
 	gottenPanel++;
+}
+
+void Player::HitCheckUnableThroughEdge()
+{
+	auto edges = ActorManager::GetInstance()->GetUnableThroughEdges();
+	if (edges.empty())
+	{
+		return;
+	}
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);	
+
+	if (!info->ridingPiece)
+	{
+		if (edges[0]->IsEndFallDown())
+		{
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+		}
+		else if (edges[0]->GetPosition().y <= field->GetPosition().y + UnableThroughEdge::GetHeightMagnification() * 2)
+		{
+			pressFlag = true;
+		}
+	}	
+}
+
+void Player::HitUnableThroughEdge()
+{
+}
+
+void Player::HitCheckUnableThroughBlock()
+{
+	auto blocks = ActorManager::GetInstance()->GetUnableThroughBlocks();
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
+
+	for (auto b : blocks)
+	{
+		if (info->ridingPiece == b->GetParentPiece())
+		{
+			if (b->IsEndFallDown())
+			{
+				virtualityPlanePosition = preVirtualityPlanePosition;
+				position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+			}
+			else if (b->GetVirtualityPlanePosition().y <= field->GetPosition().y + UnableThroughBlock::GetHeightMagnification() * 2)
+			{
+				pressFlag = true;
+			}
+		}
+	}
+}
+
+void Player::HitUnableThroughBlock()
+{
 }
 
 void Player::StartStand(bool arg_outField, Vector3 arg_velocity)
@@ -1031,6 +1140,8 @@ void Player::StartStand(bool arg_outField, Vector3 arg_velocity)
 	
 	preStandVec.y = 0;
 	preStandVec.Normalize();
+
+	Audio::PlayWave("SE_SteppingOn", 0.25f, true);
 }
 
 void Player::WithStand()
@@ -1087,6 +1198,9 @@ void Player::WithStand()
 			returningStartPos = virtualityPlanePosition;
 			returningEndPos = virtualityPlanePosition + moveDirection * 3;
 			nextInputStartCount = nextInputStartCount + 30;
+
+			Audio::StopWave("SE_SteppingOn");
+
 			return;
 		}
 
@@ -1098,6 +1212,8 @@ void Player::WithStand()
 			fallFlag = true;
 			fallStartPos = virtualityPlanePosition;
 			fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+
+			Audio::StopWave("SE_SteppingOn");
 		}
 	}
 	else
@@ -1135,7 +1251,7 @@ void Player::Tackle()
 	moveDirection.Normalize();
 	tackleEndPos = virtualityPlanePosition + moveDirection * 8;
 
-
+	Audio::PlayWave("SE_Dash");
 }
 
 void Player::SuspendTackle()
@@ -1176,6 +1292,10 @@ void Player::DischargeGottenPanel(StandardEnemy* arg_enemy)
 		weight -= FieldPiece::GetWeight();
 	}
 
+	if (maxEmit != 0)
+	{
+		//Audio::PlayWave("SE_TriangleLost");
+	}
 }
 
 void Player::Fall()
@@ -1184,9 +1304,6 @@ void Player::Fall()
 	{
 		return;
 	}
-	
-	
-
 
 	if (fallEasingCount <= 30)
 	{
@@ -1227,6 +1344,8 @@ void Player::EndDrawing()
 	weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;
 	cutPower = 0;
+
+	ScoreManager::GetInstance()->AddScore(num);
 }
 
 Vector3 Player::GetDirection() const

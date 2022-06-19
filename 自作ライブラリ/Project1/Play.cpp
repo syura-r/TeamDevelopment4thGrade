@@ -17,6 +17,7 @@
 #include "TestBoss.h"
 #include "Field.h"
 #include "Ending.h"
+#include "ScoreManager.h"
 
 #include "TextureResource.h"
 #include "StandardEnemy.h"
@@ -71,10 +72,13 @@ Play::~Play()
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
 	//PtrDelete(test);
+	ScoreManager::GetInstance()->Finalize();
 }
 
 void Play::Initialize()
 {
+	next = Ending;
+
 	Object3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());
 
@@ -99,6 +103,10 @@ void Play::Initialize()
 	isEnd = false;
 	pause->Initialize();
 	timeLimit->Initialize();
+
+	ScoreManager::GetInstance()->Inisitlize();
+
+	//Audio::PlayWave("BGM_Play", 0.1f, true);
 }
 
 void Play::Update()
@@ -117,6 +125,7 @@ void Play::Update()
 	//タイトルにもどる
 	if (pause->GetToTitle())
 	{
+		//Audio::StopWave("BGM_Play");
 		next = Title;
 		ShutDown();
 	}
@@ -125,8 +134,9 @@ void Play::Update()
 #ifdef _DEBUG
 	if (Input::TriggerKey(DIK_E))//終了処理
 	{
+		//Audio::StopWave("BGM_Play");
 		ShutDown();
-		Ending::SetScore(actorManager->GetPlayer()->GetGottenPanel());
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
 	}
 	if (Input::TriggerKey(DIK_7))
 	{
@@ -150,6 +160,30 @@ void Play::Update()
 	screenCamera->Update();
 
 	collisionManager->CheckAllCollisions();
+
+	if (ActorManager::GetInstance()->GetPlayer()->IsGameEnd() )
+	{
+		//Audio::StopWave("BGM_Play");
+		ShutDown();
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+	}
+
+	bool allEnemiesOutField = true;
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		if (!e->GetOutField())
+		{
+			allEnemiesOutField = false;
+			break;
+		}
+	}
+	if (allEnemiesOutField)
+	{
+		//Audio::StopWave("BGM_Play");
+		ShutDown();
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+	}
 }
 
 void Play::PreDraw()

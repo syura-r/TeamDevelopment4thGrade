@@ -13,6 +13,7 @@
 #include "PanelCutLocus.h"
 
 #include "ParticleEmitter.h"
+#include "Audio.h"
 
 CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType, Object* arg_object)
 	:parentObj(arg_object)
@@ -56,6 +57,8 @@ void CircularSaw::Update()
 	rotation.y = angle + 90;
 	rotation.x += 3;
 
+	Audio::PlayWave("SE_SawCutNow", 1.0f, true);
+
 	if (lengthLocusLine - length <= 0.05f) //マジックサイコー
 	{
 		currentLineNum++;
@@ -64,7 +67,10 @@ void CircularSaw::Update()
 		if (currentLineNum >= nowCuttingLocus->GetMaxNumLine())
 		{
 			Dead();
-		
+
+			Audio::StopWave("SE_SawCutNow");
+			Audio::PlayWave("SE_GetSaw");
+
 			switch (objectType)
 			{
 			case GAMEOBJECTTYPE::PLAYER:

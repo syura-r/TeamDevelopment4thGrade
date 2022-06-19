@@ -10,8 +10,10 @@
 #include "Input.h"
 #include "Easing.h"
 #include "UnableThroughBlock.h"
+#include "UnableThroughEdge.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
+const float Field::RADIUS = 50.0f;
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
 
 Field::Field()
@@ -23,7 +25,8 @@ Field::Field()
 	 fallingLayerNum(0),
 	 fallingBlockCount(0),
 	 fallingBlockCountMax(0),
-	 fallIntervalTimer(new Timer(INTERVAL_CREATE))
+	 fallIntervalTimer(new Timer(INTERVAL_CREATE)),
+	 lastTimeEdge(nullptr)
 {
 	if (edges.empty())
 	{
@@ -36,12 +39,12 @@ Field::Field()
 	color = { 0.1f ,0.1f, 0.1f,1 };
 	Object::Update();
 
-	collider = new BoxCollider({ 0.0f, 0.0f, 0.0f, 0.0f }, Vector3(90.0f, 1.0f, 90.0f));
+	/*collider = new BoxCollider({ 0.0f, 0.0f, 0.0f, 0.0f }, Vector3(90.0f, 1.0f, 90.0f));
 	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 	collider->SetMove(true);
 	collider->SetObject(this);
 	collider->Update();
-	CollisionManager::GetInstance()->AddCollider(collider);
+	CollisionManager::GetInstance()->AddCollider(collider);*/
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Field", this);
@@ -73,6 +76,7 @@ void Field::Initialize()
 	fallingBlockCount = 0;
 	fallingBlockCountMax = 0;
 	fallIntervalTimer->Reset();
+	lastTimeEdge = nullptr;
 }
 
 void Field::Update()
@@ -94,12 +98,12 @@ void Field::Update()
 
 	CalcTilt();
 	SetRotation(angleTilt);		
-	DecideAllRidingPiece();
+	/*DecideAllRidingPiece();
 	DecideAllCuttingStartPos();
-	DecideAllCuttingAngle();
+	DecideAllCuttingAngle();*/
 
 	Object::Update();
-	collider->Update();
+	//collider->Update();
 }
 
 void Field::DrawReady()
@@ -134,10 +138,10 @@ void Field::CalcTilt()
 	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();
 	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
 	{
-		/*if (!(*itr)->IsFall())
+		if ((*itr)->IsFall())
 		{
 			continue;
-		}*/
+		}
 
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * (*itr)->GetWeight() * GetMultiplyingFactor(Vector3::Length((*itr)->GetVirtualityPlanePosition()));
@@ -359,109 +363,141 @@ void Field::DecideCuttingAngle(Object* arg_obj)
 
 void Field::FallingBlock()
 {
-	//ブロック落とすフェーズ
-	if (fallIntervalTimer->GetLimit() == INTERVAL_CREATE)
+	if (fallingLayerNum == 0)
 	{
-		//生成間隔待ち
-		if (fallingBlockCount < fallingBlockCountMax)
+		if (fallingBlockCount == 0)
+		{
+			lastTimeEdge = new UnableThroughEdge(position, 50);
+			ObjectManager::GetInstance()->Add(lastTimeEdge, false);
+			fallIntervalTimer->SetLimit(INTERVAL_WAIT, true);
+			fallingBlockCount++;
+		}
+		else if (lastTimeEdge->IsEndFallDown())
 		{
 			fallIntervalTimer->Update();
-			//1個落とし
+
 			if (fallIntervalTimer->IsTime())
-			{				
-				UnableThroughBlock* block = nullptr;
-				int columnNum = 0;
-				int rowNum = 0;
-
-				//残っている最上段
-				if (fallingBlockCount < topLayerPieceNum)
-				{		
-					columnNum = fallingLayerNum - 1;
-					rowNum = fallingBlockCount + (fallingLayerNum - 1) * 2;
-				}
-				//右側
-				else if (fallingBlockCount < topLayerPieceNum + onesidePieceNum)
-				{
-					int trueCount = fallingBlockCount - topLayerPieceNum;
-					columnNum = fallingLayerNum + (trueCount / 2);
-
-					int layerSize = pieces[columnNum].size();
-
-					if (trueCount % 2 == 0)
-					{
-						rowNum = layerSize - (fallingLayerNum * 2);
-					}
-					else
-					{
-						rowNum = layerSize - (fallingLayerNum * 2) + 1;
-					}
-				}
-				//残っている最下段
-				else if (fallingBlockCount < topLayerPieceNum + onesidePieceNum + topLayerPieceNum)
-				{		
-					int trueCount = fallingBlockCount - topLayerPieceNum - onesidePieceNum;
-					int startNum = topLayerPieceNum + (fallingLayerNum - 1) * 2 - 1;
-					columnNum = pieces.size() - fallingLayerNum;
-					rowNum = startNum - trueCount;
-				}
-				//左側
-				else
-				{		
-					int trueCount = fallingBlockCount - topLayerPieceNum - onesidePieceNum - topLayerPieceNum;
-					columnNum = (PIECE_LAYER_NUM * 2 - fallingLayerNum - (trueCount / 2)) - 1;
-					rowNum = 0;					
-
-					if (trueCount % 2 == 0)
-					{
-						rowNum = (fallingLayerNum - 1) * 2;
-					}
-					else
-					{
-						rowNum = (fallingLayerNum - 1) * 2 + 1;
-					}
-				}
-
-				block = new UnableThroughBlock(pieces[columnNum][rowNum]->GetVirtualityPlanePosition(), 50, pieces[columnNum][rowNum]);
-				ObjectManager::GetInstance()->Add(block);
-				blocks.push_back(block);
-				fallingBlockCount++;				
-				fallIntervalTimer->Reset();
-			}
-		}
-		//全着地待ち
-		else
-		{
-			for (auto b : blocks)
 			{
-				if (!b->IsEndFallDown())
-				{
-					return;
-				}
+				fallingLayerNum++;
+
+				innerRemainLayerNum = PIECE_LAYER_NUM - fallingLayerNum;
+				topLayerPieceNum = (innerRemainLayerNum + 1) * 2 + 1;
+				onesidePieceNum = innerRemainLayerNum * 4;
+				fallingBlockCount = 0;
+				fallingBlockCountMax = (topLayerPieceNum + onesidePieceNum) * 2;
+
+				fallIntervalTimer->SetLimit(INTERVAL_CREATE, true);
+				blocks.clear();
+				lastTimeEdge = nullptr;
 			}
-			fallIntervalTimer->SetLimit(INTERVAL_WAIT, true);
 		}
 	}
-	//次の層落とし待ちフェーズ
 	else
 	{
-		fallIntervalTimer->Update();
-		//次の層へ
-		if (fallIntervalTimer->IsTime())
-		{			
-			fallingLayerNum++;									
-			
-			innerRemainLayerNum = PIECE_LAYER_NUM - fallingLayerNum;
-			topLayerPieceNum = (innerRemainLayerNum + 1) * 2 + 1;
-			onesidePieceNum = innerRemainLayerNum * 4;
-			fallingBlockCount = 0;
-			fallingBlockCountMax = (topLayerPieceNum + onesidePieceNum) * 2;
-
-			fallIntervalTimer->SetLimit(INTERVAL_CREATE, true);
-			blocks.clear();
-
-			if (fallingLayerNum > PIECE_LAYER_NUM)
+		//ブロック落とすフェーズ
+		if (fallIntervalTimer->GetLimit() == INTERVAL_CREATE)
+		{
+			//生成間隔待ち
+			if (fallingBlockCount < fallingBlockCountMax)
 			{
-				isFallingBlock = false;
+				fallIntervalTimer->Update();
+				//1個落とし
+				if (fallIntervalTimer->IsTime())
+				{
+					UnableThroughBlock* block = nullptr;
+					int columnNum = 0;
+					int rowNum = 0;
+
+					//残っている最上段
+					if (fallingBlockCount < topLayerPieceNum)
+					{
+						columnNum = fallingLayerNum - 1;
+						rowNum = fallingBlockCount + (fallingLayerNum - 1) * 2;
+					}
+					//右側
+					else if (fallingBlockCount < topLayerPieceNum + onesidePieceNum)
+					{
+						int trueCount = fallingBlockCount - topLayerPieceNum;
+						columnNum = fallingLayerNum + (trueCount / 2);
+
+						int layerSize = pieces[columnNum].size();
+
+						if (trueCount % 2 == 0)
+						{
+							rowNum = layerSize - (fallingLayerNum * 2);
+						}
+						else
+						{
+							rowNum = layerSize - (fallingLayerNum * 2) + 1;
+						}
+					}
+					//残っている最下段
+					else if (fallingBlockCount < topLayerPieceNum + onesidePieceNum + topLayerPieceNum)
+					{
+						int trueCount = fallingBlockCount - topLayerPieceNum - onesidePieceNum;
+						int startNum = topLayerPieceNum + (fallingLayerNum - 1) * 2 - 1;
+						columnNum = pieces.size() - fallingLayerNum;
+						rowNum = startNum - trueCount;
+					}
+					//左側
+					else
+					{
+						int trueCount = fallingBlockCount - topLayerPieceNum - onesidePieceNum - topLayerPieceNum;
+						columnNum = (PIECE_LAYER_NUM * 2 - fallingLayerNum - (trueCount / 2)) - 1;
+						rowNum = 0;
+
+						if (trueCount % 2 == 0)
+						{
+							rowNum = (fallingLayerNum - 1) * 2;
+						}
+						else
+						{
+							rowNum = (fallingLayerNum - 1) * 2 + 1;
+						}
+					}
+
+					block = new UnableThroughBlock(pieces[columnNum][rowNum]->GetVirtualityPlanePosition(), 50, pieces[columnNum][rowNum]);
+					ObjectManager::GetInstance()->Add(block, false);
+					blocks.push_back(block);
+					fallingBlockCount++;
+					fallIntervalTimer->Reset();
+				}
+			}
+			//全着地待ち
+			else
+			{
+				for (auto b : blocks)
+				{
+					if (!b->IsEndFallDown())
+					{
+						return;
+					}
+				}
+				fallIntervalTimer->SetLimit(INTERVAL_WAIT, true);
+			}
+		}
+		//次の層落とし待ちフェーズ
+		else
+		{
+			fallIntervalTimer->Update();
+			//次の層へ
+			if (fallIntervalTimer->IsTime())
+			{
+				fallingLayerNum++;
+
+				innerRemainLayerNum = PIECE_LAYER_NUM - fallingLayerNum;
+				topLayerPieceNum = (innerRemainLayerNum + 1) * 2 + 1;
+				onesidePieceNum = innerRemainLayerNum * 4;
+				fallingBlockCount = 0;
+				fallingBlockCountMax = (topLayerPieceNum + onesidePieceNum) * 2;
+
+				fallIntervalTimer->SetLimit(INTERVAL_CREATE, true);
+				blocks.clear();
+
+				if (fallingLayerNum > PIECE_LAYER_NUM)
+				{
+					isFallingBlock = false;
+				}
 			}
 		}
 	}
@@ -677,7 +713,7 @@ void Field::ReviveGottenPanel(FieldPiece* arg_piece)
 void Field::StartFallingBlock()
 {	
 	isFallingBlock = true;
-	fallingLayerNum = 1;
+	fallingLayerNum = 0;
 	innerRemainLayerNum = PIECE_LAYER_NUM - fallingLayerNum;
 	topLayerPieceNum = (innerRemainLayerNum + 1) * 2 + 1;
 	onesidePieceNum = innerRemainLayerNum * 4;
@@ -685,6 +721,13 @@ void Field::StartFallingBlock()
 	fallingBlockCountMax = (topLayerPieceNum + onesidePieceNum) * 2;
 	fallIntervalTimer->SetLimit(INTERVAL_CREATE, true);
 	blocks.clear();
+}
+
+void Field::DecideCuttingInfo(Object* arg_object, const Vector3& arg_pos, const Vector3& arg_dir)
+{
+	DecideRidingPiece(arg_object, arg_pos);
+	DecideCuttingStartPos(arg_object, arg_pos, arg_dir);
+	DecideCuttingAngle(arg_object);
 }
 
 CuttingInfo* Field::GetCuttingInfo(Object* arg_pObject)
@@ -709,6 +752,11 @@ FieldPiece* Field::IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_
 		}		
 	}
 	return nullptr;
+}
+
+float Field::GetRadius()
+{
+	return RADIUS;
 }
 
 std::vector<Vector2>& Field::GetEdges()

@@ -7,6 +7,7 @@
 
 class FieldPiece;
 class UnableThroughBlock;
+class UnableThroughEdge;
 
 struct CuttingInfo
 {
@@ -42,9 +43,11 @@ public:
 	void ReviveGottenPanel(FieldPiece* arg_piece);
 	void StartFallingBlock();
 
+	void DecideCuttingInfo(Object* arg_object, const Vector3& arg_pos, const Vector3& arg_dir);
 	CuttingInfo* GetCuttingInfo(Object* arg_pObject);
 	FieldPiece* IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius);
 
+	static float GetRadius();
 	static std::vector<Vector2>& GetEdges();
 	Vector3 GetAngleTilt()const;
 	Vector3 GetTilt();
@@ -53,7 +56,7 @@ public:
 
 private:
 	//広さ
-	const float RADIUS = 50.0f;
+	static const float RADIUS;
 	static const int PIECE_LAYER_NUM;
 	static std::vector<Vector2> edges;
 	//傾きを表す
@@ -83,6 +86,7 @@ private:
 	Timer* fallIntervalTimer;
 	const int INTERVAL_CREATE = 0.1f * 60;
 	const int INTERVAL_WAIT = 5 * 60;
+	UnableThroughEdge* lastTimeEdge;
 	std::vector<UnableThroughBlock*> blocks;
 
 	//端点の用意

@@ -426,9 +426,6 @@
     <ClCompile Include="PanelCountUI.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="PanelCountBoard.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Stadium.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
@@ -437,6 +434,15 @@
     </ClCompile>
     <ClCompile Include="Sprite3D.cpp">
       <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelCountSprite3D.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="UnableThroughEdge.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+	</ClCompile>
+    <ClCompile Include="ScoreManager.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -782,9 +788,6 @@
     <ClInclude Include="PanelCountUI.h">
       <Filter>ヘッダー ファイル\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="PanelCountBoard.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Stadium.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
@@ -793,6 +796,15 @@
     </ClInclude>
     <ClInclude Include="Sprite3D.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelCountSprite3D.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="UnableThroughEdge.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+	</ClInclude>
+    <ClInclude Include="ScoreManager.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
