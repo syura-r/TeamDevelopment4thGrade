@@ -23,6 +23,7 @@
 
 class EnergyItem;
 class PanelCutLocus;
+class Player;
 
 class StandardEnemy
 	:public Object
@@ -39,6 +40,7 @@ public:
 	bool IsAlive();
 
 	void EndDrawing();
+	void DischargeGottenPanel(Player* arg_player);
 
 	// ìGÇ∆ê}å`ÇÃîªíËÇÃÇΩÇﬂ
 	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
@@ -49,6 +51,8 @@ public:
 	PanelCutLocus* GetPanelCutLocus();
 
 	bool GetStanding() { return standingFlag; }
+
+	bool IsTackle() { return tackleFlag; }
 
 	bool IsFall() { return fallFlag; }
 

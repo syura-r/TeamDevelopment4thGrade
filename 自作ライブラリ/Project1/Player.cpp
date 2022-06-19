@@ -987,6 +987,16 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 		arg_enemy->StartFall();
 
 	}
+	else if (standingFlag && arg_enemy->IsTackle())
+	{
+		Object::SetColor({ 1,1,1,1 });
+		standingFlag = false;
+		fallFlag = true;
+		fallStartPos = virtualityPlanePosition;
+		fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+
+		Audio::StopWave("SE_SteppingOn");
+	}
 	else
 	{
 		arg_enemy->StartBlow();
@@ -1023,8 +1033,11 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 	Vector3  playerAfterVel = -enemyWeight * constVec + velocity;
 	Vector3  enemyAfterVel = (playerWeight * weightCoefficient) * constVec + enemyVel;
 
-	
-	DischargeGottenPanel(arg_enemy);
+	if (!fallFlag && !arg_enemy->IsFall())
+	{
+		DischargeGottenPanel(arg_enemy);
+		arg_enemy->DischargeGottenPanel(this);
+	}
 
 	if (tackleFlag)
 	{
@@ -1322,6 +1335,11 @@ void Player::SuspendTackle()
 
 void Player::DischargeGottenPanel(StandardEnemy* arg_enemy)
 {
+	if (arg_enemy->IsFall())
+	{
+		return;
+	}
+
 	ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
 	int maxEmit = 0;
 	if (gottenPanel == 1)

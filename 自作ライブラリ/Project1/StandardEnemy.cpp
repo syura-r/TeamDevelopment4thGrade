@@ -819,6 +819,32 @@ void StandardEnemy::DischargeGottenPanel(StandardEnemy* arg_enemy)
 
 }
 
+void StandardEnemy::DischargeGottenPanel(Player* arg_player)
+{
+	if (arg_player->IsFall())
+	{
+		return;
+	}
+
+	ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
+	int maxEmit = 0;
+	if (gottenPanel == 1)
+	{
+		maxEmit = 1;
+	}
+	else
+	{
+		maxEmit = gottenPanel / 2;
+	}
+
+	for (int i = 0; i < maxEmit; i++)
+	{
+		itemEmitter->EmitPanelItem(virtualityPlanePosition);
+		gottenPanel--;
+		weight -= FieldPiece::GetWeight();
+	}
+}
+
 void StandardEnemy::Fall()
 {
 	if (!fallFlag)
