@@ -1074,6 +1074,23 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 
 void Player::HitCheckItems()
 {
+	std::vector<PanelItem*> panelItems = ActorManager::GetInstance()->GetPanelItems();
+
+	for (auto panelItem : panelItems)
+	{
+		if (!panelItem->IsEndBounce())
+		{
+			continue;
+		}
+
+		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - panelItem->GetVirtualityPlanePosition()));
+
+		if (length <= RADIUS + PanelItem::GetRadius())
+		{
+			HitPanelItem(panelItem);
+		}
+	}
+
 	if (cutPower >= 6)
 	{
 		return;
@@ -1093,23 +1110,6 @@ void Player::HitCheckItems()
 		if (length <= RADIUS + EnergyItem::GetRadius())
 		{
 			HitItem(item);
-		}
-	}
-
-	std::vector<PanelItem*> panelItems = ActorManager::GetInstance()->GetPanelItems();
-
-	for (auto panelItem : panelItems)
-	{
-		if (!panelItem->IsEndBounce())
-		{
-			continue;
-		}
-
-		float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - panelItem->GetVirtualityPlanePosition()));
-
-		if (length <= RADIUS + PanelItem::GetRadius())
-		{
-			HitPanelItem(panelItem);
 		}
 	}
 }
