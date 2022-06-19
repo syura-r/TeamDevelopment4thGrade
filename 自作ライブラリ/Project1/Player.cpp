@@ -905,6 +905,48 @@ void Player::StayOnRemainPanels()
 		{
 			SuspendTackle();
 		}
+		return;
+	}
+
+	//‘¦—Ž‚¿
+	if (!standingFlag)
+	{
+		auto gottenPanels = field->GetGottenPieces();
+		for (auto p : gottenPanels)
+		{
+			bool isFall = true;
+
+			if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - p->GetVirtualityPlanePosition())) > RADIUS + FieldPiece::GetLowerTimeOffset())
+			{
+				continue;
+			}
+
+			auto points = p->GetPoints();
+			for (int i = 0; i < points.size(); i++)
+			{
+				Vector2 A = points[i];
+				Vector2 B = points[(i + 1) % points.size()];
+				Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition) - A;
+				Vector2 AB = B - A;
+				Vector2 normalAB = Vector2::Normalize(AB);
+
+				//¡“–‚½‚Á‚Ä‚¢‚é‚©
+				float cross = Vector2::Cross(AO, normalAB);
+				if (cross < 0)
+				{
+					isFall = false;
+					break;
+				}
+			}
+
+			if (isFall)
+			{
+				fallFlag = true;
+				fallStartPos = virtualityPlanePosition;
+				fallEndPos = p->GetVirtualityPlanePosition();
+				return;
+			}
+		}
 	}
 }
 
