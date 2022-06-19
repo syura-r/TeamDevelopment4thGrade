@@ -182,14 +182,14 @@ void StandardEnemy::Update()
 			}
 		}
 
-		//図形の消去
-		if (!drawingFlag)
-		{
-			if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
-			{
-				DeleteLocuss();
-			}
-		}		
+		////図形の消去
+		//if (!drawingFlag)
+		//{
+		//	if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		//	{
+		//		DeleteLocuss();
+		//	}
+		//}		
 
 		Vector3 p = info->cuttingStartPos;
 		//SetLocus(LocusType::UNDIFINED);
@@ -221,12 +221,12 @@ void StandardEnemy::Draw()
 	Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]);
 	cameraDirectionZ.Normalize();
 	ImGui::Begin("EnemyStatus");
-	ImGui::Text("CameraDirection : {%f, %f, %f }\n", cameraDirectionZ.x, cameraDirectionZ.y, cameraDirectionZ.z);
+	//ImGui::Text("CameraDirection : {%f, %f, %f }\n", cameraDirectionZ.x, cameraDirectionZ.y, cameraDirectionZ.z);
 	ImGui::Text("Direction : {%f, %f, %f }\n", direction.x, direction.y, direction.z);
 	ImGui::Text("Position : {%f, %f, %f }\n", position.x, position.y, position.z);
 	ImGui::Text("Rot : {%f, %f, %f }\n", rotation.x, rotation.y, rotation.z);
-	ImGui::Text("inputAccuracy : {%f}\n", inputAccuracy);
 	ImGui::Text("virtualityPlanePosition : {%f,%f,%f}\n", virtualityPlanePosition.x, virtualityPlanePosition.y, virtualityPlanePosition.z);
+	ImGui::Text("actionTimer : %d\n", actionTimer->GetTime());
 	ImGui::End();
 
 #endif
@@ -659,7 +659,7 @@ void StandardEnemy::WithStand()
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 	Vector2 stickDirection = {};
 	//スティックの向き
-	auto vec = Input::GetLStickDirection();
+	auto vec = RandomDir();
 	stickDirection.x = (cameraDirectionX * vec.x).x;
 	stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
@@ -703,7 +703,9 @@ void StandardEnemy::Tackle()
 	Vector2 stickDirection = {};
 	Vector3 moveDirection = {};
 	//スティックの向き
-	auto vec = Input::GetLStickDirection();
+	//auto vec = RandomDir();
+	auto vec = playerPos - position;
+	vec.Normalize();
 	stickDirection.x = (cameraDirectionX * vec.x).x;
 	stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
@@ -727,7 +729,6 @@ void StandardEnemy::SuspendTackle()
 	else
 	{
 		tackleEndPos = virtualityPlanePosition;
-		//tackleCount = 0;
 		speed = walkSpeed;
 	}
 }
