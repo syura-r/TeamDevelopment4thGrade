@@ -132,8 +132,7 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		next = Title;
-		ShutDown();
-		objectManager->Reset();
+		ShutDown();		
 		return;
 	}
 	if (pause->GetUsePause())
@@ -145,8 +144,7 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
-		objectManager->Reset();
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 	if (Input::TriggerKey(DIK_7))
@@ -166,8 +164,7 @@ void Play::Update()
 		if (gameEndCount >= 60)
 		{
 			ShutDown();
-			ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
-			objectManager->Reset();			
+			ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());					
 		}
 
 		return;
@@ -188,8 +185,7 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
-		objectManager->Reset();
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 
@@ -207,8 +203,7 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
-		objectManager->Reset();
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 }
