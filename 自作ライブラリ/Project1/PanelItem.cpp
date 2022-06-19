@@ -15,7 +15,7 @@ PanelItem::PanelItem(const Vector3& arg_position, const Vector3& arg_velocity)
 	 bouncePower(0.5f)
 {
 	velocity = arg_velocity;
-	Create(OBJLoader::GetModel("sphere"));	
+	Create(OBJLoader::GetModel("fieldPiece"));	
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("PanelItem", this);
@@ -34,7 +34,8 @@ void PanelItem::Initialize()
 	virtualityPlanePosition.y += (RADIUS + 1.0f);
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	position = virtualityPlanePosition;
-	scale = Vector3(RADIUS, RADIUS, RADIUS);
+	scale = Vector3(RADIUS * 1.5f, RADIUS *	1.5f, RADIUS * 1.5f);
+	rotation = Vector3(0, 90, 0);
 	color = { 0.5f, 1.0f, 0.4f, 1.0f };	
 	Object::Update();
 }
