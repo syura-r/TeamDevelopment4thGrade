@@ -98,6 +98,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Gettriangle_Enemy", "GamePlay_UI_Gettriangle_Enemy.png");
 		Texture::LoadTexture("Result_UI_Gettriangle_text", "Result_UI_Gettriangle_text.png");
 		Texture::LoadTexture("Result_UI_Totalscore_Text", "Result_UI_Totalscore_Text.png");
+		Texture::LoadTexture("GamePlay_UI_Score_Text", "GamePlay_UI_Score_Text.png");
 	
 		break; 
 	case 2:
@@ -126,7 +127,20 @@ void Game::RoadAsset()
 		FBXManager::LoadModelFile("GamePlay_Enemy", "GamePlay_Enemy", false);
 
 		//WAVファイルの読み込み
-		//Audio::LoadFile("test", "51e7ff6cc6b93897.wav");
+		Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
+		Audio::LoadFile("BGM_Play", "BGM/GamePlay_BGM.wav");
+		Audio::LoadFile("BGM_Result", "BGM/Result_BGM.wav");
+		Audio::LoadFile("SE_Decision", "SE/Allscene_SE_Decision.wav");
+		Audio::LoadFile("SE_Select", "SE/Allscene_SE_Select.wav");
+		Audio::LoadFile("SE_Collision", "SE/GamePlay_SE_Collision.wav");
+		Audio::LoadFile("SE_Dash", "SE/GamePlay_SE_Dash.wav");
+		Audio::LoadFile("SE_Fall", "SE/GamePlay_SE_Fall.wav");
+		Audio::LoadFile("SE_GetSaw", "SE/GamePlay_SE_Getsaw.wav");
+		Audio::LoadFile("SE_GetTriangle", "SE/GamePlay_SE_GetTriangle.wav");
+		Audio::LoadFile("SE_SawCutNow", "SE/GamePlay_SE_Sawcut_Now.wav");
+		Audio::LoadFile("SE_SawCutOut", "SE/GamePlay_SE_Sawcut_Out.wav");
+		Audio::LoadFile("SE_SteppingOn", "SE/GamePlay_SE_Steppingon.wav");
+		Audio::LoadFile("SE_TriangleLost", "SE/GamePlay_SE_Trianglelost.wav");
 		break;
 	case 5:
 		//FBXアニメーションの登録
@@ -374,6 +388,7 @@ void Game::End()
 #endif // _DEBUG
 	FbxLoader::GetInstance()->Finalize();
 	FBXManager::DeleteModels();
+	Audio::End();
 	//デリートはここまでに終わらせる
 	//ComputeWrapper::GetInstance()->End();
 	win->End();

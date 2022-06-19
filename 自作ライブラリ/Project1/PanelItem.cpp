@@ -5,6 +5,7 @@
 #include "ActorManager.h"
 #include "Field.h"
 #include "FieldPiece.h"
+#include "Audio.h"
 
 const float PanelItem::RADIUS = 1.5f;
 const float PanelItem::BOUNCE_SPEED = 0.3f;
@@ -68,6 +69,7 @@ void PanelItem::Bounce()
 	{
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
 		virtualityPlanePosition.y = field->GetPosition().y + RADIUS;
+		Audio::PlayWave("SE_TriangleLost", 0.5f);
 	}
 }
 

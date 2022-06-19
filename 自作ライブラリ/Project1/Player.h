@@ -244,6 +244,9 @@ private:
 	PanelCountUI* panelCountUI = nullptr;
 	PanelCountSprite3D* panelCountSprite3D = nullptr;
 
+	//サウンド用フラグ
+	bool fallSoundFlag;
+
 private://静的メンバ変数
 	static DebugCamera* camera;
 

@@ -3,6 +3,7 @@
 #include "DebugCamera.h"
 #include "Sprite.h"
 #include "TextureResource.h"
+#include "Audio.h"
 
 Title::Title()
 {
@@ -22,6 +23,8 @@ Title::~Title()
 void Title::Initialize()
 {
 	isEnd = false;
+
+	Audio::PlayWave("BGM_Title", 0.1f, true);
 }
 
 void Title::Update()
@@ -29,6 +32,8 @@ void Title::Update()
 	//ÉVÅ[ÉìêÿÇËë÷Ç¶
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
+		Audio::PlayWave("SE_Decision");
+		Audio::StopWave("BGM_Title");
 		ShutDown();
 	}
 }
