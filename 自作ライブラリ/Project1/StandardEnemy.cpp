@@ -22,6 +22,7 @@
 #include "FieldPiece.h"
 #include "ItemEmitter.h"
 #include "Player.h"
+#include "ScoreManager.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -783,6 +784,8 @@ void StandardEnemy::StartFall()
 	fallFlag = true;
 	fallStartPos = virtualityPlanePosition;
 	fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+
+	ScoreManager::GetInstance()->AddScore_FallEnemy();
 }
 
 void StandardEnemy::StartBlow()

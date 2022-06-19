@@ -1322,7 +1322,7 @@ void Player::EndDrawing()
 	gottenPanel += num;
 	cutPower = 0;
 
-	ScoreManager::GetInstance()->AddScore(num);
+	ScoreManager::GetInstance()->AddScore_CutPanel(num);
 }
 
 Vector3 Player::GetDirection() const

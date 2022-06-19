@@ -22,16 +22,50 @@ void ScoreManager::Inisitlize()
 	stockPanelNum_last = 0;
 }
 
-void ScoreManager::AddScore(const int oncePanelNum)
+void ScoreManager::AddScore_CutPanel(const int oncePanelNum)
 {
+	//int result = 0;
+	////ˆê–‡‚ ‚½‚è‚Ì‘f“_
+	//const int rawScore = 1000;
+	////“¯Ø‚è”²‚«”{—¦
+	//const float onceBonus = 1.0f + ((float)oncePanelNum / 10.0f);
+
+	//result = rawScore * onceBonus * oncePanelNum;
+
+	//totalScore += result;
+
+
 	int result = 0;
-	//ˆê–‡‚ ‚½‚è‚Ì‘f“_
-	const int rawScore = 1000;
-	//“¯Ø‚è”²‚«”{—¦
-	const float onceBonus = 1.0f + ((float)oncePanelNum / 10.0f);
+	switch (oncePanelNum)
+	{
+	case 1:
+		result = 1000;
+		break;
+	case 2:
+		result = 1250;
+		break;
+	case 3:
+		result = 1500;
+		break;
+	case 4:
+		result = 2000;
+		break;
+	case 5:
+		result = 2500;
+		break;
+	case 6:
+		result = 3000;
+		break;
+	default:
+		break;
+	}
 
-	result = rawScore * onceBonus * oncePanelNum;
+	totalScore += result;
+}
 
+void ScoreManager::AddScore_FallEnemy()
+{
+	const int result = 5000;
 	totalScore += result;
 }
 
