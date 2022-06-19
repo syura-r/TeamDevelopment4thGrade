@@ -36,30 +36,32 @@ void ScoreManager::AddScore_CutPanel(const int oncePanelNum)
 
 
 	int result = 0;
+	//ˆê–‡‚ ‚½‚è‚Ì‘f“_
+	int rawScore = 1000;
 	switch (oncePanelNum)
 	{
 	case 1:
-		result = 1000;
+		rawScore = 1000;
 		break;
 	case 2:
-		result = 1250;
+		rawScore = 1250;
 		break;
 	case 3:
-		result = 1500;
+		rawScore = 1500;
 		break;
 	case 4:
-		result = 2000;
+		rawScore = 2000;
 		break;
 	case 5:
-		result = 2500;
+		rawScore = 2500;
 		break;
 	case 6:
-		result = 3000;
+		rawScore = 3000;
 		break;
 	default:
 		break;
 	}
-
+	result = rawScore * oncePanelNum;
 	totalScore += result;
 }
 

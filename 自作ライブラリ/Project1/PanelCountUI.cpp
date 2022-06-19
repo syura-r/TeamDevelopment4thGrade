@@ -41,11 +41,11 @@ void PanelCountUI::Draw(const GAMEOBJECT_TYPE type)
 	//“G—p
 	if (type == GAMEOBJECT_TYPE::ENEMY)
 	{
-		position.x = windowSize.x - ((iconTexSize.x / 2) + (numberTexSize.x * 2)) - spaceSize.x;
+		position.x = windowSize.x - ((iconTexSize.x / 2) + (numberTexSize.x * 3)) - spaceSize.x;
 		iconTexName = "GamePlay_UI_Gettriangle_Enemy";
 	}
 
 	icon_sprite->DrawSprite(iconTexName, position, 0.0f, iconScale);
-	position.x += (iconTexSize.x / 2) + ((numberTexSize.x / 2) * 2);
-	getPanel_sprite->Draw(2, "GamePlay_UI_Number", position);
+	position.x += (iconTexSize.x / 2) + ((numberTexSize.x / 2) * 3);
+	getPanel_sprite->Draw(3, "GamePlay_UI_Number", position);
 }
