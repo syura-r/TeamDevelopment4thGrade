@@ -22,6 +22,7 @@
 #include "FieldPiece.h"
 #include "ItemEmitter.h"
 #include "Player.h"
+#include "Audio.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -113,7 +114,6 @@ void StandardEnemy::Initialize()
 	fallFlag = false;
 	fallEasingCount = 0;
 	outFieldFlag = false;
-
 }
 
 void StandardEnemy::Update()
@@ -141,6 +141,7 @@ void StandardEnemy::Update()
 		if (virtualityPlanePosition.y <= -100)
 		{
 			outFieldFlag = true;
+			Audio::PlayWave("SE_Fall");
 		}
 	}
 	else
