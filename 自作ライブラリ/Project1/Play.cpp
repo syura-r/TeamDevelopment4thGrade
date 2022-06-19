@@ -140,6 +140,10 @@ void Play::Update()
 		ShutDown();
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
 	}
+	if (Input::TriggerKey(DIK_7))
+	{
+		ParticleEmitter::ShockEffect(Vector3(0, 0, 0),Vector3(255.0f,255.0f,255.0f));
+	}
 #endif
 
 	timeLimit->Update();

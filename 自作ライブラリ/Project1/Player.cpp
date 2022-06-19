@@ -26,6 +26,7 @@
 #include "UnableThroughBlock.h"
 #include "ScoreManager.h"
 #include "Audio.h"
+#include "ParticleEmitter.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -386,7 +387,6 @@ void Player::Move()
 		}
 		StayInTheField();
 		StayOnRemainPanels();
-	
 	}
 	//通常の移動
 	else
@@ -986,6 +986,9 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 		tackleHitFlag = true;
 		SuspendTackle();
 		arg_enemy->SetVelocity(enemyAfterVel.Normalize());
+
+		//パーティクル
+		ParticleEmitter::ShockEffect((arg_enemy->GetPosition() + position) / 2.0f, Vector3(255.0f, 255.0f, 255.0f));
 	}
 	else
 	{
