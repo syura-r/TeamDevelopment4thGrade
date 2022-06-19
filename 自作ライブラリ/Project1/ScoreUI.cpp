@@ -4,11 +4,13 @@
 
 ScoreUI::ScoreUI()
 {
+	sp = new Sprite();
 	numsp = new NumberSprite(drawScore);
 }
 
 ScoreUI::~ScoreUI()
 {
+	delete sp;
 	delete numsp;
 }
 
@@ -58,10 +60,15 @@ void ScoreUI::Update()
 void ScoreUI::Draw()
 {
 	//画像サイズ（数字1つ分）
+	const Vector2 iconTexSize = { 225.0f, 86.0f };
+	//画像サイズ（数字1つ分）
 	const Vector2 numberTexSize = { 47.0f, 86.0f };
 	//余白
-	const Vector2 spaceSize = { 50.0f, 30.0f };
+	const Vector2 spaceSize = { 25.0f, 30.0f };
 
-	const Vector2 pos = { (numberTexSize.x / 2) * 6 + spaceSize.x,(numberTexSize.y / 2) + spaceSize.y };
+	Vector2 pos = { (iconTexSize.x / 2) + spaceSize.x,(iconTexSize.y / 2) + spaceSize.y };
+	sp->DrawSprite("GamePlay_UI_Score_Text", pos);
+
+	pos.x += (numberTexSize.x / 2) * 6 + (iconTexSize.x / 2);
 	numsp->Draw(6,"GamePlay_UI_Number", pos);
 }

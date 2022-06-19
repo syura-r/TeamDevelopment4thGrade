@@ -14,6 +14,7 @@ public:
 private:
 	float drawScore;
 
+	Sprite* sp;
 	NumberSprite* numsp;
 };
 
