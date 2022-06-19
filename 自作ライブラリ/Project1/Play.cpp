@@ -106,7 +106,7 @@ void Play::Initialize()
 
 	ScoreManager::GetInstance()->Inisitlize();
 
-	//Audio::PlayWave("BGM_Play", 0.1f, true);
+	Audio::PlayWave("BGM_Play", 0.1f, true);
 }
 
 void Play::Update()
@@ -125,7 +125,7 @@ void Play::Update()
 	//タイトルにもどる
 	if (pause->GetToTitle())
 	{
-		//Audio::StopWave("BGM_Play");
+		Audio::StopWave("BGM_Play");
 		next = Title;
 		ShutDown();
 	}
@@ -136,7 +136,7 @@ void Play::Update()
 #ifdef _DEBUG
 	if (Input::TriggerKey(DIK_E))//終了処理
 	{
-		//Audio::StopWave("BGM_Play");
+		Audio::StopWave("BGM_Play");
 		ShutDown();
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
 	}
@@ -165,7 +165,7 @@ void Play::Update()
 
 	if (ActorManager::GetInstance()->GetPlayer()->IsGameEnd() )
 	{
-		//Audio::StopWave("BGM_Play");
+		Audio::StopWave("BGM_Play");
 		ShutDown();
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
 	}
@@ -182,7 +182,7 @@ void Play::Update()
 	}
 	if (allEnemiesOutField)
 	{
-		//Audio::StopWave("BGM_Play");
+		Audio::StopWave("BGM_Play");
 		ShutDown();
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
 	}
