@@ -126,7 +126,6 @@ void Game::RoadAsset()
 		FBXManager::LoadModelFile("GamePlay_Enemy", "GamePlay_Enemy", false);
 
 		//WAVファイルの読み込み
-		//Audio::LoadFile("test", "51e7ff6cc6b93897.wav");
 		Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
 		Audio::LoadFile("BGM_Play", "BGM/GamePlay_BGM.wav");
 		Audio::LoadFile("BGM_Result", "BGM/Result_BGM.wav");
@@ -388,6 +387,7 @@ void Game::End()
 #endif // _DEBUG
 	FbxLoader::GetInstance()->Finalize();
 	FBXManager::DeleteModels();
+	Audio::End();
 	//デリートはここまでに終わらせる
 	//ComputeWrapper::GetInstance()->End();
 	win->End();

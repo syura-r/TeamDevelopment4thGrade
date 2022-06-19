@@ -1,5 +1,6 @@
 #include "Ending.h"
 #include "ScoreManager.h"
+#include "Audio.h"
 
 Ending::Ending()
 {
@@ -44,6 +45,8 @@ void Ending::Initialize()
 	isCountEnd_panel = false;
 
 	pos_select = pos_restart;
+
+	Audio::PlayWave("BGM_Result", 0.1f, true);
 }
 
 void Ending::Update()
@@ -113,11 +116,13 @@ void Ending::SelectMenu()
 
 	if (Input::TriggerPadLStickLeft())
 	{
+		Audio::PlayWave("SE_Select");
 		selectState = SelectState::Restart;
 		isSelectMove = true;
 	}
 	else if (Input::TriggerPadLStickRight())
 	{
+		Audio::PlayWave("SE_Select");
 		selectState = SelectState::ToTitle;
 		isSelectMove = true;
 	}
@@ -154,6 +159,8 @@ void Ending::SelectMenu()
 		default:
 			break;
 		}
+		Audio::PlayWave("SE_Decision");
+		Audio::StopWave("BGM_Result");
 		ShutDown();
 	}
 }
