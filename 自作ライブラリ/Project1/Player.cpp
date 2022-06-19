@@ -52,7 +52,8 @@ Player::Player()
 	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);	
 	attackSprite = new Sprite();
 
-	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);	
+	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
+	panelCutLocus->SetParentObject(this);
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Player", this);
@@ -224,13 +225,16 @@ void Player::Update()
 			//SelectLocus();		
 			if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece)
 			{
-				if (!tackleFlag && !drawingFlag)
+				if (info->ridingPiece)
 				{
-					drawingFlag = true;
-					//ü‚Ì¶¬
-					//CreateLine();
-					Vector3 p = info->cuttingStartPos;
-					ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER, this));
+					if (!tackleFlag && !drawingFlag)
+					{
+						drawingFlag = true;
+						//ü‚Ì¶¬
+						//CreateLine();
+						Vector3 p = info->cuttingStartPos;
+						ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER, this));
+					}
 				}
 
 			}

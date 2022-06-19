@@ -24,10 +24,12 @@ public:
 	int GetCutPower()const;
 	void SetCutPower(const int arg_power);
 	std::vector<Vector2>& GetCuttedPanelPos();
+	void SetParentObject(Object* arg_obj);
 
 private:
 	int cutPower;
 	std::vector<Vector2> CuttedPanelPos;
+	Object* parentObject;
 
 	//この図形のデフォルトの情報
 	static std::unordered_map<int, std::vector<LocusPointInfo>> baseInfo;

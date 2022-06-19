@@ -41,6 +41,7 @@ StandardEnemy::StandardEnemy()
 	attackSprite = new Sprite();
 
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
+	panelCutLocus->SetParentObject(this);
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("StandardEnemy", this);

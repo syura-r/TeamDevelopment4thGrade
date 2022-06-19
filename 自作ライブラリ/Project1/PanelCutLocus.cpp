@@ -9,7 +9,8 @@ std::unordered_map<int, std::vector<Vector2>> PanelCutLocus::baseCuttedDir = std
 
 PanelCutLocus::PanelCutLocus(const Vector3& arg_pos, const float arg_angle, const DirectX::XMFLOAT4& arg_color)
 	:BaseLocus(arg_angle, arg_color),
-	 cutPower(0)
+	 cutPower(0),
+	 parentObject(nullptr)
 {
 	virtualityPlanePosition = arg_pos;
 	position = virtualityPlanePosition;
@@ -73,8 +74,16 @@ void PanelCutLocus::Move(const Vector3& arg_movePos, const float arg_angle)
 	virtualityPlanePosition = arg_movePos;
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt(), Vector3(0, -5, 0));
 	angle = arg_angle;
+	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(parentObject);
 	//ˆø”‚Å‚à‚ç‚Á‚½À•WAŠp“x‚É•ÏŠ·‚µ‚ÄLine‚ð¶¬
-	if (cutPower != 0)
+	if (!info->ridingPiece)
+	{
+		for (auto l : lines)
+		{
+			l->ChangeIsDraw(false);
+		}
+	}
+	else if (cutPower != 0)
 	{
 		XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(angle));
 		auto vecInfo = baseInfo[cutPower];
@@ -139,6 +148,11 @@ void PanelCutLocus::SetCutPower(const int arg_power)
 std::vector<Vector2>& PanelCutLocus::GetCuttedPanelPos()
 {
 	return CuttedPanelPos;
+}
+
+void PanelCutLocus::SetParentObject(Object* arg_obj)
+{
+	parentObject = arg_obj;
 }
 
 void PanelCutLocus::PointSetting()
