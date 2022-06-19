@@ -125,6 +125,7 @@ void Play::Update()
 	if (pause->GetRestart())
 	{
 		Initialize();
+		return;
 	}
 	//ƒ^ƒCƒgƒ‹‚É‚à‚Ç‚é
 	if (pause->GetToTitle())
@@ -132,6 +133,8 @@ void Play::Update()
 		Audio::StopWave("BGM_Play");
 		next = Title;
 		ShutDown();
+		objectManager->Reset();
+		return;
 	}
 	if (pause->GetUsePause())
 		return;
@@ -143,6 +146,8 @@ void Play::Update()
 		Audio::StopWave("BGM_Play");
 		ShutDown();
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+		objectManager->Reset();
+		return;
 	}
 	if (Input::TriggerKey(DIK_7))
 	{
@@ -162,6 +167,7 @@ void Play::Update()
 		{
 			ShutDown();
 			ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+			objectManager->Reset();			
 		}
 
 		return;
@@ -183,6 +189,8 @@ void Play::Update()
 		Audio::StopWave("BGM_Play");
 		ShutDown();
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+		objectManager->Reset();
+		return;
 	}
 
 	bool allEnemiesOutField = true;
@@ -200,6 +208,8 @@ void Play::Update()
 		Audio::StopWave("BGM_Play");
 		ShutDown();
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+		objectManager->Reset();
+		return;
 	}
 }
 
