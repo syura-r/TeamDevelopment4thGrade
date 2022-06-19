@@ -45,7 +45,7 @@ StandardEnemy::StandardEnemy()
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
 
-	panelCountUI = new PanelCountUI();
+	panelCountUI = new PanelCountUI(GAMEOBJECT_TYPE::ENEMY);
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 
 	Initialize();
