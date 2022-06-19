@@ -9,7 +9,7 @@ enum GAMEOBJECT_TYPE
 class PanelCountUI
 {
 public:
-	PanelCountUI();
+	PanelCountUI(const GAMEOBJECT_TYPE type = GAMEOBJECT_TYPE::PLAYER);
 	~PanelCountUI();
 
 	void Initialize();
@@ -22,4 +22,7 @@ private:
 	//Š”•\¦
 	NumberSprite* getPanel_sprite;
 	float panelNum = 0;
+
+	static int enemyCountNum;
+	int enemyNum = 0;
 };
