@@ -54,6 +54,8 @@ public:
 
 	bool IsTackle() { return tackleFlag; }
 
+	bool IsDrawing() { return drawingFlag; }
+
 	bool IsFall() { return fallFlag; }
 
 	void StartFall();
@@ -63,6 +65,8 @@ public:
 	// êÅÇ¡îÚÇ—
 	void StartBlow();
 	void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
+
+	void HitOnDrawing();
 
 private:
 	struct ConstLightCameraBuff

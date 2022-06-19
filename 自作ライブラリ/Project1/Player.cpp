@@ -260,6 +260,13 @@ void Player::Update()
 		//	}
 		//}
 
+		//当たり判定系
+		HitCheckLoci();
+		HitCheckEnemy();
+		HitCheckItems();
+		HitCheckUnableThroughEdge();
+		HitCheckUnableThroughBlock();
+
 		Vector3 p = info->cuttingStartPos;
 		//SetLocus(LocusType::UNDIFINED);
 		if (!drawingFlag)
@@ -271,13 +278,6 @@ void Player::Update()
 		{
 			locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 		}
-
-		//当たり判定系
-		HitCheckLoci();
-		HitCheckEnemy();
-		HitCheckItems();
-		HitCheckUnableThroughEdge();
-		HitCheckUnableThroughBlock();
 	}
 	
 	//他のオブジェクトとのヒットチェック
@@ -1057,8 +1057,15 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 		arg_enemy->SetVelocity(enemyAfterVel.Normalize());
 	}
 	
-
-	SuspendDrawing();
+	if (drawingFlag)
+	{
+		HitOnDrawing();
+	}
+	if (arg_enemy->IsDrawing())
+	{
+		arg_enemy->HitOnDrawing();
+	}
+	//SuspendDrawing();
 
 	////衝突後位置
 	//Vector3 playerAfterPos = position + blowTime * playerAfterVel;
@@ -1422,6 +1429,16 @@ Vector3 Player::GetDirection() const
 PanelCutLocus* Player::GetPanelCutLocus()
 {
 	return panelCutLocus;
+}
+
+void Player::HitOnDrawing()
+{
+	auto c = ActorManager::GetInstance()->GetCircularSaw(this);
+	if (c)
+	{
+		c->Dead();
+	}
+	drawingFlag = false;
 }
 
 void Player::HitCheckLoci()

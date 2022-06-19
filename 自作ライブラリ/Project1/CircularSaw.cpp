@@ -22,11 +22,16 @@ CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_now
 	virtualityPlanePosition = arg_virtualityPlanePosition;
 	nowCuttingLocus = arg_nowCuttingLocus;
 	objectType = arg_objecType;
+	name = typeid(*this).name();
+	ActorManager::GetInstance()->AddObject("CircularSaw", this);
 	Initialize();
 }
 
 CircularSaw::~CircularSaw()
 {
+	ActorManager::GetInstance()->DeleteObject(this);
+	Audio::StopWave("SE_SawCutNow");
+	Audio::PlayWave("SE_GetSaw");
 }
 
 void CircularSaw::Initialize()
@@ -67,9 +72,6 @@ void CircularSaw::Update()
 		if (currentLineNum >= nowCuttingLocus->GetMaxNumLine())
 		{
 			Dead();
-
-			Audio::StopWave("SE_SawCutNow");
-			Audio::PlayWave("SE_GetSaw");
 
 			switch (objectType)
 			{
@@ -155,6 +157,11 @@ void CircularSaw::CopyLocus()
 	default:
 		break;
 	}*/
+}
+
+Object* CircularSaw::GetParentObject()
+{
+	return parentObj;
 }
 
 

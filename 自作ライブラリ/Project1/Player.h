@@ -56,6 +56,8 @@ public:
 
 	Vector3 GetDirection()const;
 	PanelCutLocus* GetPanelCutLocus();
+
+	void HitOnDrawing();
 	
 private:
 	struct ConstLightCameraBuff

@@ -172,10 +172,14 @@ void StandardEnemy::Update()
 				{
 					if (!tackleFlag && !drawingFlag)
 					{
-						drawingFlag = true;
-						//線の生成
-						Vector3 p = info->cuttingStartPos;
-						ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+						int rnd = std::rand() % 30;
+						if (rnd == 0)
+						{
+							drawingFlag = true;
+							//線の生成
+							Vector3 p = info->cuttingStartPos;
+							ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+						}
 					}
 				}
 #ifdef _DEBUG
@@ -183,10 +187,14 @@ void StandardEnemy::Update()
 				{
 					if (!tackleFlag && !drawingFlag)
 					{
-						drawingFlag = true;
-						//線の生成
-						Vector3 p = info->cuttingStartPos;
-						ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+						int rnd = std::rand() % 30;
+						if (rnd == 0)
+						{
+							drawingFlag = true;
+							//線の生成
+							Vector3 p = info->cuttingStartPos;
+							ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+						}
 					}
 				}
 #endif // _DEBUG
@@ -195,12 +203,20 @@ void StandardEnemy::Update()
 			// 敵が近くに居たらタックル
 			if (RangeCheckPlayer())
 			{
-				Tackle();
+				int rnd = std::rand() % 30;
+				if (rnd == 0)
+				{
+					Tackle();
+				}
 			}
 #ifdef _DEBUG
 			else if (Input::TriggerKey(DIK_O))
 			{
-				Tackle();
+				int rnd = std::rand() % 30;
+				if (rnd == 0)
+				{
+					Tackle();
+				}
 			}
 #endif // _DEBUG
 		}
@@ -214,6 +230,9 @@ void StandardEnemy::Update()
 			}
 		}*/		
 
+		//当たり判定系
+		HitCheckItems();
+
 		Vector3 p = info->cuttingStartPos;
 		//SetLocus(LocusType::UNDIFINED);
 		if (!drawingFlag)
@@ -226,9 +245,6 @@ void StandardEnemy::Update()
 			locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
 		}
 	}
-
-	//当たり判定系
-	HitCheckItems();
 
 	//他のオブジェクトとのヒットチェック
 	Object::Update();
@@ -702,9 +718,18 @@ void StandardEnemy::StartStand(bool arg_outField, Vector3 arg_velocity)
 
 void StandardEnemy::WithStand()
 {
+	static bool isFirstCall = true;
+	static int standingCount = 0;
+
 	if (drawingFlag)
 	{
 		return;
+	}
+
+	if (isFirstCall)
+	{
+		isFirstCall = false;
+		standingCount = 0;
 	}
 
 	//踏ん張り中　赤
@@ -724,7 +749,15 @@ void StandardEnemy::WithStand()
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 	Vector2 stickDirection = {};
 	//スティックの向き
-	auto vec = Input::GetLStickDirection();
+	auto vec = Vector2(0, 0);
+	standingCount++;
+	{
+		if (standingCount >= 20)
+		{
+			vec = LocusUtility::Dim3ToDim2XZ(LocusUtility::AngleToVector2(std::rand() % 360));
+			standingCount = 0;
+		}
+	}
 	stickDirection.x = (cameraDirectionX * vec.x).x;
 	stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
@@ -740,8 +773,14 @@ void StandardEnemy::WithStand()
 		accuracy = 0;
 	}
 
+	if (vec.x = 0 && vec.y == 0)
+	{
+		accuracy = 0;
+	}
+
 	if (accuracy >= 0.55f)
 	{
+		isFirstCall = true;
 		Vector3 moveDirection = preStandVec;
 		Object::SetColor({ 1,1,1,1 });
 		returningFieldFlag = true;
@@ -768,7 +807,8 @@ void StandardEnemy::Tackle()
 	Vector2 stickDirection = {};
 	Vector3 moveDirection = {};
 	//スティックの向き
-	auto vec = Input::GetLStickDirection();
+	ConfirmPlayerPos();
+	auto vec = LocusUtility::Dim3ToDim2XZ(Vector3::Normalize(playerPos - virtualityPlanePosition));
 	stickDirection.x = (cameraDirectionX * vec.x).x;
 	stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
@@ -881,6 +921,16 @@ void StandardEnemy::StartFall()
 void StandardEnemy::StartBlow()
 {
 	blowFlag = true;
+}
+
+void StandardEnemy::HitOnDrawing()
+{
+	auto c = ActorManager::GetInstance()->GetCircularSaw(this);
+	if (c)
+	{
+		c->Dead();
+	}
+	drawingFlag = false;
 }
 
 Vector3 StandardEnemy::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)

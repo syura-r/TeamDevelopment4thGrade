@@ -7,6 +7,7 @@
 #include "PanelItem.h"
 #include "UnableThroughBlock.h"
 #include "UnableThroughEdge.h"
+#include "CircularSaw.h"
 
 ActorManager* ActorManager::GetInstance()
 {
@@ -134,4 +135,20 @@ std::vector<UnableThroughEdge*>& ActorManager::GetUnableThroughEdges()
 	}
 
 	return vec;
+}
+
+CircularSaw* ActorManager::GetCircularSaw(Object* arg_obj)
+{
+	CircularSaw* returnPointer = nullptr;
+	auto range = mapGameObject.equal_range("CircularSaw");
+	for (auto itr = range.first; itr != range.second; itr++)
+	{
+		CircularSaw* c = static_cast<CircularSaw*>(itr->second);
+		if (c->GetParentObject() == arg_obj)
+		{
+			returnPointer = c;
+			break;
+		}
+	}
+	return returnPointer;
 }
