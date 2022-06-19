@@ -46,7 +46,7 @@ void Ending::Initialize()
 
 	pos_select = pos_restart;
 
-	Audio::PlayWave("BGM_Result", 0.1f, true);
+	//Audio::PlayWave("BGM_Result", 0.1f, true);
 }
 
 void Ending::Update()
@@ -160,7 +160,7 @@ void Ending::SelectMenu()
 			break;
 		}
 		Audio::PlayWave("SE_Decision");
-		Audio::StopWave("BGM_Result");
+		//Audio::StopWave("BGM_Result");
 		ShutDown();
 	}
 }

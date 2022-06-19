@@ -24,7 +24,7 @@ void Title::Initialize()
 {
 	isEnd = false;
 
-	Audio::PlayWave("BGM_Title", 0.1f, true);
+	//Audio::PlayWave("BGM_Title", 0.1f, true);
 }
 
 void Title::Update()
@@ -33,7 +33,7 @@ void Title::Update()
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
 		Audio::PlayWave("SE_Decision");
-		Audio::StopWave("BGM_Title");
+		//Audio::StopWave("BGM_Title");
 		ShutDown();
 	}
 }

@@ -25,6 +25,7 @@
 #include "UnableThroughEdge.h"
 #include "UnableThroughBlock.h"
 #include "ScoreManager.h"
+#include "Audio.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -155,6 +156,8 @@ void Player::Initialize()
 	nextInputStartCount = 60;
 	count = 0;
 	gameEnd = false;
+
+	fallSoundFlag = false;
 }
 
 void Player::Update()
@@ -177,6 +180,11 @@ void Player::Update()
 		Fall();
 		if (virtualityPlanePosition.y <= -65)
 		{
+			if (!fallSoundFlag)
+			{
+				Audio::PlayWave("SE_Fall", 1.0f);
+				fallSoundFlag = true;
+			}
 			gameEnd = true;
 		}
 	}
@@ -922,6 +930,9 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 		return;
 	}
 
+	Audio::PlayWave("SE_Collision", 1.0f);
+
+
 	//”Ä—p‰»	
 	if (arg_enemy->GetStanding() && tackleFlag)
 	{
@@ -1034,6 +1045,7 @@ void Player::HitCheckItems()
 
 void Player::HitItem(EnergyItem* arg_item)
 {
+	Audio::PlayWave("SE_GetTriangle");
 	arg_item->Dead();
 	if (cutPower < 6)
 	{
@@ -1125,6 +1137,8 @@ void Player::StartStand(bool arg_outField, Vector3 arg_velocity)
 	
 	preStandVec.y = 0;
 	preStandVec.Normalize();
+
+	Audio::PlayWave("SE_SteppingOn", 0.25f, true);
 }
 
 void Player::WithStand()
@@ -1181,6 +1195,9 @@ void Player::WithStand()
 			returningStartPos = virtualityPlanePosition;
 			returningEndPos = virtualityPlanePosition + moveDirection * 3;
 			nextInputStartCount = nextInputStartCount + 30;
+
+			Audio::StopWave("SE_SteppingOn");
+
 			return;
 		}
 
@@ -1192,6 +1209,8 @@ void Player::WithStand()
 			fallFlag = true;
 			fallStartPos = virtualityPlanePosition;
 			fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+
+			Audio::StopWave("SE_SteppingOn");
 		}
 	}
 	else
@@ -1229,7 +1248,7 @@ void Player::Tackle()
 	moveDirection.Normalize();
 	tackleEndPos = virtualityPlanePosition + moveDirection * 8;
 
-
+	Audio::PlayWave("SE_Dash");
 }
 
 void Player::SuspendTackle()
@@ -1270,6 +1289,10 @@ void Player::DischargeGottenPanel(StandardEnemy* arg_enemy)
 		weight -= FieldPiece::GetWeight();
 	}
 
+	if (maxEmit != 0)
+	{
+		//Audio::PlayWave("SE_TriangleLost");
+	}
 }
 
 void Player::Fall()
@@ -1278,9 +1301,6 @@ void Player::Fall()
 	{
 		return;
 	}
-	
-	
-
 
 	if (fallEasingCount <= 30)
 	{
