@@ -55,6 +55,7 @@ Play::Play()
 
 	pause = new Pause();
 	timeLimit = new TimeLimit(180 * 60);
+	scoreUI = new ScoreUI();
 
 	screenResource = new TextureResource("screen.png",false, true);
 	stadium = new Stadium();
@@ -68,6 +69,7 @@ Play::~Play()
 	LevelEditor::GetInstance()->Clear();
 	delete pause;
 	delete timeLimit;
+	delete scoreUI;
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
@@ -103,6 +105,7 @@ void Play::Initialize()
 	isEnd = false;
 	pause->Initialize();
 	timeLimit->Initialize();
+	scoreUI->Initialize();
 
 	ScoreManager::GetInstance()->Inisitlize();
 
@@ -152,6 +155,7 @@ void Play::Update()
 		Field* field = actorManager->GetFields()[0];
 		//Field‚ÉŽw—ßo‚·
 	}
+	scoreUI->Update();
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
@@ -192,6 +196,7 @@ void Play::PreDraw()
 {
 	pause->Draw();
 	timeLimit->Draw();
+	scoreUI->Draw();
 
 		objectManager->DrawReady();
 #ifdef _DEBUG

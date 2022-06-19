@@ -245,6 +245,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="ScoreManager.cpp" />
+    <ClCompile Include="ScoreUI.cpp" />
     <ClCompile Include="StandardEnemy.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScreenCamera.cpp" />
@@ -370,6 +371,7 @@
     <ClInclude Include="RaycastHit.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="ScoreManager.h" />
+    <ClInclude Include="ScoreUI.h" />
     <ClInclude Include="StandardEnemy.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />

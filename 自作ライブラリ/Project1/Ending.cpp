@@ -56,7 +56,35 @@ void Ending::Update()
 	//スコア表示加算
 	if (drawScore < score)
 	{
-		drawScore += 1;
+		const int sub = score - drawScore;
+		int addNum = 1;
+		if (sub <= 10)
+		{
+			addNum = 1;
+		}
+		else if (sub <= 100)
+		{
+			addNum = 10;
+		}
+		else if (sub <= 1000)
+		{
+			addNum = 100;
+		}
+		else if (sub <= 10000)
+		{
+			addNum = 1000;
+		}
+		else if (sub <= 100000)
+		{
+			addNum = 10000;
+		}
+		else
+		{
+			addNum = 100000;
+		}
+
+		drawScore += addNum;
+
 		//スキップ
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 		{
@@ -67,7 +95,35 @@ void Ending::Update()
 	//取得数表示加算
 	if (drawPanelNum < panelNum)
 	{
-		drawPanelNum += 1;
+		const int sub = panelNum - drawPanelNum;
+		int addNum = 1;
+		if (sub <= 10)
+		{
+			addNum = 1;
+		}
+		else if (sub <= 100)
+		{
+			addNum = 10;
+		}
+		else if (sub <= 1000)
+		{
+			addNum = 100;
+		}
+		else if (sub <= 10000)
+		{
+			addNum = 1000;
+		}
+		else if (sub <= 100000)
+		{
+			addNum = 10000;
+		}
+		else
+		{
+			addNum = 100000;
+		}
+
+		drawPanelNum += addNum;
+
 		//スキップ
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) &&
 			isCountEnd_score)
