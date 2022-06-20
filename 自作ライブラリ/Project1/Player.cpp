@@ -12,12 +12,10 @@
 #include "GameSettingParam.h"
 #include "ParticleEmitter.h"
 #include "ActorManager.h"
-#include "TestBoss.h"
-#include "BossMissile.h"
-#include "BossRangeAttack.h"
 #include "Field.h"
 #include "StandardEnemy.h"
 #include "EnergyItem.h"
+#include "PanelItem.h"
 #include "CircularSaw.h"
 #include "PanelCutLocus.h"
 #include "FieldPiece.h"
@@ -45,9 +43,7 @@ Player::Player()
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 	collider->SetMove(true);*/
 
-	pObjectManager = ObjectManager::GetInstance();
-
-	//locusSelecter = new LocusSelecter();
+	pObjectManager = ObjectManager::GetInstance();	
 
 	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);	
 	attackSprite = new Sprite();
@@ -90,8 +86,7 @@ Player::~Player()
 {	
 	delete attackSprite;	
 	delete panelCountUI;
-	delete panelCountSprite3D;
-	//delete locusSelecter;		
+	delete panelCountSprite3D;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
@@ -138,12 +133,8 @@ void Player::Initialize()
 		delete vecLocuss[i];
 		vecLocuss[i] = nullptr;
 	}
-	vecLocuss.clear();
-	/*nowDrawingLocus = predictStar;
-	predictStar->ChangeIsDraw(true);*/	
-	feverQuota = maxFeverQuota;		
-	/*locusSelecter->Initialize();
-	locusSelecter->Setting();*/	
+	vecLocuss.clear();	
+	feverQuota = maxFeverQuota;			
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
@@ -164,19 +155,6 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	//locusSelecter->Update();
-
-//#ifdef _DEBUG
-//	//パーティクル確認用
-//	if (Input::TriggerKey(DIK_RETURN))
-//	{
-//		ParticleEmitter::CreateExplosion(position);
-//		ParticleEmitter::CreateAir(position);
-//		ParticleEmitter::CreateGetEffect(position);
-//
-//	}
-//#endif	
-
 	if (fallFlag)
 	{
 		Fall();
@@ -221,8 +199,7 @@ void Player::Update()
 			}
 		}
 		else
-		{
-			//SelectLocus();		
+		{					
 			if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece)
 			{
 				if (info->ridingPiece)
@@ -248,18 +225,6 @@ void Player::Update()
 
 		}
 
-		//図形の消去
-		//if (!drawingFlag)
-		//{
-		//	if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
-		//	{
-		//		if (/*!vecLocuss.empty()*/true)
-		//		{
-		//			DeleteLocuss();
-		//		}
-		//	}
-		//}
-
 		//当たり判定系
 		HitCheckLoci();
 		HitCheckEnemy();
@@ -267,8 +232,7 @@ void Player::Update()
 		HitCheckUnableThroughEdge();
 		HitCheckUnableThroughBlock();
 
-		Vector3 p = info->cuttingStartPos;
-		//SetLocus(LocusType::UNDIFINED);
+		Vector3 p = info->cuttingStartPos;		
 		if (!drawingFlag)
 		{
 			panelCutLocus->SetCutPower(cutPower);
@@ -280,8 +244,7 @@ void Player::Update()
 		}
 	}
 	
-	//他のオブジェクトとのヒットチェック
-	//CheckHit();
+	//他のオブジェクトとのヒットチェック	
 	Object::Update();	
 
 	panelCountUI->Update(gottenPanel);
@@ -304,9 +267,7 @@ void Player::Draw()
 		if (!vecLocuss.empty())
 		{
 			attackSprite->DrawSprite("s_LBorRB", Vector2(960, 150), 0.0f, Vector2(1.5f, 1.5f));
-		}
-		
-		//locusSelecter->Draw();		
+		}				
 	}
 	panelCountUI->Draw();
 	panelCountSprite3D->Draw();

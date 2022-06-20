@@ -7,24 +7,16 @@
 #include "Object.h"
 #include "ObjectManager.h"
 #include "Line.h"
-#include "TestStar.h"
-#include "TestRibbon.h"
-#include "TestTriforce.h"
-#include "TestTriangle.h"
-#include "TestPentagon.h"
-#include "TestHexagram.h"
 #include "BaseLocus.h"
 #include "Timer.h"
-#include "NormalWaveMeasurer.h"
-#include "LocusSelecter.h"
 #include "NumberSprite.h"
 #include "PanelCountUI.h"
 #include "PanelCountSprite3D.h"
-#include "PanelItem.h"
 
 
 class StandardEnemy;
 class EnergyItem;
+class PanelItem;
 class PanelCutLocus;
 
 class Player :

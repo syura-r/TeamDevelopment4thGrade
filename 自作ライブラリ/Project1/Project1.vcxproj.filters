@@ -342,49 +342,13 @@
     <ClCompile Include="BaseLocus.cpp">
       <Filter>ソース ファイル\GameObject\proto_first</Filter>
     </ClCompile>
-    <ClCompile Include="BossMissile.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="BossRangeAttack.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
     <ClCompile Include="Line.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalWaveMeasurer.cpp">
       <Filter>ソース ファイル\GameObject\proto_first</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\GameObject\proto_first</Filter>
     </ClCompile>
-    <ClCompile Include="TestHexagram.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="TestPentagon.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="TestRibbon.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="TestStar.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="TestTriangle.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="TestTriforce.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
     <ClCompile Include="ActorManager.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="HitPointGauge.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="LocusSelecter.cpp">
-      <Filter>ソース ファイル\GameObject\proto_first</Filter>
-    </ClCompile>
-    <ClCompile Include="TestBoss.cpp">
       <Filter>ソース ファイル\GameObject\proto_first</Filter>
     </ClCompile>
     <ClCompile Include="Field.cpp">
@@ -403,9 +367,6 @@
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
     <ClCompile Include="PanelItem.cpp">
-      <Filter>ソース ファイル\GameObject\proto_second</Filter>
-    </ClCompile>
-    <ClCompile Include="InGameTimer.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
     <ClCompile Include="TimeLimit.cpp">
@@ -701,55 +662,19 @@
     <ClInclude Include="BaseLocus.h">
       <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
     </ClInclude>
-    <ClInclude Include="BossMissile.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="BossRangeAttack.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
     <ClInclude Include="Line.h">
       <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
     </ClInclude>
     <ClInclude Include="LocusDef.h">
       <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
     </ClInclude>
-    <ClInclude Include="NormalWaveMeasurer.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="TestHexagram.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTriforce.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTriangle.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="TestPentagon.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="TestRibbon.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="TestStar.h">
       <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
     </ClInclude>
     <ClInclude Include="Floor.h">
       <Filter>ヘッダー ファイル\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="ActorManager.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="HitPointGauge.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="LocusSelecter.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
-    </ClInclude>
-    <ClInclude Include="TestBoss.h">
       <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
     </ClInclude>
     <ClInclude Include="Field.h">
@@ -768,9 +693,6 @@
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
     <ClInclude Include="PanelItem.h">
-      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
-    </ClInclude>
-    <ClInclude Include="InGameTimer.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
     <ClInclude Include="TimeLimit.h">

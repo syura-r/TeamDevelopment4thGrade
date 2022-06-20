@@ -14,7 +14,6 @@
 #include "LevelEditor.h"
 #include "Player.h"
 #include "Floor.h"
-#include "TestBoss.h"
 #include "Field.h"
 #include "Ending.h"
 #include "ScoreManager.h"

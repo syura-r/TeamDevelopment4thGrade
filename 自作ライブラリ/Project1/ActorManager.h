@@ -5,7 +5,6 @@
 #include "Object.h"
 
 class Player;
-class TestBoss;
 class Field;
 class StandardEnemy;
 class EnergyItem;
