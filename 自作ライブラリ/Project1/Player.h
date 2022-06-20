@@ -13,7 +13,6 @@
 #include "PanelCountUI.h"
 #include "PanelCountSprite3D.h"
 
-
 class StandardEnemy;
 class EnergyItem;
 class PanelItem;
@@ -55,9 +54,6 @@ private:
 	};
 
 	ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
-
-
-	int walkDustCounter = 0;
 	
 	//初期位置
 	const Vector3 StartPos = { 0,-5,0 };
