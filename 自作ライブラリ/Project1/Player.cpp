@@ -33,20 +33,11 @@ Player::Player()
 	//アニメーション用にモデルのポインタを格納
 	myModel = FBXManager::GetModel("GamePlay_Player");
 	//モデルの生成
-	Create(myModel);
-	//当たり判定(Box)の生成
-	/*BoxCollider* boxCollider = new BoxCollider();
-	boxCollider->SetObject(this);
-	boxCollider->SetScale({0.2f,0.5f,0.2f});
-	boxCollider->SetOffset({ 0,0.5f,0 ,0 });
-	SetCollider(boxCollider);
-	collider->SetAttribute(COLLISION_ATTR_ALLIES);
-	collider->SetMove(true);*/
+	Create(myModel);	
 
 	pObjectManager = ObjectManager::GetInstance();	
 
-	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);	
-	attackSprite = new Sprite();
+	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);		
 
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
 	panelCutLocus->SetParentObject(this);
@@ -83,16 +74,14 @@ Player::Player()
 }
 
 Player::~Player()
-{	
-	delete attackSprite;	
+{			
 	delete panelCountUI;
 	delete panelCountSprite3D;		
 	ActorManager::GetInstance()->DeleteObject(this);
 }
 
 void Player::Initialize()
-{
-	onGround = true;
+{	
 	scale = { 0.9f };
 	position = StartPos;
 	rotation = 0;
@@ -124,17 +113,7 @@ void Player::Initialize()
 
 	camera->SetDistance(100);
 
-	drawingFlag = false;
-	isExtendLine = false;
-	currentLineNum = 0;	
-	DeleteDrawingLine();
-	for (int i = 0; i < vecLocuss.size(); i++)
-	{
-		delete vecLocuss[i];
-		vecLocuss[i] = nullptr;
-	}
-	vecLocuss.clear();	
-	feverQuota = maxFeverQuota;			
+	drawingFlag = false;			
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
@@ -207,8 +186,7 @@ void Player::Update()
 					if (!tackleFlag && !drawingFlag)
 					{
 						drawingFlag = true;
-						//線の生成
-						//CreateLine();
+						
 						Vector3 p = info->cuttingStartPos;
 						ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::PLAYER, this));
 					}
@@ -219,14 +197,9 @@ void Player::Update()
 			{
 				Tackle();
 			}
-
-			//ドローイングの処理
-			DrawingLine();
-
 		}
 
-		//当たり判定系
-		HitCheckLoci();
+		//当たり判定系		
 		HitCheckEnemy();
 		HitCheckItems();
 		HitCheckUnableThroughEdge();
@@ -237,11 +210,7 @@ void Player::Update()
 		{
 			panelCutLocus->SetCutPower(cutPower);
 			panelCutLocus->Move(p, info->cuttingAngle);
-		}
-		for (auto locus : vecLocuss)
-		{
-			locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
-		}
+		}		
 	}
 	
 	//他のオブジェクトとのヒットチェック	
@@ -262,13 +231,7 @@ void Player::Draw()
 		DirectXLib::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(1, constCameraBuff->GetGPUVirtualAddress());
 	}
 	CustomDraw(true, true);
-	if (!Object3D::GetDrawShadow())
-	{
-		if (!vecLocuss.empty())
-		{
-			attackSprite->DrawSprite("s_LBorRB", Vector2(960, 150), 0.0f, Vector2(1.5f, 1.5f));
-		}				
-	}
+	
 	panelCountUI->Draw();
 	panelCountSprite3D->Draw();
 }
@@ -286,7 +249,6 @@ void Player::DrawReady()
 		ImGui::Text("Direction : {%f, %f, %f }\n", direction.x, direction.y, direction.z);
 		ImGui::Text("Position : {%f, %f, %f }\n", position.x, position.y, position.z);
 		ImGui::Text("Rot : {%f, %f, %f }\n", rotation.x, rotation.y, rotation.z);
-		ImGui::Text("inputAccuracy : {%f}\n", inputAccuracy);
 		ImGui::Text("virtualityPlanePosition : {%f,%f,%f}\n", virtualityPlanePosition.x, virtualityPlanePosition.y, virtualityPlanePosition.z);
 		ImGui::End();
 	}
@@ -381,16 +343,10 @@ void Player::Move()
 		float rotSpeed = rotateSpeed;
 		if (abs(rotY) < 55)
 		{
-			virtualityPlanePosition += moveDirection * (speed * inputAccuracy);
+			virtualityPlanePosition += moveDirection * speed;
 			StayInTheField();
-			StayOnRemainPanels();
-			isExtendLine = true;
+			StayOnRemainPanels();			
 		}
-		else
-		{
-			isExtendLine = false;
-		}
-
 
 		if (rotSpeed > abs(rotY))
 		{
@@ -490,8 +446,7 @@ void Player::DecideDirection(Vector3& arg_direction)
 	if (blowFlag)
 	{
 		//velocityに入っている値に進むように
-		arg_direction = velocity;
-		inputAccuracy = 1;
+		arg_direction = velocity;		
 		speed = blowSpeed;
 		return;
 	}
@@ -509,34 +464,7 @@ void Player::DecideDirection(Vector3& arg_direction)
 	//くり抜き動作中
 	if (drawingFlag)
 	{
-		arg_direction = { 0,0,0 };
-		//if (Input::CheckPadLStickAnythingDir())
-		//{
-		//	arg_direction = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
-
-		//	//スティックの向き
-		//	Vector2 stickDirection = Vector2(0, 0);
-		//	auto vec = Input::GetLStickDirection();
-		//	stickDirection.x = (cameraDirectionX * vec.x).x;
-		//	stickDirection.y = (cameraDirectionZ * vec.y).z;
-		//	stickDirection = Vector2::Normalize(stickDirection);
-
-		//	//線の向き
-		//	auto lineVec = nowDrawingLocus->GetLine(currentLineNum)->GetDirection();
-
-		//	inputAccuracy = Vector2::Dot(stickDirection, LocusUtility::Dim3ToDim2XZ(lineVec));
-
-		//	if (inputAccuracy <= 0)
-		//	{
-		//		inputAccuracy = 0;
-		//	}
-
-		//	inputAccuracy = Easing::EaseOutCirc(0, 1, 1, inputAccuracy);
-		//}
-		//else
-		//{
-		//	inputAccuracy = 0; //スティック入力がないから動かない
-		//}
+		arg_direction = { 0,0,0 };		
 	}
 	else
 	{
@@ -553,8 +481,7 @@ void Player::DecideDirection(Vector3& arg_direction)
 			auto vec = Input::GetLStickDirection();
 
 			arg_direction = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
-		}
-		inputAccuracy = 1;
+		}		
 	}
 
 	arg_direction.Normalize();
@@ -562,224 +489,15 @@ void Player::DecideDirection(Vector3& arg_direction)
 	velocity = arg_direction;
 }
 
-//void Player::SelectLocus()
+//void Player::MoveEndDrawing(BaseLocus* arg_locus)
 //{
-//	if (drawingFlag)
-//	{
-//		return;
-//	}
-//
-//	if (Input::TriggerPadButton(XINPUT_GAMEPAD_B))
-//	{
-//		pressedButton = LocusSelecter::Button::BBUTTON;
-//	}
-//	else if (Input::TriggerPadButton(XINPUT_GAMEPAD_X))
-//	{
-//		pressedButton = LocusSelecter::Button::XBUTTON;
-//	}
-//	else if (Input::TriggerPadButton(XINPUT_GAMEPAD_Y))
-//	{
-//		pressedButton = LocusSelecter::Button::YBUTTON;
-//	}
-//
-//	switch (pressedButton)
-//	{
-//	case LocusSelecter::UNDIFINED:
-//		break;
-//	case LocusSelecter::XBUTTON:
-//		SetLocus(locusSelecter->XbuttonLocusType());
-//		break;
-//	case LocusSelecter::YBUTTON:
-//		SetLocus(locusSelecter->YbuttonLocusType());
-//		break;
-//	case LocusSelecter::BBUTTON:
-//		SetLocus(locusSelecter->BbuttonLocusType());
-//		break;
-//	default:
-//		break;
-//	}
+//	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
+//	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
+//	virtualityPlanePosition += vec * 2.0f;
+//	StayInTheField();
+//	Field* field = ActorManager::GetInstance()->GetFields()[0];
+//	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 //}
-
-//void Player::SetLocus(LocusType arg_LocusType)
-//{
-//	if (nowDrawingLocus)
-//	{
-//		nowDrawingLocus->ChangeIsDraw(false);
-//	}
-//
-//	switch (arg_LocusType)
-//	{
-//	case LocusType::UNDIFINED:
-//		nowDrawingLocus = nullptr;
-//		break;
-//	case LocusType::TRIANGLE:
-//		nowDrawingLocus = predictTriangle;
-//		break;
-//	case LocusType::RIBBON:
-//		nowDrawingLocus = predictRibbon;
-//		break;
-//	case LocusType::PENTAGON:
-//		nowDrawingLocus = predictPentagon;
-//		break;
-//	case LocusType::STAR:
-//		nowDrawingLocus = predictStar;
-//		break;
-//	case LocusType::HEXAGRAM:
-//		nowDrawingLocus = predictHexagram;
-//		break;
-//	case LocusType::TRIFORCE:
-//		nowDrawingLocus = predictTriforce;
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	if (arg_LocusType != LocusType::UNDIFINED)
-//	{
-//		nowDrawingLocus->ChangeIsDraw(true);
-//	}
-//}
-
-void Player::CreateLine()
-{
-	if (currentLineNum >= panelCutLocus->GetMaxNumLine())
-	{
-		return;
-	}
-
-	Vector3 nowLineVel = panelCutLocus->GetLine(currentLineNum)->GetDirection(); //kokokokoko
-	pNowDrawingLine = new Line(virtualityPlanePosition, LocusUtility::Vector3XZToAngle(nowLineVel), 0, { 1,1,1,1 }, Vector3(0.5f, 0.7f, 0.7f));
-	ObjectManager::GetInstance()->Add(pNowDrawingLine, true);
-	vecDrawingLines.push_back(pNowDrawingLine);
-}
-
-void Player::DrawingLine()
-{
-	if (pNowDrawingLine != nullptr)
-	{
-		//ボタンを押しているかつドローイング中は線を伸ばす
-		if (Input::CheckPadButton(XINPUT_GAMEPAD_A) && drawingFlag)
-		{	
-			if (isExtendLine)
-			{				
-				if (Input::DownWASD() || Input::CheckPadLStickAnythingDir())
-				{
-					pNowDrawingLine->AddLength(speed * inputAccuracy);
-				}
-			}			
-
-			float lengthNowLine = pNowDrawingLine->GetLength();
-			float lengthLocusLine = panelCutLocus->GetLine(currentLineNum)->GetLength();
-
-			if (lengthLocusLine - lengthNowLine <= 0.05f) //マジックサイコー
-			{
-				pNowDrawingLine->SetLength(lengthLocusLine);
-				currentLineNum++;
-				if (currentLineNum >= panelCutLocus->GetMaxNumLine())
-				{
-					drawingFlag = false;
-					currentLineNum = 0;
-					//static const XMFLOAT4 copyColor = XMFLOAT4(0.1f, 0.3f, 0.9f, 0.6f);
-					////ここで図形として保存する処理
-					//BaseLocus* copyLocus = nullptr;
-					//switch (nowDrawingLocus->GetType())
-					//{
-					//case LocusType::UNDIFINED:
-					//	break;
-					//case LocusType::TRIANGLE:
-					//	copyLocus = new TestTriangle(*predictTriangle, copyColor);
-					//	break;
-					//case LocusType::RIBBON:
-					//	copyLocus = new TestRibbon(*predictRibbon, copyColor);
-					//	break;
-					//case LocusType::PENTAGON:
-					//	copyLocus = new TestPentagon(*predictPentagon, copyColor);
-					//	break;
-					//case LocusType::STAR:
-					//	copyLocus = new TestStar(*predictStar, copyColor);
-					//	break;
-					//case LocusType::HEXAGRAM:
-					//	copyLocus = new TestHexagram(*predictHexagram, copyColor);
-					//	break;
-					//case LocusType::TRIFORCE:
-					//	copyLocus = new TestTriforce(*predictTriforce, copyColor);
-					//	break;
-					//default:
-					//	break;
-					//}
-
-					//Field* field = ActorManager::GetInstance()->GetFields()[0];
-					//if (field)
-					//{
-					//	field->AddInfluence(LocusFieldInfluence{ copyLocus->GetCenterOfGravity(), copyLocus->GetWeight() });
-					//}
-					weight += 8;
-					// 
-					//vecLocuss.push_back(copyLocus);
-					
-					//MoveEndDrawing(copyLocus);
-					DeleteDrawingLine();
-					//locusSelecter->SetNextLocus(pressedButton);
-					return;
-				}
-				position = panelCutLocus->GetLine(currentLineNum)->GetStartPos();
-				CreateLine();
-			}
-		}
-		else
-		{
-			SuspendDrawing();
-		}
-	}
-
-}
-
-void Player::DeleteDrawingLine()
-{
-	for (int i = 0; i < vecDrawingLines.size(); i++)
-	{
-		vecDrawingLines[i]->Dead();
-	}
-	vecDrawingLines.clear();
-}
-
-void Player::SuspendDrawing()
-{
-	drawingFlag = false;
-	currentLineNum = 0;
-	DeleteDrawingLine();
-	pNowDrawingLine = nullptr;
-}
-
-void Player::DeleteLocuss()
-{
-	auto end = vecLocuss.size();	
-
-	for (int i = 0; i < end; i++)
-	{
-		delete vecLocuss[i];
-		vecLocuss[i] = nullptr;
-	}
-	vecLocuss.clear();	
-
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	if (field)
-	{
-		field->ResetInfluences();
-	}
-	weight = 5;
-	gottenPanel = 0;
-}
-
-void Player::MoveEndDrawing(BaseLocus* arg_locus)
-{
-	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
-	virtualityPlanePosition += vec * 2.0f;
-	StayInTheField();
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
-}
 
 void Player::StayInTheField()
 {
@@ -843,7 +561,7 @@ void Player::StayInTheField()
 
 	if (drawingFlag)
 	{
-		SuspendDrawing();
+		HitOnDrawing();
 	}
 }
 
@@ -1026,7 +744,6 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 	{
 		arg_enemy->HitOnDrawing();
 	}
-	//SuspendDrawing();
 
 	////衝突後位置
 	//Vector3 playerAfterPos = position + blowTime * playerAfterVel;
@@ -1365,11 +1082,6 @@ Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_max
 	return result;
 }
 
-bool Player::IsAlive()
-{
-	return true;
-}
-
 void Player::EndDrawing()
 {
 	drawingFlag = false;
@@ -1402,65 +1114,65 @@ void Player::HitOnDrawing()
 	drawingFlag = false;
 }
 
-void Player::HitCheckLoci()
-{
-	if (virtualityPlanePosition == preVirtualityPlanePosition)
-	{
-		return;
-	}
+//void Player::HitCheckLoci()
+//{
+//	if (virtualityPlanePosition == preVirtualityPlanePosition)
+//	{
+//		return;
+//	}
+//
+//	for (auto locus : vecLocuss)
+//	{
+//		for (int i = 0; i < locus->GetMaxNumLine(); i++)
+//		{
+//			Line* line = locus->GetLine(i);
+//			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneStartPos());
+//			Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneEndPos());
+//			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos() - line->GetVirtualityPlaneStartPos());
+//			Vector2 normalAB = Vector2::Normalize(AB);
+//
+//			//今当たっているか
+//			float cross = Vector2::Cross(AO, normalAB);
+//			if (fabsf(cross) > RADIUS)
+//			{
+//				continue;
+//			}
+//
+//			float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
+//			if (multiDot <= 0.0f)
+//			{
+//				HitLoci(line);
+//				continue;
+//			}
+//
+//			if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
+//			{
+//				HitLoci(line);
+//				continue;
+//			}
+//
+//			//通り過ぎたか
+//			Vector2 start = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneStartPos());
+//			Vector2 end = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos());
+//			Vector2 pos = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition);
+//			Vector2 pre = LocusUtility::Dim3ToDim2XZ(preVirtualityPlanePosition);
+//
+//			if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
+//				LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
+//			{
+//				HitLoci(line);
+//			}
+//		}
+//	}
+//}
 
-	for (auto locus : vecLocuss)
-	{
-		for (int i = 0; i < locus->GetMaxNumLine(); i++)
-		{
-			Line* line = locus->GetLine(i);
-			Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneStartPos());
-			Vector2 BO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - line->GetVirtualityPlaneEndPos());
-			Vector2 AB = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos() - line->GetVirtualityPlaneStartPos());
-			Vector2 normalAB = Vector2::Normalize(AB);
-
-			//今当たっているか
-			float cross = Vector2::Cross(AO, normalAB);
-			if (fabsf(cross) > RADIUS)
-			{
-				continue;
-			}
-
-			float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
-			if (multiDot <= 0.0f)
-			{
-				HitLoci(line);
-				continue;
-			}
-
-			if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
-			{
-				HitLoci(line);
-				continue;
-			}
-
-			//通り過ぎたか
-			Vector2 start = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneStartPos());
-			Vector2 end = LocusUtility::Dim3ToDim2XZ(line->GetVirtualityPlaneEndPos());
-			Vector2 pos = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition);
-			Vector2 pre = LocusUtility::Dim3ToDim2XZ(preVirtualityPlanePosition);
-
-			if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
-				LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
-			{
-				HitLoci(line);
-			}
-		}
-	}
-}
-
-void Player::HitLoci(Line* arg_line)
-{
-	position = prePos;
-	virtualityPlanePosition = preVirtualityPlanePosition;
-
-	if (drawingFlag)
-	{
-		SuspendDrawing();
-	}
-}
+//void Player::HitLoci(Line* arg_line)
+//{
+//	position = prePos;
+//	virtualityPlanePosition = preVirtualityPlanePosition;
+//
+//	if (drawingFlag)
+//	{
+//		SuspendDrawing();
+//	}
+//}
