@@ -150,6 +150,11 @@ std::vector<Vector2>& PanelCutLocus::GetCuttedPanelPos()
 	return CuttedPanelPos;
 }
 
+Object* PanelCutLocus::GetParentObject()
+{
+	return parentObject;
+}
+
 void PanelCutLocus::SetParentObject(Object* arg_obj)
 {
 	parentObject = arg_obj;

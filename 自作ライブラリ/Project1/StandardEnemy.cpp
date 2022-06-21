@@ -871,7 +871,7 @@ void StandardEnemy::EndDrawing()
 {
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus->GetCuttedPanelPos());
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
 	weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;
 	cutPower = 0;

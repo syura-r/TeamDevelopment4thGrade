@@ -24,6 +24,7 @@ public:
 	int GetCutPower()const;
 	void SetCutPower(const int arg_power);
 	std::vector<Vector2>& GetCuttedPanelPos();
+	Object* GetParentObject();
 	void SetParentObject(Object* arg_obj);
 
 private:
