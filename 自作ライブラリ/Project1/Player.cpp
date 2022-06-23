@@ -529,6 +529,7 @@ void Player::StayInTheField()
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			StartStand();
+			//SuspendTackle();
 			break;
 		}
 
@@ -536,6 +537,7 @@ void Player::StayInTheField()
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			StartStand();
+			//SuspendTackle();
 			break;
 		}
 
@@ -550,6 +552,7 @@ void Player::StayInTheField()
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			StartStand();
+			//SuspendTackle();
 			break;
 		}
 	}

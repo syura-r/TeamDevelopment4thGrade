@@ -485,6 +485,7 @@ void StandardEnemy::StayInTheField()
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			StartStand();
+			//SuspendTackle();
 			break;
 		}
 
@@ -492,6 +493,7 @@ void StandardEnemy::StayInTheField()
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			StartStand();
+			//SuspendTackle();
 			break;
 		}
 
@@ -506,6 +508,7 @@ void StandardEnemy::StayInTheField()
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			StartStand();
+			//SuspendTackle();
 			break;
 		}
 	}

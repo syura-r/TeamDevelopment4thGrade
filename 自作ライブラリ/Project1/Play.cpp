@@ -88,7 +88,7 @@ void Play::Initialize()
 
 	//ゲームオブジェクト生成
 	Field* field = new Field();
-	objectManager->Add(field);	
+	objectManager->Add(field, false);	
 
 	Player* player = new Player();
 	objectManager->Add(player);	

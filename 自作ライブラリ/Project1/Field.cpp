@@ -16,7 +16,7 @@
 #include "EnergyItem.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
-const float Field::RADIUS = 50.0f;
+const float Field::RADIUS = 45.0f;
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
 
 Field::Field()
@@ -39,8 +39,8 @@ Field::Field()
 
 	Create(OBJLoader::GetModel("fieldEdge"));
 	position = { 0,-5,0 };
-	scale = { RADIUS,1,RADIUS };
-	color = { 0.1f ,0.1f, 0.1f,1 };
+	scale = { 50.0f, 5, 50.0f };
+	color = { 0.1f , 0.1f, 0.1f, 0.3f };
 	Object::Update();	
 
 	name = typeid(*this).name();
@@ -126,7 +126,7 @@ void Field::DrawReady()
 
 void Field::Draw()
 {
-	Object::Draw();
+	//Object::Draw();
 }
 
 void Field::CalcTilt()
