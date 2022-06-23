@@ -21,7 +21,7 @@ public:
 	void DrawReady()override;
 
 	void CopyLocus();
-
+	Object* GetParentObject();
 	
 private:
 

@@ -16,7 +16,8 @@ FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_dir
 	:virtualityPlanePosition(arg_position),
 	 dir(arg_direction),
 	 isActive(true),
-	 isBlockade(false)
+	 isBlockade(false),
+	 cutterPos(Vector3())
 {
 	SetPoints();
 	position = virtualityPlanePosition;
@@ -132,6 +133,12 @@ bool FieldPiece::IsRidden(const Vector3& arg_pos, const Vector3& arg_prePos, con
 	}
 
 	return false;
+}
+
+void FieldPiece::CutOneself(Object* arg_obj)
+{
+	isActive = false;
+	cutterPos = arg_obj->GetPosition();
 }
 
 float FieldPiece::GetSize()

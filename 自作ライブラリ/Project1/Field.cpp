@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "StandardEnemy.h"
 #include "FieldPiece.h"
+#include "PanelCutLocus.h"
 #include "Input.h"
 #include "Easing.h"
 #include "UnableThroughBlock.h"
@@ -82,6 +83,7 @@ void Field::Initialize()
 void Field::Update()
 {	
 	static bool b = false;
+#ifdef _DEBUG
 	if (Input::TriggerKey(DIK_L))
 	{
 		if (!b)
@@ -90,6 +92,7 @@ void Field::Update()
 			b = true;
 		}
 	}
+#endif // _DEBUG
 
 	if (isFallingBlock)
 	{
@@ -636,16 +639,18 @@ void Field::ResetInfluences()
 	gottenPieces.clear();
 }
 
-int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
+int Field::CutPanel(PanelCutLocus* arg_locus)
 {
+	auto vecPos = arg_locus->GetCuttedPanelPos();
+
 	int returnVal = 0;
 	Player* player = ActorManager::GetInstance()->GetPlayer();
 	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
 
-	for (int i = 0; i < arg_vecPos.size(); i++)
+	for (int i = 0; i < vecPos.size(); i++)
 	{
 		//—ñ“Á’è
-		float adjustedZPos = -arg_vecPos[i].y + halfHeight;
+		float adjustedZPos = -vecPos[i].y + halfHeight;
 		if (adjustedZPos < 0)
 		{
 			continue;
@@ -665,15 +670,16 @@ int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 		{
 			std::vector<Vector2> piecePoints = pieces[columnNum][j]->GetPoints();
 
-			float cross01 = Vector2::Cross(Vector2::Normalize(piecePoints[1] - piecePoints[0]), Vector2::Normalize(arg_vecPos[i] - piecePoints[0]));
-			float cross12 = Vector2::Cross(Vector2::Normalize(piecePoints[2] - piecePoints[1]), Vector2::Normalize(arg_vecPos[i] - piecePoints[1]));
-			float cross20 = Vector2::Cross(Vector2::Normalize(piecePoints[0] - piecePoints[2]), Vector2::Normalize(arg_vecPos[i] - piecePoints[2]));
+			float cross01 = Vector2::Cross(Vector2::Normalize(piecePoints[1] - piecePoints[0]), Vector2::Normalize(vecPos[i] - piecePoints[0]));
+			float cross12 = Vector2::Cross(Vector2::Normalize(piecePoints[2] - piecePoints[1]), Vector2::Normalize(vecPos[i] - piecePoints[1]));
+			float cross20 = Vector2::Cross(Vector2::Normalize(piecePoints[0] - piecePoints[2]), Vector2::Normalize(vecPos[i] - piecePoints[2]));
 
 			if (cross01 > 0 && cross12 > 0 && cross20 > 0)
 			{
 				if (pieces[columnNum][j]->IsActive())
 				{
-					pieces[columnNum][j]->ChangeIsActive(false);
+					//pieces[columnNum][j]->ChangeIsActive(false);
+					pieces[columnNum][j]->CutOneself(arg_locus->GetParentObject());
 					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
 					gottenPieces.push_back(pieces[columnNum][j]);
@@ -684,7 +690,8 @@ int Field::CutPanel(std::vector<Vector2>& arg_vecPos)
 			{
 				if (pieces[columnNum][j]->IsActive())
 				{
-					pieces[columnNum][j]->ChangeIsActive(false);
+					//pieces[columnNum][j]->ChangeIsActive(false);
+					pieces[columnNum][j]->CutOneself(arg_locus->GetParentObject());
 					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
 					gottenPieces.push_back(pieces[columnNum][j]);

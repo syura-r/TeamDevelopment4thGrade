@@ -7,7 +7,8 @@ public:
 
 	void Inisitlize();
 
-	void AddScore(const int oncePanelNum);
+	void AddScore_CutPanel(const int oncePanelNum);
+	void AddScore_FallEnemy();
 	const int GetTotalScore() { return totalScore; }
 
 	void SetStockPanelNum_Last(const int stockPanelNum) { this->stockPanelNum_last = stockPanelNum; }

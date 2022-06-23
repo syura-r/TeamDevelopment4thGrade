@@ -12,9 +12,6 @@
 #include "GameSettingParam.h"
 #include "ParticleEmitter.h"
 #include "ActorManager.h"
-#include "TestBoss.h"
-#include "BossMissile.h"
-#include "BossRangeAttack.h"
 #include "Field.h"
 #include "EnergyItem.h"
 #include "CircularSaw.h"
@@ -23,6 +20,7 @@
 #include "ItemEmitter.h"
 #include "Player.h"
 #include "Audio.h"
+#include "ScoreManager.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -37,14 +35,14 @@ StandardEnemy::StandardEnemy()
 	pObjectManager = ObjectManager::GetInstance();
 
 	XMFLOAT4 predictColor = XMFLOAT4(1, 1, 0, 0.6f);
-	attackSprite = new Sprite();
 
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, predictColor);
+	panelCutLocus->SetParentObject(this);
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
 
-	panelCountUI = new PanelCountUI();
+	panelCountUI = new PanelCountUI(GAMEOBJECT_TYPE::ENEMY);
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 
 	Initialize();
@@ -55,7 +53,6 @@ StandardEnemy::~StandardEnemy()
 {
 	delete actionTimer;
 	delete walkingTimer;
-	delete attackSprite;
 	delete panelCountUI;
 	delete panelCountSprite3D;
 	ActorManager::GetInstance()->DeleteObject(this);
@@ -63,7 +60,6 @@ StandardEnemy::~StandardEnemy()
 
 void StandardEnemy::Initialize()
 {
-	onGround = true;
 	scale = { 0.9f };
 	position = StartPos;
 	rotation = 0;
@@ -85,17 +81,7 @@ void StandardEnemy::Initialize()
 	if (CrossVec.y < 0)
 		rad *= -1;
 	//-----------------------------------------------
-	drawingFlag = false;
-	isExtendLine = false;
-	currentLineNum = 0;
-	DeleteDrawingLine();
-	for (int i = 0; i < vecLocuss.size(); i++)
-	{
-		delete vecLocuss[i];
-		vecLocuss[i] = nullptr;
-	}
-	vecLocuss.clear();
-	feverQuota = maxFeverQuota;
+	drawingFlag = false;	
 	virtualityPlanePosition = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 	weight = 10;
@@ -164,49 +150,71 @@ void StandardEnemy::Update()
 		else
 		{
 			// 丸のこの所持数が一定以上だったら切り抜き
-			if ((Input::TriggerKey(DIK_U) || cutPower >= cutPowerLimit) && cutPower > 0 && info->ridingPiece)
+			if (cutPower > 0 && info->ridingPiece)
 			{
-				if (!tackleFlag && !drawingFlag)
+				if (cutPower >= cutPowerLimit)
 				{
-					drawingFlag = true;
-					//線の生成
-					Vector3 p = info->cuttingStartPos;
-					ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+					if (!tackleFlag && !drawingFlag)
+					{
+						int rnd = std::rand() % 30;
+						if (rnd == 0)
+						{
+							drawingFlag = true;
+							//線の生成
+							Vector3 p = info->cuttingStartPos;
+							ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+						}
+					}
 				}
-
-			}
+#ifdef _DEBUG
+				else if (Input::TriggerKey(DIK_U))
+				{
+					if (!tackleFlag && !drawingFlag)
+					{
+						int rnd = std::rand() % 30;
+						if (rnd == 0)
+						{
+							drawingFlag = true;
+							//線の生成
+							Vector3 p = info->cuttingStartPos;
+							ObjectManager::GetInstance()->Add(new CircularSaw(p, panelCutLocus, CircularSaw::ENEMY, this));
+						}
+					}
+				}
+#endif // _DEBUG
+			}			
 
 			// 敵が近くに居たらタックル
-			if (Input::TriggerKey(DIK_O) || RangeCheckPlayer())
+			if (RangeCheckPlayer())
 			{
-				Tackle();
+				int rnd = std::rand() % 30;
+				if (rnd == 0)
+				{
+					Tackle();
+				}
 			}
-		}
-
-		//図形の消去
-		if (!drawingFlag)
-		{
-			if (Input::TriggerPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || Input::TriggerPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+#ifdef _DEBUG
+			else if (Input::TriggerKey(DIK_O))
 			{
-				DeleteLocuss();
+				int rnd = std::rand() % 30;
+				if (rnd == 0)
+				{
+					Tackle();
+				}
 			}
+#endif // _DEBUG
 		}		
 
-		Vector3 p = info->cuttingStartPos;
-		//SetLocus(LocusType::UNDIFINED);
+		//当たり判定系
+		HitCheckItems();
+
+		Vector3 p = info->cuttingStartPos;		
 		if (!drawingFlag)
 		{
 			panelCutLocus->SetCutPower(cutPower);
 			panelCutLocus->Move(p, info->cuttingAngle);
-		}
-		for (auto locus : vecLocuss)
-		{
-			locus->Move(locus->GetVirtualityPlanePosition(), locus->GetAngle());
-		}
+		}		
 	}
-
-	//当たり判定系
-	HitCheckItems();
 
 	//他のオブジェクトとのヒットチェック
 	Object::Update();
@@ -226,7 +234,6 @@ void StandardEnemy::Draw()
 	ImGui::Text("Direction : {%f, %f, %f }\n", direction.x, direction.y, direction.z);
 	ImGui::Text("Position : {%f, %f, %f }\n", position.x, position.y, position.z);
 	ImGui::Text("Rot : {%f, %f, %f }\n", rotation.x, rotation.y, rotation.z);
-	ImGui::Text("inputAccuracy : {%f}\n", inputAccuracy);
 	ImGui::Text("virtualityPlanePosition : {%f,%f,%f}\n", virtualityPlanePosition.x, virtualityPlanePosition.y, virtualityPlanePosition.z);
 	ImGui::End();
 
@@ -327,15 +334,10 @@ void StandardEnemy::Move()
 		float rotSpeed = rotateSpeed;
 		if (abs(rotY) < 55)
 		{
-			virtualityPlanePosition += moveDirection * (speed * inputAccuracy);
+			virtualityPlanePosition += moveDirection * speed;
 			StayInTheField();
-			StayOnRemainPanels();
-			isExtendLine = true;
-		}
-		else
-		{
-			isExtendLine = false;
-		}
+			StayOnRemainPanels();			
+		}		
 
 
 		if (rotSpeed > abs(rotY))
@@ -389,8 +391,7 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 	if (blowFlag)
 	{
 		//velocityに入っている値に進むように
-		arg_direction = velocity;
-		inputAccuracy = 1;
+		arg_direction = velocity;		
 		speed = blowSpeed;
 		return;
 	}
@@ -436,8 +437,7 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 		//	auto vec = Input::GetLStickDirection();
 
 		//	arg_direction = cameraDirectionX * vec.x + cameraDirectionZ * vec.y;
-		//}
-		inputAccuracy = 1;
+		//}		
 	}
 
 	arg_direction.Normalize();
@@ -445,52 +445,15 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 	velocity = arg_direction;
 }
 
-void StandardEnemy::DeleteDrawingLine()
-{
-	for (int i = 0; i < vecDrawingLines.size(); i++)
-	{
-		vecDrawingLines[i]->Dead();
-	}
-	vecDrawingLines.clear();
-}
-
-void StandardEnemy::SuspendDrawing()
-{
-	drawingFlag = false;
-	currentLineNum = 0;
-	DeleteDrawingLine();
-	pNowDrawingLine = nullptr;
-}
-
-void StandardEnemy::DeleteLocuss()
-{
-	auto end = vecLocuss.size();
-
-	for (int i = 0; i < end; i++)
-	{
-		delete vecLocuss[i];
-		vecLocuss[i] = nullptr;
-	}
-	vecLocuss.clear();
-
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	if (field)
-	{
-		field->ResetInfluences();
-	}
-	weight = 5;
-	gottenPanel = 0;
-}
-
-void StandardEnemy::MoveEndDrawing(BaseLocus* arg_locus)
-{
-	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
-	virtualityPlanePosition += vec * 2.0f;
-	StayInTheField();
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
-}
+//void StandardEnemy::MoveEndDrawing(BaseLocus* arg_locus)
+//{
+//	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
+//	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
+//	virtualityPlanePosition += vec * 2.0f;
+//	StayInTheField();
+//	Field* field = ActorManager::GetInstance()->GetFields()[0];
+//	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+//}
 
 void StandardEnemy::StayInTheField()
 {
@@ -554,7 +517,7 @@ void StandardEnemy::StayInTheField()
 
 	if (drawingFlag)
 	{
-		SuspendDrawing();
+		HitOnDrawing();
 	}
 }
 
@@ -576,6 +539,48 @@ void StandardEnemy::StayOnRemainPanels()
 		if (tackleFlag)
 		{
 			SuspendTackle();
+		}
+		return;
+	}
+
+	//即落ち
+	if (!standingFlag)
+	{
+		auto gottenPanels = field->GetGottenPieces();
+		for (auto p : gottenPanels)
+		{
+			bool isFall = true;
+
+			if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - p->GetVirtualityPlanePosition())) > RADIUS + FieldPiece::GetLowerTimeOffset())
+			{
+				continue;
+			}
+
+			auto points = p->GetPoints();
+			for (int i = 0; i < points.size(); i++)
+			{
+				Vector2 A = points[i];
+				Vector2 B = points[(i + 1) % points.size()];
+				Vector2 AO = LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition) - A;
+				Vector2 AB = B - A;
+				Vector2 normalAB = Vector2::Normalize(AB);
+
+				//今当たっているか
+				float cross = Vector2::Cross(AO, normalAB);
+				if (cross < 0)
+				{
+					isFall = false;
+					break;
+				}
+			}
+
+			if (isFall)
+			{
+				fallFlag = true;
+				fallStartPos = virtualityPlanePosition;
+				fallEndPos = p->GetVirtualityPlanePosition();
+				return;
+			}
 		}
 	}
 }
@@ -638,9 +643,18 @@ void StandardEnemy::StartStand(bool arg_outField, Vector3 arg_velocity)
 
 void StandardEnemy::WithStand()
 {
+	static bool isFirstCall = true;
+	static int standingCount = 0;
+
 	if (drawingFlag)
 	{
 		return;
+	}
+
+	if (isFirstCall)
+	{
+		isFirstCall = false;
+		standingCount = 0;
 	}
 
 	//踏ん張り中　赤
@@ -660,7 +674,15 @@ void StandardEnemy::WithStand()
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 	Vector2 stickDirection = {};
 	//スティックの向き
-	auto vec = Input::GetLStickDirection();
+	auto vec = Vector2(0, 0);
+	standingCount++;
+	{
+		if (standingCount >= 20)
+		{
+			vec = LocusUtility::Dim3ToDim2XZ(LocusUtility::AngleToVector2(std::rand() % 360));
+			standingCount = 0;
+		}
+	}
 	stickDirection.x = (cameraDirectionX * vec.x).x;
 	stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
@@ -676,8 +698,14 @@ void StandardEnemy::WithStand()
 		accuracy = 0;
 	}
 
+	if (vec.x = 0 && vec.y == 0)
+	{
+		accuracy = 0;
+	}
+
 	if (accuracy >= 0.55f)
 	{
+		isFirstCall = true;
 		Vector3 moveDirection = preStandVec;
 		Object::SetColor({ 1,1,1,1 });
 		returningFieldFlag = true;
@@ -704,7 +732,8 @@ void StandardEnemy::Tackle()
 	Vector2 stickDirection = {};
 	Vector3 moveDirection = {};
 	//スティックの向き
-	auto vec = Input::GetLStickDirection();
+	ConfirmPlayerPos();
+	auto vec = LocusUtility::Dim3ToDim2XZ(Vector3::Normalize(playerPos - virtualityPlanePosition));
 	stickDirection.x = (cameraDirectionX * vec.x).x;
 	stickDirection.y = (cameraDirectionZ * vec.y).z;
 	stickDirection = Vector2::Normalize(stickDirection);
@@ -755,6 +784,32 @@ void StandardEnemy::DischargeGottenPanel(StandardEnemy* arg_enemy)
 
 }
 
+void StandardEnemy::DischargeGottenPanel(Player* arg_player)
+{
+	if (arg_player->IsFall())
+	{
+		return;
+	}
+
+	ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
+	int maxEmit = 0;
+	if (gottenPanel == 1)
+	{
+		maxEmit = 1;
+	}
+	else
+	{
+		maxEmit = gottenPanel / 2;
+	}
+
+	for (int i = 0; i < maxEmit; i++)
+	{
+		itemEmitter->EmitPanelItem(virtualityPlanePosition);
+		gottenPanel--;
+		weight -= FieldPiece::GetWeight();
+	}
+}
+
 void StandardEnemy::Fall()
 {
 	if (!fallFlag)
@@ -784,11 +839,23 @@ void StandardEnemy::StartFall()
 	fallFlag = true;
 	fallStartPos = virtualityPlanePosition;
 	fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+
+	ScoreManager::GetInstance()->AddScore_FallEnemy();
 }
 
 void StandardEnemy::StartBlow()
 {
 	blowFlag = true;
+}
+
+void StandardEnemy::HitOnDrawing()
+{
+	auto c = ActorManager::GetInstance()->GetCircularSaw(this);
+	if (c)
+	{
+		c->Dead();
+	}
+	drawingFlag = false;
 }
 
 Vector3 StandardEnemy::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
@@ -800,16 +867,11 @@ Vector3 StandardEnemy::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int 
 	return result;
 }
 
-bool StandardEnemy::IsAlive()
-{
-	return true;
-}
-
 void StandardEnemy::EndDrawing()
 {
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus->GetCuttedPanelPos());
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
 	weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;
 	cutPower = 0;

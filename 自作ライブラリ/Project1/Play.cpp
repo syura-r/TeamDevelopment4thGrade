@@ -14,7 +14,6 @@
 #include "LevelEditor.h"
 #include "Player.h"
 #include "Floor.h"
-#include "TestBoss.h"
 #include "Field.h"
 #include "Ending.h"
 #include "ScoreManager.h"
@@ -55,6 +54,7 @@ Play::Play()
 
 	pause = new Pause();
 	timeLimit = new TimeLimit(180 * 60);
+	scoreUI = new ScoreUI();
 
 	screenResource = new TextureResource("screen.png",false, true);
 	stadium = new Stadium();
@@ -68,6 +68,7 @@ Play::~Play()
 	LevelEditor::GetInstance()->Clear();
 	delete pause;
 	delete timeLimit;
+	delete scoreUI;
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
@@ -103,10 +104,12 @@ void Play::Initialize()
 	isEnd = false;
 	pause->Initialize();
 	timeLimit->Initialize();
+	gameEndCount = 0;
+	scoreUI->Initialize();
 
 	ScoreManager::GetInstance()->Inisitlize();
 
-	//Audio::PlayWave("BGM_Play", 0.1f, true);
+	Audio::PlayWave("BGM_Play", 0.1f, true);
 }
 
 void Play::Update()
@@ -121,35 +124,58 @@ void Play::Update()
 	if (pause->GetRestart())
 	{
 		Initialize();
+		return;
 	}
 	//タイトルにもどる
 	if (pause->GetToTitle())
 	{
-		//Audio::StopWave("BGM_Play");
+		Audio::StopWave("BGM_Play");
 		next = Title;
-		ShutDown();
+		ShutDown();		
+		return;
 	}
 	if (pause->GetUsePause())
 		return;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> b875604f1c20491fb873111479adde5cae0c90fd
 #ifdef _DEBUG
 	if (Input::TriggerKey(DIK_E))//終了処理
 	{
-		//Audio::StopWave("BGM_Play");
+		Audio::StopWave("BGM_Play");
 		ShutDown();
+<<<<<<< HEAD
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+=======
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
+		return;
+>>>>>>> b875604f1c20491fb873111479adde5cae0c90fd
 	}
 	if (Input::TriggerKey(DIK_7))
 	{
 		ParticleEmitter::ShockEffect(Vector3(0, 0, 0),Vector3(255.0f,255.0f,255.0f));
 	}
 #endif
-
+	
 	timeLimit->Update();
 	if (timeLimit->GetLimit())
 	{
-		Field* field = actorManager->GetFields()[0];
-		//Fieldに指令出す
+		//Field* field = actorManager->GetFields()[0];
+		////Fieldに指令出す
+
+		gameEndCount++;
+
+		if (gameEndCount >= 60)
+		{
+			ShutDown();
+			ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());					
+		}
+
+		return;
 	}
+	scoreUI->Update();
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
@@ -163,9 +189,10 @@ void Play::Update()
 
 	if (ActorManager::GetInstance()->GetPlayer()->IsGameEnd() )
 	{
-		//Audio::StopWave("BGM_Play");
+		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
+		return;
 	}
 
 	bool allEnemiesOutField = true;
@@ -180,9 +207,10 @@ void Play::Update()
 	}
 	if (allEnemiesOutField)
 	{
-		//Audio::StopWave("BGM_Play");
+		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());
+		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
+		return;
 	}
 }
 
@@ -190,6 +218,7 @@ void Play::PreDraw()
 {
 	pause->Draw();
 	timeLimit->Draw();
+	scoreUI->Draw();
 
 		objectManager->DrawReady();
 #ifdef _DEBUG

@@ -15,6 +15,7 @@
 #include "ActorManager.h"
 #include "Pause.h"
 #include "TimeLimit.h"
+#include "ScoreUI.h"
 #include "Sprite3D.h"
 
 
@@ -74,5 +75,7 @@ private:
 
 	Pause* pause = nullptr;
 	TimeLimit* timeLimit = nullptr;
+	int gameEndCount;
+	ScoreUI* scoreUI = nullptr;
 };
 
