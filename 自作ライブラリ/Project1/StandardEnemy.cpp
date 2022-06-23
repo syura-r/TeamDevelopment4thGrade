@@ -612,11 +612,29 @@ void StandardEnemy::HitCheckItems()
 
 void StandardEnemy::HitItem(EnergyItem* arg_item)
 {
-	arg_item->Dead();
-	if (cutPower < 6)
+	switch (arg_item->GetRank())
 	{
+	case RankEnergyItem::NORMAL:
 		cutPower++;
+		break;
+	case RankEnergyItem::SILVER:
+		cutPower += 2;
+		break;
+	case RankEnergyItem::GOLD:
+		cutPower += 3;
+		break;
+	default:
+		cutPower++;
+		break;
 	}
+
+	if (cutPower > 6)
+	{
+		cutPower = 6;
+	}
+
+	Audio::PlayWave("SE_GetTriangle");
+	arg_item->Dead();
 }
 
 void StandardEnemy::StartStand(bool arg_outField, Vector3 arg_velocity)

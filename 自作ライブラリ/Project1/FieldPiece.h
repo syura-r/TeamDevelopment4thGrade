@@ -31,10 +31,12 @@ public:
 	Vector3 GetVirtualityPlanePosition()const;
 	static float GetWeight();
 	PieceDirection GetPieceDirection()const;
-	bool IsActive();
+	bool IsActive()const;
 	void ChangeIsActive(const bool arg_isActive);
-	bool IsBlockade();
+	bool IsBlockade()const;
 	void ChangeIsBlockade(const bool arg_isBlockade);
+	bool IsBonus()const;
+	void ChangeIsBonus(const bool arg_isBonus);
 	std::vector<Vector2>& GetPoints();
 
 private:
@@ -51,6 +53,8 @@ private:
 	bool isBlockade;
 	//切り抜いた人の座標
 	Vector3 cutterPos;
+	//ボーナスパネルかどうか
+	bool isBonus;
 
 	std::vector<Vector2> points;
 	static std::vector<Vector2> basePoints;
