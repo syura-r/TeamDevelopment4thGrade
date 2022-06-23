@@ -3,10 +3,17 @@
 #include "LocusDef.h"
 #include "Timer.h"
 
+enum class RankEnergyItem
+{
+	NORMAL,
+	SILVER,
+	GOLD,
+};
+
 class EnergyItem : public Object
 {
 public:
-	EnergyItem(const Vector3& arg_position);
+	EnergyItem(const Vector3& arg_position, const RankEnergyItem arg_rank);
 	~EnergyItem();
 
 	void Initialize()override;
@@ -20,6 +27,7 @@ public:
 	Vector3 GetVirtualityPlanePosition();
 	static float GetRadius();
 	bool IsAppeared();
+	RankEnergyItem GetRank()const;
 
 private:
 
@@ -31,6 +39,9 @@ private:
 
 	//îªíËî≠ê∂Ç‹Ç≈ÇÃéûä‘
 	Timer* appearTimer;
+
+	//Ç‹ÇÈÇÃÇ±ÇÃéÌóﬁ
+	RankEnergyItem rank;
 
 public:	
 };

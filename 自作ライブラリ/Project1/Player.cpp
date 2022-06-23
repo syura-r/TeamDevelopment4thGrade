@@ -794,12 +794,29 @@ void Player::HitCheckItems()
 
 void Player::HitItem(EnergyItem* arg_item)
 {
+	switch (arg_item->GetRank())
+	{
+	case RankEnergyItem::NORMAL:
+		cutPower++;
+		break;
+	case RankEnergyItem::SILVER:
+		cutPower += 2;
+		break;
+	case RankEnergyItem::GOLD:
+		cutPower += 3;
+		break;
+	default:
+		cutPower++;
+		break;
+	}	
+
+	if (cutPower > 6)
+	{
+		cutPower = 6;
+	}
+
 	Audio::PlayWave("SE_GetTriangle");
 	arg_item->Dead();
-	if (cutPower < 6)
-	{
-		cutPower++;
-	}
 }
 
 void Player::HitPanelItem(PanelItem* arg_panelItem)

@@ -48,30 +48,9 @@ void ItemEmitter::Update()
 	energyItemTimer->Update();
 	if (energyItemTimer->IsTime())
 	{
-		Vector3 emitPos = Vector3();
-		std::vector<FieldPiece*> gottenPieces = ActorManager::GetInstance()->GetFields()[0]->GetGottenPieces();
-		bool b = true;
-
-		do
-		{
-			emitPos = GetRandomEmitPosition(1, 38);
-			for (auto p : gottenPieces)
-			{
-				if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(emitPos - p->GetVirtualityPlanePosition())) <= FieldPiece::GetSize() + EnergyItem::GetRadius())
-				{
-					b = false;
-					break;
-				}
-				else
-				{
-					b = true;
-				}
-			}
-		} while (!b);
-
-		Field* field = ActorManager::GetInstance()->GetFields()[0];
-		emitPos.y += field->GetPosition().y + EnergyItem::GetRadius();
-		EmitEnergyItem(emitPos);
+		Vector3 emitPos = GetEnergyItemEmitPosition();
+		
+		EmitEnergyItem(emitPos, RankEnergyItem::NORMAL);
 	}
 
 #ifdef _DEBUG
@@ -82,9 +61,9 @@ void ItemEmitter::Update()
 #endif // _DEBUG
 }
 
-void ItemEmitter::EmitEnergyItem(const Vector3& arg_pos)
+void ItemEmitter::EmitEnergyItem(const Vector3& arg_pos, const RankEnergyItem arg_rank)
 {
-	EnergyItem* item = new EnergyItem(arg_pos);
+	EnergyItem* item = new EnergyItem(arg_pos, arg_rank);
 	ObjectManager::GetInstance()->Add(item);	
 	energyItemTimer->Reset();
 }
@@ -105,7 +84,35 @@ Vector3 ItemEmitter::GetRandomEmitPosition(const int arg_min, const int arg_max)
 	
 	float angle = rand() % 360;
 	float range = rand() % (arg_max - arg_min) + arg_min;
-	returnVal += LocusUtility::AngleToVector2(angle) * range;
+	returnVal += LocusUtility::AngleToVector2(angle) * range;	
 
+	return returnVal;
+}
+
+Vector3 ItemEmitter::GetEnergyItemEmitPosition()
+{
+	Vector3 returnVal;
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	std::vector<FieldPiece*> gottenPieces = field->GetGottenPieces();
+	bool b = true;
+
+	do
+	{
+		returnVal = GetRandomEmitPosition(1, 38);
+		for (auto p : gottenPieces)
+		{
+			if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(returnVal - p->GetVirtualityPlanePosition())) <= FieldPiece::GetSize() + EnergyItem::GetRadius())
+			{
+				b = false;
+				break;
+			}
+			else
+			{
+				b = true;
+			}
+		}
+	} while (!b);
+
+	returnVal.y += field->GetPosition().y + EnergyItem::GetRadius();
 	return returnVal;
 }

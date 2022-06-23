@@ -136,6 +136,12 @@
     <Filter Include="ソース ファイル\GameObject\proto_second">
       <UniqueIdentifier>{3a6e0a66-3a7f-467a-abc2-cc9d7f7e462d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\GameObject\GameActor">
+      <UniqueIdentifier>{1ebeec08-be06-490e-9514-abb11765635b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject\GameActor">
+      <UniqueIdentifier>{a627253c-aba9-4c16-9916-7a51d5fce59d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -407,6 +413,9 @@
     </ClCompile>
     <ClCompile Include="ScoreUI.cpp">
       <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseGameActor.cpp">
+      <Filter>ソース ファイル\GameObject\GameActor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -733,6 +742,12 @@
     </ClInclude>
     <ClInclude Include="ScoreUI.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseGameActor.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="IState.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

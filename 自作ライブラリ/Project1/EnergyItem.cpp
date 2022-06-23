@@ -8,9 +8,10 @@
 
 const float EnergyItem::RADIUS = 1.5f;
 
-EnergyItem::EnergyItem(const Vector3& arg_position)
+EnergyItem::EnergyItem(const Vector3& arg_position, const RankEnergyItem arg_rank)
 	:virtualityPlanePosition(arg_position),
-	 preVirtualityPlanePosition(arg_position)
+	 preVirtualityPlanePosition(arg_position),
+	 rank(arg_rank)
 {
 	Create(OBJLoader::GetModel("Saw"));
 
@@ -67,7 +68,21 @@ void EnergyItem::Appear()
 
 	if (appearTimer->IsTime())
 	{
-		color = { 0.7f, 0.7f, 1.0f, 1.0f };
+		switch (rank)
+		{
+		case RankEnergyItem::NORMAL:
+			color = { 0.7f, 0.7f, 1.0f, 1.0f };
+			break;
+		case RankEnergyItem::SILVER:
+			color = { 0.9f, 0.1f, 0.1f, 1.0f };
+			break;
+		case RankEnergyItem::GOLD:
+			color = { 0.9f, 0.9f, 0.1f, 1.0f };
+			break;
+		default:
+			color = { 0.7f, 0.7f, 1.0f, 1.0f };
+			break;
+		}
 	}
 }
 
@@ -193,4 +208,9 @@ float EnergyItem::GetRadius()
 bool EnergyItem::IsAppeared()
 {
 	return appearTimer->IsTime();
+}
+
+RankEnergyItem EnergyItem::GetRank() const
+{
+	return rank;
 }

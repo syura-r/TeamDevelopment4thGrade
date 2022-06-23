@@ -3,6 +3,7 @@
 #include "Vector.h"
 
 class EnergyItem;
+enum class RankEnergyItem;
 
 class ItemEmitter
 {
@@ -13,8 +14,10 @@ public:
 	void Initialize();
 	void Update();
 
-	void EmitEnergyItem(const Vector3& arg_pos);
+	void EmitEnergyItem(const Vector3& arg_pos, const RankEnergyItem arg_rank);
 	void EmitPanelItem(const Vector3& arg_pos);
+	Vector3 GetRandomEmitPosition(const int arg_min, const int arg_max);
+	Vector3 GetEnergyItemEmitPosition();
 
 private:
 	ItemEmitter();
@@ -25,6 +28,4 @@ private:
 	static ItemEmitter* instance;
 
 	Timer* energyItemTimer;
-
-	Vector3 GetRandomEmitPosition(const int arg_min, const int arg_max);
 };
