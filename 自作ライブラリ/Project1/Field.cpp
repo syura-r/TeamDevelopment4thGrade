@@ -131,7 +131,7 @@ void Field::CalcTilt()
 	tiltDirection = Vector2();
 
 	Player* player = ActorManager::GetInstance()->GetPlayer();
-	if (player && !player->IsFall())
+	if (player/* && !player->IsFall()*/)
 	{
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * player->GetWeight() * GetMultiplyingFactor(Vector3::Length(player->GetVirtualityPlanePosition()));
@@ -141,10 +141,10 @@ void Field::CalcTilt()
 	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();
 	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
 	{
-		if ((*itr)->IsFall())
+		/*if ((*itr)->IsFall())
 		{
 			continue;
-		}
+		}*/
 
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * (*itr)->GetWeight() * GetMultiplyingFactor(Vector3::Length((*itr)->GetVirtualityPlanePosition()));
