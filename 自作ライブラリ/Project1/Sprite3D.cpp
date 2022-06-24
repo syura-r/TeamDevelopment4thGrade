@@ -4,6 +4,7 @@
 #include<d3dx12.h>
 #include"Texture.h"
 #include"Camera.h"
+#include "Object3D.h"
 Camera* Sprite3D::camera = nullptr;
 Sprite3D::Sprite3D()
 {
@@ -51,21 +52,12 @@ void Sprite3D::CreateSprite3D()
 	result = dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData2) + 0xff) & ~0xff),
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&constBuff2));
 	if (FAILED(result)) {
 		assert(0);
-	}
-	ConstBufferData2* constMap = nullptr;
-	result = constBuff2->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result)) {
-		constMap->ambient = { 0.3f, 0.3f, 0.3f };
-		constMap->diffuse = { 0.3f, 0.3f, 0.3f };
-		constMap->specular = { 0.0f, 0.0f, 0.0f };
-		constMap->alpha = 1;
-		constBuff2->Unmap(0, nullptr);
 	}
 
 	D3D12_HEAP_PROPERTIES heapprop{};//頂点ヒープ設定
@@ -155,15 +147,30 @@ void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, cons
 
 	const XMMATRIX& matViewProjection = camera->GetMatViewProjection();
 	const XMFLOAT3& cameraPos = camera->GetEye();
-	// 定数バッファへデータ転送
-	ConstBufferData* constMap = nullptr;
-	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	assert(SUCCEEDED(result));
-	constMap->viewprojection = matViewProjection;
-	constMap->cameraPos = cameraPos;
-	constMap->world = spriteMatWorld;
-	constMap->color = color;
-	constBuff->Unmap(0, nullptr);
+	if (!Object3D::GetScreenDraw())
+	{
+		// 定数バッファへデータ転送
+		ConstBufferData* constMap = nullptr;
+		result = constBuff->Map(0, nullptr, (void**)&constMap);
+		assert(SUCCEEDED(result));
+		constMap->viewprojection = matViewProjection;
+		constMap->cameraPos = cameraPos;
+		constMap->world = spriteMatWorld;
+		constMap->color = color;
+		constBuff->Unmap(0, nullptr);
+	}
+	else
+	{
+		ConstBufferData* constMap2 = nullptr;
+		result = constBuff2->Map(0, nullptr, (void**)&constMap2);
+		assert(SUCCEEDED(result));
+		constMap2->viewprojection = matViewProjection;
+		constMap2->cameraPos = cameraPos;
+		constMap2->world = spriteMatWorld;
+		constMap2->color = color;
+		constBuff2->Unmap(0, nullptr);
+	}
+
 
 	PipelineState::SetPipeline("NoShade", type);
 
@@ -172,8 +179,14 @@ void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, cons
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	cmdList->IASetIndexBuffer(&ibView);
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
-	cmdList->SetGraphicsRootConstantBufferView(1, constBuff2->GetGPUVirtualAddress());
+	if (!Object3D::GetScreenDraw())
+	{
+		cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
+	}
+	else
+	{
+		cmdList->SetGraphicsRootConstantBufferView(0, constBuff2->GetGPUVirtualAddress());
+	}
 	//インデックスバッファのセットコマンド
 	cmdList->SetGraphicsRootDescriptorTable(2, Texture::GetGpuDescHandleSRV(name));
 

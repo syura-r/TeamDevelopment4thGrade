@@ -116,7 +116,7 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
 		OBJLoader::LoadModelFile("stadium", "stadium.obj", false);
-
+		OBJLoader::LoadModelFile("lava", "GamePlay_Magma.obj", false);
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
 		break;
 	case 4:
@@ -181,6 +181,9 @@ void Game::CreatePipeline()
 		break;
 	case 3:
 		PipelineState::CreatePipeline("NoShade", NoShade);
+		PipelineState::CreatePipeline("UVScrolling", AreaEffect);
+
+		
 		break;
 	case 4:
 		PipelineState::CreatePipeline("CollisionBox", ViewCollisionBox);

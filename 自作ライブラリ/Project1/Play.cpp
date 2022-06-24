@@ -56,7 +56,7 @@ Play::Play()
 	timeLimit = new TimeLimit(180 * 60);
 	scoreUI = new ScoreUI();
 
-	screenResource = new TextureResource("screen.png",false, true);
+	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
 
 	//test = new Sprite3D();
@@ -96,6 +96,8 @@ void Play::Initialize()
 	//StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
 	StandardEnemy* testEnemy = new StandardEnemy();
 	objectManager->Add(testEnemy);	
+
+	stadium->Initialize();
 
 	screenCamera->SetTargetObj(player);
 
@@ -145,10 +147,6 @@ void Play::Update()
 		ShutDown();
 		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
-	}
-	if (Input::TriggerKey(DIK_7))
-	{
-		ParticleEmitter::ShockEffect(Vector3(0, 0, 0),Vector3(255.0f,255.0f,255.0f));
 	}
 #endif
 	
@@ -226,13 +224,15 @@ void Play::PreDraw()
 		}
 #endif
 
-		//screenResource->PreDraw();
-		//Object3D::SetCamera(screenCamera);
-		//Object3D::SetScreenDraw(true);
-		//objectManager->PreDraw();
-		//Object3D::SetScreenDraw(false);
-		//Object3D::SetCamera(camera.get());
-		//screenResource->PostDraw();
+		screenResource->PreDraw(1,0,0,480,270,0,0,480,270);
+		Object3D::SetCamera(screenCamera);
+		Sprite3D::SetCamera(screenCamera);
+		Object3D::SetScreenDraw(true);
+		objectManager->PreDraw();
+		Object3D::SetScreenDraw(false);
+		Sprite3D::SetCamera(camera.get());
+		Object3D::SetCamera(camera.get());
+		screenResource->PostDraw();
 
 		objectManager->PreDraw();
 		stadium->Draw();

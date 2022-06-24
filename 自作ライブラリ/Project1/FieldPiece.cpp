@@ -232,7 +232,7 @@ void FieldPiece::SetPoints()
 
 void FieldPiece::ChangeColorForRidden()
 {
-	color = { 0.3f, 0.3f, 0.3f, 1.0f };
+	color = { 0.254f,0.58f,1,1 };
 	ActorManager* aManager = ActorManager::GetInstance();
 	Field* field = aManager->GetFields()[0];
 

@@ -39,15 +39,6 @@ protected:
 		float pad;//パディング
 		XMFLOAT4 color;
 	};
-	struct ConstBufferData2
-	{
-		XMFLOAT3 ambient;
-		float pad1;
-		XMFLOAT3 diffuse;
-		float pad2;
-		XMFLOAT3 specular;
-		float alpha;
-	};
 
 
 	float spriteRotation = 0.0f;

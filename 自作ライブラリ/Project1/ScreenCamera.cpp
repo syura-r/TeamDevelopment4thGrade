@@ -1,7 +1,7 @@
 #include "ScreenCamera.h"
 #include"Input.h"
 #include"Object.h"
-ScreenCamera::ScreenCamera() 
+ScreenCamera::ScreenCamera() :Camera({480,270})
 {
 	phi = -3.14159265f / 2;
 	theta = 120;
