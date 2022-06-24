@@ -19,31 +19,31 @@ void DebugCamera::Update()
 
 	auto mouseMove = Input::GetMouseMove();
 
-	//// ゲームパッドの右スティックでのカメラ操作
-	//if (Input::CheckPadRStickLeft()|| Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown())
-	//{
+	// ゲームパッドの右スティックでのカメラ操作
+	if (Input::CheckPadRStickLeft()|| Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown())
+	{
 
-	//	auto vec = Input::GetRStickDirection();
+		auto vec = Input::GetRStickDirection();
 
-	//	phi += XM_PI / 180.0f * -vec.x * ((float)SettingParam::GetPadSensitive() / 3.0f) * SettingParam::GetReverseX();
-	//	theta += XM_PI / 180.0f * -vec.y * ((float)SettingParam::GetPadSensitive() / 3.0f) * SettingParam::GetReverseY();
-	//	if (theta > 40 * XM_PI / 180.0f)
-	//		theta = 40 * XM_PI / 180.0f;
-	//	else if (theta < -40 * XM_PI / 180.0f)
-	//		theta = -40 * XM_PI / 180.0f;
+		phi += XM_PI / 180.0f * -vec.x * ((float)SettingParam::GetPadSensitive() / 3.0f) * SettingParam::GetReverseX();
+		/*theta += XM_PI / 180.0f * -vec.y * ((float)SettingParam::GetPadSensitive() / 3.0f) * SettingParam::GetReverseY();
+		if (theta > 40 * XM_PI / 180.0f)
+			theta = 40 * XM_PI / 180.0f;
+		else if (theta < -40 * XM_PI / 180.0f)
+			theta = -40 * XM_PI / 180.0f;*/
 
-	//	if (phi > 360 * XM_PI / 180.0f)
-	//		phi -= 360 * XM_PI / 180.0f;
-	//	else if (phi < 0)
-	//		phi += 360 * XM_PI / 180.0f;
+		if (phi > 360 * XM_PI / 180.0f)
+			phi -= 360 * XM_PI / 180.0f;
+		else if (phi < 0)
+			phi += 360 * XM_PI / 180.0f;
 
-	//	if (theta < 0)
-	//	{
-	//		distance = 10 * (1 + theta * 1.1f);
+		/*if (theta < 0)
+		{
+			distance = 10 * (1 + theta * 1.1f);
 
-	//	}
-	//	dirty = true;
-	//}
+		}*/
+		dirty = true;
+	}
 
 	
 	// マウスの左ボタンが押されていたらカメラを回転させる
