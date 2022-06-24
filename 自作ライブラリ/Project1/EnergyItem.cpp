@@ -5,6 +5,7 @@
 #include "ActorManager.h"
 #include "Field.h"
 #include "FieldPiece.h"
+#include "ObjectRegistType.h"
 
 const float EnergyItem::RADIUS = 1.5f;
 
@@ -18,7 +19,7 @@ EnergyItem::EnergyItem(const Vector3& arg_position, const RankEnergyItem arg_ran
 	appearTimer = new Timer(60);
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("EnergyItem", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::ENERGY_ITEM);
 
 	Initialize();
 }
@@ -26,7 +27,7 @@ EnergyItem::EnergyItem(const Vector3& arg_position, const RankEnergyItem arg_ran
 EnergyItem::~EnergyItem()
 {
 	delete appearTimer;
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::ENERGY_ITEM);
 }
 
 void EnergyItem::Initialize()

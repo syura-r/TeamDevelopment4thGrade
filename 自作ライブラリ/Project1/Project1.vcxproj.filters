@@ -749,6 +749,9 @@
     <ClInclude Include="IState.h">
       <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectRegistType.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shader\BasicPixelShader.hlsl">

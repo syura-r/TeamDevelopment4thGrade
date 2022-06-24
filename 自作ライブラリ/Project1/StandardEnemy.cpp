@@ -21,6 +21,7 @@
 #include "Player.h"
 #include "Audio.h"
 #include "ScoreManager.h"
+#include "ObjectRegistType.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -40,7 +41,7 @@ StandardEnemy::StandardEnemy()
 	panelCutLocus->SetParentObject(this);
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::STANDARD_ENEMY);
 
 	panelCountUI = new PanelCountUI(GAMEOBJECT_TYPE::ENEMY);
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
@@ -55,7 +56,7 @@ StandardEnemy::~StandardEnemy()
 	delete walkingTimer;
 	delete panelCountUI;
 	delete panelCountSprite3D;
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::STANDARD_ENEMY);
 }
 
 void StandardEnemy::Initialize()
@@ -444,16 +445,6 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 	//”½”­—p‚É‘ã“ü
 	velocity = arg_direction;
 }
-
-//void StandardEnemy::MoveEndDrawing(BaseLocus* arg_locus)
-//{
-//	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-//	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
-//	virtualityPlanePosition += vec * 2.0f;
-//	StayInTheField();
-//	Field* field = ActorManager::GetInstance()->GetFields()[0];
-//	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
-//}
 
 void StandardEnemy::StayInTheField()
 {
@@ -896,6 +887,11 @@ void StandardEnemy::EndDrawing()
 	weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;
 	cutPower = 0;
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
+	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 }
 
 Vector3 StandardEnemy::GetDirection() const

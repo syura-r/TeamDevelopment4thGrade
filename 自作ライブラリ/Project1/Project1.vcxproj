@@ -327,6 +327,7 @@
     <ClInclude Include="NormalMapTestOBJ.h" />
     <ClInclude Include="NumberSprite.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="ObjectRegistType.h" />
     <ClInclude Include="OBJModel.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Object.h" />

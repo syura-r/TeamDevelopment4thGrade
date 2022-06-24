@@ -1,0 +1,14 @@
+#pragma once
+
+enum class ObjectRegistType
+{
+	UNDIFINED = -1,
+	PLAYER,
+	FIELD,
+	STANDARD_ENEMY,
+	ENERGY_ITEM,
+	PANEL_ITEM,
+	UNABLETHROUGH_BLOCK,
+	UNABLETHROUGH_EDGE,
+	CIRCULAR_SAW,
+};

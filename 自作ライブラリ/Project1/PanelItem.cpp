@@ -6,6 +6,7 @@
 #include "Field.h"
 #include "FieldPiece.h"
 #include "Audio.h"
+#include "ObjectRegistType.h"
 
 const float PanelItem::RADIUS = 1.5f;
 const float PanelItem::BOUNCE_SPEED = 0.3f;
@@ -19,14 +20,14 @@ PanelItem::PanelItem(const Vector3& arg_position, const Vector3& arg_velocity)
 	Create(OBJLoader::GetModel("fieldPiece"));	
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("PanelItem", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::PANEL_ITEM);
 
 	Initialize();
 }
 
 PanelItem::~PanelItem()
 {	
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::PANEL_ITEM);
 }
 
 void PanelItem::Initialize()

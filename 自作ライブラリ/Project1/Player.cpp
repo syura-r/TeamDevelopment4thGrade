@@ -25,6 +25,7 @@
 #include "ScoreManager.h"
 #include "Audio.h"
 #include "ParticleEmitter.h"
+#include "ObjectRegistType.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -43,7 +44,7 @@ Player::Player()
 	panelCutLocus->SetParentObject(this);
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("Player", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::PLAYER);
 
 	panelCountUI = new PanelCountUI();
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
@@ -77,7 +78,7 @@ Player::~Player()
 {			
 	delete panelCountUI;
 	delete panelCountSprite3D;		
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::PLAYER);
 }
 
 void Player::Initialize()
@@ -488,16 +489,6 @@ void Player::DecideDirection(Vector3& arg_direction)
 	//”½”­—p‚É‘ã“ü
 	velocity = arg_direction;
 }
-
-//void Player::MoveEndDrawing(BaseLocus* arg_locus)
-//{
-//	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-//	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
-//	virtualityPlanePosition += vec * 2.0f;
-//	StayInTheField();
-//	Field* field = ActorManager::GetInstance()->GetFields()[0];
-//	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
-//}
 
 void Player::StayInTheField()
 {
@@ -1118,6 +1109,11 @@ void Player::EndDrawing()
 	cutPower = 0;
 
 	ScoreManager::GetInstance()->AddScore_CutPanel(num);
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
+	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 }
 
 Vector3 Player::GetDirection() const

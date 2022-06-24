@@ -14,6 +14,7 @@
 #include "UnableThroughEdge.h"
 #include "ItemEmitter.h"
 #include "EnergyItem.h"
+#include "ObjectRegistType.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
 const float Field::RADIUS = 45.0f;
@@ -44,7 +45,7 @@ Field::Field()
 	Object::Update();	
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("Field", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::FIELD);
 
 	pieces.clear();
 	gottenPieces.clear();
@@ -57,7 +58,7 @@ Field::Field()
 
 Field::~Field()
 {	
-	ActorManager::GetInstance()->DeleteObject(this);	
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::FIELD);
 	pieces.clear();
 	delete fallIntervalTimer;
 	blocks.clear();
