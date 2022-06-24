@@ -1,11 +1,5 @@
 #include "CircularSaw.h"
 #include "OBJLoader.h"
-#include "TestStar.h"
-#include "TestTriangle.h"
-#include "TestRibbon.h"
-#include "TestPentagon.h"
-#include "TestHexagram.h"
-#include "TestTriforce.h"
 #include "ActorManager.h"
 #include "Field.h"
 #include "Player.h"
@@ -13,6 +7,7 @@
 #include "PanelCutLocus.h"
 
 #include "ParticleEmitter.h"
+#include "Audio.h"
 
 CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType, Object* arg_object)
 	:parentObj(arg_object)
@@ -21,11 +16,16 @@ CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_now
 	virtualityPlanePosition = arg_virtualityPlanePosition;
 	nowCuttingLocus = arg_nowCuttingLocus;
 	objectType = arg_objecType;
+	name = typeid(*this).name();
+	ActorManager::GetInstance()->AddObject("CircularSaw", this);
 	Initialize();
 }
 
 CircularSaw::~CircularSaw()
 {
+	ActorManager::GetInstance()->DeleteObject(this);
+	Audio::StopWave("SE_SawCutNow");
+	Audio::PlayWave("SE_GetSaw");
 }
 
 void CircularSaw::Initialize()
@@ -56,6 +56,8 @@ void CircularSaw::Update()
 	rotation.y = angle + 90;
 	rotation.x += 3;
 
+	Audio::PlayWave("SE_SawCutNow", 1.0f, true);
+
 	if (lengthLocusLine - length <= 0.05f) //マジックサイコー
 	{
 		currentLineNum++;
@@ -64,7 +66,7 @@ void CircularSaw::Update()
 		if (currentLineNum >= nowCuttingLocus->GetMaxNumLine())
 		{
 			Dead();
-		
+
 			switch (objectType)
 			{
 			case GAMEOBJECTTYPE::PLAYER:
@@ -149,6 +151,11 @@ void CircularSaw::CopyLocus()
 	default:
 		break;
 	}*/
+}
+
+Object* CircularSaw::GetParentObject()
+{
+	return parentObj;
 }
 
 

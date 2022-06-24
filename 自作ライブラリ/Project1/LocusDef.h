@@ -5,14 +5,8 @@
 
 enum class LocusType
 {
-	UNDIFINED = -1,
-	TRIANGLE,    //三角形
-	RIBBON,      //リボン
-	PENTAGON,    //五角形
-	STAR,        //星
-	HEXAGRAM,    //簡易六芒星
-	TRIFORCE,    //トライフォース
-	PANELCUT,
+	UNDIFINED = -1,	
+	PANELCUT,  //α版以降仕様
 };
 
 //図形定義用　線の構造体

@@ -7,24 +7,15 @@
 #include "Object.h"
 #include "ObjectManager.h"
 #include "Line.h"
-#include "TestStar.h"
-#include "TestRibbon.h"
-#include "TestTriforce.h"
-#include "TestTriangle.h"
-#include "TestPentagon.h"
-#include "TestHexagram.h"
 #include "BaseLocus.h"
 #include "Timer.h"
-#include "NormalWaveMeasurer.h"
-#include "LocusSelecter.h"
 #include "NumberSprite.h"
 #include "PanelCountUI.h"
 #include "PanelCountSprite3D.h"
-#include "PanelItem.h"
-
 
 class StandardEnemy;
 class EnergyItem;
+class PanelItem;
 class PanelCutLocus;
 
 class Player :
@@ -37,10 +28,7 @@ public:
 	void Update()override;
 	void Draw() override;
 	void DrawReady() override;
-	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }
-	
-	//残機が残っているか
-	bool IsAlive();
+	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }	
 
 	void EndDrawing();
 	
@@ -48,14 +36,15 @@ public:
 
 	bool IsGameEnd() { return gameEnd; }
 
-	// 敵と図形の判定のため
-	std::vector<BaseLocus*>& GetVecLocuss() { return vecLocuss; };
+	// 敵と図形の判定のため	
 	int GetGottenPanel() { return gottenPanel; }
 	float GetWeight() { return weight; }
 	Vector3 GetVirtualityPlanePosition()const { return virtualityPlanePosition; }
 
 	Vector3 GetDirection()const;
 	PanelCutLocus* GetPanelCutLocus();
+
+	void HitOnDrawing();
 	
 private:
 	struct ConstLightCameraBuff
@@ -65,9 +54,6 @@ private:
 	};
 
 	ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
-
-
-	int walkDustCounter = 0;
 	
 	//初期位置
 	const Vector3 StartPos = { 0,-5,0 };
@@ -79,28 +65,8 @@ private:
 	//傾きで滑る処理
 	void SlidingDown();
 	//移動方向の決定
-	void DecideDirection(Vector3& arg_direction);
-
-	//ドローイングする図形を選択
-	//void SelectLocus();
-	//図形をセットする
-	//void SetLocus(LocusType arg_LocusType);
-
-	//線を生成
-	void CreateLine();
-	//線を書く
-	void DrawingLine();
-	//書き終わった線を消す
-	void DeleteDrawingLine();
-	//ドローイングの中断
-	void SuspendDrawing();
-	//書いた図形を一気に消す ブレイクと名付けたい※関数名要相談
-	void DeleteLocuss();
-	//図形を描いた後に瞬間移動させる
-	void MoveEndDrawing(BaseLocus* arg_locus);
-	//既存の図形との当たり判定
-	void HitCheckLoci();
-	void HitLoci(Line* arg_line);	
+	void DecideDirection(Vector3& arg_direction);	
+	
 	//フィールドから落ちない処理
 	void StayInTheField();
 	void StayOnRemainPanels();
@@ -125,7 +91,7 @@ private:
 	void Tackle();
 	//タックルの中断
 	void SuspendTackle();
-	//
+	//保持パネルばらまき
 	void DischargeGottenPanel(StandardEnemy* arg_enemy);
 	//場外に落下
 	void Fall();
@@ -134,9 +100,7 @@ private:
 	//
 	Vector3 EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime);	
 
-	ObjectManager* pObjectManager = nullptr;	
-
-	Line* pNowDrawingLine = nullptr;			
+	ObjectManager* pObjectManager = nullptr;					
 
 	PanelCutLocus* panelCutLocus;
 	int cutPower;	
@@ -144,19 +108,6 @@ private:
 
 	//書くフラグ
 	bool drawingFlag = false;
-	//線を伸ばすフラグ
-	bool isExtendLine = true;
-	//図形の線の番号
-	int currentLineNum = 0;
-	//線の向きとスティック入力の正確さ 0～1 speedにかける
-	float inputAccuracy = 0;
-	//ドローイングし終わった図形
-	std::vector<BaseLocus*> vecLocuss;
-	//線を一時的に保存しておくvector
-	std::vector<Line*> vecDrawingLines;		
-	unsigned int feverQuota;
-	const unsigned int maxFeverQuota = 6;
-	Sprite* attackSprite;	
 
 	const float RADIUS = 1.0f;
 	//プレイヤーの重さ
@@ -211,20 +162,14 @@ private:
 	//平面のままのposition
 	Vector3 virtualityPlanePosition;
 	Vector3 preVirtualityPlanePosition;
-
-	//接地フラグ
-	bool onGround = true;
-	//落下ベクトル
-	XMVECTOR fallV;
+	
 	//現在向いてる方向
 	Vector3 direction;
 	//移動速度
 	float speed = 0.09f;
 	const float walkSpeed = 0.18f;
 	const float drawingSpeed = 0.36f;
-	const float blowSpeed = 0.5f;
-	//走りフラグ
-	bool run = false;
+	const float blowSpeed = 0.5f;	
 	//回転速度
 	float rotateSpeed = 17.5f;
 	Vector3 prePos;
@@ -235,14 +180,14 @@ private:
 	int cameraRotCount;
 	const int RotTime = 10;
 
-	
-	//BoxCollider* boxCollider;
-
 	FBXModel* myModel = nullptr;
 
 	//パネル所持数表示
 	PanelCountUI* panelCountUI = nullptr;
 	PanelCountSprite3D* panelCountSprite3D = nullptr;
+
+	//サウンド用フラグ
+	bool fallSoundFlag;
 
 private://静的メンバ変数
 	static DebugCamera* camera;

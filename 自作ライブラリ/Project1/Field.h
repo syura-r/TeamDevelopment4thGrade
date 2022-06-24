@@ -8,6 +8,7 @@
 class FieldPiece;
 class UnableThroughBlock;
 class UnableThroughEdge;
+class PanelCutLocus;
 
 struct CuttingInfo
 {
@@ -39,7 +40,7 @@ public:
 	//ê}å`äÆê¨Ç…ÇÊÇ¡ÇƒåXÇ≠Ç∆Ç´
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
-	int CutPanel(std::vector<Vector2>& arg_vecPos);
+	int CutPanel(PanelCutLocus* arg_locus);
 	void ReviveGottenPanel(FieldPiece* arg_piece);
 	void StartFallingBlock();
 

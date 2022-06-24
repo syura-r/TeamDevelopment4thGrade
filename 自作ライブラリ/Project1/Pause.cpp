@@ -1,5 +1,6 @@
 #include "Pause.h"
 #include"Input.h"
+#include "Audio.h"
 
 Pause::Pause()
 {
@@ -42,11 +43,13 @@ void Pause::Update()
 	int select = selectState;
 	if (Input::TriggerPadLStickUp() && selectState > 0)
 	{
+		Audio::PlayWave("SE_Select");
 		isSelectMove = true;
 		select--;
 	}
 	else if (Input::TriggerPadLStickDown() && selectState < selectMax - 1)
 	{
+		Audio::PlayWave("SE_Select");
 		isSelectMove = true;
 		select++;
 	}
@@ -74,6 +77,7 @@ void Pause::Update()
 	//Œˆ’è
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
+		Audio::PlayWave("SE_Decision");
 		switch (selectState)
 		{
 		case ToGame:

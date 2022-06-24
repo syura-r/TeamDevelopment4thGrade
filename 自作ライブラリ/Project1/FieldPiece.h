@@ -20,6 +20,8 @@ public:
 	void Draw()override;
 
 	bool IsRidden(const Vector3& arg_pos, const Vector3& arg_prePos, const float arg_radius);
+	//自身が切り抜かれたときにFieldから呼び出される
+	void CutOneself(Object* arg_obj);
 
 	static float GetSize();
 	static float GetSidewaysLength();
@@ -47,6 +49,8 @@ private:
 	PieceDirection dir;
 	bool isActive;
 	bool isBlockade;
+	//切り抜いた人の座標
+	Vector3 cutterPos;
 
 	std::vector<Vector2> points;
 	static std::vector<Vector2> basePoints;

@@ -5,13 +5,13 @@
 #include "Object.h"
 
 class Player;
-class TestBoss;
 class Field;
 class StandardEnemy;
 class EnergyItem;
 class PanelItem;
 class UnableThroughBlock;
 class UnableThroughEdge;
+class CircularSaw;
 
 class ActorManager
 {
@@ -31,6 +31,7 @@ public:
 	std::vector<PanelItem*>& GetPanelItems();
 	std::vector<UnableThroughBlock*>& GetUnableThroughBlocks();
 	std::vector<UnableThroughEdge*>& GetUnableThroughEdges();
+	CircularSaw* GetCircularSaw(Object* arg_obj);
 
 private:
 	std::unordered_multimap<std::string, Object*> mapGameObject;

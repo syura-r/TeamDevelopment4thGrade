@@ -12,7 +12,7 @@ EnergyItem::EnergyItem(const Vector3& arg_position)
 	:virtualityPlanePosition(arg_position),
 	 preVirtualityPlanePosition(arg_position)
 {
-	Create(OBJLoader::GetModel("sphere"));
+	Create(OBJLoader::GetModel("Saw"));
 
 	appearTimer = new Timer(60);
 
@@ -33,7 +33,8 @@ void EnergyItem::Initialize()
 	name = typeid(*this).name();		
 	position = virtualityPlanePosition;
 	scale = Vector3(0.0001f, 0.0001f, 0.0001f);
-	color = { 0.8f, 0.8f, 0.8f, 1.0f };
+	color = { 0.4f, 0.4f, 0.4f, 1.0f };
+	rotation = Vector3(0, 90, 0);
 	appearTimer->Initialize();
 	Object::Update();
 }
@@ -62,11 +63,11 @@ void EnergyItem::Appear()
 {
 	appearTimer->Update();
 
-	scale.x = scale.y = scale.z = Easing::Lerp(0, RADIUS, appearTimer->GetRate());
+	scale.x = scale.y = scale.z = Easing::Lerp(0, RADIUS * 2, appearTimer->GetRate());
 
 	if (appearTimer->IsTime())
 	{
-		color = { 0.3f, 0.3f, 1.0f, 1.0f };
+		color = { 0.7f, 0.7f, 1.0f, 1.0f };
 	}
 }
 

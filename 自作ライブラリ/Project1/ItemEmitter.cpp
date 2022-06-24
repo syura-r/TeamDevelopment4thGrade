@@ -74,10 +74,12 @@ void ItemEmitter::Update()
 		EmitEnergyItem(emitPos);
 	}
 
+#ifdef _DEBUG
 	if (Input::TriggerKey(DIK_N))
 	{
 		EmitPanelItem(ActorManager::GetInstance()->GetPlayer()->GetVirtualityPlanePosition());
 	}
+#endif // _DEBUG
 }
 
 void ItemEmitter::EmitEnergyItem(const Vector3& arg_pos)
