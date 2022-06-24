@@ -1,6 +1,6 @@
 #include "ParticleEmitter.h"
 #include "Matrix4.h"
-
+#include "ModelParticle.h"
 #include<random>
 
 ParticleManager* ParticleEmitter::particleManager = nullptr;
@@ -188,6 +188,11 @@ void ParticleEmitter::ShockEffect(const Vector3& arg_pos, const Vector3& arg_col
 
         particleManager->Add(particle, "particle");
     }
+}
+
+void ParticleEmitter::PieceGetEffect()
+{
+    //particleManager->AddModelParticle(new ModelParticle());
 }
 
 float ParticleEmitter::GetRandom(float arg_min, float arg_max)

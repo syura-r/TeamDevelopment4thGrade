@@ -408,6 +408,9 @@
     <ClCompile Include="ScoreUI.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
+    <ClCompile Include="ModelParticle.cpp">
+      <Filter>ソース ファイル\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -733,6 +736,9 @@
     </ClInclude>
     <ClInclude Include="ScoreUI.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelParticle.h">
+      <Filter>ヘッダー ファイル\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
