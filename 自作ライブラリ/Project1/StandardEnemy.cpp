@@ -484,16 +484,16 @@ void StandardEnemy::StayInTheField()
 		if (multiDot <= 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			StartStand();
-			//SuspendTackle();
+			//StartStand();
+			SuspendTackle();
 			break;
 		}
 
 		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			StartStand();
-			//SuspendTackle();
+			//StartStand();
+			SuspendTackle();
 			break;
 		}
 
@@ -507,8 +507,8 @@ void StandardEnemy::StayInTheField()
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			StartStand();
-			//SuspendTackle();
+			//StartStand();
+			SuspendTackle();
 			break;
 		}
 	}
