@@ -25,6 +25,7 @@ public:
 
 	void AddObject(Object* arg_object, const ObjectRegistType arg_type);
 	void DeleteObject(Object* arg_object, const ObjectRegistType arg_type);
+	void CollisionCheck();
 
 	Player* GetPlayer();	
 	std::vector<Field*>& GetFields();

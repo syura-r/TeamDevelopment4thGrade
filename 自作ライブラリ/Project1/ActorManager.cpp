@@ -192,6 +192,10 @@ void ActorManager::DeleteObject(Object* arg_object, const ObjectRegistType arg_t
 	}
 }
 
+void ActorManager::CollisionCheck()
+{
+}
+
 Player* ActorManager::GetPlayer()
 {
 	if (players.empty())
