@@ -36,6 +36,15 @@ void Title::Update()
 		Audio::StopWave("BGM_Title");
 		ShutDown();
 	}
+
+//#ifdef _DEBUG
+	if (Input::TriggerKey(DIK_SPACE))
+	{
+		Audio::PlayWave("SE_Decision");
+		Audio::StopWave("BGM_Title");
+		ShutDown();
+	}
+//#endif
 }
 
 void Title::PreDraw()

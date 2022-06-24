@@ -9,8 +9,8 @@ TextureResource::TextureResource(const std::string& name, const bool noDepth)
 	Initialize(name);
 }
 
-TextureResource::TextureResource(const std::string& name, const bool noDepth, const bool changeTex)
-	: resourceWidth(1920), resourceHeight(1080), format(DXGI_FORMAT_R8G8B8A8_UNORM), clearColor{ 0,0,0,1 }, noDepth(noDepth),changeTex(changeTex)
+TextureResource::TextureResource(const std::string& name, const bool noDepth, const bool changeTex, const Vector2& size)
+	: resourceWidth(size.x), resourceHeight(size.y), format(DXGI_FORMAT_R8G8B8A8_UNORM), clearColor{ 0.254f,0.58f,1,1 }, noDepth(noDepth),changeTex(changeTex)
 {
 	Initialize(name);
 }
