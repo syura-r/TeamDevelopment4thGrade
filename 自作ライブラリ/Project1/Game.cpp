@@ -154,6 +154,8 @@ void Game::RoadAsset()
 		FBXManager::AddAnimationList("enemy", "walk", 0, 60);
 		FBXManager::AddAnimationList("enemy", "stand", 61, 61);
 
+		FBXManager::AddAnimationList("GamePlay_Player", "move", 0, 60);
+
 		break;
 	default:
 		loadAssetFinish = true;
