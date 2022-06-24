@@ -88,12 +88,11 @@ void Play::Initialize()
 
 	//ゲームオブジェクト生成
 	Field* field = new Field();
-	objectManager->Add(field);	
+	objectManager->Add(field, false);	
 
 	Player* player = new Player();
 	objectManager->Add(player);	
-
-	//StandardEnemy* testEnemy = new StandardEnemy({ 0,-5, -10 }, 10);
+	
 	StandardEnemy* testEnemy = new StandardEnemy();
 	objectManager->Add(testEnemy);	
 

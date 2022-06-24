@@ -8,9 +8,10 @@
 
 const float EnergyItem::RADIUS = 1.5f;
 
-EnergyItem::EnergyItem(const Vector3& arg_position)
+EnergyItem::EnergyItem(const Vector3& arg_position, const RankEnergyItem arg_rank)
 	:virtualityPlanePosition(arg_position),
-	 preVirtualityPlanePosition(arg_position)
+	 preVirtualityPlanePosition(arg_position),
+	 rank(arg_rank)
 {
 	Create(OBJLoader::GetModel("Saw"));
 
@@ -67,7 +68,21 @@ void EnergyItem::Appear()
 
 	if (appearTimer->IsTime())
 	{
-		color = { 0.7f, 0.7f, 1.0f, 1.0f };
+		switch (rank)
+		{
+		case RankEnergyItem::NORMAL:
+			color = { 0.7f, 0.7f, 1.0f, 1.0f };
+			break;
+		case RankEnergyItem::SILVER:
+			color = { 0.9f, 0.1f, 0.1f, 1.0f };
+			break;
+		case RankEnergyItem::GOLD:
+			color = { 0.9f, 0.9f, 0.1f, 1.0f };
+			break;
+		default:
+			color = { 0.7f, 0.7f, 1.0f, 1.0f };
+			break;
+		}
 	}
 }
 
@@ -96,7 +111,7 @@ void EnergyItem::StayInTheField()
 
 		//¡“–‚½‚Á‚Ä‚¢‚é‚©
 		float cross = Vector2::Cross(AO, normalAB);
-		if (fabsf(cross) > 0.01f)
+		if (fabsf(cross) > RADIUS * 2)
 		{
 			continue;
 		}
@@ -104,13 +119,15 @@ void EnergyItem::StayInTheField()
 		float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
 		if (multiDot <= 0.0f)
 		{
-			Dead();
+			//Dead();
+			virtualityPlanePosition = preVirtualityPlanePosition;
 			return;
 		}
 
-		if (Vector2::Length(AO) < 0.01f || Vector2::Length(BO) < 0.01f)
+		if (Vector2::Length(AO) < RADIUS * 2 || Vector2::Length(BO) < RADIUS * 2)
 		{
-			Dead();
+			//Dead();
+			virtualityPlanePosition = preVirtualityPlanePosition;
 			return;
 		}
 
@@ -123,7 +140,8 @@ void EnergyItem::StayInTheField()
 		if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
-			Dead();
+			//Dead();
+			virtualityPlanePosition = preVirtualityPlanePosition;
 			return;
 		}
 	}
@@ -193,4 +211,9 @@ float EnergyItem::GetRadius()
 bool EnergyItem::IsAppeared()
 {
 	return appearTimer->IsTime();
+}
+
+RankEnergyItem EnergyItem::GetRank() const
+{
+	return rank;
 }

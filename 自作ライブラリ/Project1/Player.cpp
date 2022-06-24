@@ -528,14 +528,16 @@ void Player::StayInTheField()
 		if (multiDot <= 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			StartStand();
+			//StartStand();
+			SuspendTackle();
 			break;
 		}
 
 		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			StartStand();
+			//StartStand();
+			SuspendTackle();
 			break;
 		}
 
@@ -549,7 +551,8 @@ void Player::StayInTheField()
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			StartStand();
+			//StartStand();
+			SuspendTackle();
 			break;
 		}
 	}
@@ -794,12 +797,29 @@ void Player::HitCheckItems()
 
 void Player::HitItem(EnergyItem* arg_item)
 {
+	switch (arg_item->GetRank())
+	{
+	case RankEnergyItem::NORMAL:
+		cutPower++;
+		break;
+	case RankEnergyItem::SILVER:
+		cutPower += 2;
+		break;
+	case RankEnergyItem::GOLD:
+		cutPower += 3;
+		break;
+	default:
+		cutPower++;
+		break;
+	}	
+
+	if (cutPower > 6)
+	{
+		cutPower = 6;
+	}
+
 	Audio::PlayWave("SE_GetTriangle");
 	arg_item->Dead();
-	if (cutPower < 6)
-	{
-		cutPower++;
-	}
 }
 
 void Player::HitPanelItem(PanelItem* arg_panelItem)
@@ -908,64 +928,70 @@ void Player::WithStand()
 		BGColor = 1;
 	}
 
-	
+	Object::SetColor({ 1,1,1,1 });
+	standingFlag = false;
+	fallFlag = true;
+	fallStartPos = virtualityPlanePosition;
+	fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+
+	Audio::StopWave("SE_SteppingOn");
 
 
-	if (inputStartCount <= 0)
-	{
-		//カメラのビュー行列の逆行列を計算
-		XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
-		const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-		const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
-		Vector2 stickDirection = {};
-		//スティックの向き
-		auto vec = Input::GetLStickDirection();
-		stickDirection.x = (cameraDirectionX * vec.x).x;
-		stickDirection.y = (cameraDirectionZ * vec.y).z;
-		stickDirection = Vector2::Normalize(stickDirection);
+	//if (inputStartCount <= 0)
+	//{
+	//	//カメラのビュー行列の逆行列を計算
+	//	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, camera->GetMatView());
+	//	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	//	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
+	//	Vector2 stickDirection = {};
+	//	//スティックの向き
+	//	auto vec = Input::GetLStickDirection();
+	//	stickDirection.x = (cameraDirectionX * vec.x).x;
+	//	stickDirection.y = (cameraDirectionZ * vec.y).z;
+	//	stickDirection = Vector2::Normalize(stickDirection);
 
-		float accuracy = 0;
+	//	float accuracy = 0;
 
-		Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preStandVec);
+	//	Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preStandVec);
 
-		accuracy = Vector2::Dot(stickDirection, correctVec);
+	//	accuracy = Vector2::Dot(stickDirection, correctVec);
 
-		if (accuracy <= 0)
-		{
-			accuracy = 0;
-		}
+	//	if (accuracy <= 0)
+	//	{
+	//		accuracy = 0;
+	//	}
 
-		if (accuracy >= 0.55f)
-		{
-			Vector3 moveDirection = preStandVec;
-			Object::SetColor({ 1,1,1,1 });
-			returningFieldFlag = true;
-			standingFlag = false;
-			returningStartPos = virtualityPlanePosition;
-			returningEndPos = virtualityPlanePosition + moveDirection * 3;
-			nextInputStartCount = nextInputStartCount + 30;
+	//	if (accuracy >= 0.55f)
+	//	{
+	//		Vector3 moveDirection = preStandVec;
+	//		Object::SetColor({ 1,1,1,1 });
+	//		returningFieldFlag = true;
+	//		standingFlag = false;
+	//		returningStartPos = virtualityPlanePosition;
+	//		returningEndPos = virtualityPlanePosition + moveDirection * 3;
+	//		nextInputStartCount = nextInputStartCount + 30;
 
-			Audio::StopWave("SE_SteppingOn");
+	//		Audio::StopWave("SE_SteppingOn");
 
-			return;
-		}
+	//		return;
+	//	}
 
-		standTime--;
-		if (standTime <= 0)
-		{
-			Object::SetColor({ 1,1,1,1 });
-			standingFlag = false;
-			fallFlag = true;
-			fallStartPos = virtualityPlanePosition;
-			fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
+	//	standTime--;
+	//	if (standTime <= 0)
+	//	{
+	//		Object::SetColor({ 1,1,1,1 });
+	//		standingFlag = false;
+	//		fallFlag = true;
+	//		fallStartPos = virtualityPlanePosition;
+	//		fallEndPos = virtualityPlanePosition + (-preStandVec * 4);
 
-			Audio::StopWave("SE_SteppingOn");
-		}
-	}
-	else
-	{
-		inputStartCount--;
-	}
+	//		Audio::StopWave("SE_SteppingOn");
+	//	}
+	//}
+	//else
+	//{
+	//	inputStartCount--;
+	//}
 
 	
 }

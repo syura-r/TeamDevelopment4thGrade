@@ -29,7 +29,7 @@ UnableThroughEdge::~UnableThroughEdge()
 
 void UnableThroughEdge::Initialize()
 {
-	scale = Vector3(Field::GetRadius(), 6, Field::GetRadius());
+	scale = Vector3(50.0f, 6, 50.0f);
 	color = { 0.3f, 0.3f, 0.3f, 0.3f };	
 	Object::Update();
 }

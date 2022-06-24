@@ -12,6 +12,7 @@ class PanelItem;
 class UnableThroughBlock;
 class UnableThroughEdge;
 class CircularSaw;
+class BaseGameActor;
 
 class ActorManager
 {
@@ -22,7 +23,7 @@ public:
 	void Initialize();
 
 	void AddObject(std::string arg_name, Object* arg_object);
-	void DeleteObject(Object* arg_object);	
+	void DeleteObject(Object* arg_object);
 
 	Player* GetPlayer();	
 	std::vector<Field*>& GetFields();

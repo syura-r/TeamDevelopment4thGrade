@@ -64,6 +64,7 @@ void PanelItem::Bounce()
 	bouncePower -= 0.03f;
 	virtualityPlanePosition.y += bouncePower;
 	virtualityPlanePosition += velocity * BOUNCE_SPEED;
+	StayInTheField();
 
 	if (IsEndBounce())
 	{
@@ -100,11 +101,14 @@ void PanelItem::StayInTheField()
 		float cross = Vector2::Cross(AO, normalAB);
 		if (cross < 0)
 		{
-			Dead();
+			//Dead();
+			float posY = virtualityPlanePosition.y;
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			virtualityPlanePosition.y = posY;
 			return;
 		}
 
-		if (fabsf(cross) > 0.01f)
+		if (fabsf(cross) > RADIUS * 2)
 		{
 			continue;
 		}
@@ -112,13 +116,19 @@ void PanelItem::StayInTheField()
 		float multiDot = Vector2::Dot(AO, AB) * Vector2::Dot(BO, AB);
 		if (multiDot <= 0.0f)
 		{
-			Dead();
+			//Dead();
+			float posY = virtualityPlanePosition.y;
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			virtualityPlanePosition.y = posY;
 			return;
 		}
 
-		if (Vector2::Length(AO) < 0.01f || Vector2::Length(BO) < 0.01f)
+		if (Vector2::Length(AO) < RADIUS * 2 || Vector2::Length(BO) < RADIUS * 2)
 		{
-			Dead();
+			//Dead();
+			float posY = virtualityPlanePosition.y;
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			virtualityPlanePosition.y = posY;
 			return;
 		}
 
@@ -131,7 +141,10 @@ void PanelItem::StayInTheField()
 		if (LocusUtility::Cross3p(start, end, pos) * LocusUtility::Cross3p(start, end, pre) < 0.0f &&
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
-			Dead();
+			//Dead();
+			float posY = virtualityPlanePosition.y;
+			virtualityPlanePosition = preVirtualityPlanePosition;
+			virtualityPlanePosition.y = posY;
 			return;
 		}
 	}

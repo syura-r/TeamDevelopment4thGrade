@@ -17,7 +17,8 @@ FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_dir
 	 dir(arg_direction),
 	 isActive(true),
 	 isBlockade(false),
-	 cutterPos(Vector3())
+	 cutterPos(Vector3()),
+	 isBonus(false)
 {
 	SetPoints();
 	position = virtualityPlanePosition;
@@ -39,6 +40,9 @@ void FieldPiece::Initialize()
 		rotation.y = 180;
 	}
 	scale = Vector3(SIZE, 1, SIZE);
+	isActive = true;
+	isBlockade = false;
+	isBonus = false;
 	Object::Update();
 }
 
@@ -181,7 +185,7 @@ PieceDirection FieldPiece::GetPieceDirection() const
 	return dir;
 }
 
-bool FieldPiece::IsActive()
+bool FieldPiece::IsActive()const
 {
 	return isActive;
 }
@@ -191,7 +195,7 @@ void FieldPiece::ChangeIsActive(const bool arg_isActive)
 	isActive = arg_isActive;
 }
 
-bool FieldPiece::IsBlockade()
+bool FieldPiece::IsBlockade()const
 {
 	return isBlockade;
 }
@@ -199,6 +203,16 @@ bool FieldPiece::IsBlockade()
 void FieldPiece::ChangeIsBlockade(const bool arg_isBlockade)
 {
 	isBlockade = arg_isBlockade;
+}
+
+bool FieldPiece::IsBonus() const
+{
+	return isBonus;
+}
+
+void FieldPiece::ChangeIsBonus(const bool arg_isBonus)
+{
+	isBonus = arg_isBonus;
 }
 
 std::vector<Vector2>& FieldPiece::GetPoints()
@@ -232,7 +246,14 @@ void FieldPiece::SetPoints()
 
 void FieldPiece::ChangeColorForRidden()
 {
-	color = { 0.3f, 0.3f, 0.3f, 1.0f };
+	color = { 0.25f, 0.58f, 1.0f, 1.0f };
+
+	if (isBonus)
+	{
+		color = { 0.9f, 0.9f, 0.1f, 1.0f };
+		return;
+	}
+
 	ActorManager* aManager = ActorManager::GetInstance();
 	Field* field = aManager->GetFields()[0];
 

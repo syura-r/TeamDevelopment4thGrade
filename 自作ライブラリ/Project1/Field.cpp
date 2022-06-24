@@ -12,9 +12,11 @@
 #include "Easing.h"
 #include "UnableThroughBlock.h"
 #include "UnableThroughEdge.h"
+#include "ItemEmitter.h"
+#include "EnergyItem.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
-const float Field::RADIUS = 50.0f;
+const float Field::RADIUS = 45.0f;
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
 
 Field::Field()
@@ -27,7 +29,8 @@ Field::Field()
 	 fallingBlockCount(0),
 	 fallingBlockCountMax(0),
 	 fallIntervalTimer(new Timer(INTERVAL_CREATE)),
-	 lastTimeEdge(nullptr)
+	 lastTimeEdge(nullptr),
+	 bonusPanelCount(0)
 {
 	if (edges.empty())
 	{
@@ -36,16 +39,9 @@ Field::Field()
 
 	Create(OBJLoader::GetModel("fieldEdge"));
 	position = { 0,-5,0 };
-	scale = { RADIUS,1,RADIUS };
-	color = { 0.1f ,0.1f, 0.1f,1 };
-	Object::Update();
-
-	/*collider = new BoxCollider({ 0.0f, 0.0f, 0.0f, 0.0f }, Vector3(90.0f, 1.0f, 90.0f));
-	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
-	collider->SetMove(true);
-	collider->SetObject(this);
-	collider->Update();
-	CollisionManager::GetInstance()->AddCollider(collider);*/
+	scale = { 50.0f, 5, 50.0f };
+	color = { 0.1f , 0.1f, 0.1f, 0.3f };
+	Object::Update();	
 
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject("Field", this);
@@ -54,6 +50,7 @@ Field::Field()
 	gottenPieces.clear();
 	CreatePieces();
 	infos.clear();
+	setBonusPanelTimer = new Timer(setBonusPanelInterval);
 
 	Initialize();
 }
@@ -64,6 +61,7 @@ Field::~Field()
 	pieces.clear();
 	delete fallIntervalTimer;
 	blocks.clear();
+	delete setBonusPanelTimer;
 }
 
 void Field::Initialize()
@@ -78,6 +76,9 @@ void Field::Initialize()
 	fallingBlockCountMax = 0;
 	fallIntervalTimer->Reset();
 	lastTimeEdge = nullptr;
+	setBonusPanelTimer->Reset();
+	bonusPanelCount = 0;
+	SetBonusPanel();
 }
 
 void Field::Update()
@@ -99,14 +100,16 @@ void Field::Update()
 		FallingBlock();
 	}
 
-	CalcTilt();
-	SetRotation(angleTilt);		
-	/*DecideAllRidingPiece();
-	DecideAllCuttingStartPos();
-	DecideAllCuttingAngle();*/
+	setBonusPanelTimer->Update();
+	if (setBonusPanelTimer->IsTime())
+	{
+		SetBonusPanel();
+	}
 
-	Object::Update();
-	//collider->Update();
+	CalcTilt();
+	SetRotation(angleTilt);	
+
+	Object::Update();	
 }
 
 void Field::DrawReady()
@@ -123,7 +126,7 @@ void Field::DrawReady()
 
 void Field::Draw()
 {
-	Object::Draw();
+	//Object::Draw();
 }
 
 void Field::CalcTilt()
@@ -131,7 +134,7 @@ void Field::CalcTilt()
 	tiltDirection = Vector2();
 
 	Player* player = ActorManager::GetInstance()->GetPlayer();
-	if (player && !player->IsFall())
+	if (player/* && !player->IsFall()*/)
 	{
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * player->GetWeight() * GetMultiplyingFactor(Vector3::Length(player->GetVirtualityPlanePosition()));
@@ -141,10 +144,10 @@ void Field::CalcTilt()
 	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();
 	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
 	{
-		if ((*itr)->IsFall())
+		/*if ((*itr)->IsFall())
 		{
 			continue;
-		}
+		}*/
 
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * (*itr)->GetWeight() * GetMultiplyingFactor(Vector3::Length((*itr)->GetVirtualityPlanePosition()));
@@ -506,6 +509,36 @@ void Field::FallingBlock()
 	}
 }
 
+void Field::SetBonusPanel()
+{
+	const int randSetNum = std::rand() % 10 / 3 + 7;
+
+	if (bonusPanelCount > 0)
+	{
+		for (auto vec : pieces)
+		{
+			for (auto p : vec)
+			{
+				p->ChangeIsBonus(false);
+			}
+		}
+	}
+
+	for (int i = 0; i < randSetNum; i++)
+	{
+		int yRand, xRand;
+		do
+		{
+			yRand = std::rand() % (PIECE_LAYER_NUM * 2);
+			xRand = std::rand() % pieces[yRand].size();
+		} while (pieces[yRand][xRand]->IsBonus());
+		pieces[yRand][xRand]->ChangeIsBonus(true);
+	}
+
+	setBonusPanelTimer->Reset();
+	bonusPanelCount = randSetNum;
+}
+
 void Field::SetEdges()
 {
 	edges.clear();
@@ -634,6 +667,8 @@ void Field::ResetInfluences()
 		for (auto p : vec)
 		{
 			p->ChangeIsActive(true);
+			p->ChangeIsBlockade(false);
+			p->ChangeIsBonus(false);
 		}
 	}
 	gottenPieces.clear();
@@ -646,6 +681,7 @@ int Field::CutPanel(PanelCutLocus* arg_locus)
 	int returnVal = 0;
 	Player* player = ActorManager::GetInstance()->GetPlayer();
 	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
+	int bonusCount = 0;
 
 	for (int i = 0; i < vecPos.size(); i++)
 	{
@@ -677,8 +713,13 @@ int Field::CutPanel(PanelCutLocus* arg_locus)
 			if (cross01 > 0 && cross12 > 0 && cross20 > 0)
 			{
 				if (pieces[columnNum][j]->IsActive())
-				{
-					//pieces[columnNum][j]->ChangeIsActive(false);
+				{					
+					if (pieces[columnNum][j]->IsBonus())
+					{
+						bonusCount++;
+						bonusPanelCount--;
+						pieces[columnNum][j]->ChangeIsBonus(false);
+					}
 					pieces[columnNum][j]->CutOneself(arg_locus->GetParentObject());
 					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
@@ -689,8 +730,13 @@ int Field::CutPanel(PanelCutLocus* arg_locus)
 			else if (cross01 < 0 && cross12 < 0 && cross20 < 0)
 			{
 				if (pieces[columnNum][j]->IsActive())
-				{
-					//pieces[columnNum][j]->ChangeIsActive(false);
+				{	
+					if (pieces[columnNum][j]->IsBonus())
+					{
+						bonusCount++;
+						bonusPanelCount--;
+						pieces[columnNum][j]->ChangeIsBonus(false);
+					}
 					pieces[columnNum][j]->CutOneself(arg_locus->GetParentObject());
 					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
@@ -699,6 +745,22 @@ int Field::CutPanel(PanelCutLocus* arg_locus)
 				break;
 			}
 		}
+	}
+
+	if (bonusCount == 1)
+	{
+		ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
+		itemEmitter->EmitEnergyItem(itemEmitter->GetEnergyItemEmitPosition(), RankEnergyItem::SILVER);
+	}
+	else if (bonusCount >= 2)
+	{
+		ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
+		itemEmitter->EmitEnergyItem(itemEmitter->GetEnergyItemEmitPosition(), RankEnergyItem::GOLD);
+	}
+
+	if (bonusPanelCount <= 0)
+	{
+		SetBonusPanel();
 	}
 
 	return returnVal;

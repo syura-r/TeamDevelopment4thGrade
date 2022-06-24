@@ -90,6 +90,11 @@ private:
 	UnableThroughEdge* lastTimeEdge;
 	std::vector<UnableThroughBlock*> blocks;
 
+	//ボーマスパネル再設定間隔
+	Timer* setBonusPanelTimer;
+	const unsigned int setBonusPanelInterval = 10 * 60;
+	int bonusPanelCount;
+
 	//端点の用意
 	void SetEdges();
 	//FieldPiece生成
@@ -104,6 +109,8 @@ private:
 	void DecideRidingPiece(Object* arg_obj, const Vector3& arg_pos);
 	void DecideCuttingStartPos(Object* arg_obj, const Vector3& arg_pos, const Vector3& arg_dir);
 	void DecideCuttingAngle(Object* arg_obj);
-	//
+	//タイムアップ時ブロックを落とす
 	void FallingBlock();
+	//ボーナスパネルの設定
+	void SetBonusPanel();
 };
