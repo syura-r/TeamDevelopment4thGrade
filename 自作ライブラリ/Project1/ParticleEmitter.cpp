@@ -4,11 +4,17 @@
 #include<random>
 
 ParticleManager* ParticleEmitter::particleManager = nullptr;
+ObjectManager* ParticleEmitter::p_objectManager = nullptr;
 
 void ParticleEmitter::Initialize()
 {
     particleManager = ParticleManager::GetInstance();
     particleManager->Initialize();
+}
+
+void ParticleEmitter::SetObjectManager(ObjectManager* arg_objManager)
+{
+    p_objectManager = arg_objManager;
 }
 
 void ParticleEmitter::CutEffect(const Vector3& arg_pos, const Vector3& arg_vec)
@@ -190,9 +196,9 @@ void ParticleEmitter::ShockEffect(const Vector3& arg_pos, const Vector3& arg_col
     }
 }
 
-void ParticleEmitter::PieceGetEffect()
+void ParticleEmitter::PieceGetEffect(const Vector3& arg_position, const Vector3& arg_scale, const Vector3& arg_rotation, const DirectX::XMFLOAT4& arg_color, Object* arg_getActorObj)
 {
-    //particleManager->AddModelParticle(new ModelParticle());
+    p_objectManager->Add(new PieceParticle(arg_position, arg_scale, arg_rotation, arg_color, arg_getActorObj));
 }
 
 float ParticleEmitter::GetRandom(float arg_min, float arg_max)

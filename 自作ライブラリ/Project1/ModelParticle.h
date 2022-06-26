@@ -2,16 +2,24 @@
 #include "Vector.h"
 #include "Object.h"
 
-//コンピュートシェーダを使用しないFBXなどのモデルを用いたパーティクル用基底クラス
-//多用厳禁
-class ModelParticle : public Object
+//フィールドピース用パーティクル
+class PieceParticle : public Object
 {
 public:
-    ModelParticle();
-    ~ModelParticle();
+    PieceParticle(const Vector3& arg_position, const Vector3& arg_scale, const Vector3& arg_rotation, const DirectX::XMFLOAT4& arg_color, Object* arg_getActorObj);
+    ~PieceParticle();
     void Initialize() override;
     void Update() override;
     void Draw() override;
 
-protected:
+private:
+    float GetRandom(float arg_min, float arg_max);
+
+    const int MOVE_TIMER = 25;
+
+    int timer;
+    Object* getActorObj;
+    Vector3 addRotation;
+    Vector3 addScale;
+    float speed;
 };

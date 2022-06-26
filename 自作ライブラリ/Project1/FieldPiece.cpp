@@ -3,6 +3,7 @@
 #include "LocusDef.h"
 #include "OBJLoader.h"
 #include "ActorManager.h"
+#include "ParticleEmitter.h"
 
 const float FieldPiece::SIZE = 7.5f / 0.866f / 2.0f;
 const float FieldPiece::SIDEWAYS_LENGTH = 0.866f * SIZE;
@@ -139,6 +140,7 @@ void FieldPiece::CutOneself(Object* arg_obj)
 {
 	isActive = false;
 	cutterPos = arg_obj->GetPosition();
+	ParticleEmitter::PieceGetEffect(position, scale, rotation, color, arg_obj);
 }
 
 float FieldPiece::GetSize()
