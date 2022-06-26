@@ -1,6 +1,7 @@
 #pragma once
 #include "Timer.h"
 #include "NumberSprite.h"
+#include "Vector.h"
 
 class TimeLimit
 {
@@ -27,5 +28,7 @@ private:
 	Sprite* colon_sprite;
 	//•b•\Ž¦
 	NumberSprite* seconds_sprite;
+
+	Vector4 color;
 };
 

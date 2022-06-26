@@ -24,6 +24,7 @@ TimeLimit::~TimeLimit()
 void TimeLimit::Initialize()
 {
 	timer->SetLimit(limit, true);
+	color = { 1,1,1,1 };
 }
 
 void TimeLimit::Update()
@@ -36,6 +37,13 @@ void TimeLimit::Update()
 	seconds = nowTime % 60;
 
 	timer->Update();
+
+	//終了間際に色を変える
+	const int redTime = 10;
+	if (nowTime <= redTime)
+	{
+		color = { 1,0,0,1 };
+	}
 }
 
 void TimeLimit::Draw()
@@ -50,11 +58,11 @@ void TimeLimit::Draw()
 	//分の中心座標
 	Vector2 position = { windowSize.x - (numberTexSize.x * 3) - spaceSize.x, (numberTexSize.y / 2) + spaceSize.y };
 
-	minute_sprite->Draw(1, "GamePlay_UI_Number", position);
+	minute_sprite->Draw(1, "GamePlay_UI_Number", position, { 1,1 }, color);
 
 	position.x += (numberTexSize.x / 4) * 3;//コロンの中心座標に
-	colon_sprite->DrawSprite("GamePlay_UI_Colon", position);
+	colon_sprite->DrawSprite("GamePlay_UI_Colon", position, 0, { 1,1 }, color);
 
 	position.x += (numberTexSize.x / 4) * 5;//秒の中心座標に
-	seconds_sprite->Draw(2, "GamePlay_UI_Number", position);
+	seconds_sprite->Draw(2, "GamePlay_UI_Number", position, { 1,1 }, color);
 }
