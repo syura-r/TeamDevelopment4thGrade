@@ -21,6 +21,8 @@ public:
 	{
 		Sprite3D::camera = camera;
 	}
+	//親スプライトをセット
+	void SetParent(Sprite3D* parent) { this->parent = parent; }
 protected:
 	void CreateSprite3D();
 	static Camera* camera;
@@ -66,4 +68,6 @@ protected:
 	bool rect = false;//切り出しをしているかどうか
 	XMFLOAT2 rectTexSize;
 
+	//親スプライト
+	Sprite3D* parent = nullptr;
 };

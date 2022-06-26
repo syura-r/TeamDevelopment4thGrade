@@ -20,6 +20,7 @@ PanelCountSprite3D::PanelCountSprite3D(Vector3& parentPosition, const std::strin
 	for (int i = 0; i < digit; i++)
 	{
 		num_sp3D[i] = new Sprite3D();
+		num_sp3D[i]->SetParent(icon_sp3D);
 	}
 }
 
@@ -59,23 +60,28 @@ void PanelCountSprite3D::Draw()
 	const Vector2 iconTexSize = { 432, 258 };
 	const Vector2 numTexSize = { 47, 86 };
 	//拡大率
+	const Vector2 inSprite3dScale = { 0.1f, 0.1f };//Sprite3D内部で行われている分
 	const Vector2 iconTexScale = { 0.1f, 0.1f };
-	const Vector2 numTexScale = { 0.3f, 0.3f };
+	const Vector2 numTexScale = { 0.008f, 0.013f };
 
-	Vector3 drawPosition = position;
+	//三角とバツ印部分
+	icon_sp3D->DrawSprite(iconTexName, position, 0.0f, iconTexScale);
 
-	icon_sp3D->DrawSprite(iconTexName, drawPosition, 0.0f, iconTexScale);
-	drawPosition.x += (iconTexSize.x * iconTexScale.x / 10) / 2.0f;
-
+	//数字部分
 	for (int i = 0; i < std::to_string((int)panelNum).size(); i++)
 	{
-		drawPosition.x += (numTexSize.x * numTexScale.x / 10) / 2.0f;
+		const float engineScale = 0.1f;
+
+		Vector3 drawPosition = { 0,0,0 };
+		//icon_sp3Dのアンカーポイント分ずらす
+		const float iconHalfSizeX = (iconTexSize.x * iconTexScale.x) / 2.0f / 35.0f * engineScale;
+		drawPosition.x += iconHalfSizeX;
+		//num_sp3Dのアンカーポイント分ずらす
+		const float numHarfSizeX = (numTexSize.x * numTexScale.x) / 2.0f * engineScale;
+		drawPosition.x += numHarfSizeX * ((2 * i) + 1);
 
 		num_sp3D[i]->SpriteSetTextureRect("GamePlay_UI_Number", numTexSize.x * drawNum[i], 0, numTexSize.x, numTexSize.y);
 		num_sp3D[i]->DrawSprite("GamePlay_UI_Number", drawPosition, 0.0f, numTexScale);
-
-		const float spaceX = 0.5f;
-		drawPosition.x += spaceX;
 	}
 }
 

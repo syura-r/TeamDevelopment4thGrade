@@ -150,8 +150,16 @@ void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, cons
 	spriteMatWorld *= matScale;
 	spriteMatWorld *= matRot;
 	const XMMATRIX& matBillboard = camera->GetMatBillboard();
-	spriteMatWorld *= matBillboard;
+	if (parent == nullptr) {
+		spriteMatWorld *= matBillboard;
+	}
 	spriteMatWorld *= matTrans;
+
+	// 親オブジェクトがあれば
+	if (parent != nullptr) {
+		// 親オブジェクトのワールド行列を掛ける
+		spriteMatWorld *= parent->spriteMatWorld;
+	}
 
 	const XMMATRIX& matViewProjection = camera->GetMatViewProjection();
 	const XMFLOAT3& cameraPos = camera->GetEye();
