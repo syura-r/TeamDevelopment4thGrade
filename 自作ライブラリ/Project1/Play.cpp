@@ -114,11 +114,6 @@ void Play::Initialize()
 
 void Play::Update()
 {
-	//ポーズのオンオフ
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_START))
-	{
-		pause->SetUsePause(!pause->GetUsePause());
-	}
 	pause->Update();
 	//やり直す
 	if (pause->GetRestart())
@@ -131,10 +126,10 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		next = Title;
-		ShutDown();		
+		ShutDown();
 		return;
 	}
-	if (pause->GetUsePause())
+	if (pause->GetActivePause())
 		return;
 
 
