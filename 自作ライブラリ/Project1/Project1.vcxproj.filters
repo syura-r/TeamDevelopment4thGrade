@@ -417,6 +417,9 @@
     <ClCompile Include="BaseGameActor.cpp">
       <Filter>ソース ファイル\GameObject\GameActor</Filter>
     </ClCompile>
+    <ClCompile Include="ModelParticle.cpp">
+      <Filter>ソース ファイル\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -751,6 +754,9 @@
     </ClInclude>
     <ClInclude Include="ObjectRegistType.h">
       <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelParticle.h">
+      <Filter>ヘッダー ファイル\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

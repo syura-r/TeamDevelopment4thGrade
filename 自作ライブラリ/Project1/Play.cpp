@@ -60,6 +60,8 @@ Play::Play()
 	stadium = new Stadium();
 
 	//test = new Sprite3D();
+
+	ParticleEmitter::SetObjectManager(objectManager);
 }
 
 
