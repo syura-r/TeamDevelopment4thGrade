@@ -171,6 +171,12 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActionStateBlown.cpp" />
+    <ClCompile Include="ActionStateCut.cpp" />
+    <ClCompile Include="ActionStateFall.cpp" />
+    <ClCompile Include="ActionStateMove.cpp" />
+    <ClCompile Include="ActionStateTackle.cpp" />
+    <ClCompile Include="ActionStateWithstand.cpp" />
     <ClCompile Include="ActorManager.cpp" />
     <ClCompile Include="Alpha.cpp" />
     <ClCompile Include="Audio.cpp" />
@@ -273,6 +279,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActionStateBlown.h" />
+    <ClInclude Include="ActionStateCut.h" />
+    <ClInclude Include="ActionStateFall.h" />
+    <ClInclude Include="ActionStateMove.h" />
+    <ClInclude Include="ActionStateTackle.h" />
+    <ClInclude Include="ActionStateWithstand.h" />
     <ClInclude Include="ActorManager.h" />
     <ClInclude Include="Alpha.h" />
     <ClInclude Include="Audio.h" />
@@ -311,7 +323,7 @@
     <ClInclude Include="GameSettingParam.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />
-    <ClInclude Include="IState.h" />
+    <ClInclude Include="IActionState.h" />
     <ClInclude Include="ItemEmitter.h" />
     <ClInclude Include="LevelEditor.h" />
     <ClInclude Include="LightCamera.h" />

@@ -14,7 +14,7 @@
 #include "ActorManager.h"
 #include "ItemEmitter.h"
 #include "ScoreManager.h"
-#include "IState.h"
+#include "IActionState.h"
 #include "Easing.h"
 
 ComPtr<ID3D12Resource> BaseGameActor::constCameraBuff = nullptr;
