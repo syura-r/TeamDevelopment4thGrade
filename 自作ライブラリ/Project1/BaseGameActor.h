@@ -12,8 +12,8 @@
 #include "NumberSprite.h"
 #include "PanelCountUI.h"
 #include "PanelCountSprite3D.h"
-#include "IState.h"
 
+class IState;
 class EnergyItem;
 class PanelItem;
 class PanelCutLocus;
@@ -30,9 +30,9 @@ public:
 	virtual void Draw() override;
 	virtual void DrawReady() override;
 	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }
-	static void InitCamera();
+	static void InitCamera(const Vector3& arg_pos);
 	//カメラの制御
-	static void MoveCamera();
+	static void MoveCamera(Vector3 arg_dir);
 
 	//---全体---
 	//フィールドから落ちない処理
@@ -40,6 +40,7 @@ public:
 	virtual void StayOnRemainPanels();
 	//保持パネルばらまき
 	virtual void DischargeGottenPanel(BaseGameActor* arg_actor);
+	virtual void UpdatePos();
 
 	//---Move---
 	//移動処理
@@ -141,7 +142,7 @@ protected:
 
 	//---全体---
 	ObjectManager* pObjectManager;
-	FBXModel* myModel;
+	FBXModel* myModel;//-//
 	//初期位置
 	const Vector3 START_POS;
 	const float RADIUS;
@@ -155,13 +156,13 @@ protected:
 	//現在向いてる方向
 	Vector3 direction;
 	//パネル所持数表示	
-	PanelCountSprite3D* panelCountSprite3D;
+	PanelCountSprite3D* panelCountSprite3D;//-//
 	//上から降ってくるブロックなどに押しつぶされたかどうか
 	bool isCrushed;
 	//ゲームエンド
 	bool isEndGame;
 	//行動状態
-	IState* actionState;
+	IState* actionState;//まだ
 	//傾きで滑る処理
 	virtual void SlidingDown();
 	//イージングでの移動
@@ -172,7 +173,7 @@ protected:
 	float speed;
 	const float WALK_SPEED;
 	const float DRAWING_SPEED;
-	const float BLOW_SPEED;
+	const float BLOWN_SPEED;
 	//回転速度
 	const float ROTATE_SPEED;
 	//移動方向の決定
@@ -190,13 +191,13 @@ protected:
 
 	//---Blown---	
 	// 吹っ飛び時間
-	int blowTime;
+	int blownTime;
 
 	//---Withstand---	
 	//踏ん張り中の猶予
-	int standTime;
+	int withstandTime;
 	//踏ん張りになる前のベクトル
-	Vector3 preStandVec;
+	Vector3 preWithstandVec;
 	//踏ん張り中の色を変化させるための値
 	float BGColor;
 	//踏ん張り復帰中
@@ -210,8 +211,7 @@ protected:
 	int inputStartCount;
 	//基本60
 	int nextInputStartCount;
-	//めんどい
-	int count;
+	int notWithstandCount;
 	//踏ん張り中の処理
 	virtual void Withstand();
 
@@ -227,7 +227,7 @@ protected:
 	Vector3 fallStartPos;
 	Vector3 fallEndPos;
 	//サウンド用フラグ
-	bool fallSoundFlag;
+	bool isPlayedFallSound;
 	//場外に落下
 	virtual void Fall();
 };

@@ -112,11 +112,11 @@ void StandardEnemy::Update()
 	ConfirmPlayerPos();
 	ConfirmItemPos();
 
-	//ˆÚ“®ˆ—
-	Move();
+	////ˆÚ“®ˆ—
+	//Move();
 
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	CuttingInfo* info = field->GetCuttingInfo(this);
+	//Field* field = ActorManager::GetInstance()->GetFields()[0];
+	//CuttingInfo* info = field->GetCuttingInfo(this);
 	
 	if (fallFlag)
 	{

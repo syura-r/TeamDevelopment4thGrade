@@ -1,10 +1,11 @@
 #pragma once
+#include "BaseGameActor.h"
 
 class IState
 {
 public:
-	virtual IState* Update(BaseGameActor* arg_actor) = 0;
+	virtual IState* Update(BaseGameActor* arg_actor) = 0;	
 
-private:
-	friend class BaseGameActor;		
+protected:
+	friend class BaseGameActor;
 };
