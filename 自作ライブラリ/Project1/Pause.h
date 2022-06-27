@@ -12,14 +12,22 @@ public:
 	void Update();
 	void Draw();
 
-	void SetUsePause(const bool& useFlag) { this->useFlag = useFlag; }
-	bool GetUsePause() { return useFlag; }
+	bool GetActivePause() { return activeFlag; }
 
 	bool GetRestart() { return flag_restart; }
 	bool GetToTitle() { return flag_toTitle; }
 
 private:
-	bool useFlag = false;
+	//選択肢を選ぶ処理
+	void Select();
+	//決定ボタンを押した後の処理
+	void Decision();
+
+	//描画や更新処理を行うか
+	bool activeFlag = false;
+	//
+	static bool fadeFlag;
+
 
 	enum SelectState
 	{
@@ -31,22 +39,43 @@ private:
 	//選択肢の個数
 	const int selectMax = 3;
 
+	//X座標のずらす基準
+	static const int positionStepMax = 3;
+	static float positions_X[positionStepMax];
+
 	Sprite* sp_base = nullptr;
 	Vector2 pos_base = {};
 
+	//選択肢1つに必要な変数
+	struct SelectSprite
+	{
+		SelectSprite();
+		~SelectSprite();
+		void Initialize(const std::string& texName, const float posY);
+		void Update();
+		void Draw();
+
+		//動き出す前準備
+		void PreMoveSetting();
+
+		Sprite* sprite = nullptr;
+		std::string texName = "";
+		Vector2 pos = {};
+		Vector2 prevPos = {};
+		int step = 0;
+		int easeTime = 0;
+	};
+
+
 	//ゲームにもどる
-	Sprite* sp_toGame = nullptr;
-	Vector2 pos_toGame = {};
+	SelectSprite* toGame = nullptr;
 
 	//やり直す
-	Sprite* sp_restart = nullptr;
-	Vector2 pos_restart = {};
+	SelectSprite* restart = nullptr;
 	bool flag_restart = false;
 
 	//タイトルにもどる
-	Sprite* sp_toTitle = nullptr;
-	Vector2 pos_toTitle = {};
+	SelectSprite* toTitle = nullptr;
 	bool flag_toTitle = false;
 
-	//Config* sp_config = nullptr;
 };
