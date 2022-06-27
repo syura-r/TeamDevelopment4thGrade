@@ -1004,8 +1004,8 @@ void Player::Tackle()
 	Vector3 moveDirection = {};
 	//スティックの向き
 	auto vec = Input::GetLStickDirection();
-	stickDirection.x = (cameraDirectionX * vec.x).x;
-	stickDirection.y = (cameraDirectionZ * vec.y).z;
+	stickDirection.x = vec.x;
+	stickDirection.y = vec.y;
 	stickDirection = Vector2::Normalize(stickDirection);
 
 	tackleStartPos = virtualityPlanePosition;
