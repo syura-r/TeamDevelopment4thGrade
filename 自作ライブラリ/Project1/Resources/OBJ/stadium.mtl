@@ -1,7 +1,7 @@
 # Blender MTL File: 'None'
-# Material Count: 9
+# Material Count: 8
 
-newmtl blinn1SG
+newmtl blinn1SG.001
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.000000 0.000000
@@ -12,7 +12,7 @@ d 1.000000
 illum 2
 map_Kd screen.png
 
-newmtl blinn2SG
+newmtl blinn2SG.001
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.000000 0.000000
@@ -23,7 +23,7 @@ d 1.000000
 illum 2
 map_Kd gray.png
 
-newmtl initialShadingGroup
+newmtl initialShadingGroup.001
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.000000 0.000000
@@ -32,9 +32,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-map_Kd gray.png
+map_Kd blue.png
 
-newmtl lambert2SG
+newmtl lambert2SG.001
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.000000 0.000000
@@ -45,7 +45,7 @@ d 1.000000
 illum 1
 map_Kd stadiumMap.png
 
-newmtl lambert3SG
+newmtl lambert3SG.001
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.000000 0.000000
@@ -56,18 +56,7 @@ d 1.000000
 illum 1
 map_Kd deepBlue.png
 
-newmtl lambert4SG
-Ns 0.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.000000 0.000000 0.000000
-Ks 0.000000 0.000000 0.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 1
-map_Kd cyan.png
-
-newmtl lambert5SG
+newmtl lambert5SG.001
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.000000 0.000000
@@ -78,18 +67,7 @@ d 1.000000
 illum 1
 map_Kd deepBlue.png
 
-newmtl lambert6SG
-Ns 0.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.000000 0.000000 0.000000
-Ks 0.000000 0.000000 0.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 1
-map_Kd ochre.png
-
-newmtl lambert7SG
+newmtl lambert7SG.001
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.000000 0.000000
@@ -99,3 +77,14 @@ Ni 1.000000
 d 1.000000
 illum 1
 map_Kd gray.png
+
+newmtl lambert8SG
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd kaidan.png

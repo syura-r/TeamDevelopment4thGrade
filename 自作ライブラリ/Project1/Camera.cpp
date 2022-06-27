@@ -1,8 +1,8 @@
 #include "Camera.h"
 
-Camera::Camera()
+Camera::Camera(const Vector2& windowSize)
 {
-	float aspectRatio = (float)1920 / 1080;
+	float aspectRatio = (float)windowSize.x / windowSize.y;
 
 	eye = XMFLOAT3(0, 0, -10);
 	target = XMFLOAT3(0, 0, 0);
@@ -17,9 +17,9 @@ Camera::Camera()
 	UpdateViewMatrix();
 }
 
-Camera::Camera(const XMFLOAT3& eye,const XMFLOAT3& target,const XMFLOAT3& up,float arg_near , float arg_far):eye(eye),target(target),up(up),nearDist(arg_near),farDist(arg_far)
+Camera::Camera(const XMFLOAT3& eye,const XMFLOAT3& target,const XMFLOAT3& up,float arg_near , float arg_far, const Vector2& windowSize ):eye(eye),target(target),up(up),nearDist(arg_near),farDist(arg_far)
 {
-	float aspectRatio = (float)1920 / 1080;
+	float aspectRatio = (float)windowSize.x / windowSize.y;
 	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
 	matProjection = XMMatrixPerspectiveFovLH(
 		XMConvertToRadians(60.0f),

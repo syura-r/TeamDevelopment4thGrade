@@ -10,7 +10,7 @@ class TextureResource
 {
 public:
 	TextureResource(const std::string& name, const bool noDepth);
-	TextureResource(const std::string& name, const bool noDepth,const bool changeTex);
+	TextureResource(const std::string& name, const bool noDepth,const bool changeTex, const Vector2& size);
 	TextureResource(const std::string& name, const Vector2& size = { 1920,1080 }, const DXGI_FORMAT resourceFormat = DXGI_FORMAT_R8G8B8A8_UNORM, const DirectX::XMFLOAT4& arg_clearColor = { 0,0,0,0 }, const bool noDepth = false);
 
 	void PostDraw(const bool renderTargetReset = true);

@@ -37,6 +37,7 @@ public://Ã“Iƒƒ“ƒoŠÖ”
 	static void SetLightGroup(LightGroup* lightGroup) { Object3D::lightGroup = lightGroup; }
 	static void SetDrawShadow(const bool flag) { drawShadow = flag; }
 	static void SetScreenDraw(const bool flag) { screenDraw = flag; }
+	static bool GetScreenDraw() { return screenDraw; }
 
 	inline static bool GetDrawShadow() { return drawShadow; }
 	static LightGroup* GetLightGroup() { return Object3D::lightGroup; }
