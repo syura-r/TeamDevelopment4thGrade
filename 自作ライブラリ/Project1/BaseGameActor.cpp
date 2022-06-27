@@ -15,6 +15,12 @@
 #include "ItemEmitter.h"
 #include "ScoreManager.h"
 #include "IActionState.h"
+#include "ActionStateMove.h"
+#include "ActionStateTackle.h"
+#include "ActionStateBlown.h"
+#include "ActionStateWithstand.h"
+#include "ActionStateCut.h"
+#include "ActionStateFall.h"
 #include "Easing.h"
 
 ComPtr<ID3D12Resource> BaseGameActor::constCameraBuff = nullptr;
@@ -34,6 +40,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 direction(Vector3(0, 0, 1)),
 	 isCrushed(false),
 	 isEndGame(false),
+	 actionState(ActionStateMove::GetInstance()),
 	 speed(0.18f),
 	 WALK_SPEED(0.18f),
 	 DRAWING_SPEED(0.36f),
@@ -88,7 +95,8 @@ void BaseGameActor::Initialize()
 	panelCountSprite3D->Initialize();
 	isCrushed = false;
 	isEndGame = false;
-	//actionState
+	actionState = ActionStateMove::GetInstance();
+	actionState->Initialize(this);
 	speed = WALK_SPEED;
 	isHitDuringTackle = false;
 	tackleStartPos = Vector3();
@@ -131,10 +139,10 @@ void BaseGameActor::Update()
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
 		CuttingInfo* info = field->GetCuttingInfo(this);
 
-		//actionState = actionState->Update(this);
+		actionState = actionState->Update(this);
 
 		field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
-		if (/*!drawingFlag*/true)
+		if (actionState->GetLabel() != ActionStateLabel::CUT)
 		{
 			panelCutLocus->SetCutPower(cutPower);
 			panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
@@ -266,10 +274,10 @@ void BaseGameActor::MoveCamera(Vector3 arg_dir)
 void BaseGameActor::StayInTheField()
 {
 	//Withstandは不実行
-	/*if (standingFlag || returningFieldFlag)
+	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
 		return;
-	}*/
+	}
 
 	std::vector<Vector2> fieldEdges = Field::GetEdges();
 
@@ -293,7 +301,7 @@ void BaseGameActor::StayInTheField()
 		if (multiDot <= 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//StartStand();
+			//StartWithstand();
 			SuspendTackle();
 			break;
 		}
@@ -301,7 +309,7 @@ void BaseGameActor::StayInTheField()
 		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//StartStand();
+			//StartWithstand();
 			SuspendTackle();
 			break;
 		}
@@ -316,23 +324,23 @@ void BaseGameActor::StayInTheField()
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//StartStand();
+			//StartWithstand;
 			SuspendTackle();
 			break;
 		}
 	}
 
 	//Withstandになっていたらreturn
-	/*if (!standingFlag)
+	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
 		return;
-	}*/
+	}
 
 	//CutならCutを中断
-	/*if (drawingFlag)
+	if (actionState->GetLabel() == ActionStateLabel::CUT)
 	{
 		HitOnDrawing();
-	}*/
+	}
 }
 
 void BaseGameActor::StayOnRemainPanels()
@@ -350,7 +358,7 @@ void BaseGameActor::StayOnRemainPanels()
 		StartWithstand(false, outPieceVec);
 
 		//Tackle中なら
-		if (/*tackleFlag*/true)
+		if (actionState->GetLabel() == ActionStateLabel::TACKLE)
 		{
 			SuspendTackle();
 		}
@@ -359,7 +367,7 @@ void BaseGameActor::StayOnRemainPanels()
 
 	//即落ち
 	//Withstandなら
-	if (/*!standingFlag*/false)
+	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
 		auto gottenPanels = field->GetGottenPieces();
 		for (auto p : gottenPanels)
@@ -403,7 +411,7 @@ void BaseGameActor::StayOnRemainPanels()
 
 void BaseGameActor::DischargeGottenPanel(BaseGameActor* arg_actor)
 {
-	if (/*arg_actor->IsFall()*/false)
+	if (arg_actor->GetActionState()->GetLabel() == ActionStateLabel::FALL)
 	{
 		return;
 	}
@@ -442,7 +450,7 @@ void BaseGameActor::Move()
 	preVirtualityPlanePosition = virtualityPlanePosition;
 
 	//走りと歩きの切り替え処理
-	if (/*drawingFlag*/false)
+	if (actionState->GetLabel() == ActionStateLabel::CUT)
 	{
 		speed = DRAWING_SPEED;
 	}
@@ -451,7 +459,7 @@ void BaseGameActor::Move()
 		speed = WALK_SPEED;
 	}
 
-	if (/*standingFlag*/false)
+	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
 		Withstand();
 	}
@@ -461,7 +469,7 @@ void BaseGameActor::Move()
 	}
 
 	//フィールド端からの復帰
-	if (/*standingFlag || returningFieldFlag*/false)
+	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
 		//myModel->PlayAnimation("stand", true);
 		if (isReturningField)
@@ -476,7 +484,7 @@ void BaseGameActor::Move()
 		}
 	}
 	//タックルの移動　ガチで月曜にplayerリファクタリングする
-	else if (/*tackleFlag*/false)
+	else if (actionState->GetLabel() == ActionStateLabel::TACKLE)
 	{
 		virtualityPlanePosition = EasingMove(tackleStartPos, tackleEndPos, 1, tackleCount / 30.0f);
 		tackleCount++;
@@ -538,7 +546,7 @@ void BaseGameActor::Move()
 		{
 			//myModel->PlayAnimation("stand", true);
 		}
-		else if (/*drawingFlag*/false)
+		else if (actionState->GetLabel() == ActionStateLabel::CUT)
 		{
 			//myModel->PlayAnimation("run", true);
 		}
@@ -554,7 +562,7 @@ void BaseGameActor::Move()
 
 void BaseGameActor::SuspendTackle()
 {
-	if (/*standingFlag || returningFieldFlag*/true)
+	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
 		//tackleFlag = false;
 		tackleCount = 0;
@@ -640,22 +648,24 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 	static const float weightCoefficient = 0.3f;
 
 	//相手がFallならreturn
-	/*if (arg_actor->IsFall())
+	if (arg_actor->GetActionState()->GetLabel() == ActionStateLabel::FALL)
 	{
 		return;
-	}*/
+	}
 
 	Audio::PlayWave("SE_Collision", 1.0f);
 
 
 	//汎用化	
 	//相手を落とす
-	if (/*arg_actor->GetStanding() && tackleFlag*/false)
+	if (arg_actor->GetActionState()->GetLabel() == ActionStateLabel::WITHSTAND &&
+		actionState->GetLabel() == ActionStateLabel::TACKLE)
 	{
 		//arg_actor->StartFall();
 	}
 	//自分が落とされる
-	else if (/*standingFlag && arg_actor->IsTackle()*/false)
+	else if (arg_actor->GetActionState()->GetLabel() == ActionStateLabel::TACKLE &&
+		actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
 		Object::SetColor({ 1,1,1,1 });
 		/*standingFlag = false;
@@ -671,12 +681,8 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 		/*arg_actor->StartBlow();
 		arg_actor->SetBlownTime(40);*/
 	}
-
-
-
 	/*blowFlag = true;
 	blowTime = 40;*/
-
 
 	Vector3 enemyPos = arg_actor->GetVirtualityPlanePosition();
 	Vector3 enemyVel = arg_actor->GetVelocity();
@@ -684,10 +690,10 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 
 	float playerWeight = weight;
 
-	/*if (tackleFlag)
+	if (actionState->GetLabel() == ActionStateLabel::TACKLE)
 	{
 		playerWeight += 20;
-	}*/
+	}
 
 	float totalWeight = (playerWeight * weightCoefficient) + enemyWeight;
 	float refRate = (1 + 1 * 1); //反発率をプレイヤー、エネミーそれぞれ持たせる
@@ -702,13 +708,14 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 	Vector3  enemyAfterVel = (playerWeight * weightCoefficient) * constVec + enemyVel;
 
 	//どちらもFallでなかったら
-	if (/*!fallFlag && !arg_actor->IsFall()*/true)
+	if (arg_actor->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+		actionState->GetLabel() != ActionStateLabel::FALL)
 	{
 		DischargeGottenPanel(arg_actor);
 		arg_actor->DischargeGottenPanel(this);
 	}
 
-	if (/*tackleFlag*/false)
+	if (actionState->GetLabel() == ActionStateLabel::TACKLE)
 	{
 		//タックルで敵だけ飛ばす
 		//blowFlag = false;
@@ -726,11 +733,11 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 		arg_actor->SetVelocity(enemyAfterVel.Normalize());
 	}
 
-	if (/*drawingFlag*/true)
+	if (actionState->GetLabel() == ActionStateLabel::CUT)
 	{
 		HitOnDrawing();
 	}
-	if (/*arg_actor->IsDrawing()*/true)
+	if (arg_actor->GetActionState()->GetLabel() == ActionStateLabel::CUT)
 	{
 		arg_actor->HitOnDrawing();
 	}
@@ -857,11 +864,6 @@ void BaseGameActor::HitUnableThroughBlock(UnableThroughBlock* arg_block)
 void BaseGameActor::SlidingDown()
 {
 	//Move,Tackle,Blowで実行
-	/*if (drawingFlag)
-	{
-		return;
-	}*/
-
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 
 	float fallSpeed = 0.05f;
@@ -892,7 +894,7 @@ Vector3 BaseGameActor::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int 
 void BaseGameActor::DecideDirection(Vector3& arg_direction)
 {
 	//ふっとばされ中
-	if (/*blowFlag*/false)
+	if (actionState->GetLabel() == ActionStateLabel::BLOWN)
 	{
 		//velocityに入っている値に進むように
 		arg_direction = velocity;
@@ -911,7 +913,7 @@ void BaseGameActor::DecideDirection(Vector3& arg_direction)
 	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
 
 	//くり抜き動作中
-	if (/*drawingFlag*/false)
+	if (actionState->GetLabel() == ActionStateLabel::CUT)
 	{
 		arg_direction = { 0,0,0 };
 	}
@@ -941,10 +943,6 @@ void BaseGameActor::DecideDirection(Vector3& arg_direction)
 void BaseGameActor::Tackle()
 {
 	//Moveからのみ実行可能
-	/*if (tackleFlag || blowFlag || drawingFlag || standingFlag || returningFieldFlag)
-	{
-		return;
-	}*/
 	//tackleFlag = true;
 
 	//カメラのビュー行列の逆行列を計算
@@ -971,7 +969,7 @@ void BaseGameActor::Tackle()
 void BaseGameActor::Withstand()
 {
 	//Cytならreturn
-	if (/*drawingFlag*/false)
+	if (actionState->GetLabel() == ActionStateLabel::CUT)
 	{
 		return;
 	}

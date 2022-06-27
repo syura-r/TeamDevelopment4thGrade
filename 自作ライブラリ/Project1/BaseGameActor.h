@@ -13,7 +13,7 @@
 #include "PanelCountUI.h"
 #include "PanelCountSprite3D.h"
 
-class IState;
+class IActionState;
 class EnergyItem;
 class PanelItem;
 class PanelCutLocus;
@@ -105,7 +105,7 @@ public:
 	inline bool IsEndGame()const {
 		return isEndGame;
 	}
-	inline IState* GetActionState() {
+	inline IActionState* GetActionState() {
 		return actionState;
 	}	
 	inline bool IsHitDuringTackle()const {
@@ -162,7 +162,7 @@ protected:
 	//ゲームエンド
 	bool isEndGame;
 	//行動状態
-	IState* actionState;//まだ
+	IActionState* actionState;
 	//傾きで滑る処理
 	virtual void SlidingDown();
 	//イージングでの移動
