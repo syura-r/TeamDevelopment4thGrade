@@ -31,6 +31,18 @@ DrawMode::MODE DrawMode::mode = DrawMode::None;
 bool DrawMode::drawImGui = true;
 TextureResource* TextureResource::mainResource = nullptr;
 
+int SettingParam::padSensitive = 3;
+int SettingParam::reverseX = 1;
+int SettingParam::reverseY = 1;
+
+int SettingParam::jumpButton = XINPUT_GAMEPAD_A;
+int SettingParam::airSlideButton = XINPUT_GAMEPAD_B;
+int SettingParam::runButton = XINPUT_GAMEPAD_LEFT_SHOULDER;
+int SettingParam::resetButton = XINPUT_GAMEPAD_RIGHT_SHOULDER;
+bool SettingParam::viewCollision = false;
+
+bool SettingParam::onSSAO = false;
+
 Game::Game()
 {
 	win = std::make_unique<Window>(1920,1080);
