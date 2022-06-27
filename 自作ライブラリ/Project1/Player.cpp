@@ -76,6 +76,7 @@ Player::Player()
 
 Player::~Player()
 {			
+	Audio::StopWave("SE_SteppingOn");
 	delete panelCountUI;
 	delete panelCountSprite3D;		
 	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::PLAYER);
@@ -142,6 +143,7 @@ void Player::Update()
 		{
 			if (!fallSoundFlag)
 			{
+				Audio::StopWave("SE_SteppingOn");
 				Audio::PlayWave("SE_Fall", 1.0f);
 				fallSoundFlag = true;
 			}
