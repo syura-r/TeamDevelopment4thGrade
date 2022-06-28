@@ -12,6 +12,8 @@ class ActionStateCut : public IActionState
 	virtual ActionStateLabel GetNext() const override;
 
 private:
+	friend class BaseGameActor;
+
 	ActionStateCut() {}
 	~ActionStateCut() {}
 	ActionStateCut(const ActionStateCut& another) = delete;

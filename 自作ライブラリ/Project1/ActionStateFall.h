@@ -13,6 +13,8 @@ public:
 	virtual ActionStateLabel GetNext() const override;
 
 private:
+	friend class BaseGameActor;
+
 	ActionStateFall() {}
 	~ActionStateFall() {}
 	ActionStateFall(const ActionStateFall& another) = delete;

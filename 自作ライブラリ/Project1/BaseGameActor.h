@@ -41,26 +41,44 @@ public:
 	//保持パネルばらまき
 	virtual void DischargeGottenPanel(BaseGameActor* arg_actor);
 	virtual void UpdatePos();
+	//ActionState変更
+	void ChangeActionState(IActionState* arg_current, IActionState* arg_next);
 
 	//---Move---
 	//移動処理
 	virtual void Move();
+	virtual bool IsChangeMoveToTackle();
+	virtual bool IsChangeMoveToBlown();
+	virtual bool IsChangeMoveToWithstand();
+	virtual bool IsChangeMoveToCut();
+	virtual bool IsChangeMoveToFall();
 
 	//---Tackle---
 	//タックルの中断
 	virtual void SuspendTackle();
+	virtual bool IsChangeTackleToMove();
+	virtual bool IsChangeTackleToBlown();
+	virtual bool IsChangeTackleToWithstand();
+	virtual bool IsChangeTackleToFall();
 
 	//---Blown---
+	virtual bool IsChangeBlownToMove();
+	virtual bool IsChangeBlownToWithstand();
+	virtual bool IsChangeBlownToFall();
 
 	//---Withstand---
 	//踏ん張りになる
 	virtual void StartWithstand(bool arg_outField = true, Vector3 arg_velocity = {});
+	virtual bool IsChangeWithstandToMove();
+	virtual bool IsChangeWithstandToFall();
 
 	//---Cut---
 	//切り抜き終了時CircularSawから呼ばれる
 	virtual void EndDrawing();
 	//切り抜き中に衝突を受けたとき
 	virtual void HitOnDrawing();
+	virtual bool IsChangeCutToMove();
+	virtual bool IsChangeCutToBlown();
 
 	//---Fall---
 
@@ -130,6 +148,12 @@ protected:
 		XMMATRIX viewProjection;
 		XMFLOAT3 cameraPos;
 	};
+	friend class ActionStateMove;
+	friend class ActionStateTackle;
+	friend class ActionStateBlown;
+	friend class ActionStateWithstand;
+	friend class ActionStateCut;
+	friend class ActionStateFall;
 
 	static ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
 	static DebugCamera* camera;

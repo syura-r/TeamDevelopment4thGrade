@@ -220,6 +220,16 @@ void StandardEnemy::Update()
 
 void StandardEnemy::Draw()
 {
+	PipelineState::SetPipeline("FBX");
+
+	object->Draw(true);
+
+	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
+	panelCountSprite3D->Draw();
+}
+
+void StandardEnemy::DrawReady()
+{
 #ifdef _DEBUG
 	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
 	Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]);
@@ -234,16 +244,6 @@ void StandardEnemy::Draw()
 
 #endif
 
-	PipelineState::SetPipeline("FBX");
-
-	object->Draw(true);
-
-	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
-	panelCountSprite3D->Draw();
-}
-
-void StandardEnemy::DrawReady()
-{
 	pipelineName = "FBX";
 }
 

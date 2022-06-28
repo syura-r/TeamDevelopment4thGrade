@@ -125,6 +125,11 @@ void BaseGameActor::Initialize()
 
 void BaseGameActor::Update()
 {
+	if (isEndGame)
+	{
+		return;
+	}
+
 	if (isCrushed)
 	{
 		static int pressCount = 0;
@@ -139,14 +144,15 @@ void BaseGameActor::Update()
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
 		CuttingInfo* info = field->GetCuttingInfo(this);
 
-		actionState = actionState->Update(this);
+		IActionState* state = actionState->Update(this);
+		if (state != actionState)
+		{
+			ChangeActionState(actionState, state);
+		}
 
 		field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
-		if (actionState->GetLabel() != ActionStateLabel::CUT)
-		{
-			panelCutLocus->SetCutPower(cutPower);
-			panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
-		}
+		panelCutLocus->SetCutPower(cutPower);
+		panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
 	}
 
 	Object::Update();
@@ -444,6 +450,13 @@ void BaseGameActor::UpdatePos()
 {
 }
 
+void BaseGameActor::ChangeActionState(IActionState* arg_current, IActionState* arg_next)
+{
+	arg_current->ShutDown(this);
+	arg_next->Initialize(this);
+	arg_current = arg_next;
+}
+
 void BaseGameActor::Move()
 {
 	prePos = position;
@@ -627,6 +640,33 @@ void BaseGameActor::HitOnDrawing()
 		c->Dead();
 	}
 	//drawingFlag = false;
+}
+
+void BaseGameActor::Fall()
+{
+	if (fallEasingCount <= 30)
+	{
+		fallEasingCount++;
+		virtualityPlanePosition = EasingMove(fallStartPos, fallEndPos, 1, fallEasingCount / 30.0f);
+	}
+	else
+	{
+		virtualityPlanePosition.y -= 2;
+	}
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+
+	if (virtualityPlanePosition.y <= -100)
+	{
+		if (!isPlayedFallSound)
+		{
+			Audio::StopWave("SE_SteppingOn");
+			Audio::PlayWave("SE_Fall", 1.0f);
+			isPlayedFallSound = true;
+		}
+		isEndGame = true;
+	}
 }
 
 void BaseGameActor::HitCheckActor(BaseGameActor* arg_actor)
@@ -1052,19 +1092,82 @@ void BaseGameActor::Withstand()
 	//}
 }
 
-void BaseGameActor::Fall()
+bool BaseGameActor::IsChangeMoveToTackle()
 {
-	if (fallEasingCount <= 30)
-	{
-		fallEasingCount++;
-		virtualityPlanePosition = EasingMove(fallStartPos, fallEndPos, 1, fallEasingCount / 30.0f);
-	}
-	else
-	{
-		virtualityPlanePosition.y -= 2;
-	}
+	return false;
+}
 
+bool BaseGameActor::IsChangeMoveToBlown()
+{
+	return false;
+}
 
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+bool BaseGameActor::IsChangeMoveToWithstand()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeMoveToCut()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeMoveToFall()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeTackleToMove()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeTackleToBlown()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeTackleToWithstand()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeTackleToFall()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeBlownToMove()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeBlownToWithstand()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeBlownToFall()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeWithstandToMove()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeWithstandToFall()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeCutToMove()
+{
+	return false;
+}
+
+bool BaseGameActor::IsChangeCutToBlown()
+{
+	return false;
 }
