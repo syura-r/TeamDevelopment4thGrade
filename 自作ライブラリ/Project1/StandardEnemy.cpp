@@ -374,8 +374,8 @@ void StandardEnemy::SlidingDown()
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 
-	float fallSpeed = 0.05f;
-	virtualityPlanePosition += field->GetTilt() * fallSpeed;
+	float fallSpeed = 0.01f * (gottenPanel / 8 + 1);
+	virtualityPlanePosition += field->GetTilt() * fallSpeed * field->GetDepthMagnitude();
 	StayInTheField();
 	StayOnRemainPanels();
 }
