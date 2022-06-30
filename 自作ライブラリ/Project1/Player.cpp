@@ -132,6 +132,7 @@ void Player::Initialize()
 	gameEnd = false;
 
 	fallSoundFlag = false;
+	bonusCount = 0;
 }
 
 void Player::Update()
@@ -1129,7 +1130,7 @@ void Player::EndDrawing()
 {
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
 	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
@@ -1142,7 +1143,13 @@ void Player::EndDrawing()
 		e->ForcedWeight(num);
 	}
 
-	cutPower = 0;
+	static const int BONUS_COUNT_UNIT = 3;
+	if (bonusCount > bonusCount * 3)
+	{
+		bonusCount = bonusCount * 3;
+	}
+	cutPower = bonusCount / BONUS_COUNT_UNIT;
+	//cutPower = 0;
 
 	ScoreManager::GetInstance()->AddScore_CutPanel(num);
 

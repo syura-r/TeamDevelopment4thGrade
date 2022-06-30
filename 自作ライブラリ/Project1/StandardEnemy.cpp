@@ -118,6 +118,7 @@ void StandardEnemy::Initialize()
 	fallFlag = false;
 	fallEasingCount = 0;
 	outFieldFlag = false;
+	bonusCount = 0;
 }
 
 void StandardEnemy::Update()
@@ -900,7 +901,7 @@ void StandardEnemy::EndDrawing()
 {
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
 	auto player = ActorManager::GetInstance()->GetPlayer();
@@ -923,7 +924,13 @@ void StandardEnemy::EndDrawing()
 		e->ForcedWeight(num);
 	}
 
-	cutPower = 0;
+	static const int BONUS_COUNT_UNIT = 3;
+	if (bonusCount > bonusCount * 3)
+	{
+		bonusCount = bonusCount * 3;
+	}
+	cutPower = bonusCount / BONUS_COUNT_UNIT;
+	//cutPower = 0;
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	CuttingInfo* info = field->GetCuttingInfo(this);

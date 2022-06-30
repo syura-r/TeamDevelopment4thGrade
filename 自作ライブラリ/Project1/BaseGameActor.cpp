@@ -610,9 +610,10 @@ void BaseGameActor::StartWithstand(bool arg_outField, Vector3 arg_velocity)
 
 void BaseGameActor::EndDrawing()
 {
+	int n = 0;
 	//drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, n);
 	weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;
 	cutPower = 0;

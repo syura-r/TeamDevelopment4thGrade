@@ -184,6 +184,9 @@ private:
 
 	bool outFieldFlag;
 
+	//ボーナス獲得数
+	int bonusCount;
+
 	//--------------------------------------
 	// 時間
 	Timer* actionTimer = nullptr;

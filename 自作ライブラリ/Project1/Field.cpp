@@ -675,12 +675,11 @@ void Field::ResetInfluences()
 	gottenPieces.clear();
 }
 
-int Field::CutPanel(PanelCutLocus* arg_locus)
+int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount)
 {
 	auto vecPos = arg_locus->GetCuttedPanelPos();
 
-	int returnVal = 0;
-	Player* player = ActorManager::GetInstance()->GetPlayer();
+	int returnVal = 0;	
 	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
 	int bonusCount = 0;
 
@@ -748,7 +747,8 @@ int Field::CutPanel(PanelCutLocus* arg_locus)
 		}
 	}
 
-	if (bonusCount == 1)
+	//ボーナスまるのこ発生
+	/*if (bonusCount == 1)
 	{
 		ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
 		itemEmitter->EmitEnergyItem(itemEmitter->GetEnergyItemEmitPosition(), RankEnergyItem::SILVER);
@@ -757,7 +757,9 @@ int Field::CutPanel(PanelCutLocus* arg_locus)
 	{
 		ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
 		itemEmitter->EmitEnergyItem(itemEmitter->GetEnergyItemEmitPosition(), RankEnergyItem::GOLD);
-	}
+	}*/
+	//ボーナス獲得数
+	arg_bonusCount += bonusCount;
 
 	if (bonusPanelCount <= 0)
 	{

@@ -40,7 +40,7 @@ public:
 	//}Œ`Š®¬‚É‚æ‚Á‚ÄŒX‚­‚Æ‚«
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
-	int CutPanel(PanelCutLocus* arg_locus);
+	int CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount);
 	void ReviveGottenPanel(FieldPiece* arg_piece);
 	void StartFallingBlock();
 

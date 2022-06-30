@@ -193,6 +193,9 @@ private:
 	//サウンド用フラグ
 	bool fallSoundFlag;
 
+	//ボーナス獲得数
+	int bonusCount;
+
 private://静的メンバ変数
 	static DebugCamera* camera;
 
