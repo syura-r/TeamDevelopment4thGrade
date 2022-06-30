@@ -19,7 +19,8 @@ FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_dir
 	 isActive(true),
 	 isBlockade(false),
 	 cutterPos(Vector3()),
-	 isBonus(false)
+	 isBonus(false),
+	 reviveTimer(new Timer(15 * 60))
 {
 	SetPoints();
 	position = virtualityPlanePosition;
@@ -44,12 +45,19 @@ void FieldPiece::Initialize()
 	isActive = true;
 	isBlockade = false;
 	isBonus = false;
+	reviveTimer->Reset();
 	Object::Update();
 }
 
 void FieldPiece::Update()
 {
-	if (!isActive || isBlockade)
+	if (isBlockade)
+	{
+		return;
+	}
+
+	Revival();
+	if (!isActive)
 	{
 		return;
 	}
@@ -277,5 +285,22 @@ void FieldPiece::ChangeColorForRidden()
 			color = { 0.8f, 0.1f, 0.1f, 1.0f };
 			return;
 		}
+	}
+}
+
+void FieldPiece::Revival()
+{
+	if (isActive)
+	{
+		return;
+	}
+
+	reviveTimer->Update();
+
+	if (reviveTimer->IsTime())
+	{
+		isActive = true;
+		reviveTimer->Reset();
+		ActorManager::GetInstance()->GetFields()[0]->ReviveGottenPanel(this);
 	}
 }

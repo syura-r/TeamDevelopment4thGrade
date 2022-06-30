@@ -277,15 +277,16 @@ void BaseGameActor::MoveCamera(Vector3 arg_dir)
 	}
 }
 
-void BaseGameActor::StayInTheField()
+bool BaseGameActor::StayInTheField()
 {
 	//Withstandは不実行
 	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
-		return;
+		return false;
 	}
 
 	std::vector<Vector2> fieldEdges = Field::GetEdges();
+	bool b = false;
 
 	for (int i = 0; i < fieldEdges.size(); i++)
 	{
@@ -309,6 +310,7 @@ void BaseGameActor::StayInTheField()
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			//StartWithstand();
 			SuspendTackle();
+			b = true;
 			break;
 		}
 
@@ -317,6 +319,7 @@ void BaseGameActor::StayInTheField()
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			//StartWithstand();
 			SuspendTackle();
+			b = true;
 			break;
 		}
 
@@ -332,6 +335,7 @@ void BaseGameActor::StayInTheField()
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			//StartWithstand;
 			SuspendTackle();
+			b = true;
 			break;
 		}
 	}
@@ -339,20 +343,21 @@ void BaseGameActor::StayInTheField()
 	//Withstandになっていたらreturn
 	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
-		return;
+		return b;
 	}
 
 	//CutならCutを中断
 	if (actionState->GetLabel() == ActionStateLabel::CUT)
 	{
 		HitOnDrawing();
+		return b;
 	}
 }
 
-void BaseGameActor::StayOnRemainPanels()
+bool BaseGameActor::StayOnRemainPanels()
 {
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS);
+	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS);	
 
 	if (piece)
 	{
@@ -368,9 +373,9 @@ void BaseGameActor::StayOnRemainPanels()
 		{
 			SuspendTackle();
 		}
-		return;
+		return true;
 	}
-
+	
 	//即落ち
 	//Withstandなら
 	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
@@ -409,10 +414,11 @@ void BaseGameActor::StayOnRemainPanels()
 				//Fallになる
 				fallStartPos = virtualityPlanePosition;
 				fallEndPos = p->GetVirtualityPlanePosition();
-				return;
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 void BaseGameActor::DischargeGottenPanel(BaseGameActor* arg_actor)
@@ -462,29 +468,13 @@ void BaseGameActor::Move()
 	prePos = position;
 	preVirtualityPlanePosition = virtualityPlanePosition;
 
-	//走りと歩きの切り替え処理
-	if (actionState->GetLabel() == ActionStateLabel::CUT)
-	{
-		speed = DRAWING_SPEED;
-	}
-	else
-	{
-		speed = WALK_SPEED;
-	}
-
-	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
-	{
-		Withstand();
-	}
-	else
-	{
-		SlidingDown();
-	}
+	speed = WALK_SPEED;
 
 	//フィールド端からの復帰
 	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
-		//myModel->PlayAnimation("stand", true);
+		Withstand();
+
 		if (isReturningField)
 		{
 			virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
@@ -496,9 +486,11 @@ void BaseGameActor::Move()
 			}
 		}
 	}
-	//タックルの移動　ガチで月曜にplayerリファクタリングする
+	//タックルの移動
 	else if (actionState->GetLabel() == ActionStateLabel::TACKLE)
 	{
+		SlidingDown();
+
 		virtualityPlanePosition = EasingMove(tackleStartPos, tackleEndPos, 1, tackleCount / 30.0f);
 		tackleCount++;
 		if (tackleCount >= 30)
@@ -510,9 +502,24 @@ void BaseGameActor::Move()
 		StayInTheField();
 		StayOnRemainPanels();
 	}
+	else if (actionState->GetLabel() == ActionStateLabel::CUT)
+	{
+	}
+	else if (actionState->GetLabel() == ActionStateLabel::BLOWN)
+	{		
+		SlidingDown();
+
+		speed = BLOWN_SPEED;
+
+		virtualityPlanePosition += velocity * speed;
+		StayInTheField();
+		StayOnRemainPanels();
+	}
 	//通常の移動
 	else
 	{
+		SlidingDown();
+
 		//移動方向
 		Vector3 moveDirection = direction;
 		DecideDirection(moveDirection);
@@ -553,20 +560,7 @@ void BaseGameActor::Move()
 		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotSpeed));
 		XMVECTOR dir = { direction.x,direction.y,direction.z,0 };
 		dir = XMVector3TransformNormal(dir, matRot);
-		direction = dir;
-
-		if (!Input::DownWASD() && !Input::CheckPadLStickAnythingDir())
-		{
-			//myModel->PlayAnimation("stand", true);
-		}
-		else if (actionState->GetLabel() == ActionStateLabel::CUT)
-		{
-			//myModel->PlayAnimation("run", true);
-		}
-		else
-		{
-			//myModel->PlayAnimation("walk", true);
-		}
+		direction = dir;		
 	}
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
@@ -578,16 +572,15 @@ void BaseGameActor::SuspendTackle()
 	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
 	{
 		//tackleFlag = false;
-		tackleCount = 0;
-		speed = WALK_SPEED;
+		tackleCount = 0;		
 	}
 	//タックル中
 	else
 	{
 		tackleEndPos = virtualityPlanePosition;
 		//tackleCount = 0;
-		speed = WALK_SPEED;
 	}
+	speed = WALK_SPEED;
 }
 
 void BaseGameActor::StartWithstand(bool arg_outField, Vector3 arg_velocity)
@@ -933,15 +926,6 @@ Vector3 BaseGameActor::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int 
 
 void BaseGameActor::DecideDirection(Vector3& arg_direction)
 {
-	//ふっとばされ中
-	if (actionState->GetLabel() == ActionStateLabel::BLOWN)
-	{
-		//velocityに入っている値に進むように
-		arg_direction = velocity;
-		speed = BLOWN_SPEED;
-		return;
-	}
-
 	if (!Input::DownWASD() && !Input::CheckPadLStickAnythingDir())
 	{
 		return;
@@ -1008,7 +992,7 @@ void BaseGameActor::Tackle()
 
 void BaseGameActor::Withstand()
 {
-	//Cytならreturn
+	//Cutならreturn
 	if (actionState->GetLabel() == ActionStateLabel::CUT)
 	{
 		return;

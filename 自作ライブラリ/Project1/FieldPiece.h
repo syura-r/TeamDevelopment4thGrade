@@ -55,10 +55,13 @@ private:
 	Vector3 cutterPos;
 	//ボーナスパネルかどうか
 	bool isBonus;
+	//復活
+	Timer* reviveTimer;
 
 	std::vector<Vector2> points;
 	static std::vector<Vector2> basePoints;
 
 	void SetPoints();
 	void ChangeColorForRidden();
+	void Revival();
 };

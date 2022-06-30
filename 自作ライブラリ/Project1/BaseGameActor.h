@@ -36,8 +36,8 @@ public:
 
 	//---全体---
 	//フィールドから落ちない処理
-	virtual void StayInTheField();
-	virtual void StayOnRemainPanels();
+	virtual bool StayInTheField();
+	virtual bool StayOnRemainPanels();
 	//保持パネルばらまき
 	virtual void DischargeGottenPanel(BaseGameActor* arg_actor);
 	virtual void UpdatePos();
