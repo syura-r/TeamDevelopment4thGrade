@@ -77,6 +77,8 @@ public:
 	virtual void EndDrawing();
 	//Ø‚è”²‚«’†‚ÉÕ“Ë‚ğó‚¯‚½‚Æ‚«
 	virtual void HitOnDrawing();
+	//
+	void ForcedWeight(const int arg_num);
 	virtual bool IsChangeCutToMove();
 	virtual bool IsChangeCutToBlown();
 
@@ -243,6 +245,7 @@ protected:
 	PanelCutLocus* panelCutLocus;
 	int cutPower;
 	int gottenPanel;
+	int bonusCount;
 
 	//---Fall---	
 	//—‰º‚Ü‚Å‚Ì—P—\

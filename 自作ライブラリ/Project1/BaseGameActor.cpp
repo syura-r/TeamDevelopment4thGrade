@@ -63,6 +63,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 notWithstandCount(0),
 	 cutPower(0),
 	 gottenPanel(0),
+	 bonusCount(0),
 	 fallEasingCount(0),
 	 fallStartPos(Vector3()),
 	 fallEndPos(Vector3()),
@@ -117,6 +118,7 @@ void BaseGameActor::Initialize()
 	panelCutLocus->Move(Vector3(), 0);
 	cutPower = 0;
 	gottenPanel = 0;
+	bonusCount = 0;
 	fallEasingCount = 0;
 	fallStartPos = Vector3();
 	fallEndPos = Vector3();
@@ -609,14 +611,34 @@ void BaseGameActor::StartWithstand(bool arg_outField, Vector3 arg_velocity)
 }
 
 void BaseGameActor::EndDrawing()
-{
-	int n = 0;
+{	
 	//drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, n);
-	weight += num * FieldPiece::GetWeight();
-	gottenPanel += num;
-	cutPower = 0;
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
+	/*weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;*/
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+	for (auto a : actors)
+	{
+		if (a == this)
+		{
+			continue;
+		}
+
+		if (a->GetActionState()->GetLabel() == ActionStateLabel::FALL)
+		{
+			continue;
+		}
+		a->ForcedWeight(num);
+	}
+	
+	static const int BONUS_COUNT_UNIT = 3;
+	if (bonusCount > bonusCount * 3)
+	{
+		bonusCount = bonusCount * 3;
+	}
+	cutPower = bonusCount / BONUS_COUNT_UNIT;
+	//cutPower = 0;
 
 	ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
@@ -634,6 +656,12 @@ void BaseGameActor::HitOnDrawing()
 		c->Dead();
 	}
 	//drawingFlag = false;
+}
+
+void BaseGameActor::ForcedWeight(const int arg_num)
+{
+	weight += FieldPiece::GetWeight() * arg_num;
+	gottenPanel += arg_num;
 }
 
 void BaseGameActor::Fall()
