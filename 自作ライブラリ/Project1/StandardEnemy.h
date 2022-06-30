@@ -50,12 +50,18 @@ public:
 	void StartFall();
 
 	bool GetOutField() { return outFieldFlag; }
+	void ChangeOutFieldFlag() {
+		fallFlag = true;
+		//outFieldFlag = true;
+	}
 
 	// ‚Á”ò‚Ñ
 	void StartBlow();
 	void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
 
 	void HitOnDrawing();
+
+	void ForcedWeight(const int arg_num);
 
 private:
 	struct ConstLightCameraBuff
@@ -65,7 +71,9 @@ private:
 	};
 
 	//‰ŠúˆÊ’u
-	const Vector3 StartPos = { 0,-5,-15 };
+	static int offsetCount;
+	const Vector3 StartPos;
+	Vector3 DecideStartPos();
 	//ˆÚ“®ˆ—
 	void Move();
 

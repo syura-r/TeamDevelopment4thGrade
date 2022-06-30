@@ -98,6 +98,9 @@ void Play::Initialize()
 	StandardEnemy* testEnemy = new StandardEnemy();
 	objectManager->Add(testEnemy);	
 
+	StandardEnemy* testEnemy2 = new StandardEnemy();
+	objectManager->Add(testEnemy2);
+
 	stadium->Initialize();
 
 	screenCamera->SetTargetObj(player);

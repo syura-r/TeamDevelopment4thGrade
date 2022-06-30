@@ -45,6 +45,8 @@ public:
 	PanelCutLocus* GetPanelCutLocus();
 
 	void HitOnDrawing();
+
+	void ForcedWeight(const int arg_num);
 	
 private:
 	struct ConstLightCameraBuff
@@ -95,6 +97,8 @@ private:
 	void DischargeGottenPanel(StandardEnemy* arg_enemy);
 	//êŠO‚É—‰º
 	void Fall();
+
+	void KillRandEnem();
 
 	
 	//

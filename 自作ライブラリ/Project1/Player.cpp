@@ -136,6 +136,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	KillRandEnem();
 	if (fallFlag)
 	{
 		Fall();
@@ -710,8 +711,8 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 
 	if (!fallFlag && !arg_enemy->IsFall())
 	{
-		DischargeGottenPanel(arg_enemy);
-		arg_enemy->DischargeGottenPanel(this);
+		/*DischargeGottenPanel(arg_enemy);
+		arg_enemy->DischargeGottenPanel(this);*/
 	}
 
 	if (tackleFlag)
@@ -1092,6 +1093,29 @@ void Player::Fall()
 	
 }
 
+void Player::KillRandEnem()
+{
+	if (!Input::TriggerKey(DIK_M))
+	{
+		return;
+	}
+
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	
+	for (auto e : enemies)
+	{
+		if (e->IsFall())
+		{
+			continue;
+		}
+		else
+		{
+			e->ChangeOutFieldFlag();
+			return;
+		}
+	}
+}
+
 Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
 {
 	Vector3 result = {};
@@ -1106,8 +1130,18 @@ void Player::EndDrawing()
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
 	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
-	weight += num * FieldPiece::GetWeight();
-	gottenPanel += num;
+	/*weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;*/
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		if (e->IsFall())
+		{
+			continue;
+		}
+		e->ForcedWeight(num);
+	}
+
 	cutPower = 0;
 
 	ScoreManager::GetInstance()->AddScore_CutPanel(num);
@@ -1136,6 +1170,12 @@ void Player::HitOnDrawing()
 		c->Dead();
 	}
 	drawingFlag = false;
+}
+
+void Player::ForcedWeight(const int arg_num)
+{
+	weight += FieldPiece::GetWeight() * arg_num;
+	gottenPanel += arg_num;
 }
 
 //void Player::HitCheckLoci()

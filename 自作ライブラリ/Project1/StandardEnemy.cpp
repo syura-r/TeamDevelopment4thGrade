@@ -25,8 +25,22 @@
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
+int StandardEnemy::offsetCount = 0;
+
+Vector3 StandardEnemy::DecideStartPos()
+{
+	if (offsetCount % 2 == 0)
+	{
+		return Vector3(10, -5, -15);
+	}
+	else
+	{
+		return Vector3(-10, -5, -15);
+	}
+}
 
 StandardEnemy::StandardEnemy()
+	:StartPos(DecideStartPos())
 {
 	//アニメーション用にモデルのポインタを格納
 	myModel = FBXManager::GetModel("GamePlay_Enemy");
@@ -45,6 +59,9 @@ StandardEnemy::StandardEnemy()
 
 	panelCountUI = new PanelCountUI(GAMEOBJECT_TYPE::ENEMY);
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
+
+	//StartPos決め		
+	offsetCount++;
 
 	Initialize();
 
@@ -864,6 +881,12 @@ void StandardEnemy::HitOnDrawing()
 	drawingFlag = false;
 }
 
+void StandardEnemy::ForcedWeight(const int arg_num)
+{
+	weight += FieldPiece::GetWeight() * arg_num;
+	gottenPanel += arg_num;
+}
+
 Vector3 StandardEnemy::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
 {
 	Vector3 result = {};
@@ -878,8 +901,28 @@ void StandardEnemy::EndDrawing()
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
 	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
-	weight += num * FieldPiece::GetWeight();
-	gottenPanel += num;
+	/*weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;*/
+	auto player = ActorManager::GetInstance()->GetPlayer();
+	if (!player->IsFall())
+	{
+		player->ForcedWeight(num);
+	}
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		if (e == this)
+		{
+			continue;
+		}
+
+		if (e->IsFall())
+		{
+			continue;
+		}
+		e->ForcedWeight(num);
+	}
+
 	cutPower = 0;
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
