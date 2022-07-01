@@ -66,9 +66,12 @@ void ScoreUI::Draw()
 	//—]”’
 	const Vector2 spaceSize = { 25.0f, 30.0f };
 
+	//F
+	const Vector4 color = { 1,1,1,0.2f };
+
 	Vector2 pos = { (iconTexSize.x / 2) + spaceSize.x,(iconTexSize.y / 2) + spaceSize.y };
-	sp->DrawSprite("GamePlay_UI_Score_Text", pos);
+	sp->DrawSprite("GamePlay_UI_Score_Text", pos, 0.0f, { 1,1 }, color);
 
 	pos.x += (numberTexSize.x / 2) * 6 + (iconTexSize.x / 2);
-	numsp->Draw(6,"GamePlay_UI_Number", pos);
+	numsp->Draw(6, "GamePlay_UI_Number", pos, { 1,1 }, color);
 }
