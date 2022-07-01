@@ -40,8 +40,7 @@ PanelCutLocus::PanelCutLocus(const Vector3& arg_pos, const float arg_angle, cons
 		lines[i]->Move(rotatedPos + virtualityPlanePosition, angle + vecInfo[i].angle);
 	}
 
-	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("PanelCutLocus", this);
+	name = typeid(*this).name();	
 }
 
 PanelCutLocus::PanelCutLocus(const PanelCutLocus& arg_panelCut, const DirectX::XMFLOAT4& arg_color)

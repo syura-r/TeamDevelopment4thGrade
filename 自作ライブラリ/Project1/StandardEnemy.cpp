@@ -21,11 +21,26 @@
 #include "Player.h"
 #include "Audio.h"
 #include "ScoreManager.h"
+#include "ObjectRegistType.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
+int StandardEnemy::offsetCount = 0;
+
+Vector3 StandardEnemy::DecideStartPos()
+{
+	if (offsetCount % 2 == 0)
+	{
+		return Vector3(10, -5, -15);
+	}
+	else
+	{
+		return Vector3(-10, -5, -15);
+	}
+}
 
 StandardEnemy::StandardEnemy()
+	:StartPos(DecideStartPos())
 {
 	//アニメーション用にモデルのポインタを格納
 	myModel = FBXManager::GetModel("GamePlay_Enemy");
@@ -40,10 +55,13 @@ StandardEnemy::StandardEnemy()
 	panelCutLocus->SetParentObject(this);
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("StandardEnemy", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::STANDARD_ENEMY);
 
 	panelCountUI = new PanelCountUI(GAMEOBJECT_TYPE::ENEMY);
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
+
+	//StartPos決め		
+	offsetCount++;
 
 	Initialize();
 
@@ -55,7 +73,7 @@ StandardEnemy::~StandardEnemy()
 	delete walkingTimer;
 	delete panelCountUI;
 	delete panelCountSprite3D;
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::STANDARD_ENEMY);
 }
 
 void StandardEnemy::Initialize()
@@ -100,6 +118,7 @@ void StandardEnemy::Initialize()
 	fallFlag = false;
 	fallEasingCount = 0;
 	outFieldFlag = false;
+	bonusCount = 0;
 }
 
 void StandardEnemy::Update()
@@ -110,12 +129,6 @@ void StandardEnemy::Update()
 	// 位置の確認
 	ConfirmPlayerPos();
 	ConfirmItemPos();
-
-	//移動処理
-	Move();
-
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	CuttingInfo* info = field->GetCuttingInfo(this);
 	
 	if (fallFlag)
 	{
@@ -225,6 +238,16 @@ void StandardEnemy::Update()
 
 void StandardEnemy::Draw()
 {
+	PipelineState::SetPipeline("FBX");
+
+	object->Draw(true);
+
+	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
+	panelCountSprite3D->Draw();
+}
+
+void StandardEnemy::DrawReady()
+{
 #ifdef _DEBUG
 	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
 	Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]);
@@ -239,16 +262,6 @@ void StandardEnemy::Draw()
 
 #endif
 
-	PipelineState::SetPipeline("FBX");
-
-	object->Draw(true);
-
-	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
-	panelCountSprite3D->Draw();
-}
-
-void StandardEnemy::DrawReady()
-{
 	pipelineName = "FBX";
 }
 
@@ -379,8 +392,8 @@ void StandardEnemy::SlidingDown()
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 
-	float fallSpeed = 0.05f;
-	virtualityPlanePosition += field->GetTilt() * fallSpeed;
+	float fallSpeed = 0.01f * (gottenPanel / 8 + 1);
+	virtualityPlanePosition += field->GetTilt() * fallSpeed * field->GetDepthMagnitude();
 	StayInTheField();
 	StayOnRemainPanels();
 }
@@ -444,16 +457,6 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 	//反発用に代入
 	velocity = arg_direction;
 }
-
-//void StandardEnemy::MoveEndDrawing(BaseLocus* arg_locus)
-//{
-//	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-//	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
-//	virtualityPlanePosition += vec * 2.0f;
-//	StayInTheField();
-//	Field* field = ActorManager::GetInstance()->GetFields()[0];
-//	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
-//}
 
 void StandardEnemy::StayInTheField()
 {
@@ -879,6 +882,12 @@ void StandardEnemy::HitOnDrawing()
 	drawingFlag = false;
 }
 
+void StandardEnemy::ForcedWeight(const int arg_num)
+{
+	weight += FieldPiece::GetWeight() * arg_num;
+	gottenPanel += arg_num;
+}
+
 Vector3 StandardEnemy::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
 {
 	Vector3 result = {};
@@ -892,10 +901,41 @@ void StandardEnemy::EndDrawing()
 {
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
-	weight += num * FieldPiece::GetWeight();
-	gottenPanel += num;
-	cutPower = 0;
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
+	/*weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;*/
+	auto player = ActorManager::GetInstance()->GetPlayer();
+	if (!player->IsFall())
+	{
+		player->ForcedWeight(num);
+	}
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		if (e == this)
+		{
+			continue;
+		}
+
+		if (e->IsFall())
+		{
+			continue;
+		}
+		e->ForcedWeight(num);
+	}
+
+	static const int BONUS_COUNT_UNIT = 3;
+	if (bonusCount > bonusCount * 3)
+	{
+		bonusCount = bonusCount * 3;
+	}
+	cutPower = bonusCount / BONUS_COUNT_UNIT;
+	//cutPower = 0;
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
+	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 }
 
 Vector3 StandardEnemy::GetDirection() const

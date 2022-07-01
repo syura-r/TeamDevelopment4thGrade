@@ -14,6 +14,7 @@
 #include "UnableThroughEdge.h"
 #include "ItemEmitter.h"
 #include "EnergyItem.h"
+#include "ObjectRegistType.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
 const float Field::RADIUS = 45.0f;
@@ -44,7 +45,7 @@ Field::Field()
 	Object::Update();	
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("Field", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::FIELD);
 
 	pieces.clear();
 	gottenPieces.clear();
@@ -57,7 +58,7 @@ Field::Field()
 
 Field::~Field()
 {	
-	ActorManager::GetInstance()->DeleteObject(this);	
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::FIELD);
 	pieces.clear();
 	delete fallIntervalTimer;
 	blocks.clear();
@@ -134,7 +135,7 @@ void Field::CalcTilt()
 	tiltDirection = Vector2();
 
 	Player* player = ActorManager::GetInstance()->GetPlayer();
-	if (player/* && !player->IsFall()*/)
+	if (player && !player->IsFall())
 	{
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * player->GetWeight() * GetMultiplyingFactor(Vector3::Length(player->GetVirtualityPlanePosition()));
@@ -144,10 +145,10 @@ void Field::CalcTilt()
 	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();
 	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
 	{
-		/*if ((*itr)->IsFall())
+		if ((*itr)->IsFall())
 		{
 			continue;
-		}*/
+		}
 
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * (*itr)->GetWeight() * GetMultiplyingFactor(Vector3::Length((*itr)->GetVirtualityPlanePosition()));
@@ -674,12 +675,11 @@ void Field::ResetInfluences()
 	gottenPieces.clear();
 }
 
-int Field::CutPanel(PanelCutLocus* arg_locus)
+int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount)
 {
 	auto vecPos = arg_locus->GetCuttedPanelPos();
 
-	int returnVal = 0;
-	Player* player = ActorManager::GetInstance()->GetPlayer();
+	int returnVal = 0;	
 	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
 	int bonusCount = 0;
 
@@ -747,7 +747,8 @@ int Field::CutPanel(PanelCutLocus* arg_locus)
 		}
 	}
 
-	if (bonusCount == 1)
+	//ボーナスまるのこ発生
+	/*if (bonusCount == 1)
 	{
 		ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
 		itemEmitter->EmitEnergyItem(itemEmitter->GetEnergyItemEmitPosition(), RankEnergyItem::SILVER);
@@ -756,7 +757,9 @@ int Field::CutPanel(PanelCutLocus* arg_locus)
 	{
 		ItemEmitter* itemEmitter = ItemEmitter::GetInstance();
 		itemEmitter->EmitEnergyItem(itemEmitter->GetEnergyItemEmitPosition(), RankEnergyItem::GOLD);
-	}
+	}*/
+	//ボーナス獲得数
+	arg_bonusCount += bonusCount;
 
 	if (bonusPanelCount <= 0)
 	{

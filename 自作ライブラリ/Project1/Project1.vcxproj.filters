@@ -417,6 +417,27 @@
     <ClCompile Include="BaseGameActor.cpp">
       <Filter>ソース ファイル\GameObject\GameActor</Filter>
     </ClCompile>
+    <ClCompile Include="ModelParticle.cpp">
+      <Filter>ソース ファイル\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionStateMove.cpp">
+      <Filter>ソース ファイル\GameObject\GameActor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionStateTackle.cpp">
+      <Filter>ソース ファイル\GameObject\GameActor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionStateBlown.cpp">
+      <Filter>ソース ファイル\GameObject\GameActor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionStateWithstand.cpp">
+      <Filter>ソース ファイル\GameObject\GameActor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionStateCut.cpp">
+      <Filter>ソース ファイル\GameObject\GameActor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionStateFall.cpp">
+      <Filter>ソース ファイル\GameObject\GameActor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -746,7 +767,31 @@
     <ClInclude Include="BaseGameActor.h">
       <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
     </ClInclude>
-    <ClInclude Include="IState.h">
+    <ClInclude Include="IActionState.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectRegistType.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_first</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelParticle.h">
+      <Filter>ヘッダー ファイル\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionStateMove.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionStateTackle.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionStateBlown.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionStateWithstand.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionStateCut.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionStateFall.h">
       <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
     </ClInclude>
   </ItemGroup>

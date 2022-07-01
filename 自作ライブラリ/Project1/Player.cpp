@@ -25,6 +25,7 @@
 #include "ScoreManager.h"
 #include "Audio.h"
 #include "ParticleEmitter.h"
+#include "ObjectRegistType.h"
 
 DebugCamera* Player::camera = nullptr;
 
@@ -43,7 +44,7 @@ Player::Player()
 	panelCutLocus->SetParentObject(this);
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("Player", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::PLAYER);
 
 	panelCountUI = new PanelCountUI();
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
@@ -75,9 +76,10 @@ Player::Player()
 
 Player::~Player()
 {			
+	Audio::StopWave("SE_SteppingOn");
 	delete panelCountUI;
 	delete panelCountSprite3D;		
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::PLAYER);
 }
 
 void Player::Initialize()
@@ -130,10 +132,12 @@ void Player::Initialize()
 	gameEnd = false;
 
 	fallSoundFlag = false;
+	bonusCount = 0;
 }
 
 void Player::Update()
 {
+	KillRandEnem();
 	if (fallFlag)
 	{
 		Fall();
@@ -141,6 +145,7 @@ void Player::Update()
 		{
 			if (!fallSoundFlag)
 			{
+				Audio::StopWave("SE_SteppingOn");
 				Audio::PlayWave("SE_Fall", 1.0f);
 				fallSoundFlag = true;
 			}
@@ -423,8 +428,8 @@ void Player::SlidingDown()
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 
-	float fallSpeed = 0.05f;
-	virtualityPlanePosition += field->GetTilt() * fallSpeed;
+	float fallSpeed = 0.01f * (gottenPanel / 8 + 1);
+	virtualityPlanePosition += field->GetTilt() * fallSpeed * field->GetDepthMagnitude();
 	StayInTheField();
 	StayOnRemainPanels();
 
@@ -488,16 +493,6 @@ void Player::DecideDirection(Vector3& arg_direction)
 	//反発用に代入
 	velocity = arg_direction;
 }
-
-//void Player::MoveEndDrawing(BaseLocus* arg_locus)
-//{
-//	Vector3 vec = LocusUtility::AngleToVector2(arg_locus->GetAngle() + 180);
-//	virtualityPlanePosition = arg_locus->GetLine(arg_locus->GetMaxNumLine() - 1)->GetVirtualityPlaneEndPos();
-//	virtualityPlanePosition += vec * 2.0f;
-//	StayInTheField();
-//	Field* field = ActorManager::GetInstance()->GetFields()[0];
-//	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
-//}
 
 void Player::StayInTheField()
 {
@@ -717,8 +712,8 @@ void Player::HitEnemy(StandardEnemy* arg_enemy)
 
 	if (!fallFlag && !arg_enemy->IsFall())
 	{
-		DischargeGottenPanel(arg_enemy);
-		arg_enemy->DischargeGottenPanel(this);
+		/*DischargeGottenPanel(arg_enemy);
+		arg_enemy->DischargeGottenPanel(this);*/
 	}
 
 	if (tackleFlag)
@@ -1013,8 +1008,8 @@ void Player::Tackle()
 	Vector3 moveDirection = {};
 	//スティックの向き
 	auto vec = Input::GetLStickDirection();
-	stickDirection.x = (cameraDirectionX * vec.x).x;
-	stickDirection.y = (cameraDirectionZ * vec.y).z;
+	stickDirection.x = vec.x;
+	stickDirection.y = vec.y;
 	stickDirection = Vector2::Normalize(stickDirection);
 
 	tackleStartPos = virtualityPlanePosition;
@@ -1099,6 +1094,29 @@ void Player::Fall()
 	
 }
 
+void Player::KillRandEnem()
+{
+	if (!Input::TriggerKey(DIK_M))
+	{
+		return;
+	}
+
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	
+	for (auto e : enemies)
+	{
+		if (e->IsFall())
+		{
+			continue;
+		}
+		else
+		{
+			e->ChangeOutFieldFlag();
+			return;
+		}
+	}
+}
+
 Vector3 Player::EasingMove(Vector3 arg_startPos, Vector3 arg_endPos, int arg_maxTime, float arg_nowTime)
 {
 	Vector3 result = {};
@@ -1112,12 +1130,33 @@ void Player::EndDrawing()
 {
 	drawingFlag = false;
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus);
-	weight += num * FieldPiece::GetWeight();
-	gottenPanel += num;
-	cutPower = 0;
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
+	/*weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;*/
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	for (auto e : enemies)
+	{
+		if (e->IsFall())
+		{
+			continue;
+		}
+		e->ForcedWeight(num);
+	}
+
+	static const int BONUS_COUNT_UNIT = 3;
+	if (bonusCount > bonusCount * 3)
+	{
+		bonusCount = bonusCount * 3;
+	}
+	cutPower = bonusCount / BONUS_COUNT_UNIT;
+	//cutPower = 0;
 
 	ScoreManager::GetInstance()->AddScore_CutPanel(num);
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
+	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 }
 
 Vector3 Player::GetDirection() const
@@ -1138,6 +1177,12 @@ void Player::HitOnDrawing()
 		c->Dead();
 	}
 	drawingFlag = false;
+}
+
+void Player::ForcedWeight(const int arg_num)
+{
+	weight += FieldPiece::GetWeight() * arg_num;
+	gottenPanel += arg_num;
 }
 
 //void Player::HitCheckLoci()

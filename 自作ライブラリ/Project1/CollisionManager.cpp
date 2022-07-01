@@ -8,7 +8,6 @@
 #include"MeshCollider.h"
 #include "SphereCollider.h"
 using namespace DirectX;
-bool SettingParam::viewCollision = true;
 
 CollisionManager * CollisionManager::GetInstance()
 {

@@ -3,6 +3,7 @@
 #include "Field.h"
 #include "FieldPiece.h"
 #include "ActorManager.h"
+#include "ObjectRegistType.h"
 
 const float UnableThroughBlock::WEIGHT = 2.5f;
 const float UnableThroughBlock::HEIGHT_MAGNIFICATION = 3.0f;
@@ -20,14 +21,14 @@ UnableThroughBlock::UnableThroughBlock(const Vector3& arg_position, const float 
 	Create(OBJLoader::GetModel("fieldPiece"));
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("UnableThroughBlock", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::UNABLETHROUGH_BLOCK);
 
 	Initialize();
 }
 
 UnableThroughBlock::~UnableThroughBlock()
 {
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::UNABLETHROUGH_BLOCK);
 }
 
 void UnableThroughBlock::Initialize()

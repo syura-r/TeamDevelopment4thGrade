@@ -21,6 +21,8 @@ public:
 	{
 		Sprite3D::camera = camera;
 	}
+	//親スプライトをセット
+	void SetParent(Sprite3D* parent) { this->parent = parent; }
 protected:
 	void CreateSprite3D();
 	static Camera* camera;
@@ -38,15 +40,6 @@ protected:
 		XMFLOAT3 cameraPos;
 		float pad;//パディング
 		XMFLOAT4 color;
-	};
-	struct ConstBufferData2
-	{
-		XMFLOAT3 ambient;
-		float pad1;
-		XMFLOAT3 diffuse;
-		float pad2;
-		XMFLOAT3 specular;
-		float alpha;
 	};
 
 
@@ -66,4 +59,6 @@ protected:
 	bool rect = false;//切り出しをしているかどうか
 	XMFLOAT2 rectTexSize;
 
+	//親スプライト
+	Sprite3D* parent = nullptr;
 };

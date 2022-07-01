@@ -8,8 +8,8 @@ using namespace DirectX;
 class Camera
 {
 public:
-	Camera();	
-	Camera(const XMFLOAT3& eye, const XMFLOAT3& target, const XMFLOAT3& up,float arg_near = 0.1f,float arg_far = 1000.0f);
+	Camera(const Vector2& windowSize = { 1920,1080 });
+	Camera(const XMFLOAT3& eye, const XMFLOAT3& target, const XMFLOAT3& up,float arg_near = 0.1f,float arg_far = 1000.0f, const Vector2& windowSize = { 1920,1080 });
 	~Camera();
 
 	virtual void Update();

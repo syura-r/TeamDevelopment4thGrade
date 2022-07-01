@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Object.h"
+#include "ObjectRegistType.h"
 
 class Player;
 class Field;
@@ -18,12 +19,13 @@ class ActorManager
 {
 public:
 	static ActorManager* GetInstance();
-	~ActorManager();
+	static void DeleteInstance();
 
 	void Initialize();
 
-	void AddObject(std::string arg_name, Object* arg_object);
-	void DeleteObject(Object* arg_object);
+	void AddObject(Object* arg_object, const ObjectRegistType arg_type);
+	void DeleteObject(Object* arg_object, const ObjectRegistType arg_type);
+	void CollisionCheck();
 
 	Player* GetPlayer();	
 	std::vector<Field*>& GetFields();
@@ -33,8 +35,23 @@ public:
 	std::vector<UnableThroughBlock*>& GetUnableThroughBlocks();
 	std::vector<UnableThroughEdge*>& GetUnableThroughEdges();
 	CircularSaw* GetCircularSaw(Object* arg_obj);
+	std::vector<BaseGameActor*>& GetBaseGameActors();
 
 private:
-	std::unordered_multimap<std::string, Object*> mapGameObject;
+	static ActorManager* instance;
+	ActorManager();
+	~ActorManager();
+	ActorManager(const ActorManager& another) = delete;
+	ActorManager& operator=(const ActorManager& another) = delete;
+
+	std::vector<Player*> players;
+	std::vector<Field*> fields;
+	std::vector<StandardEnemy*> standardEnemies;
+	std::vector<EnergyItem*> energyItems;
+	std::vector<PanelItem*> panelItems;
+	std::vector<UnableThroughBlock*> unableThroughBlocks;
+	std::vector<UnableThroughEdge*> unableThroughEdges;
+	std::vector<CircularSaw*> circularSaws;
+	std::vector<BaseGameActor*> baseGameActors;
 };
 

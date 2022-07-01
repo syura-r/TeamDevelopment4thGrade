@@ -3,6 +3,7 @@
 #include "Field.h"
 #include "FieldPiece.h"
 #include "ActorManager.h"
+#include "ObjectRegistType.h"
 
 const float UnableThroughEdge::WEIGHT = 2.5f;
 const float UnableThroughEdge::HEIGHT_MAGNIFICATION = 1.5f;
@@ -17,14 +18,14 @@ UnableThroughEdge::UnableThroughEdge(const Vector3& arg_position, const float ar
 	Create(OBJLoader::GetModel("fieldEdge"));
 
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("UnableThroughEdge", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::UNABLETHROUGH_EDGE);
 
 	Initialize();
 }
 
 UnableThroughEdge::~UnableThroughEdge()
 {
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::UNABLETHROUGH_EDGE);
 }
 
 void UnableThroughEdge::Initialize()

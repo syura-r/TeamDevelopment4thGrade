@@ -7,147 +7,254 @@
 #include "UnableThroughBlock.h"
 #include "UnableThroughEdge.h"
 #include "CircularSaw.h"
+#include "BaseGameActor.h"
+
+ActorManager* ActorManager::instance = nullptr;
 
 ActorManager* ActorManager::GetInstance()
 {
-	static ActorManager* instance = new ActorManager();
+	if (!instance)
+	{
+		instance = new ActorManager();
+	}
 	return instance;
+}
+
+void ActorManager::DeleteInstance()
+{
+	if (instance)
+	{
+		delete instance;
+		instance = nullptr;
+	}
+}
+
+ActorManager::ActorManager()
+{
+	Initialize();
 }
 
 ActorManager::~ActorManager()
 {
-	mapGameObject.clear();//登録してあるオブジェクトは別の場所でdeleteされる
+	Initialize();//登録してあるオブジェクトは別の場所でdeleteされる
 }
 
 void ActorManager::Initialize()
 {
-	mapGameObject.clear(); 
+	players.clear();
+	fields.clear();
+	standardEnemies.clear();
+	energyItems.clear();
+	panelItems.clear();
+	unableThroughBlocks.clear();
+	unableThroughEdges.clear();
+	circularSaws.clear();
+	baseGameActors.clear();
 }
 
-void ActorManager::AddObject(std::string arg_name, Object* arg_object)
+void ActorManager::AddObject(Object* arg_object, const ObjectRegistType arg_type)
 {
-	mapGameObject.insert(std::make_pair(arg_name, arg_object));
-}
-
-void ActorManager::DeleteObject(Object* arg_object)
-{
-	for (auto itr = mapGameObject.begin(); itr != mapGameObject.end(); itr++)
+	switch (arg_type)
 	{
-		if (itr->second == arg_object)
-		{
-			mapGameObject.erase(itr);
-			return;
-		}
+	case ObjectRegistType::PLAYER:
+		players.push_back(static_cast<Player*>(arg_object));
+		//baseGameActors.push_back(static_cast<Player*>(arg_object));
+		break;
+	case ObjectRegistType::FIELD:
+		fields.push_back(static_cast<Field*>(arg_object));
+		break;
+	case ObjectRegistType::STANDARD_ENEMY:
+		standardEnemies.push_back(static_cast<StandardEnemy*>(arg_object));
+		//baseGameActors.push_back(static_cast<StandardEnemy*>(arg_object));
+		break;
+	case ObjectRegistType::ENERGY_ITEM:
+		energyItems.push_back(static_cast<EnergyItem*>(arg_object));
+		break;
+	case ObjectRegistType::PANEL_ITEM:
+		panelItems.push_back(static_cast<PanelItem*>(arg_object));
+		break;
+	case ObjectRegistType::UNABLETHROUGH_BLOCK:
+		unableThroughBlocks.push_back(static_cast<UnableThroughBlock*>(arg_object));
+		break;
+	case ObjectRegistType::UNABLETHROUGH_EDGE:
+		unableThroughEdges.push_back(static_cast<UnableThroughEdge*>(arg_object));
+		break;
+	case ObjectRegistType::CIRCULAR_SAW:
+		circularSaws.push_back(static_cast<CircularSaw*>(arg_object));
+		break;
+	default:
+		break;
 	}
+}
+
+void ActorManager::DeleteObject(Object* arg_object, const ObjectRegistType arg_type)
+{
+	switch (arg_type)
+	{
+	case ObjectRegistType::PLAYER:
+		for (auto itr = players.begin(); itr != players.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				players.erase(itr);
+				break;
+			}
+		}
+		/*for (auto itr = baseGameActors.begin(); itr != baseGameActors.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				baseGameActors.erase(itr);
+				break;
+			}
+		}*/
+		break;
+	case ObjectRegistType::FIELD:
+		for (auto itr = fields.begin(); itr != fields.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				fields.erase(itr);
+				break;
+			}
+		}
+		break;
+	case ObjectRegistType::STANDARD_ENEMY:
+		for (auto itr = standardEnemies.begin(); itr != standardEnemies.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				standardEnemies.erase(itr);
+				break;
+			}
+		}
+		/*for (auto itr = baseGameActors.begin(); itr != baseGameActors.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				baseGameActors.erase(itr);
+				break;
+			}
+		}*/
+		break;
+	case ObjectRegistType::ENERGY_ITEM:
+		for (auto itr = energyItems.begin(); itr != energyItems.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				energyItems.erase(itr);
+				break;
+			}
+		}
+		break;
+	case ObjectRegistType::PANEL_ITEM:
+		for (auto itr = panelItems.begin(); itr != panelItems.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				panelItems.erase(itr);
+				break;
+			}
+		}
+		break;
+	case ObjectRegistType::UNABLETHROUGH_BLOCK:
+		for (auto itr = unableThroughBlocks.begin(); itr != unableThroughBlocks.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				unableThroughBlocks.erase(itr);
+				break;
+			}
+		}
+		break;
+	case ObjectRegistType::UNABLETHROUGH_EDGE:
+		for (auto itr = unableThroughEdges.begin(); itr != unableThroughEdges.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				unableThroughEdges.erase(itr);
+				break;
+			}
+		}
+		break;
+	case ObjectRegistType::CIRCULAR_SAW:
+		for (auto itr = circularSaws.begin(); itr != circularSaws.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				circularSaws.erase(itr);
+				break;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void ActorManager::CollisionCheck()
+{
 }
 
 Player* ActorManager::GetPlayer()
 {
-	auto range = mapGameObject.equal_range("Player");
-	if (range.first != range.second)
+	if (players.empty())
 	{
-		Player* player = static_cast<Player*>(range.first->second);
-		return player;
+		return nullptr;
 	}
-	return nullptr;
+
+	return players[0];
 }
 
 std::vector<Field*>& ActorManager::GetFields()
 {
-	static std::vector<Field*> vec;
-	vec.clear();
-
-	auto range = mapGameObject.equal_range("Field");
-	for (auto itr = range.first; itr != range.second; itr++)
-	{
-		vec.push_back(static_cast<Field*>(itr->second));
-	}
-
-	return vec;
+	return fields;
 }
 
 std::vector<StandardEnemy*>& ActorManager::GetStandardEnemies()
 {
-	static std::vector<StandardEnemy*> vec;
-	vec.clear();
-
-	auto range = mapGameObject.equal_range("StandardEnemy");
-	for (auto itr = range.first; itr != range.second; itr++)
-	{
-		vec.push_back(static_cast<StandardEnemy*>(itr->second));
-	}
-
-	return vec;
+	return standardEnemies;
 }
 
 std::vector<EnergyItem*>& ActorManager::GetEnergyItems()
 {
-	static std::vector<EnergyItem*> vec;
-	vec.clear();
-
-	auto range = mapGameObject.equal_range("EnergyItem");
-	for (auto itr = range.first; itr != range.second; itr++)
-	{
-		vec.push_back(static_cast<EnergyItem*>(itr->second));
-	}
-
-	return vec;
+	return energyItems;
 }
 
 std::vector<PanelItem*>& ActorManager::GetPanelItems()
 {
-	static std::vector<PanelItem*> vec;
-	vec.clear();
-
-	auto range = mapGameObject.equal_range("PanelItem");
-	for (auto itr = range.first; itr != range.second; itr++)
-	{
-		vec.push_back(static_cast<PanelItem*>(itr->second));
-	}
-
-	return vec;
+	return panelItems;
 }
 
 std::vector<UnableThroughBlock*>& ActorManager::GetUnableThroughBlocks()
 {
-	static std::vector<UnableThroughBlock*> vec;
-	vec.clear();
-
-	auto range = mapGameObject.equal_range("UnableThroughBlock");
-	for (auto itr = range.first; itr != range.second; itr++)
-	{
-		vec.push_back(static_cast<UnableThroughBlock*>(itr->second));
-	}
-
-	return vec;
+	return unableThroughBlocks;
 }
 
 std::vector<UnableThroughEdge*>& ActorManager::GetUnableThroughEdges()
 {
-	static std::vector<UnableThroughEdge*> vec;
-	vec.clear();
-
-	auto range = mapGameObject.equal_range("UnableThroughEdge");
-	for (auto itr = range.first; itr != range.second; itr++)
-	{
-		vec.push_back(static_cast<UnableThroughEdge*>(itr->second));
-	}
-
-	return vec;
+	return unableThroughEdges;
 }
 
 CircularSaw* ActorManager::GetCircularSaw(Object* arg_obj)
 {
-	CircularSaw* returnPointer = nullptr;
-	auto range = mapGameObject.equal_range("CircularSaw");
-	for (auto itr = range.first; itr != range.second; itr++)
+	if (circularSaws.empty())
 	{
-		CircularSaw* c = static_cast<CircularSaw*>(itr->second);
-		if (c->GetParentObject() == arg_obj)
+		return nullptr;
+	}
+
+	for (auto cs : circularSaws)
+	{
+		if (cs->GetParentObject() == arg_obj)
 		{
-			returnPointer = c;
-			break;
+			return cs;
 		}
 	}
-	return returnPointer;
+
+	return nullptr;
+}
+
+std::vector<BaseGameActor*>& ActorManager::GetBaseGameActors()
+{
+	return baseGameActors;
 }

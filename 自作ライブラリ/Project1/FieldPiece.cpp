@@ -3,6 +3,7 @@
 #include "LocusDef.h"
 #include "OBJLoader.h"
 #include "ActorManager.h"
+#include "ParticleEmitter.h"
 
 const float FieldPiece::SIZE = 7.5f / 0.866f / 2.0f;
 const float FieldPiece::SIDEWAYS_LENGTH = 0.866f * SIZE;
@@ -18,7 +19,8 @@ FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_dir
 	 isActive(true),
 	 isBlockade(false),
 	 cutterPos(Vector3()),
-	 isBonus(false)
+	 isBonus(false),
+	 reviveTimer(new Timer(15 * 60))
 {
 	SetPoints();
 	position = virtualityPlanePosition;
@@ -43,12 +45,19 @@ void FieldPiece::Initialize()
 	isActive = true;
 	isBlockade = false;
 	isBonus = false;
+	reviveTimer->Reset();
 	Object::Update();
 }
 
 void FieldPiece::Update()
 {
-	if (!isActive || isBlockade)
+	if (isBlockade)
+	{
+		return;
+	}
+
+	Revival();
+	if (!isActive)
 	{
 		return;
 	}
@@ -143,6 +152,7 @@ void FieldPiece::CutOneself(Object* arg_obj)
 {
 	isActive = false;
 	cutterPos = arg_obj->GetPosition();
+	ParticleEmitter::PieceGetEffect(position, scale, rotation, color, arg_obj);
 }
 
 float FieldPiece::GetSize()
@@ -275,5 +285,22 @@ void FieldPiece::ChangeColorForRidden()
 			color = { 0.8f, 0.1f, 0.1f, 1.0f };
 			return;
 		}
+	}
+}
+
+void FieldPiece::Revival()
+{
+	if (isActive)
+	{
+		return;
+	}
+
+	reviveTimer->Update();
+
+	if (reviveTimer->IsTime())
+	{
+		isActive = true;
+		reviveTimer->Reset();
+		ActorManager::GetInstance()->GetFields()[0]->ReviveGottenPanel(this);
 	}
 }

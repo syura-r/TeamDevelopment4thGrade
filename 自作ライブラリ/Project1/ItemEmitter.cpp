@@ -11,7 +11,7 @@
 ItemEmitter* ItemEmitter::instance = nullptr;
 
 ItemEmitter::ItemEmitter()
-	:energyItemTimer(new Timer(300))
+	:energyItemTimer(new Timer(5 * 60))
 {
 }
 
@@ -48,9 +48,19 @@ void ItemEmitter::Update()
 	energyItemTimer->Update();
 	if (energyItemTimer->IsTime())
 	{
-		Vector3 emitPos = GetEnergyItemEmitPosition();
-		
-		EmitEnergyItem(emitPos, RankEnergyItem::NORMAL);
+		static const int EMIT_NUM = 3;
+		for (int i = 0; i < EMIT_NUM; i++)
+		{
+			int n = ActorManager::GetInstance()->GetEnergyItems().size();
+			if (n >= 30)
+			{
+				break;
+			}
+
+			Vector3 emitPos = GetEnergyItemEmitPosition();
+
+			EmitEnergyItem(emitPos, RankEnergyItem::NORMAL);
+		}
 	}
 
 #ifdef _DEBUG

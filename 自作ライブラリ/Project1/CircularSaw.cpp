@@ -8,6 +8,7 @@
 
 #include "ParticleEmitter.h"
 #include "Audio.h"
+#include "ObjectRegistType.h"
 
 CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType, Object* arg_object)
 	:parentObj(arg_object)
@@ -17,13 +18,13 @@ CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_now
 	nowCuttingLocus = arg_nowCuttingLocus;
 	objectType = arg_objecType;
 	name = typeid(*this).name();
-	ActorManager::GetInstance()->AddObject("CircularSaw", this);
+	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::CIRCULAR_SAW);
 	Initialize();
 }
 
 CircularSaw::~CircularSaw()
 {
-	ActorManager::GetInstance()->DeleteObject(this);
+	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::CIRCULAR_SAW);
 	Audio::StopWave("SE_SawCutNow");
 	Audio::PlayWave("SE_GetSaw");
 }

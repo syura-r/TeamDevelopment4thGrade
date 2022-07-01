@@ -50,12 +50,18 @@ public:
 	void StartFall();
 
 	bool GetOutField() { return outFieldFlag; }
+	void ChangeOutFieldFlag() {
+		fallFlag = true;
+		//outFieldFlag = true;
+	}
 
 	// 吹っ飛び
 	void StartBlow();
 	void SetBlowTime(int arg_blowTime) { blowTime = arg_blowTime; }
 
 	void HitOnDrawing();
+
+	void ForcedWeight(const int arg_num);
 
 private:
 	struct ConstLightCameraBuff
@@ -65,7 +71,9 @@ private:
 	};
 
 	//初期位置
-	const Vector3 StartPos = { 0,-5,-15 };
+	static int offsetCount;
+	const Vector3 StartPos;
+	Vector3 DecideStartPos();
 	//移動処理
 	void Move();
 
@@ -175,6 +183,9 @@ private:
 	Vector3 fallEndPos;
 
 	bool outFieldFlag;
+
+	//ボーナス獲得数
+	int bonusCount;
 
 	//--------------------------------------
 	// 時間

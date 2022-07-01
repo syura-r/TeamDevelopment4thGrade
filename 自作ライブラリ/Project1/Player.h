@@ -45,6 +45,8 @@ public:
 	PanelCutLocus* GetPanelCutLocus();
 
 	void HitOnDrawing();
+
+	void ForcedWeight(const int arg_num);
 	
 private:
 	struct ConstLightCameraBuff
@@ -95,6 +97,8 @@ private:
 	void DischargeGottenPanel(StandardEnemy* arg_enemy);
 	//場外に落下
 	void Fall();
+
+	void KillRandEnem();
 
 	
 	//
@@ -188,6 +192,9 @@ private:
 
 	//サウンド用フラグ
 	bool fallSoundFlag;
+
+	//ボーナス獲得数
+	int bonusCount;
 
 private://静的メンバ変数
 	static DebugCamera* camera;

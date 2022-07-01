@@ -8,7 +8,7 @@ public:
 	OutputData vsParam;
 
 	Particle(){};
-	virtual ~Particle(){};
+	virtual ~Particle() {};
 	void Dead() { vsParam.isDead = true; }
 	bool GetisDead(){ return vsParam.isDead; }
 };
