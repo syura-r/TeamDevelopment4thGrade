@@ -14,6 +14,7 @@ public:
 
 	bool GetActivePause() { return activeFlag; }
 
+	bool GetToGame() { return flag_toGame; }
 	bool GetRestart() { return flag_restart; }
 	bool GetToTitle() { return flag_toTitle; }
 
@@ -74,6 +75,7 @@ private:
 
 	//ÉQÅ[ÉÄÇ…Ç‡Ç«ÇÈ
 	SelectSprite* toGame = nullptr;
+	bool flag_toGame = false;
 
 	//Ç‚ÇËíºÇ∑
 	SelectSprite* restart = nullptr;

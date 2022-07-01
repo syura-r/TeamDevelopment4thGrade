@@ -32,6 +32,7 @@ void Pause::Initialize()
 	selectState = ToGame;
 
 	toGame->Initialize("toGame", 340.0f);
+	flag_toGame = false;
 	restart->Initialize("restart", 540.0f);
 	flag_restart = false;
 	toTitle->Initialize("toTitle", 740.0f);
@@ -173,6 +174,7 @@ void Pause::Decision()
 		{
 		case ToGame:
 			//ÉQÅ[ÉÄÇ…Ç‡Ç«ÇÈ
+			flag_toGame = true;
 			break;
 		case Restart:
 			//Ç‚ÇËíºÇµ

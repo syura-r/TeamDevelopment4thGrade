@@ -121,6 +121,11 @@ void Play::Initialize()
 void Play::Update()
 {
 	pause->Update();
+	//ゲームにもどる
+	if (pause->GetToGame())
+	{
+		return;
+	}
 	//やり直す
 	if (pause->GetRestart())
 	{
@@ -135,6 +140,7 @@ void Play::Update()
 		ShutDown();
 		return;
 	}
+	//ポーズ画面を開いているとき
 	if (pause->GetActivePause())
 		return;
 
