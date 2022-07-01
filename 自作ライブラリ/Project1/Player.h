@@ -187,7 +187,7 @@ private:
 	FBXModel* myModel = nullptr;
 
 	//パネル所持数表示
-	PanelCountUI* panelCountUI = nullptr;
+	//PanelCountUI* panelCountUI = nullptr;
 	PanelCountSprite3D* panelCountSprite3D = nullptr;
 
 	//サウンド用フラグ

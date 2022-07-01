@@ -57,7 +57,7 @@ StandardEnemy::StandardEnemy()
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::STANDARD_ENEMY);
 
-	panelCountUI = new PanelCountUI(GAMEOBJECT_TYPE::ENEMY);
+	//panelCountUI = new PanelCountUI(GAMEOBJECT_TYPE::ENEMY);
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 
 	//StartPos決め		
@@ -71,7 +71,7 @@ StandardEnemy::~StandardEnemy()
 {
 	delete actionTimer;
 	delete walkingTimer;
-	delete panelCountUI;
+	//delete panelCountUI;
 	delete panelCountSprite3D;
 	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::STANDARD_ENEMY);
 }
@@ -112,7 +112,7 @@ void StandardEnemy::Initialize()
 	actionTimer->Initialize();
 	walkingTimer->Initialize();
 
-	panelCountUI->Initialize();
+	//panelCountUI->Initialize();
 	panelCountSprite3D->Initialize();
 
 	fallFlag = false;
@@ -232,7 +232,7 @@ void StandardEnemy::Update()
 	//他のオブジェクトとのヒットチェック
 	Object::Update();
 
-	panelCountUI->Update(gottenPanel);
+	//panelCountUI->Update(gottenPanel);
 	panelCountSprite3D->Update();
 }
 
@@ -242,7 +242,7 @@ void StandardEnemy::Draw()
 
 	object->Draw(true);
 
-	panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
+	//panelCountUI->Draw(GAMEOBJECT_TYPE::ENEMY);
 	panelCountSprite3D->Draw();
 }
 

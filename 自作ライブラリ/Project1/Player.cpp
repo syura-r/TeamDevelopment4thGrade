@@ -46,7 +46,7 @@ Player::Player()
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::PLAYER);
 
-	panelCountUI = new PanelCountUI();
+	//panelCountUI = new PanelCountUI();
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 
 	Initialize();
@@ -77,7 +77,7 @@ Player::Player()
 Player::~Player()
 {			
 	Audio::StopWave("SE_SteppingOn");
-	delete panelCountUI;
+	//delete panelCountUI;
 	delete panelCountSprite3D;		
 	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::PLAYER);
 }
@@ -122,7 +122,7 @@ void Player::Initialize()
 	cutPower = 0;	
 	gottenPanel = 0;
 
-	panelCountUI->Initialize();
+	//panelCountUI->Initialize();
 	panelCountSprite3D->Initialize();
 	fallFlag = false;
 	fallEasingCount = 0;
@@ -221,7 +221,7 @@ void Player::Update()
 	//他のオブジェクトとのヒットチェック	
 	Object::Update();	
 
-	panelCountUI->Update(gottenPanel);
+	//panelCountUI->Update(gottenPanel);
 	panelCountSprite3D->Update();
 }
 
@@ -237,7 +237,7 @@ void Player::Draw()
 	}
 	CustomDraw(true, true);
 	
-	panelCountUI->Draw();
+	//panelCountUI->Draw();
 	panelCountSprite3D->Draw();
 }
 
