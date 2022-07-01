@@ -52,6 +52,8 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 tackleEndPos(Vector3()),
 	 tackleCount(0),
 	 blownTime(0),
+	 pHitActor(nullptr),
+	 hitCount(0),
 	 withstandTime(0),
 	 preWithstandVec(Vector3()),
 	 BGColor(1),
@@ -103,6 +105,8 @@ void BaseGameActor::Initialize()
 	tackleEndPos = Vector3();
 	tackleCount = 0;
 	blownTime = 0;
+	pHitActor = nullptr;
+	hitCount = 0;
 	withstandTime = 0;
 	preWithstandVec = Vector3();
 	BGColor = 1;
@@ -567,6 +571,7 @@ void BaseGameActor::BaseGameActor::EndTackle()
 
 void BaseGameActor::StartBlown()
 {
+	hitCount = 0;
 }
 
 void BaseGameActor::OnBlown(ActionStateLabel& arg_label)
@@ -579,6 +584,13 @@ void BaseGameActor::OnBlown(ActionStateLabel& arg_label)
 	speed = BLOWN_SPEED;
 
 	virtualityPlanePosition += velocity * speed;
+
+	hitCount++;
+	if (hitCount >= 10)
+	{
+		hitCount = 0;
+		pHitActor = nullptr;
+	}
 
 	blownTime--;
 	if (blownTime <= 0)
@@ -693,7 +705,7 @@ void BaseGameActor::EndWithstand()
 void BaseGameActor::StartCut()
 {
 	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
-	ObjectManager::GetInstance()->Add(new CircularSaw(info->cuttingStartPos, panelCutLocus, CircularSaw::GAMEOBJECTTYPE::PLAYER, this));
+	ObjectManager::GetInstance()->Add(new CircularSaw(info->cuttingStartPos, panelCutLocus, this));
 }
 
 void BaseGameActor::OnCut(ActionStateLabel& arg_label)
@@ -810,6 +822,15 @@ void BaseGameActor::EndFall()
 
 void BaseGameActor::HitCheckActor(BaseGameActor* arg_actor)
 {
+	if (pHitActor == arg_actor)
+	{
+		return;
+	}
+	else if (arg_actor->pHitActor == this)
+	{
+		return;
+	}
+
 	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(arg_actor->GetVirtualityPlanePosition() - virtualityPlanePosition));
 	if (length <= RADIUS + arg_actor->RADIUS)
 	{
@@ -850,8 +871,12 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 
 	ChangeActionState(actionState, ActionStateBlown::GetInstance());
 	actionState = ActionStateBlown::GetInstance();
+	pHitActor = arg_actor;
+	hitCount = 0;
 	arg_actor->ChangeActionState(arg_actor->GetActionState(), ActionStateBlown::GetInstance());
 	arg_actor->actionState = ActionStateBlown::GetInstance();
+	arg_actor->pHitActor = this;
+	arg_actor->hitCount = 0;
 }
 
 void BaseGameActor::HitCheckEnergyItem(EnergyItem* arg_energyItem)

@@ -133,6 +133,9 @@ public:
 	inline IActionState* GetActionState() {
 		return actionState;
 	}	
+	inline void SetActionState(IActionState* arg_state) {
+		this->actionState = arg_state;
+	}
 	inline bool IsHitDuringTackle()const {
 		return isHitDuringTackle;
 	}		
@@ -221,6 +224,9 @@ protected:
 	//---Blown---	
 	// ‚Á”ò‚ÑŠÔ
 	int blownTime;
+	//’¼‘O‚É“–‚½‚Á‚½‘Šè
+	BaseGameActor* pHitActor;
+	int hitCount;
 
 	//---Withstand---	
 	//“¥‚ñ’£‚è’†‚Ì—P—\

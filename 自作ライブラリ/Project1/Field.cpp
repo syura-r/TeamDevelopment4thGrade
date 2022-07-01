@@ -135,7 +135,7 @@ void Field::CalcTilt()
 {
 	tiltDirection = Vector2();
 
-	Player* player = ActorManager::GetInstance()->GetPlayer();
+	/*Player* player = ActorManager::GetInstance()->GetPlayer();
 	if (player && player->GetActionState()->GetLabel() != ActionStateLabel::FALL)
 	{
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
@@ -146,13 +146,27 @@ void Field::CalcTilt()
 	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();
 	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
 	{
-		if ((*itr)->IsFall())
+		if ((*itr)->GetActionState()->GetLabel() == ActionStateLabel::FALL)
 		{
 			continue;
 		}
 
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * (*itr)->GetWeight() * GetMultiplyingFactor(Vector3::Length((*itr)->GetVirtualityPlanePosition()));
+		tiltDirection += posVector;
+	}*/
+
+	//Actor‘S‘Ì
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+	for (auto a : actors)
+	{
+		if (a->GetActionState()->GetLabel() == ActionStateLabel::FALL)
+		{
+			continue;
+		}
+
+		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(a->GetVirtualityPlanePosition());
+		posVector = Vector2::Normalize(posVector) * a->GetWeight() * GetMultiplyingFactor(Vector3::Length(a->GetVirtualityPlanePosition()));
 		tiltDirection += posVector;
 	}
 

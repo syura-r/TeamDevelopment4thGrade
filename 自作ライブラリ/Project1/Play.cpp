@@ -96,10 +96,10 @@ void Play::Initialize()
 	Player* player = new Player(Vector3(0, -5, 10));
 	objectManager->Add(player);	
 	
-	StandardEnemy* testEnemy = new StandardEnemy();
+	StandardEnemy* testEnemy = new StandardEnemy(Vector3(-10, -5, -10));
 	objectManager->Add(testEnemy);	
 
-	StandardEnemy* testEnemy2 = new StandardEnemy();
+	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10));
 	objectManager->Add(testEnemy2);
 
 	stadium->Initialize();
@@ -191,7 +191,7 @@ void Play::Update()
 	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
 	for (auto e : enemies)
 	{
-		if (!e->GetOutField())
+		if (!e->IsEndGame())
 		{
 			allEnemiesOutField = false;
 			break;

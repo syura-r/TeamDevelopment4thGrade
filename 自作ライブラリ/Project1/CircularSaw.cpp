@@ -10,14 +10,14 @@
 #include "Audio.h"
 #include "ObjectRegistType.h"
 #include "IActionState.h"
+#include "BaseGameActor.h"
 
-CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType, Object* arg_object)
+CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, BaseGameActor* arg_object)
 	:parentObj(arg_object)
 {
 	Create(OBJLoader::GetModel("Saw"));
 	virtualityPlanePosition = arg_virtualityPlanePosition;
 	nowCuttingLocus = arg_nowCuttingLocus;
-	objectType = arg_objecType;
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::CIRCULAR_SAW);
 	Initialize();
@@ -69,19 +69,7 @@ void CircularSaw::Update()
 		{
 			Dead();
 
-			switch (objectType)
-			{
-			case GAMEOBJECTTYPE::PLAYER:
-				static_cast<Player*>(parentObj)->CompleteCut();
-				break;
-			case GAMEOBJECTTYPE::ENEMY:
-				static_cast<StandardEnemy*>(parentObj)->EndDrawing();
-				break;
-			default:
-				break;
-			}
-		
-
+			parentObj->CompleteCut();
 		}
 	}
 

@@ -66,7 +66,7 @@ void ActorManager::AddObject(Object* arg_object, const ObjectRegistType arg_type
 		break;
 	case ObjectRegistType::STANDARD_ENEMY:
 		standardEnemies.push_back(static_cast<StandardEnemy*>(arg_object));
-		//baseGameActors.push_back(static_cast<StandardEnemy*>(arg_object));
+		baseGameActors.push_back(static_cast<StandardEnemy*>(arg_object));
 		break;
 	case ObjectRegistType::ENERGY_ITEM:
 		energyItems.push_back(static_cast<EnergyItem*>(arg_object));
@@ -129,14 +129,14 @@ void ActorManager::DeleteObject(Object* arg_object, const ObjectRegistType arg_t
 				break;
 			}
 		}
-		/*for (auto itr = baseGameActors.begin(); itr != baseGameActors.end(); itr++)
+		for (auto itr = baseGameActors.begin(); itr != baseGameActors.end(); itr++)
 		{
 			if (*itr == arg_object)
 			{
 				baseGameActors.erase(itr);
 				break;
 			}
-		}*/
+		}
 		break;
 	case ObjectRegistType::ENERGY_ITEM:
 		for (auto itr = energyItems.begin(); itr != energyItems.end(); itr++)

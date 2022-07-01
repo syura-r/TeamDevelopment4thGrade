@@ -26,6 +26,8 @@
 #include "Audio.h"
 #include "ParticleEmitter.h"
 #include "ObjectRegistType.h"
+#include "IActionState.h"
+#include "ActionStateFall.h"
 
 Player::Player(const Vector3& arg_pos)
 	:BaseGameActor(arg_pos)
@@ -108,13 +110,14 @@ void Player::KillRandEnem()
 	
 	for (auto e : enemies)
 	{
-		if (e->IsFall())
+		if (e->GetActionState()->GetLabel() == ActionStateLabel::FALL)
 		{
 			continue;
 		}
 		else
 		{
-			e->ChangeOutFieldFlag();
+			e->ChangeActionState(e->GetActionState(), ActionStateFall::GetInstance());
+			e->SetActionState(ActionStateFall::GetInstance());
 			return;
 		}
 	}

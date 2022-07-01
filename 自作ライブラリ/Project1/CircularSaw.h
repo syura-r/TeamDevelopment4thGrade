@@ -3,6 +3,8 @@
 #include "BaseLocus.h"
 #include "LocusDef.h"
 
+class BaseGameActor;
+
 class CircularSaw :
     public Object
 {
@@ -14,7 +16,7 @@ public:
 		ENEMY,
 	};
 
-	CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType, Object* arg_object);
+	CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, BaseGameActor* arg_object);
 	~CircularSaw();
 	void Initialize()override;
 	void Update()override;
@@ -29,8 +31,6 @@ private:
 
 	LocusType cutLocusNum;
 
-	GAMEOBJECTTYPE objectType;
-
 	BaseLocus* nowCuttingLocus;
 
 	float length;
@@ -41,6 +41,6 @@ private:
 
 	Vector3 virtualityPlanePosition;
 
-	Object* parentObj;
+	BaseGameActor* parentObj;
 };
 
