@@ -5,7 +5,7 @@
 #include"Alpha.h"
 #include "Object.h"
 #include "TitleText.h"
-#include "Sprite.h"
+#include "Sprite3D.h"
 #include "Object3D.h"
 #include "DebugCamera.h"
 #include"LightGroup.h"
@@ -28,15 +28,19 @@ private:
 	//遷移関連
 	//パネル飛び出し
 	bool PopUpPanel();
+	Vector3 velocity_pupUp;
+	const Vector3 velocity_init = { 0,1.0f,-0.2f };
 	//カメラ前進
 	bool ZoomIn();
+	int easingTimer_zoom;
 
 	std::unique_ptr<DebugCamera> camera;
 	float cameraDistance;
+	const float cameraDistance_init = 23.0f;
 	std::unique_ptr<LightGroup> lightGroup;
 
-	Sprite* titleLogo = nullptr;
-	Sprite* titleStart = nullptr;
+	Sprite3D* titleLogo = nullptr;
+	Sprite3D* titleStart = nullptr;
 
 	struct Panel
 	{

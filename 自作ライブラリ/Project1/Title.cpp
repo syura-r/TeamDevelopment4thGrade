@@ -5,6 +5,7 @@
 #include "TextureResource.h"
 #include "OBJLoader.h"
 #include "Audio.h"
+#include "Easing.h"
 
 Title::Title()
 {
@@ -12,6 +13,7 @@ Title::Title()
 
 	camera = std::make_unique<DebugCamera>();
 	Object3D::SetCamera(camera.get());
+	Sprite3D::SetCamera(camera.get());
 
 	//ライト生成
 	lightGroup.reset(LightGroup::Create());
@@ -21,8 +23,8 @@ Title::Title()
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, { 1,1,1 });
 
-	titleLogo = new Sprite();
-	titleStart = new Sprite();
+	titleLogo = new Sprite3D();
+	titleStart = new Sprite3D();
 
 	for (int i = 0; i < panelsNum_ALL; i++)
 	{
@@ -45,9 +47,10 @@ void Title::Initialize()
 {
 	isEnd = false;
 
-	cameraDistance = 23.0f;
+	cameraDistance = cameraDistance_init;
 	camera.get()->SetDistance(cameraDistance);
 	Object3D::SetCamera(camera.get());
+	Sprite3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());
 
 	for (int i = 0; i < panelsNum_ALL; i++)
@@ -57,8 +60,8 @@ void Title::Initialize()
 	//敷き詰め
 	PanelPadding();
 
-	//ランダムでボーナスパネルも配置
-
+	velocity_pupUp = {};
+	easingTimer_zoom = 0;
 	isSceneChange = false;
 
 	Audio::PlayWave("BGM_Title", 0.1f, true);
@@ -66,25 +69,6 @@ void Title::Initialize()
 
 void Title::Update()
 {
-	//シーン切り替え
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
-	{
-		Audio::PlayWave("SE_Decision");
-		//Audio::StopWave("BGM_Title");
-		isSceneChange = true;
-		//ShutDown();
-	}
-
-//#ifdef _DEBUG
-	if (Input::TriggerKey(DIK_SPACE))
-	{
-		Audio::PlayWave("SE_Decision");
-		//Audio::StopWave("BGM_Title");
-		isSceneChange = true;
-		//ShutDown();
-	}
-//#endif
-
 	//シーン遷移
 	if (isSceneChange)
 	{
@@ -92,10 +76,30 @@ void Title::Update()
 		{
 			if(ZoomIn())
 			{
+				//シーン切り替え
 				Audio::StopWave("BGM_Title");
 				ShutDown();
 			}
 		}
+	}
+	else
+	{
+		//シーン切り替え開始
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
+		{
+			Audio::PlayWave("SE_Decision");
+			isSceneChange = true;
+			velocity_pupUp = velocity_init;
+		}
+
+		//#ifdef _DEBUG
+		if (Input::TriggerKey(DIK_SPACE))
+		{
+			Audio::PlayWave("SE_Decision");
+			isSceneChange = true;
+			velocity_pupUp = velocity_init;
+		}
+		//#endif
 	}
 
 	//各更新
@@ -117,16 +121,17 @@ void Title::PreDraw()
 	{
 		panels[i]->object->Draw();
 	}
+
+	const Vector3 pos_logo = { 0.0f, 0.0f, -20.0f };
+	const Vector3 pos_start = { 0.0f, -0.8f, -20.0f };
+	const float scale_logo = 1.0f / 16.0f;
+	const float scale_start = 1.0f / 22.0f;
+	titleLogo->DrawSprite("titlelogo", pos_logo, 0.0f, { scale_logo, scale_logo });
+	titleStart->DrawSprite("titlestart", pos_start, 0.0f, { scale_start, scale_start });
 }
 
 void Title::PostDraw()
 {
-	const Vector2 windowCenterPosition = { 960,500 };
-	const float startcharPlusPositionY = 280;
-
-	const float scale = 2.0f;
-	titleLogo->DrawSprite("titlelogo", windowCenterPosition, 0.0f, { scale, scale });
-	titleStart->DrawSprite("titlestart", { windowCenterPosition.x, windowCenterPosition.y + startcharPlusPositionY }, 0.0f, { 1.5f, 1.5f });
 }
 
 void Title::PanelPadding()
@@ -164,13 +169,21 @@ void Title::PanelPadding()
 
 bool Title::PopUpPanel()
 {
-	//計算用に値を移す
+	//計算用に中央のパネルの値を移す
 	Vector3 position = panels[(panelsNum_ALL / 2) - 1]->position;
+	Vector3 rotation = panels[(panelsNum_ALL / 2) - 1]->rotation;
+
 	//手前下方向に飛び出す
-	const Vector3 velocity = { 0,-2,1 };
-	position += velocity;
+	const float gravity = 0.1f;
+	velocity_pupUp.y -= gravity;
+	position += velocity_pupUp;
+
+	//回転も付ける
+	rotation.x += -8.0f;
+
 	//値を反映する
 	panels[(panelsNum_ALL / 2) - 1]->position = position;
+	panels[(panelsNum_ALL / 2) - 1]->rotation = rotation;
 
 	//一定値以上落ちたら真を返す
 	const float endPosition_Y = -50.0f;
@@ -180,14 +193,14 @@ bool Title::PopUpPanel()
 bool Title::ZoomIn()
 {
 	//近づける
-	const float speed = 1.0f;
-	cameraDistance -= speed;
+	const float endDistance = 8.0f;
+	const int easingLimit = 45;
+	cameraDistance = Easing::EaseInCirc(cameraDistance_init, endDistance, easingLimit, easingTimer_zoom);
+	easingTimer_zoom++;
 	//反映
 	camera.get()->SetDistance(cameraDistance);
 
-
-	//一定値以上近づいたら真を返す
-	const float endDistance = 8.0f;
+	//目標地点まで近づいたら真を返す
 	return cameraDistance <= endDistance;
 }
 
