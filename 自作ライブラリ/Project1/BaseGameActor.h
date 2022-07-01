@@ -14,8 +14,10 @@
 #include "PanelCountSprite3D.h"
 
 class IActionState;
+enum class ActionStateLabel;
 class EnergyItem;
 class PanelItem;
+class FieldPiece;
 class PanelCutLocus;
 class UnableThroughEdge;
 class UnableThroughBlock;
@@ -36,8 +38,8 @@ public:
 
 	//---全体---
 	//フィールドから落ちない処理
-	virtual bool StayInTheField();
-	virtual bool StayOnRemainPanels();
+	virtual void StayInTheField(ActionStateLabel& arg_label);
+	virtual void StayOnRemainPieces(ActionStateLabel& arg_label, FieldPiece* arg_piece);
 	//保持パネルばらまき
 	virtual void DischargeGottenPanel(BaseGameActor* arg_actor);
 	virtual void UpdatePos();
@@ -46,7 +48,9 @@ public:
 
 	//---Move---
 	//移動処理
-	virtual void Move();
+	virtual void StartMove();
+	virtual void OnMove(ActionStateLabel& arg_label);
+	virtual void EndMove();
 	virtual bool IsChangeMoveToTackle();
 	virtual bool IsChangeMoveToBlown();
 	virtual bool IsChangeMoveToWithstand();
@@ -54,35 +58,50 @@ public:
 	virtual bool IsChangeMoveToFall();
 
 	//---Tackle---
+	//タックルの処理
+	virtual void StartTackle();
+	virtual void OnTackle(ActionStateLabel& arg_label);
 	//タックルの中断
-	virtual void SuspendTackle();
+	virtual void EndTackle();
 	virtual bool IsChangeTackleToMove();
 	virtual bool IsChangeTackleToBlown();
 	virtual bool IsChangeTackleToWithstand();
 	virtual bool IsChangeTackleToFall();
 
 	//---Blown---
+	virtual void StartBlown();
+	virtual void OnBlown(ActionStateLabel& arg_label);
+	virtual void EndBlown();
 	virtual bool IsChangeBlownToMove();
 	virtual bool IsChangeBlownToWithstand();
 	virtual bool IsChangeBlownToFall();
 
 	//---Withstand---
+	virtual void StartWithstand();	
 	//踏ん張りになる
-	virtual void StartWithstand(bool arg_outField = true, Vector3 arg_velocity = {});
+	virtual void OnWithstand(ActionStateLabel& arg_label);
+	virtual void EndWithstand();
 	virtual bool IsChangeWithstandToMove();
 	virtual bool IsChangeWithstandToFall();
 
 	//---Cut---
+	virtual void StartCut();
+	virtual void OnCut(ActionStateLabel& arg_label);
+	virtual void EndCut();
 	//切り抜き終了時CircularSawから呼ばれる
-	virtual void EndDrawing();
+	virtual void CompleteCut();
 	//切り抜き中に衝突を受けたとき
-	virtual void HitOnDrawing();
+	virtual void SuspendCut();
 	//
 	void ForcedWeight(const int arg_num);
 	virtual bool IsChangeCutToMove();
 	virtual bool IsChangeCutToBlown();
 
 	//---Fall---
+	//場外に落下
+	virtual void StartFall();
+	virtual void OnFall(ActionStateLabel& arg_label);
+	virtual void EndFall();
 
 	//---衝突判定---
 	//敵との当たり判定
@@ -212,8 +231,6 @@ protected:
 	Vector3 tackleStartPos;
 	Vector3 tackleEndPos;
 	int tackleCount;
-	//タックルの処理
-	virtual void Tackle();
 
 	//---Blown---	
 	// 吹っ飛び時間
@@ -238,8 +255,6 @@ protected:
 	//基本60
 	int nextInputStartCount;
 	int notWithstandCount;
-	//踏ん張り中の処理
-	virtual void Withstand();
 
 	//---Cut---	
 	PanelCutLocus* panelCutLocus;
@@ -255,6 +270,4 @@ protected:
 	Vector3 fallEndPos;
 	//サウンド用フラグ
 	bool isPlayedFallSound;
-	//場外に落下
-	virtual void Fall();
 };

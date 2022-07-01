@@ -13,8 +13,6 @@ void ActionStateFall::Initialize(BaseGameActor* arg_actor)
 
 IActionState* ActionStateFall::Update(BaseGameActor* arg_actor)
 {
-	arg_actor->Fall();
-
 	return this;
 }
 
