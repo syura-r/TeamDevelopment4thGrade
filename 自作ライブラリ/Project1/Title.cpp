@@ -25,6 +25,7 @@ void Title::Initialize()
 	isEnd = false;
 
 	Audio::PlayWave("BGM_Title", 0.1f, true);
+	Audio::PlayWave("BGM_Title", 0.1f, true);
 }
 
 void Title::Update()
@@ -45,6 +46,15 @@ void Title::Update()
 		ShutDown();
 	}
 //#endif
+
+	if (Input::TriggerKey(DIK_1))
+	{
+		Audio::Stop("BGM_Title");
+	}
+	if (Input::TriggerKey(DIK_2))
+	{
+		Audio::Play("BGM_Title");
+	}
 }
 
 void Title::PreDraw()
