@@ -68,7 +68,7 @@ void OBJModel::Initialize(const std::string & name, bool smooth)
 			LoadMaterial(filename);
 		}
 		//先頭文字列がgならグループの開始
-		if (key == "g")
+		if (key == "g" && positions.size() > 0)
 		{
 			if (mesh->GetName().size() > 0)
 			{
