@@ -2,7 +2,7 @@
 
 ActionStateFall* ActionStateFall::GetInstance()
 {
-	static ActionStateFall* instance;
+	static ActionStateFall* instance = new ActionStateFall();
 	return instance;
 }
 

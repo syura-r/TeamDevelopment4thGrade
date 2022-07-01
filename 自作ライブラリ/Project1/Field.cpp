@@ -15,6 +15,7 @@
 #include "ItemEmitter.h"
 #include "EnergyItem.h"
 #include "ObjectRegistType.h"
+#include "IActionState.h"
 
 const int Field::PIECE_LAYER_NUM = 6;
 const float Field::RADIUS = 45.0f;
@@ -135,7 +136,7 @@ void Field::CalcTilt()
 	tiltDirection = Vector2();
 
 	Player* player = ActorManager::GetInstance()->GetPlayer();
-	if (player && !player->IsFall())
+	if (player && player->GetActionState()->GetLabel() != ActionStateLabel::FALL)
 	{
 		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
 		posVector = Vector2::Normalize(posVector) * player->GetWeight() * GetMultiplyingFactor(Vector3::Length(player->GetVirtualityPlanePosition()));

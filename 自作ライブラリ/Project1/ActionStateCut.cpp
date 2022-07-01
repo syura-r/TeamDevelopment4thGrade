@@ -4,7 +4,7 @@
 
 ActionStateCut* ActionStateCut::GetInstance()
 {
-	static ActionStateCut* instance;
+	static ActionStateCut* instance = new ActionStateCut();
 	return instance;
 }
 

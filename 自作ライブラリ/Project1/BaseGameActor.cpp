@@ -75,8 +75,6 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, XMFLOAT4(1, 1, 0, 0.6f));
 	panelCutLocus->SetParentObject(this);
-
-	Initialize();
 }
 
 BaseGameActor::~BaseGameActor()
@@ -151,6 +149,7 @@ void BaseGameActor::Update()
 		if (state != actionState)
 		{
 			ChangeActionState(actionState, state);
+			actionState = state;
 		}
 
 		field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
@@ -310,7 +309,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		if (multiDot <= 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			arg_label = ActionStateLabel::WITHSTAND;
+			//arg_label = ActionStateLabel::WITHSTAND;
 			preWithstandVec = -virtualityPlanePosition;
 			break;
 		}
@@ -318,7 +317,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			arg_label = ActionStateLabel::WITHSTAND;
+			//arg_label = ActionStateLabel::WITHSTAND;
 			preWithstandVec = -virtualityPlanePosition;
 			break;
 		}
@@ -333,7 +332,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			arg_label = ActionStateLabel::WITHSTAND;
+			//arg_label = ActionStateLabel::WITHSTAND;
 			preWithstandVec = -virtualityPlanePosition;
 			break;
 		}
@@ -451,7 +450,6 @@ void BaseGameActor::ChangeActionState(IActionState* arg_current, IActionState* a
 {
 	arg_current->ShutDown(this);
 	arg_next->Initialize(this);
-	arg_current = arg_next;
 }
 
 void BaseGameActor::StartMove()
@@ -748,6 +746,7 @@ void BaseGameActor::CompleteCut()
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 	ChangeActionState(actionState, ActionStateMove::GetInstance());
+	actionState = ActionStateMove::GetInstance();
 }
 
 void BaseGameActor::SuspendCut()
@@ -850,7 +849,9 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 	}
 
 	ChangeActionState(actionState, ActionStateBlown::GetInstance());
+	actionState = ActionStateBlown::GetInstance();
 	arg_actor->ChangeActionState(arg_actor->GetActionState(), ActionStateBlown::GetInstance());
+	arg_actor->actionState = ActionStateBlown::GetInstance();
 }
 
 void BaseGameActor::HitCheckEnergyItem(EnergyItem* arg_energyItem)

@@ -5,7 +5,7 @@
 
 ActionStateBlown* ActionStateBlown::GetInstance()
 {
-	static ActionStateBlown* instance;
+	static ActionStateBlown* instance = new ActionStateBlown();
 	return instance;
 }
 

@@ -5,7 +5,7 @@
 
 ActionStateTackle* ActionStateTackle::GetInstance()
 {
-	static ActionStateTackle* instance;
+	static ActionStateTackle* instance = new ActionStateTackle();
 	return instance;
 }
 

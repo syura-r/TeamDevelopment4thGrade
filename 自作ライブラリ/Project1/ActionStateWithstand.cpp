@@ -4,7 +4,7 @@
 
 ActionStateWithstand* ActionStateWithstand::GetInstance()
 {
-	static ActionStateWithstand* instance;
+	static ActionStateWithstand* instance = new ActionStateWithstand();
 	return instance;
 }
 

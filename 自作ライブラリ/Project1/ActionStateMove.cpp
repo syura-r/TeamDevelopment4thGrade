@@ -6,7 +6,7 @@
 
 ActionStateMove* ActionStateMove::GetInstance()
 {
-	static ActionStateMove* instance;
+	static ActionStateMove* instance = new ActionStateMove();
 	return instance;
 }
 

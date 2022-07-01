@@ -9,6 +9,7 @@
 #include "ParticleEmitter.h"
 #include "Audio.h"
 #include "ObjectRegistType.h"
+#include "IActionState.h"
 
 CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_nowCuttingLocus, GAMEOBJECTTYPE arg_objecType, Object* arg_object)
 	:parentObj(arg_object)
@@ -71,7 +72,7 @@ void CircularSaw::Update()
 			switch (objectType)
 			{
 			case GAMEOBJECTTYPE::PLAYER:
-				static_cast<Player*>(parentObj)->EndDrawing();
+				static_cast<Player*>(parentObj)->CompleteCut();
 				break;
 			case GAMEOBJECTTYPE::ENEMY:
 				static_cast<StandardEnemy*>(parentObj)->EndDrawing();

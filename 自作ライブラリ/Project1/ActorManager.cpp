@@ -59,7 +59,7 @@ void ActorManager::AddObject(Object* arg_object, const ObjectRegistType arg_type
 	{
 	case ObjectRegistType::PLAYER:
 		players.push_back(static_cast<Player*>(arg_object));
-		//baseGameActors.push_back(static_cast<Player*>(arg_object));
+		baseGameActors.push_back(static_cast<Player*>(arg_object));
 		break;
 	case ObjectRegistType::FIELD:
 		fields.push_back(static_cast<Field*>(arg_object));
@@ -101,14 +101,14 @@ void ActorManager::DeleteObject(Object* arg_object, const ObjectRegistType arg_t
 				break;
 			}
 		}
-		/*for (auto itr = baseGameActors.begin(); itr != baseGameActors.end(); itr++)
+		for (auto itr = baseGameActors.begin(); itr != baseGameActors.end(); itr++)
 		{
 			if (*itr == arg_object)
 			{
 				baseGameActors.erase(itr);
 				break;
 			}
-		}*/
+		}
 		break;
 	case ObjectRegistType::FIELD:
 		for (auto itr = fields.begin(); itr != fields.end(); itr++)

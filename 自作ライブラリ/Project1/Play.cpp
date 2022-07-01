@@ -17,6 +17,7 @@
 #include "Field.h"
 #include "Ending.h"
 #include "ScoreManager.h"
+#include "BaseGameActor.h"
 
 #include "TextureResource.h"
 #include "StandardEnemy.h"
@@ -92,7 +93,7 @@ void Play::Initialize()
 	Field* field = new Field();
 	objectManager->Add(field, false);	
 
-	Player* player = new Player();
+	Player* player = new Player(Vector3(0, -5, 10));
 	objectManager->Add(player);	
 	
 	StandardEnemy* testEnemy = new StandardEnemy();
@@ -175,9 +176,10 @@ void Play::Update()
 	camera->Update();
 	screenCamera->Update();
 
+	actorManager->CollisionCheck();
 	collisionManager->CheckAllCollisions();
 
-	if (ActorManager::GetInstance()->GetPlayer()->IsGameEnd() )
+	if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();

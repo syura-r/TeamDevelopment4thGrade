@@ -22,6 +22,7 @@
 #include "Audio.h"
 #include "ScoreManager.h"
 #include "ObjectRegistType.h"
+#include "IActionState.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 const float WALKING = 90.0f;
@@ -810,7 +811,7 @@ void StandardEnemy::DischargeGottenPanel(StandardEnemy* arg_enemy)
 
 void StandardEnemy::DischargeGottenPanel(Player* arg_player)
 {
-	if (arg_player->IsFall())
+	if (arg_player->GetActionState()->GetLabel() == ActionStateLabel::FALL)
 	{
 		return;
 	}
@@ -905,7 +906,7 @@ void StandardEnemy::EndDrawing()
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
 	auto player = ActorManager::GetInstance()->GetPlayer();
-	if (!player->IsFall())
+	if (player->GetActionState()->GetLabel() != ActionStateLabel::FALL)
 	{
 		player->ForcedWeight(num);
 	}

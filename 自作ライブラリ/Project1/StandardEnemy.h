@@ -12,6 +12,7 @@
 #include "PanelCountUI.h"
 #include "PanelCountSprite3D.h"
 #include "Timer.h"
+#include "BaseGameActor.h"
 
 class EnergyItem;
 class PanelItem;
