@@ -1,4 +1,6 @@
 #include "ActionStateCut.h"
+#include "ActionStateWithstand.h"
+#include "ActionStateFall.h"
 
 ActionStateCut* ActionStateCut::GetInstance()
 {
@@ -16,6 +18,27 @@ IActionState* ActionStateCut::Update(BaseGameActor* arg_actor)
 {
 	next = ActionStateLabel::CUT;
 	arg_actor->OnCut(next);
+
+	FieldPiece* piece = nullptr;
+	arg_actor->StayInTheField(next);
+	if (next == ActionStateLabel::WITHSTAND)
+	{
+		return ActionStateWithstand::GetInstance();
+	}
+	else if (next == ActionStateLabel::FALL)
+	{
+		return ActionStateFall::GetInstance();
+	}
+	arg_actor->StayOnRemainPieces(next, piece);
+	if (next == ActionStateLabel::WITHSTAND)
+	{
+		return ActionStateWithstand::GetInstance();
+	}
+	else if (next == ActionStateLabel::FALL)
+	{
+		return ActionStateFall::GetInstance();
+	}
+
 	return this;
 }
 

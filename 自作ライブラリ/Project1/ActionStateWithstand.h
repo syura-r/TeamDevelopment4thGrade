@@ -3,6 +3,7 @@
 
 class ActionStateWithstand : public IActionState
 {
+public:
 	static ActionStateWithstand* GetInstance();
 
 	virtual void Initialize(BaseGameActor* arg_actor) override;

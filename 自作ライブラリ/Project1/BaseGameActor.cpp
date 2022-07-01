@@ -7,6 +7,7 @@
 #include "UnableThroughEdge.h"
 #include "UnableThroughBlock.h"
 #include "CircularSaw.h"
+#include "ActorManager.h"
 #include "DrawMode.h"
 #include "Input.h"
 #include "Audio.h"
@@ -282,7 +283,7 @@ void BaseGameActor::MoveCamera(Vector3 arg_dir)
 void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 {
 	//Withstandは不実行
-	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND)
+	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND || actionState->GetLabel() == ActionStateLabel::FALL)
 	{
 		return;
 	}
@@ -341,6 +342,12 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 
 void BaseGameActor::StayOnRemainPieces(ActionStateLabel& arg_label, FieldPiece* arg_piece)
 {
+	//Withstandは不実行
+	if (actionState->GetLabel() == ActionStateLabel::WITHSTAND || actionState->GetLabel() == ActionStateLabel::FALL)
+	{
+		return;
+	}
+
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS);
 
@@ -396,7 +403,7 @@ void BaseGameActor::StayOnRemainPieces(ActionStateLabel& arg_label, FieldPiece* 
 				arg_piece = p;
 				arg_label = ActionStateLabel::FALL;
 				fallStartPos = virtualityPlanePosition;
-				fallEndPos = p->GetVirtualityPlanePosition();
+				fallEndPos = p->GetVirtualityPlanePosition();				
 				return;
 			}
 		}
@@ -740,6 +747,7 @@ void BaseGameActor::CompleteCut()
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+	ChangeActionState(actionState, ActionStateMove::GetInstance());
 }
 
 void BaseGameActor::SuspendCut()
@@ -840,10 +848,18 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 	{
 		arg_actor->SuspendCut();
 	}
+
+	ChangeActionState(actionState, ActionStateBlown::GetInstance());
+	arg_actor->ChangeActionState(arg_actor->GetActionState(), ActionStateBlown::GetInstance());
 }
 
 void BaseGameActor::HitCheckEnergyItem(EnergyItem* arg_energyItem)
 {
+	if (arg_energyItem->IsDead())
+	{
+		return;
+	}
+
 	if (!arg_energyItem->IsAppeared())
 	{
 		return;
@@ -886,6 +902,11 @@ void BaseGameActor::HitEnergyItem(EnergyItem* arg_energyItem)
 
 void BaseGameActor::HitCheckPanelItem(PanelItem* arg_panelItem)
 {
+	if (arg_panelItem->IsDead())
+	{
+		return;
+	}
+
 	if (!arg_panelItem->IsEndBounce())
 	{
 		return;
@@ -1026,80 +1047,13 @@ void BaseGameActor::DecideDirection(Vector3& arg_direction)
 
 bool BaseGameActor::IsChangeMoveToTackle()
 {
-	return false;
-}
-
-bool BaseGameActor::IsChangeMoveToBlown()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeMoveToWithstand()
-{
+	//不使用
+	//return Input::TriggerPadButton(XINPUT_GAMEPAD_B) && gottenPanel > 0;
 	return false;
 }
 
 bool BaseGameActor::IsChangeMoveToCut()
 {
-	return false;
-}
-
-bool BaseGameActor::IsChangeMoveToFall()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeTackleToMove()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeTackleToBlown()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeTackleToWithstand()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeTackleToFall()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeBlownToMove()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeBlownToWithstand()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeBlownToFall()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeWithstandToMove()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeWithstandToFall()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeCutToMove()
-{
-	return false;
-}
-
-bool BaseGameActor::IsChangeCutToBlown()
-{
-	return false;
+	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
+	return Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece;
 }

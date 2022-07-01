@@ -1,4 +1,7 @@
 #include "ActionStateBlown.h"
+#include "ActionStateMove.h"
+#include "ActionStateWithstand.h"
+#include "ActionStateFall.h"
 
 ActionStateBlown* ActionStateBlown::GetInstance()
 {
@@ -16,6 +19,32 @@ IActionState* ActionStateBlown::Update(BaseGameActor* arg_actor)
 {
 	next = ActionStateLabel::BLOWN;
 	arg_actor->OnBlown(next);
+
+	FieldPiece* piece = nullptr;
+	arg_actor->StayInTheField(next);
+	if (next == ActionStateLabel::WITHSTAND)
+	{
+		return ActionStateWithstand::GetInstance();
+	}
+	else if (next == ActionStateLabel::FALL)
+	{
+		return ActionStateFall::GetInstance();
+	}
+	arg_actor->StayOnRemainPieces(next, piece);
+	if (next == ActionStateLabel::WITHSTAND)
+	{
+		return ActionStateWithstand::GetInstance();
+	}
+	else if (next == ActionStateLabel::FALL)
+	{
+		return ActionStateFall::GetInstance();
+	}
+
+	if (next == ActionStateLabel::MOVE)
+	{
+		return ActionStateMove::GetInstance();
+	}
+
 	return this;
 }
 

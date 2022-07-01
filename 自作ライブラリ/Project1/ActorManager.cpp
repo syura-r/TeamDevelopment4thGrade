@@ -8,6 +8,7 @@
 #include "UnableThroughEdge.h"
 #include "CircularSaw.h"
 #include "BaseGameActor.h"
+#include "IActionState.h"
 
 ActorManager* ActorManager::instance = nullptr;
 
@@ -194,6 +195,44 @@ void ActorManager::DeleteObject(Object* arg_object, const ObjectRegistType arg_t
 
 void ActorManager::CollisionCheck()
 {
+	//Actor同士
+	for (int i = 0; i < baseGameActors.size() - 1; i++)
+	{
+		for (int j = i + 1; j < baseGameActors.size(); j++)
+		{
+			if (baseGameActors[i]->GetActionState()->GetLabel() == ActionStateLabel::FALL)
+			{
+				break;
+			}
+			if (baseGameActors[j]->GetActionState()->GetLabel() == ActionStateLabel::FALL)
+			{
+				continue;
+			}
+
+			baseGameActors[i]->HitCheckActor(baseGameActors[j]);
+		}
+	}
+
+	//アイテム
+	for (int i = 0; i < baseGameActors.size(); i++)
+	{
+		if (baseGameActors[i]->GetActionState()->GetLabel() == ActionStateLabel::FALL)
+		{
+			continue;
+		}
+
+		//まるのこ
+		for (int j = 0; j < energyItems.size(); j++)
+		{
+			baseGameActors[i]->HitCheckEnergyItem(energyItems[j]);
+		}
+
+		//パネル
+		for (int j = 0; j < panelItems.size(); j++)
+		{
+			baseGameActors[i]->HitCheckPanelItem(panelItems[j]);
+		}
+	}
 }
 
 Player* ActorManager::GetPlayer()

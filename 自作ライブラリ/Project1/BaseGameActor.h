@@ -52,10 +52,7 @@ public:
 	virtual void OnMove(ActionStateLabel& arg_label);
 	virtual void EndMove();
 	virtual bool IsChangeMoveToTackle();
-	virtual bool IsChangeMoveToBlown();
-	virtual bool IsChangeMoveToWithstand();
 	virtual bool IsChangeMoveToCut();
-	virtual bool IsChangeMoveToFall();
 
 	//---Tackle---
 	//タックルの処理
@@ -63,26 +60,17 @@ public:
 	virtual void OnTackle(ActionStateLabel& arg_label);
 	//タックルの中断
 	virtual void EndTackle();
-	virtual bool IsChangeTackleToMove();
-	virtual bool IsChangeTackleToBlown();
-	virtual bool IsChangeTackleToWithstand();
-	virtual bool IsChangeTackleToFall();
 
 	//---Blown---
 	virtual void StartBlown();
 	virtual void OnBlown(ActionStateLabel& arg_label);
 	virtual void EndBlown();
-	virtual bool IsChangeBlownToMove();
-	virtual bool IsChangeBlownToWithstand();
-	virtual bool IsChangeBlownToFall();
 
 	//---Withstand---
 	virtual void StartWithstand();	
 	//踏ん張りになる
 	virtual void OnWithstand(ActionStateLabel& arg_label);
 	virtual void EndWithstand();
-	virtual bool IsChangeWithstandToMove();
-	virtual bool IsChangeWithstandToFall();
 
 	//---Cut---
 	virtual void StartCut();
@@ -92,10 +80,8 @@ public:
 	virtual void CompleteCut();
 	//切り抜き中に衝突を受けたとき
 	virtual void SuspendCut();
-	//
+	//相手の重さを増やす
 	void ForcedWeight(const int arg_num);
-	virtual bool IsChangeCutToMove();
-	virtual bool IsChangeCutToBlown();
 
 	//---Fall---
 	//場外に落下

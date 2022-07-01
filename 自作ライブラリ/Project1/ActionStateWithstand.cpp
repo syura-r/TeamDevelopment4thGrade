@@ -1,4 +1,6 @@
 #include "ActionStateWithstand.h"
+#include "ActionStateMove.h"
+#include "ActionStateFall.h"
 
 ActionStateWithstand* ActionStateWithstand::GetInstance()
 {
@@ -16,6 +18,19 @@ IActionState* ActionStateWithstand::Update(BaseGameActor* arg_actor)
 {
 	next = ActionStateLabel::WITHSTAND;
 	arg_actor->OnWithstand(next);
+
+	switch (next)
+	{
+	case ActionStateLabel::MOVE:
+		return ActionStateMove::GetInstance();
+		break;
+	case ActionStateLabel::FALL:
+		return ActionStateFall::GetInstance();
+		break;
+	default:
+		break;
+	}
+
 	return this;
 }
 
