@@ -19,7 +19,7 @@ void ScoreManager::Finalize()
 void ScoreManager::Inisitlize()
 {
 	totalScore = 0;
-	stockPanelNum_last = 0;
+	cutPanelNum_all = 0;
 	fallEnemyNum = 0;
 }
 
@@ -53,6 +53,8 @@ void ScoreManager::AddScore_CutPanel(const int oncePanelNum)
 	}
 	result = rawScore * oncePanelNum;
 	totalScore += result;
+
+	cutPanelNum_all += oncePanelNum;
 }
 
 void ScoreManager::AddScore_FallEnemy()

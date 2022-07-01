@@ -53,7 +53,7 @@ Play::Play()
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
-	timeLimit = new TimeLimit(180 * 60);
+	timeLimit = new TimeLimit(180 * 60);//§ŒÀŽžŠÔ‚ÌÝ’è‚Í‚±‚±
 	scoreUI = new ScoreUI();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
@@ -144,7 +144,6 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 #endif
@@ -160,7 +159,6 @@ void Play::Update()
 		if (gameEndCount >= 60)
 		{
 			ShutDown();
-			ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());					
 		}
 
 		return;
@@ -181,7 +179,6 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 
@@ -199,7 +196,6 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 }

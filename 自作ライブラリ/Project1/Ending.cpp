@@ -40,7 +40,7 @@ void Ending::Initialize()
 	drawScore = 0.0f;
 	isCountEnd_score = false;
 
-	panelNum = ScoreManager::GetInstance()->GetStockPanelNum_Last();
+	panelNum = ScoreManager::GetInstance()->GetCutPanelNum_All();
 	drawPanelNum = 0.0f;
 	isCountEnd_panel = false;
 
@@ -92,7 +92,7 @@ void Ending::Update()
 		}
 	}
 
-	//取得数表示加算
+	//切り抜いたパネル数表示加算
 	if (drawPanelNum < panelNum)
 	{
 		const int sub = panelNum - drawPanelNum;
