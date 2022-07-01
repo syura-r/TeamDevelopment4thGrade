@@ -239,9 +239,9 @@ void Play::PostDraw()
 {
 	//if (migrate)
 	//	return;
-	pause->Draw();
 	scoreUI->Draw();
 	timeLimit->Draw();
+	pause->Draw();
 
 	objectManager->PostDraw();
 

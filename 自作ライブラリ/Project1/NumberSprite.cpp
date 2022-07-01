@@ -7,7 +7,7 @@ NumberSprite::NumberSprite(float& num):num(num)
 {
 }
 
-void NumberSprite::Draw(const int digits, const std::string& texName, const XMFLOAT2& pos, const XMFLOAT2& scale, const XMFLOAT4& color,const XMFLOAT2& anchorPoint)
+void NumberSprite::Draw(const int digits, const std::string& texName, const XMFLOAT2& pos, const XMFLOAT2& scale, const XMFLOAT4& color,const XMFLOAT2& anchorPoint, const std::string& pipelineName)
 {
 	if (sprites.size() < digits)
 	{
@@ -51,7 +51,7 @@ void NumberSprite::Draw(const int digits, const std::string& texName, const XMFL
 		XMFLOAT2 position = pos;
 		position.x += i * width * scale.x - offset * width * scale.x;
 		sprites[i]->SpriteSetTextureRect(texName, drawNumber * width, 0, width, height);
-		sprites[i]->DrawSprite(texName, position, 0, scale, color);
+		sprites[i]->DrawSprite(texName, position, 0, scale, color, { 0.5f,0.5f }, pipelineName);
 		k++;
 	}
 

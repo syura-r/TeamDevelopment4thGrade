@@ -3,7 +3,7 @@
 #include "Audio.h"
 #include "Easing.h"
 
-float Pause::positions_X[Pause::positionStepMax] = { -100.0f, 128.0f, 300.0f };
+float Pause::positions_X[Pause::positionStepMax] = { -100.0f, 160.0f, 300.0f };
 bool Pause::fadeFlag = false;
 
 Pause::Pause()
@@ -110,8 +110,8 @@ void Pause::Draw()
 	sp_base->DrawSprite("selectInPause", pos_base);
 
 	const XMFLOAT2 scale = { 1920, 1080 };
-	const XMFLOAT4 color = { 0,0,0,0.3f };
-	sp_back->DrawSprite("white1x1", pos_back, 0.0f, scale, color, { 0.0f,0.0f });
+	const XMFLOAT4 color = { 0,0,0,0.4f };
+	sp_back->DrawSprite("white1x1", pos_back, 0.0f, scale, color, { 0.0f,0.0f }, "NoAlphaToCoverageSprite");
 }
 
 void Pause::Select()

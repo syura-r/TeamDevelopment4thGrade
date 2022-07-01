@@ -59,7 +59,7 @@ void ScoreUI::Update()
 
 void ScoreUI::Draw()
 {
-	//画像サイズ（数字1つ分）
+	//画像サイズ
 	const Vector2 iconTexSize = { 225.0f, 86.0f };
 	//画像サイズ（数字1つ分）
 	const Vector2 numberTexSize = { 47.0f, 86.0f };
@@ -67,11 +67,11 @@ void ScoreUI::Draw()
 	const Vector2 spaceSize = { 25.0f, 30.0f };
 
 	//色
-	const Vector4 color = { 1,1,1,0.2f };
+	const Vector4 color = { 1,1,1,0.8f };
 
 	Vector2 pos = { (iconTexSize.x / 2) + spaceSize.x,(iconTexSize.y / 2) + spaceSize.y };
-	sp->DrawSprite("GamePlay_UI_Score_Text", pos, 0.0f, { 1,1 }, color);
+	sp->DrawSprite("GamePlay_UI_Score_Text", pos, 0.0f, { 1,1 }, color, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
 
 	pos.x += (numberTexSize.x / 2) * 6 + (iconTexSize.x / 2);
-	numsp->Draw(6, "GamePlay_UI_Number", pos, { 1,1 }, color);
+	numsp->Draw(6, "GamePlay_UI_Number", pos, { 1,1 }, color, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
 }
