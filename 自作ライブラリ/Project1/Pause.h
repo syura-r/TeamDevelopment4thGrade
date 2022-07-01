@@ -43,6 +43,11 @@ private:
 	static const int positionStepMax = 3;
 	static float positions_X[positionStepMax];
 
+	//ƒQ[ƒ€‰æ–Ê‚ğˆÃ‚­
+	Sprite* sp_back = nullptr;
+	Vector2 pos_back = {};
+
+	//‘I‘ğ‚ğŒ©‚â‚·‚­
 	Sprite* sp_base = nullptr;
 	Vector2 pos_base = {};
 

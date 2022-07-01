@@ -8,6 +8,7 @@ bool Pause::fadeFlag = false;
 
 Pause::Pause()
 {
+	sp_back = new Sprite();
 	sp_base = new Sprite();
 	toGame = new SelectSprite();
 	restart = new SelectSprite();
@@ -16,6 +17,7 @@ Pause::Pause()
 
 Pause::~Pause()
 {
+	delete sp_back;
 	delete sp_base;
 	delete toGame;
 	delete restart;
@@ -105,6 +107,10 @@ void Pause::Draw()
 	toTitle->Draw();
 
 	sp_base->DrawSprite("selectInPause", pos_base);
+
+	const XMFLOAT2 scale = { 1920, 1080 };
+	const XMFLOAT4 color = { 0,0,0,0.3f };
+	sp_back->DrawSprite("white1x1", pos_back, 0.0f, scale, color, { 0.0f,0.0f });
 }
 
 void Pause::Select()
