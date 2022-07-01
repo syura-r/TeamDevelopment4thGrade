@@ -3,6 +3,7 @@
 
 class ActionStateCut : public IActionState
 {
+public:
 	static ActionStateCut* GetInstance();
 
 	virtual void Initialize(BaseGameActor* arg_actor) override;

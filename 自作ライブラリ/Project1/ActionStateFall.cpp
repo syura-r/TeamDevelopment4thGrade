@@ -8,16 +8,20 @@ ActionStateFall* ActionStateFall::GetInstance()
 
 void ActionStateFall::Initialize(BaseGameActor* arg_actor)
 {
-	next = ActionStateLabel::MOVE;
+	next = ActionStateLabel::FALL;
+	arg_actor->StartFall();
 }
 
 IActionState* ActionStateFall::Update(BaseGameActor* arg_actor)
 {
+	next = ActionStateLabel::FALL;
+	arg_actor->OnFall(next);
 	return this;
 }
 
 void ActionStateFall::ShutDown(BaseGameActor* arg_actor)
 {
+	arg_actor->EndFall();
 }
 
 ActionStateLabel ActionStateFall::GetLabel() const

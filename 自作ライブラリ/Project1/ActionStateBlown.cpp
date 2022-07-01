@@ -8,16 +8,20 @@ ActionStateBlown* ActionStateBlown::GetInstance()
 
 void ActionStateBlown::Initialize(BaseGameActor* arg_actor)
 {
-	next = ActionStateLabel::MOVE;
+	next = ActionStateLabel::BLOWN;
+	arg_actor->StartBlown();
 }
 
 IActionState* ActionStateBlown::Update(BaseGameActor* arg_actor)
 {
+	next = ActionStateLabel::BLOWN;
+	arg_actor->OnBlown(next);
 	return this;
 }
 
 void ActionStateBlown::ShutDown(BaseGameActor* arg_actor)
 {
+	arg_actor->EndBlown();
 }
 
 ActionStateLabel ActionStateBlown::GetLabel() const

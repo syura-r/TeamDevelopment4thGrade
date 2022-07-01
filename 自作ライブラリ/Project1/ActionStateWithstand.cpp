@@ -8,16 +8,20 @@ ActionStateWithstand* ActionStateWithstand::GetInstance()
 
 void ActionStateWithstand::Initialize(BaseGameActor* arg_actor)
 {
-	next = ActionStateLabel::MOVE;
+	next = ActionStateLabel::WITHSTAND;
+	arg_actor->StartWithstand();
 }
 
 IActionState* ActionStateWithstand::Update(BaseGameActor* arg_actor)
 {
+	next = ActionStateLabel::WITHSTAND;
+	arg_actor->OnWithstand(next);
 	return this;
 }
 
 void ActionStateWithstand::ShutDown(BaseGameActor* arg_actor)
 {
+	arg_actor->EndWithstand();
 }
 
 ActionStateLabel ActionStateWithstand::GetLabel() const

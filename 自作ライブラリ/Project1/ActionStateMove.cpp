@@ -8,16 +8,20 @@ ActionStateMove* ActionStateMove::GetInstance()
 
 void ActionStateMove::Initialize(BaseGameActor* arg_actor)
 {
-	next = ActionStateLabel::CUT;
+	next = ActionStateLabel::MOVE;
+	arg_actor->StartMove();
 }
 
 IActionState* ActionStateMove::Update(BaseGameActor* arg_actor)
 {
+	next = ActionStateLabel::MOVE;
+	arg_actor->OnMove(next);
 	return this;
 }
 
 void ActionStateMove::ShutDown(BaseGameActor* arg_actor)
 {
+	arg_actor->EndMove();
 }
 
 ActionStateLabel ActionStateMove::GetLabel() const

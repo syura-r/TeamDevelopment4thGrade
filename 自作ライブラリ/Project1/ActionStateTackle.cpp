@@ -8,16 +8,20 @@ ActionStateTackle* ActionStateTackle::GetInstance()
 
 void ActionStateTackle::Initialize(BaseGameActor* arg_actor)
 {
-	next = ActionStateLabel::MOVE;
+	next = ActionStateLabel::TACKLE;
+	arg_actor->StartTackle();
 }
 
 IActionState* ActionStateTackle::Update(BaseGameActor* arg_actor)
 {
+	next = ActionStateLabel::TACKLE;
+	arg_actor->OnTackle(next);
 	return this;
 }
 
 void ActionStateTackle::ShutDown(BaseGameActor* arg_actor)
 {
+	arg_actor->EndTackle();
 }
 
 ActionStateLabel ActionStateTackle::GetLabel() const
