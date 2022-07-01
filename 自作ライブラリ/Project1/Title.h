@@ -22,6 +22,9 @@ public:
 	void PostDraw()override;
 
 private:
+	//ƒ‰ƒ“ƒ_ƒ€
+	float GetRandom(float arg_min, float arg_max);
+
 	//ƒpƒlƒ‹•~‚«‹l‚ß
 	void PanelPadding();
 
@@ -47,7 +50,7 @@ private:
 		Panel();
 		~Panel();
 
-		void Initialize();
+		void Initialize(const int num_color);
 
 		Object3D* object = nullptr;
 		Vector3 position = { 0,0,0 };

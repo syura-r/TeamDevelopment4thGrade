@@ -60,11 +60,11 @@ void TimeLimit::Draw()
 
 	position.x -= numberTexSize.x;//分の中心にずらす
 	position.y -= numberTexSize.y / 2;
-	minute_sprite->Draw(1, "GamePlay_UI_Number", position, { 1,1 }, color, { 0.5f,0.5f },"NoAlphaToCoverageSprite");
+	minute_sprite->Draw(1, "GamePlay_UI_Number", position, { 1,1 }, color/*, { 0.5f,0.5f },"NoAlphaToCoverageSprite"*/);
 
 	position.x += (numberTexSize.x / 4) * 3;//コロンの中心にずらす
-	colon_sprite->DrawSprite("GamePlay_UI_Colon", position, 0, { 1,1 }, color, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
+	colon_sprite->DrawSprite("GamePlay_UI_Colon", position, 0, { 1,1 }, color/*, { 0.5f,0.5f }, "NoAlphaToCoverageSprite"*/);
 
 	position.x += (numberTexSize.x / 4) * 5;//秒の中心にずらす
-	seconds_sprite->Draw(2, "GamePlay_UI_Number", position, { 1,1 }, color, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
+	seconds_sprite->Draw(2, "GamePlay_UI_Number", position, { 1,1 }, color/*, { 0.5f,0.5f }, "NoAlphaToCoverageSprite"*/);
 }

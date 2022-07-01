@@ -70,8 +70,8 @@ void ScoreUI::Draw()
 	const Vector4 color = { 1,1,1,0.8f };
 
 	Vector2 pos = { (iconTexSize.x / 2) + spaceSize.x,(iconTexSize.y / 2) + spaceSize.y };
-	sp->DrawSprite("GamePlay_UI_Score_Text", pos, 0.0f, { 1,1 }, color, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
+	sp->DrawSprite("GamePlay_UI_Score_Text", pos, 0.0f, { 1,1 }, color/*, { 0.5f,0.5f }, "NoAlphaToCoverageSprite"*/);
 
 	pos.x += (numberTexSize.x / 2) * 6 + (iconTexSize.x / 2);
-	numsp->Draw(6, "GamePlay_UI_Number", pos, { 1,1 }, color, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
+	numsp->Draw(6, "GamePlay_UI_Number", pos, { 1,1 }, color/*, { 0.5f,0.5f }, "NoAlphaToCoverageSprite"*/);
 }

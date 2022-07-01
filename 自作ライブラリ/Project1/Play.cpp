@@ -208,6 +208,9 @@ void Play::Update()
 
 void Play::PreDraw()
 {
+	timeLimit->Draw();
+	scoreUI->Draw();
+
 		objectManager->DrawReady();
 #ifdef _DEBUG
 		if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
@@ -239,8 +242,6 @@ void Play::PostDraw()
 {
 	//if (migrate)
 	//	return;
-	scoreUI->Draw();
-	timeLimit->Draw();
 	pause->Draw();
 
 	objectManager->PostDraw();

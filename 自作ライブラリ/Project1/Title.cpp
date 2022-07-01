@@ -6,6 +6,7 @@
 #include "OBJLoader.h"
 #include "Audio.h"
 #include "Easing.h"
+#include <random>
 
 Title::Title()
 {
@@ -55,7 +56,7 @@ void Title::Initialize()
 
 	for (int i = 0; i < panelsNum_ALL; i++)
 	{
-		panels[i]->Initialize();
+		panels[i]->Initialize((int)GetRandom(0.0f, 5.0f));
 	}
 	//敷き詰め
 	PanelPadding();
@@ -132,6 +133,14 @@ void Title::PreDraw()
 
 void Title::PostDraw()
 {
+}
+
+float Title::GetRandom(float arg_min, float arg_max)
+{
+	std::random_device rnd;
+	std::mt19937_64 mt64(rnd());
+	std::uniform_real_distribution<float> genRandFloat(arg_min, arg_max);
+	return genRandFloat(mt64);
 }
 
 void Title::PanelPadding()
@@ -214,10 +223,18 @@ Title::Panel::~Panel()
 	delete object;
 }
 
-void Title::Panel::Initialize()
+void Title::Panel::Initialize(const int num_color)
 {
 	position = { 0,0,-15 };
 	scale = { 4,4,4, };
 	rotation = { 0,0,0 };
-	color = { 0.25f, 0.58f, 1.0f, 1.0f };
+	const Vector4 blue = { 0.25f, 0.58f, 1.0f, 1.0f };
+	const Vector4 yellow = { 0.9f, 0.9f, 0.1f, 1.0f };
+
+	color = blue;
+	//ランダムでボーナスパネルの色に
+	if (num_color <= 0)
+	{
+		color = yellow;
+	}
 }
