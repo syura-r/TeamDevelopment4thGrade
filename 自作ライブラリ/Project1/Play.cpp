@@ -206,10 +206,6 @@ void Play::Update()
 
 void Play::PreDraw()
 {
-	pause->Draw();
-	timeLimit->Draw();
-	scoreUI->Draw();
-
 		objectManager->DrawReady();
 #ifdef _DEBUG
 		if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
@@ -241,6 +237,10 @@ void Play::PostDraw()
 {
 	//if (migrate)
 	//	return;
+	pause->Draw();
+	scoreUI->Draw();
+	timeLimit->Draw();
+
 	objectManager->PostDraw();
 
 	static Vector3 pos = { 0,0,0 };
