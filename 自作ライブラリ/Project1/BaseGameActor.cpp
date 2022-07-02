@@ -314,6 +314,10 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			//arg_label = ActionStateLabel::WITHSTAND;
+			if (arg_label == ActionStateLabel::TACKLE)
+			{
+				arg_label = ActionStateLabel::MOVE;
+			}
 			preWithstandVec = -virtualityPlanePosition;
 			break;
 		}
@@ -322,6 +326,10 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			//arg_label = ActionStateLabel::WITHSTAND;
+			if (arg_label == ActionStateLabel::TACKLE)
+			{
+				arg_label = ActionStateLabel::MOVE;
+			}
 			preWithstandVec = -virtualityPlanePosition;
 			break;
 		}
@@ -337,6 +345,10 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			//arg_label = ActionStateLabel::WITHSTAND;
+			if (arg_label == ActionStateLabel::TACKLE)
+			{
+				arg_label = ActionStateLabel::MOVE;
+			}
 			preWithstandVec = -virtualityPlanePosition;
 			break;
 		}
@@ -1073,9 +1085,7 @@ void BaseGameActor::DecideDirection(Vector3& arg_direction)
 
 bool BaseGameActor::IsChangeMoveToTackle()
 {
-	//•sŽg—p
-	//return Input::TriggerPadButton(XINPUT_GAMEPAD_B) && gottenPanel > 0;
-	return false;
+	return Input::TriggerPadButton(XINPUT_GAMEPAD_B);
 }
 
 bool BaseGameActor::IsChangeMoveToCut()
