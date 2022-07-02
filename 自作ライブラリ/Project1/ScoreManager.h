@@ -14,6 +14,7 @@ public:
 
 	const int GetTotalScore() { return totalScore; }
 	const int GetCutPanelNum_All() { return cutPanelNum_all; }
+	const int GetFallEnemyNum() { return fallEnemyNum; }
 
 private:
 	ScoreManager();
