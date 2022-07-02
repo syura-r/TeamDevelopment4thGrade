@@ -35,7 +35,7 @@ private:
 	float drawScore = 0.0f;
 	bool isCountEnd_score = false;
 
-	//所持パネル数（最終）
+	//切り抜いたパネル数
 	Sprite* sp_panel = nullptr;
 	NumberSprite* numSp_panel = nullptr;
 	float panelNum = 0.0f;

@@ -54,7 +54,7 @@ Play::Play()
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
-	timeLimit = new TimeLimit(180 * 60);
+	timeLimit = new TimeLimit(180 * 60);//制限時間の設定はここ
 	scoreUI = new ScoreUI();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
@@ -122,6 +122,11 @@ void Play::Initialize()
 void Play::Update()
 {
 	pause->Update();
+	//ゲームにもどる
+	if (pause->GetToGame())
+	{
+		return;
+	}
 	//やり直す
 	if (pause->GetRestart())
 	{
@@ -136,6 +141,7 @@ void Play::Update()
 		ShutDown();
 		return;
 	}
+	//ポーズ画面を開いているとき
 	if (pause->GetActivePause())
 		return;
 
@@ -145,7 +151,6 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 #endif
@@ -161,7 +166,6 @@ void Play::Update()
 		if (gameEndCount >= 60)
 		{
 			ShutDown();
-			ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());					
 		}
 
 		return;
@@ -183,7 +187,6 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 
@@ -201,14 +204,12 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
-		ScoreManager::GetInstance()->SetStockPanelNum_Last(actorManager->GetPlayer()->GetGottenPanel());		
 		return;
 	}
 }
 
 void Play::PreDraw()
 {
-	pause->Draw();
 	timeLimit->Draw();
 	scoreUI->Draw();
 
@@ -243,6 +244,8 @@ void Play::PostDraw()
 {
 	//if (migrate)
 	//	return;
+	pause->Draw();
+
 	objectManager->PostDraw();
 
 	static Vector3 pos = { 0,0,0 };

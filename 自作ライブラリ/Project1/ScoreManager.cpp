@@ -19,22 +19,12 @@ void ScoreManager::Finalize()
 void ScoreManager::Inisitlize()
 {
 	totalScore = 0;
-	stockPanelNum_last = 0;
+	cutPanelNum_all = 0;
+	fallEnemyNum = 0;
 }
 
 void ScoreManager::AddScore_CutPanel(const int oncePanelNum)
 {
-	//int result = 0;
-	////ˆê–‡‚ ‚½‚è‚Ì‘f“_
-	//const int rawScore = 1000;
-	////“¯Ø‚è”²‚«”{—¦
-	//const float onceBonus = 1.0f + ((float)oncePanelNum / 10.0f);
-
-	//result = rawScore * onceBonus * oncePanelNum;
-
-	//totalScore += result;
-
-
 	int result = 0;
 	//ˆê–‡‚ ‚½‚è‚Ì‘f“_
 	int rawScore = 1000;
@@ -63,12 +53,16 @@ void ScoreManager::AddScore_CutPanel(const int oncePanelNum)
 	}
 	result = rawScore * oncePanelNum;
 	totalScore += result;
+
+	cutPanelNum_all += oncePanelNum;
 }
 
 void ScoreManager::AddScore_FallEnemy()
 {
 	const int result = 5000;
 	totalScore += result;
+
+	fallEnemyNum++;
 }
 
 ScoreManager::ScoreManager()

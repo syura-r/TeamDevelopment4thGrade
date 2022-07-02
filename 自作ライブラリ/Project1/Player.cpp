@@ -64,12 +64,12 @@ void Player::Initialize()
 void Player::Update()
 {
 	KillRandEnem();
+
 	BaseGameActor::Update();
 }
 
 void Player::Draw()
 {
-	
 	BaseGameActor::Draw();
 }
 

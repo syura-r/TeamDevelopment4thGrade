@@ -14,6 +14,7 @@ public:
 
 	bool GetActivePause() { return activeFlag; }
 
+	bool GetToGame() { return flag_toGame; }
 	bool GetRestart() { return flag_restart; }
 	bool GetToTitle() { return flag_toTitle; }
 
@@ -43,6 +44,11 @@ private:
 	static const int positionStepMax = 3;
 	static float positions_X[positionStepMax];
 
+	//ƒQ[ƒ€‰æ–Ê‚ğˆÃ‚­
+	Sprite* sp_back = nullptr;
+	Vector2 pos_back = {};
+
+	//‘I‘ğ‚ğŒ©‚â‚·‚­
 	Sprite* sp_base = nullptr;
 	Vector2 pos_base = {};
 
@@ -69,6 +75,7 @@ private:
 
 	//ƒQ[ƒ€‚É‚à‚Ç‚é
 	SelectSprite* toGame = nullptr;
+	bool flag_toGame = false;
 
 	//‚â‚è’¼‚·
 	SelectSprite* restart = nullptr;

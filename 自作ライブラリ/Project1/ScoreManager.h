@@ -7,12 +7,13 @@ public:
 
 	void Inisitlize();
 
+	//一度に切り抜いたパネルによる加点
 	void AddScore_CutPanel(const int oncePanelNum);
+	//敵を落としたことによる加点
 	void AddScore_FallEnemy();
-	const int GetTotalScore() { return totalScore; }
 
-	void SetStockPanelNum_Last(const int stockPanelNum) { this->stockPanelNum_last = stockPanelNum; }
-	const int GetStockPanelNum_Last() { return stockPanelNum_last; }
+	const int GetTotalScore() { return totalScore; }
+	const int GetCutPanelNum_All() { return cutPanelNum_all; }
 
 private:
 	ScoreManager();
@@ -22,7 +23,9 @@ private:
 
 	//スコア
 	int totalScore = 0;
-	//パネル所持数（最終）
-	int stockPanelNum_last = 0;
+	//パネル切り抜き数（のべ数）
+	int cutPanelNum_all = 0;
+	//撃墜数
+	int fallEnemyNum = 0;
 };
 
