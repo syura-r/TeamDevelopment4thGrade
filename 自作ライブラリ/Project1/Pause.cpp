@@ -13,6 +13,7 @@ Pause::Pause()
 	toGame = new SelectSprite();
 	restart = new SelectSprite();
 	toTitle = new SelectSprite();
+	sound = new SelectSprite();
 }
 
 Pause::~Pause()
@@ -22,6 +23,7 @@ Pause::~Pause()
 	delete toGame;
 	delete restart;
 	delete toTitle;
+	delete sound;
 }
 
 void Pause::Initialize()
@@ -31,12 +33,15 @@ void Pause::Initialize()
 
 	selectState = ToGame;
 
-	toGame->Initialize("toGame", 340.0f);
+	float pos_y_standard = 1080.0f / (selectMax + 1);
+	toGame->Initialize("toGame", pos_y_standard);
 	flag_toGame = false;
-	restart->Initialize("restart", 540.0f);
+	restart->Initialize("restart", pos_y_standard * 2);
 	flag_restart = false;
-	toTitle->Initialize("toTitle", 740.0f);
+	toTitle->Initialize("toTitle", pos_y_standard * 3);
 	flag_toTitle = false;
+	sound->Initialize("sound", pos_y_standard * 4);
+	flag_sound = false;
 
 	pos_base = toGame->pos;
 }
@@ -54,10 +59,12 @@ void Pause::Update()
 			toGame->step = 0;
 			restart->step = 0;
 			toTitle->step = 0;
+			sound->step = 0;
 
 			toGame->PreMoveSetting();
 			restart->PreMoveSetting();
 			toTitle->PreMoveSetting();
+			sound->PreMoveSetting();
 		}
 	}
 
@@ -89,6 +96,11 @@ void Pause::Update()
 	case ToTitle:
 		pos_base = toTitle->pos;
 		break;
+
+	case Sound:
+		pos_base = sound->pos;
+		break;
+
 	default:
 		break;
 	}
@@ -96,6 +108,7 @@ void Pause::Update()
 	toGame->Update();
 	restart->Update();
 	toTitle->Update();
+	sound->Update();
 }
 
 void Pause::Draw()
@@ -106,6 +119,7 @@ void Pause::Draw()
 	toGame->Draw();
 	restart->Draw();
 	toTitle->Draw();
+	sound->Draw();
 
 	sp_base->DrawSprite("selectInPause", pos_base);
 
@@ -139,10 +153,12 @@ void Pause::Select()
 		toGame->step = 1;
 		restart->step = 1;
 		toTitle->step = 1;
+		sound->step = 1;
 
 		toGame->PreMoveSetting();
 		restart->PreMoveSetting();
 		toTitle->PreMoveSetting();
+		sound->PreMoveSetting();
 	}
 
 	//位置をずらす
@@ -159,6 +175,11 @@ void Pause::Select()
 	case ToTitle:
 		toTitle->step = 2;
 		break;
+
+	case Sound:
+		sound->step = 2;
+		break;
+
 	default:
 		break;
 	}
@@ -169,6 +190,9 @@ void Pause::Decision()
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
 		Audio::PlayWave("SE_Decision");
+
+		//設定を閉じる
+		activeFlag = false;
 
 		switch (selectState)
 		{
@@ -184,12 +208,15 @@ void Pause::Decision()
 			//タイトルにもどる
 			flag_toTitle = true;
 			break;
+		case Sound:
+			//音量設定
+			flag_sound = true;
+			//設定を閉じない
+			activeFlag = true;
+			break;
 		default:
 			break;
 		}
-
-		//設定を閉じる
-		activeFlag = false;
 	}
 }
 

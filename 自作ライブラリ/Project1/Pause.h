@@ -35,10 +35,11 @@ private:
 		ToGame = 0,
 		Restart = 1,
 		ToTitle = 2,
+		Sound = 3,
 	};
 	SelectState selectState;
 	//選択肢の個数
-	const int selectMax = 3;
+	const int selectMax = 4;
 
 	//X座標のずらす基準
 	static const int positionStepMax = 3;
@@ -84,5 +85,9 @@ private:
 	//タイトルにもどる
 	SelectSprite* toTitle = nullptr;
 	bool flag_toTitle = false;
+
+	//音量設定
+	SelectSprite* sound = nullptr;
+	bool flag_sound = false;//BGMとSEの設定を展開する
 
 };
