@@ -31,12 +31,16 @@ public:
 	Vector3 GetVirtualityPlanePosition()const;
 	static float GetWeight();
 	PieceDirection GetPieceDirection()const;
+	Vector2 GetArrayIndex()const;
+	void SetArrayIndex(const Vector2& arg_index);
 	bool IsActive()const;
 	void ChangeIsActive(const bool arg_isActive);
 	bool IsBlockade()const;
 	void ChangeIsBlockade(const bool arg_isBlockade);
 	bool IsBonus()const;
 	void ChangeIsBonus(const bool arg_isBonus);
+	bool IsCutable()const;
+	void ChangeIsCutable(const bool arg_flag);
 	std::vector<Vector2>& GetPoints();
 
 private:
@@ -49,6 +53,7 @@ private:
 	Vector3 virtualityPlanePosition;
 	static const float WEIGHT;
 	PieceDirection dir;
+	Vector2 arrayIndex;
 	bool isActive;
 	bool isBlockade;
 	//Ø‚è”²‚¢‚½l‚ÌÀ•W
@@ -57,6 +62,8 @@ private:
 	bool isBonus;
 	//•œŠˆ
 	Timer* reviveTimer;
+	//¡Ø‚é‚±‚Æ‚ª‚Å‚«‚é‚©
+	bool isCutable;
 
 	std::vector<Vector2> points;
 	static std::vector<Vector2> basePoints;

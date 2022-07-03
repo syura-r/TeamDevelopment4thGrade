@@ -32,7 +32,7 @@ int BaseGameActor::cameraRotCount = 0;
 const int BaseGameActor::ROT_TIME = 10;
 
 BaseGameActor::BaseGameActor(const Vector3& arg_pos)
-	:START_POS(arg_pos),
+	:startPos(arg_pos),
 	 RADIUS(1.0f),
 	 weight(10),
 	 prePos(arg_pos),
@@ -70,7 +70,8 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 fallEasingCount(0),
 	 fallStartPos(Vector3()),
 	 fallEndPos(Vector3()),
-	 isPlayedFallSound(false)
+	 isPlayedFallSound(false),
+	 respawnPiece(nullptr)
 {
 	position = arg_pos;
 	pObjectManager = ObjectManager::GetInstance();
@@ -88,7 +89,7 @@ void BaseGameActor::Initialize()
 {
 	scale = { 0.9f };
 	rotation = 0;
-	position = START_POS;
+	position = startPos;
 	weight = 10;
 	prePos = position;
 	virtualityPlanePosition = position;
@@ -126,6 +127,7 @@ void BaseGameActor::Initialize()
 	fallStartPos = Vector3();
 	fallEndPos = Vector3();
 	isPlayedFallSound = false;
+	respawnPiece = nullptr;
 }
 
 void BaseGameActor::Update()
@@ -824,12 +826,57 @@ void BaseGameActor::OnFall(ActionStateLabel& arg_label)
 			Audio::PlayWave("SE_Fall", 1.0f);
 			isPlayedFallSound = true;
 		}
-		isEndGame = true;
+		//isEndGame = true;
+		arg_label = ActionStateLabel::SPAWN;
 	}
 }
 
 void BaseGameActor::EndFall()
 {
+}
+
+void BaseGameActor::StartSpawn()
+{
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	respawnPiece = field->GetRespawnPiece(ObjectRegistType::PLAYER);
+	virtualityPlanePosition = respawnPiece->GetVirtualityPlanePosition();
+	position = respawnPiece->GetVirtualityPlanePosition();
+	position.y = field->GetPosition().y + 10;
+}
+
+void BaseGameActor::OnSpawn(ActionStateLabel& arg_label)
+{
+	prePos = position;
+	preVirtualityPlanePosition = virtualityPlanePosition;
+
+	const float fallSpeed = 0.3f;
+	position.y -= fallSpeed;
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	Vector3 tmpPos = LocusUtility::RotateForFieldTilt(respawnPiece->GetVirtualityPlanePosition(), field->GetAngleTilt(), field->GetPosition());
+	if (position.y <= tmpPos.y)
+	{
+		arg_label = ActionStateLabel::MOVE;
+	}
+}
+
+void BaseGameActor::EndSpawn()
+{
+	rotation = 0;
+	weight = 10;
+	direction = Vector3(0, 0, 1);
+	panelCountSprite3D->Initialize();
+	isCrushed = false;
+	isEndGame = false;
+	panelCutLocus->SetCutPower(0);
+	panelCutLocus->Move(Vector3(), 0);
+	cutPower = 0;
+	gottenPanel = 0;
+	isPlayedFallSound = false;
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+	field->ChangeIsCutableWithAround(respawnPiece, true);
+	respawnPiece = nullptr;
 }
 
 void BaseGameActor::HitCheckActor(BaseGameActor* arg_actor)
@@ -839,6 +886,14 @@ void BaseGameActor::HitCheckActor(BaseGameActor* arg_actor)
 		return;
 	}
 	else if (arg_actor->pHitActor == this)
+	{
+		return;
+	}
+
+	if (actionState->GetLabel() == ActionStateLabel::FALL ||
+		actionState->GetLabel() == ActionStateLabel::SPAWN ||
+		arg_actor->actionState->GetLabel() == ActionStateLabel::FALL ||
+		arg_actor->actionState->GetLabel() == ActionStateLabel::SPAWN)
 	{
 		return;
 	}
@@ -903,6 +958,12 @@ void BaseGameActor::HitCheckEnergyItem(EnergyItem* arg_energyItem)
 		return;
 	}
 
+	if (actionState->GetLabel() == ActionStateLabel::FALL ||
+		actionState->GetLabel() == ActionStateLabel::SPAWN)
+	{
+		return;
+	}
+
 	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - arg_energyItem->GetVirtualityPlanePosition()));
 
 	if (length <= RADIUS + EnergyItem::GetRadius())
@@ -946,6 +1007,12 @@ void BaseGameActor::HitCheckPanelItem(PanelItem* arg_panelItem)
 	}
 
 	if (!arg_panelItem->IsEndBounce())
+	{
+		return;
+	}
+
+	if (actionState->GetLabel() == ActionStateLabel::FALL ||
+		actionState->GetLabel() == ActionStateLabel::SPAWN)
 	{
 		return;
 	}

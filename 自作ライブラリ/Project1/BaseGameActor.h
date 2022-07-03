@@ -89,6 +89,11 @@ public:
 	virtual void OnFall(ActionStateLabel& arg_label);
 	virtual void EndFall();
 
+	//---Spawn---
+	virtual void StartSpawn();
+	virtual void OnSpawn(ActionStateLabel& arg_label);
+	virtual void EndSpawn();
+
 	//---衝突判定---
 	//敵との当たり判定
 	virtual void HitCheckActor(BaseGameActor* arg_actor);
@@ -178,7 +183,7 @@ protected:
 	ObjectManager* pObjectManager;
 	FBXModel* myModel;//-//
 	//初期位置
-	const Vector3 START_POS;
+	Vector3 startPos;
 	const float RADIUS;
 	//プレイヤーの重さ
 	float weight;
@@ -262,4 +267,7 @@ protected:
 	Vector3 fallEndPos;
 	//サウンド用フラグ
 	bool isPlayedFallSound;
+
+	//---Spawn---
+	FieldPiece* respawnPiece;
 };

@@ -438,6 +438,9 @@
     <ClCompile Include="ActionStateFall.cpp">
       <Filter>ソース ファイル\GameObject\GameActor</Filter>
     </ClCompile>
+    <ClCompile Include="ActionStateSpawn.cpp">
+      <Filter>ソース ファイル\GameObject\GameActor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -792,6 +795,9 @@
       <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
     </ClInclude>
     <ClInclude Include="ActionStateFall.h">
+      <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionStateSpawn.h">
       <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
     </ClInclude>
   </ItemGroup>

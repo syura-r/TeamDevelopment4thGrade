@@ -160,7 +160,8 @@ void Field::CalcTilt()
 	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
 	for (auto a : actors)
 	{
-		if (a->GetActionState()->GetLabel() == ActionStateLabel::FALL)
+		if (a->GetActionState()->GetLabel() == ActionStateLabel::FALL ||
+			a->GetActionState()->GetLabel() == ActionStateLabel::SPAWN)
 		{
 			continue;
 		}
@@ -605,6 +606,7 @@ void Field::CreatePieces()
 			//offset.y = 1.0f;
 
 			FieldPiece* piece = new FieldPiece(position + offset, createDir);
+			piece->SetArrayIndex(Vector2(i, j));
 			ObjectManager::GetInstance()->Add(piece);
 			tmpVec.push_back(piece);
 
@@ -646,6 +648,7 @@ void Field::CreatePieces()
 			//offset.y = 1.0f;
 
 			FieldPiece* piece = new FieldPiece(position + offset, createDir);
+			piece->SetArrayIndex(Vector2(i + PIECE_LAYER_NUM, j));
 			ObjectManager::GetInstance()->Add(piece);
 			tmpVec.push_back(piece);
 
@@ -727,7 +730,7 @@ int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount)
 
 			if (cross01 > 0 && cross12 > 0 && cross20 > 0)
 			{
-				if (pieces[columnNum][j]->IsActive())
+				if (pieces[columnNum][j]->IsActive() && pieces[columnNum][j]->IsCutable())
 				{					
 					if (pieces[columnNum][j]->IsBonus())
 					{
@@ -744,7 +747,7 @@ int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount)
 			}
 			else if (cross01 < 0 && cross12 < 0 && cross20 < 0)
 			{
-				if (pieces[columnNum][j]->IsActive())
+				if (pieces[columnNum][j]->IsActive() && pieces[columnNum][j]->IsCutable())
 				{	
 					if (pieces[columnNum][j]->IsBonus())
 					{
@@ -839,6 +842,52 @@ FieldPiece* Field::IsRideGottenPanel(const Vector3& arg_pos, const Vector3& arg_
 		}		
 	}
 	return nullptr;
+}
+
+FieldPiece* Field::GetRespawnPiece(const ObjectRegistType arg_type)
+{
+	int colRnd = 0;
+	int rowRnd = 0;
+
+	do
+	{
+		colRnd = rand() % ((PIECE_LAYER_NUM - 1) * 2) + 1;
+		if (colRnd == PIECE_LAYER_NUM + 1 || colRnd == PIECE_LAYER_NUM * 2 - 2)
+		{
+			rowRnd = rand() % (pieces[colRnd].size() - 4) + 2;
+		}
+		else
+		{
+			int rnd = rand() % 2;
+			if (rnd == 0)
+			{
+				rowRnd = 2;
+			}
+			else
+			{
+				rowRnd = pieces[colRnd].size() - 3;
+			}
+		}
+	} while (!pieces[colRnd][rowRnd]->IsCutable());
+
+	ChangeIsCutableWithAround(pieces[colRnd][rowRnd], false);
+	return pieces[colRnd][rowRnd];
+}
+
+void Field::ChangeIsCutableWithAround(FieldPiece* arg_piece, const bool arg_flag)
+{
+	arg_piece->ChangeIsCutable(arg_flag);
+
+	auto aroundPieces = GetAroundPiece(arg_piece, arg_piece->GetArrayIndex().x, arg_piece->GetArrayIndex().y);
+	for (auto p : aroundPieces)
+	{
+		p->ChangeIsCutable(arg_flag);
+	}
+}
+
+std::vector<FieldPiece*> Field::GetAroundPiece(FieldPiece* arg_piece, const int colNum, const int rowNum)
+{
+	return std::vector<FieldPiece*>();
 }
 
 float Field::GetRadius()

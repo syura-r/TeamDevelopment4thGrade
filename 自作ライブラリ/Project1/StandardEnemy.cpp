@@ -183,77 +183,79 @@ void StandardEnemy::StartWithstand()
 
 void StandardEnemy::OnWithstand(ActionStateLabel& arg_label)
 {
-	prePos = position;
-	preVirtualityPlanePosition = virtualityPlanePosition;
+	BaseGameActor::OnWithstand(arg_label);
 
-	//踏ん張り中　赤
-	Object::SetColor({ 0.6f,BGColor,BGColor,1 });
-	if (BGColor >= 0)
-	{
-		BGColor -= 0.02f;
-	}
-	else
-	{
-		BGColor = 1;
-	}
+	//prePos = position;
+	//preVirtualityPlanePosition = virtualityPlanePosition;
 
-	//カメラのビュー行列の逆行列を計算
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
-	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
-	Vector2 stickDirection = {};
-	//スティックの向き
-	auto vec = Vector2(0, 0);
-	withstandTime++;
-	{
-		if (withstandTime >= 20)
-		{
-			vec = LocusUtility::Dim3ToDim2XZ(LocusUtility::AngleToVector2(std::rand() % 360));
-			withstandTime = 0;
-		}
-	}
-	stickDirection.x = (cameraDirectionX * vec.x).x;
-	stickDirection.y = (cameraDirectionZ * vec.y).z;
-	stickDirection = Vector2::Normalize(stickDirection);
+	////踏ん張り中　赤
+	//Object::SetColor({ 0.6f,BGColor,BGColor,1 });
+	//if (BGColor >= 0)
+	//{
+	//	BGColor -= 0.02f;
+	//}
+	//else
+	//{
+	//	BGColor = 1;
+	//}
 
-	float accuracy = 0;
+	////カメラのビュー行列の逆行列を計算
+	//XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
+	//const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
+	//const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
+	//Vector2 stickDirection = {};
+	////スティックの向き
+	//auto vec = Vector2(0, 0);
+	//withstandTime++;
+	//{
+	//	if (withstandTime >= 20)
+	//	{
+	//		vec = LocusUtility::Dim3ToDim2XZ(LocusUtility::AngleToVector2(std::rand() % 360));
+	//		withstandTime = 0;
+	//	}
+	//}
+	//stickDirection.x = (cameraDirectionX * vec.x).x;
+	//stickDirection.y = (cameraDirectionZ * vec.y).z;
+	//stickDirection = Vector2::Normalize(stickDirection);
 
-	Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preWithstandVec);
+	//float accuracy = 0;
 
-	accuracy = Vector2::Dot(stickDirection, correctVec);
+	//Vector2 correctVec = LocusUtility::Dim3ToDim2XZ(preWithstandVec);
 
-	if (accuracy <= 0)
-	{
-		accuracy = 0;
-	}
+	//accuracy = Vector2::Dot(stickDirection, correctVec);
 
-	if (vec.x = 0 && vec.y == 0)
-	{
-		accuracy = 0;
-	}
+	//if (accuracy <= 0)
+	//{
+	//	accuracy = 0;
+	//}
 
-	if (accuracy >= 0.55f)
-	{
-		Vector3 moveDirection = preWithstandVec;
-		moveEasingCount = 0;
-		isReturningField = true;
-		returningStartPos = virtualityPlanePosition;
-		returningEndPos = virtualityPlanePosition + moveDirection * 3;
-		return;
-	}
+	//if (vec.x = 0 && vec.y == 0)
+	//{
+	//	accuracy = 0;
+	//}
 
-	if (isReturningField)
-	{
-		Object::SetColor({ 1,1,1,1 });
-		virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
-		moveEasingCount++;
-		if (moveEasingCount >= 30)
-		{
-			arg_label = ActionStateLabel::MOVE;
-		}
-	}
+	//if (accuracy >= 0.55f)
+	//{
+	//	Vector3 moveDirection = preWithstandVec;
+	//	moveEasingCount = 0;
+	//	isReturningField = true;
+	//	returningStartPos = virtualityPlanePosition;
+	//	returningEndPos = virtualityPlanePosition + moveDirection * 3;
+	//	return;
+	//}
 
-	UpdatePos();
+	//if (isReturningField)
+	//{
+	//	Object::SetColor({ 1,1,1,1 });
+	//	virtualityPlanePosition = EasingMove(returningStartPos, returningEndPos, 1, moveEasingCount / 30.0f);
+	//	moveEasingCount++;
+	//	if (moveEasingCount >= 30)
+	//	{
+	//		arg_label = ActionStateLabel::MOVE;
+	//	}
+	//}
+
+	//UpdatePos();
 }
 
 void StandardEnemy::DecideDirection(Vector3& arg_direction)

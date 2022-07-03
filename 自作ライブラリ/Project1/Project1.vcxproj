@@ -175,6 +175,7 @@
     <ClCompile Include="ActionStateCut.cpp" />
     <ClCompile Include="ActionStateFall.cpp" />
     <ClCompile Include="ActionStateMove.cpp" />
+    <ClCompile Include="ActionStateSpawn.cpp" />
     <ClCompile Include="ActionStateTackle.cpp" />
     <ClCompile Include="ActionStateWithstand.cpp" />
     <ClCompile Include="ActorManager.cpp" />
@@ -283,6 +284,7 @@
     <ClInclude Include="ActionStateCut.h" />
     <ClInclude Include="ActionStateFall.h" />
     <ClInclude Include="ActionStateMove.h" />
+    <ClInclude Include="ActionStateSpawn.h" />
     <ClInclude Include="ActionStateTackle.h" />
     <ClInclude Include="ActionStateWithstand.h" />
     <ClInclude Include="ActorManager.h" />

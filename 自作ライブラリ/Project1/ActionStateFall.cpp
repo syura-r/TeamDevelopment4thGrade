@@ -1,4 +1,5 @@
 #include "ActionStateFall.h"
+#include "ActionStateSpawn.h"
 
 ActionStateFall* ActionStateFall::GetInstance()
 {
@@ -16,6 +17,12 @@ IActionState* ActionStateFall::Update(BaseGameActor* arg_actor)
 {
 	next = ActionStateLabel::FALL;
 	arg_actor->OnFall(next);
+
+	if (next == ActionStateLabel::SPAWN)
+	{
+		return ActionStateSpawn::GetInstance();
+	}
+
 	return this;
 }
 

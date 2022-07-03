@@ -9,6 +9,7 @@ enum class ActionStateLabel
 	WITHSTAND,
 	CUT,
 	FALL,
+	SPAWN,
 };
 
 class IActionState

@@ -158,13 +158,11 @@ void Play::Update()
 	timeLimit->Update();
 	if (timeLimit->GetLimit())
 	{
-		//Field* field = actorManager->GetFields()[0];
-		////Field‚ÉŽw—ßo‚·
-
 		gameEndCount++;
 
 		if (gameEndCount >= 60)
 		{
+			Audio::StopWave("BGM_Play");
 			ShutDown();
 		}
 
@@ -183,7 +181,7 @@ void Play::Update()
 	actorManager->CollisionCheck();
 	collisionManager->CheckAllCollisions();
 
-	if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
+	/*if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
 	{
 		Audio::StopWave("BGM_Play");
 		ShutDown();
@@ -205,7 +203,7 @@ void Play::Update()
 		Audio::StopWave("BGM_Play");
 		ShutDown();
 		return;
-	}
+	}*/
 }
 
 void Play::PreDraw()

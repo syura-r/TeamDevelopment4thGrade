@@ -16,11 +16,13 @@ std::vector<Vector2> FieldPiece::basePoints = std::vector<Vector2>();
 FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_direction)
 	:virtualityPlanePosition(arg_position),
 	 dir(arg_direction),
+	 arrayIndex(Vector2()),
 	 isActive(true),
 	 isBlockade(false),
 	 cutterPos(Vector3()),
 	 isBonus(false),
-	 reviveTimer(new Timer(15 * 60))
+	 reviveTimer(new Timer(15 * 60)),
+	 isCutable(true)
 {
 	SetPoints();
 	position = virtualityPlanePosition;
@@ -46,6 +48,7 @@ void FieldPiece::Initialize()
 	isBlockade = false;
 	isBonus = false;
 	reviveTimer->Reset();
+	isCutable = true;
 	Object::Update();
 }
 
@@ -195,6 +198,16 @@ PieceDirection FieldPiece::GetPieceDirection() const
 	return dir;
 }
 
+Vector2 FieldPiece::GetArrayIndex() const
+{
+	return arrayIndex;
+}
+
+void FieldPiece::SetArrayIndex(const Vector2& arg_index)
+{
+	arrayIndex = arg_index;
+}
+
 bool FieldPiece::IsActive()const
 {
 	return isActive;
@@ -223,6 +236,16 @@ bool FieldPiece::IsBonus() const
 void FieldPiece::ChangeIsBonus(const bool arg_isBonus)
 {
 	isBonus = arg_isBonus;
+}
+
+bool FieldPiece::IsCutable() const
+{
+	return isCutable;
+}
+
+void FieldPiece::ChangeIsCutable(const bool arg_flag)
+{
+	isCutable = arg_flag;
 }
 
 std::vector<Vector2>& FieldPiece::GetPoints()
@@ -257,6 +280,12 @@ void FieldPiece::SetPoints()
 void FieldPiece::ChangeColorForRidden()
 {
 	color = { 0.25f, 0.58f, 1.0f, 1.0f };
+
+	if (!isCutable)
+	{
+		color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		return;
+	}
 
 	if (isBonus)
 	{
