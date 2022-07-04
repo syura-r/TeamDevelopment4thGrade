@@ -852,7 +852,7 @@ FieldPiece* Field::GetRespawnPiece(const ObjectRegistType arg_type)
 	do
 	{
 		colRnd = rand() % ((PIECE_LAYER_NUM - 1) * 2) + 1;
-		if (colRnd == PIECE_LAYER_NUM + 1 || colRnd == PIECE_LAYER_NUM * 2 - 2)
+		if (colRnd == 1 || colRnd == PIECE_LAYER_NUM * 2 - 2)
 		{
 			rowRnd = rand() % (pieces[colRnd].size() - 4) + 2;
 		}
@@ -868,7 +868,7 @@ FieldPiece* Field::GetRespawnPiece(const ObjectRegistType arg_type)
 				rowRnd = pieces[colRnd].size() - 3;
 			}
 		}
-	} while (!pieces[colRnd][rowRnd]->IsCutable());
+	} while (!pieces[colRnd][rowRnd]->IsActive());
 
 	ChangeIsCutableWithAround(pieces[colRnd][rowRnd], false);
 	return pieces[colRnd][rowRnd];

@@ -552,7 +552,7 @@ void BaseGameActor::StartTackle()
 
 	moveDirection = cameraDirectionX * stickDirection.x + cameraDirectionZ * stickDirection.y;
 	moveDirection.Normalize();
-	tackleEndPos = virtualityPlanePosition + moveDirection * 8;
+	tackleEndPos = virtualityPlanePosition + moveDirection * 16;
 
 	Audio::PlayWave("SE_Dash");
 }
@@ -599,11 +599,14 @@ void BaseGameActor::OnBlown(ActionStateLabel& arg_label)
 
 	virtualityPlanePosition += velocity * speed;
 
-	hitCount++;
-	if (hitCount >= 10)
+	if (pHitActor)
 	{
-		hitCount = 0;
-		pHitActor = nullptr;
+		hitCount++;
+		if (hitCount >= 10)
+		{
+			hitCount = 0;
+			pHitActor = nullptr;
+		}
 	}
 
 	blownTime--;
@@ -928,9 +931,9 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 		Vector3 myVel = velocity;
 		Vector3 OthersVel = arg_actor->GetVelocity();
 
-		blownTime = 40;
+		blownTime = 25;
 		velocity = OthersVel;
-		arg_actor->blownTime = 40;
+		arg_actor->blownTime = 25;
 		arg_actor->velocity = myVel;
 	}
 
@@ -1159,7 +1162,8 @@ void BaseGameActor::DecideDirection(Vector3& arg_direction)
 
 bool BaseGameActor::IsChangeMoveToTackle()
 {
-	return Input::TriggerPadButton(XINPUT_GAMEPAD_B);
+	//return Input::TriggerPadButton(XINPUT_GAMEPAD_B);
+	return false;
 }
 
 bool BaseGameActor::IsChangeMoveToCut()
