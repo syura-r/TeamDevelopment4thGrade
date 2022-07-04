@@ -1,6 +1,8 @@
 #include "Audio.h"
 #include<fstream>
 #include<cassert>
+float Audio::volume_bgm = 1.0f;
+float Audio::volume_se = 1.0f;
 ComPtr<IXAudio2> Audio::xAudio2 = {};
 IXAudio2MasteringVoice* Audio::masterVoice = {};
 std::map < std::string, IXAudio2SourceVoice* > Audio::soundVoices = {};

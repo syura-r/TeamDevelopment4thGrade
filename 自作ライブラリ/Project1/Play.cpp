@@ -116,7 +116,7 @@ void Play::Initialize()
 
 	ScoreManager::GetInstance()->Inisitlize();
 
-	Audio::PlayWave("BGM_Play", 0.1f, true);
+	Audio::PlayWave("BGM_Play", 0.1f * Audio::volume_bgm, true);
 }
 
 void Play::Update()

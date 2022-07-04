@@ -46,7 +46,7 @@ void Ending::Initialize()
 
 	pos_select = pos_restart;
 
-	Audio::PlayWave("BGM_Result", 0.1f, true);
+	Audio::PlayWave("BGM_Result", 0.1f * Audio::volume_bgm, true);
 }
 
 void Ending::Update()
@@ -79,7 +79,7 @@ void Ending::PreDraw()
 	sp_restart->DrawSprite("restart", pos_restart);
 	sp_title->DrawSprite("toTitle", pos_title);
 
-	sp_select->DrawSprite("selectInPause", pos_select);
+	sp_select->DrawSprite("white1x1", pos_select, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,1 });
 }
 
 void Ending::PostDraw()
@@ -92,13 +92,13 @@ void Ending::SelectMenu()
 
 	if (Input::TriggerPadLStickLeft())
 	{
-		Audio::PlayWave("SE_Select");
+		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
 		selectState = SelectState::Restart;
 		isSelectMove = true;
 	}
 	else if (Input::TriggerPadLStickRight())
 	{
-		Audio::PlayWave("SE_Select");
+		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
 		selectState = SelectState::ToTitle;
 		isSelectMove = true;
 	}
@@ -136,7 +136,7 @@ void Ending::SelectMenu()
 		default:
 			break;
 		}
-		Audio::PlayWave("SE_Decision");
+		Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
 		Audio::StopWave("BGM_Result");
 		ShutDown();
 	}

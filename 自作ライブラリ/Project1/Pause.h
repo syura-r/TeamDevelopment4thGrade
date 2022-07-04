@@ -101,9 +101,16 @@ private:
 	bool flag_sound = false;//BGMÇ∆SEÇÃê›íËÇìWäJÇ∑ÇÈ
 	//BGM
 	SelectSprite* bgm = nullptr;
-	int volume_bgm = 0;
+	Sprite* bar_bgm;
+	Vector2 barPositionLeft_bgm;
+	const Vector2 bar_scale = { 256.0f,5.0f };
+	Sprite* circle_bgm;
+	Vector2 circlePosition_bgm;
 	//SE
 	SelectSprite* se = nullptr;
-	int volume_se = 0;
+	Sprite* bar_se;
+	Vector2 barPositionLeft_se;
+	Sprite* circle_se;
+	Vector2 circlePosition_se;
 
 };

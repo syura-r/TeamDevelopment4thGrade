@@ -27,7 +27,7 @@ CircularSaw::~CircularSaw()
 {
 	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::CIRCULAR_SAW);
 	Audio::StopWave("SE_SawCutNow");
-	Audio::PlayWave("SE_GetSaw");
+	Audio::PlayWave("SE_GetSaw", 1.0f * Audio::volume_se);
 }
 
 void CircularSaw::Initialize()
@@ -58,7 +58,7 @@ void CircularSaw::Update()
 	rotation.y = angle + 90;
 	rotation.x += 3;
 
-	Audio::PlayWave("SE_SawCutNow", 1.0f, true);
+	Audio::PlayWave("SE_SawCutNow", 1.0f * Audio::volume_se, true);
 
 	if (lengthLocusLine - length <= 0.05f) //マジックサイコー
 	{
