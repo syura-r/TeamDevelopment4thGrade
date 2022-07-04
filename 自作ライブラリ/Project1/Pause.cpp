@@ -3,7 +3,7 @@
 #include "Audio.h"
 #include "Easing.h"
 
-float Pause::positions_X[Pause::positionStepMax] = { -100.0f, 160.0f, 300.0f };
+float Pause::positions_X[Pause::positionStepMax] = { -100.0f, 160.0f, 300.0f, 600.0f };
 bool Pause::fadeFlag = false;
 
 Pause::Pause()
@@ -14,6 +14,8 @@ Pause::Pause()
 	restart = new SelectSprite();
 	toTitle = new SelectSprite();
 	sound = new SelectSprite();
+	bgm = new SelectSprite();
+	se = new SelectSprite();
 }
 
 Pause::~Pause()
@@ -24,6 +26,8 @@ Pause::~Pause()
 	delete restart;
 	delete toTitle;
 	delete sound;
+	delete bgm;
+	delete se;
 }
 
 void Pause::Initialize()
@@ -32,8 +36,9 @@ void Pause::Initialize()
 	fadeFlag = false;
 
 	selectState = ToGame;
+	selectState_sound = BGM;
 
-	float pos_y_standard = 1080.0f / (selectMax + 1);
+	float pos_y_standard = 1080.0f / (selectMax + 2);
 	toGame->Initialize("toGame", pos_y_standard);
 	flag_toGame = false;
 	restart->Initialize("restart", pos_y_standard * 2);
@@ -42,6 +47,10 @@ void Pause::Initialize()
 	flag_toTitle = false;
 	sound->Initialize("sound", pos_y_standard * 4);
 	flag_sound = false;
+	bgm->Initialize("BGM", pos_y_standard * 4);
+	volume_bgm = 1;
+	se->Initialize("SE", pos_y_standard * 5);
+	volume_se = 1;
 
 	pos_base = toGame->pos;
 }
@@ -60,11 +69,15 @@ void Pause::Update()
 			restart->step = 0;
 			toTitle->step = 0;
 			sound->step = 0;
+			bgm->step = 0;
+			se->step = 0;
 
 			toGame->PreMoveSetting();
 			restart->PreMoveSetting();
 			toTitle->PreMoveSetting();
 			sound->PreMoveSetting();
+			bgm->PreMoveSetting();
+			se->PreMoveSetting();
 		}
 	}
 
@@ -77,7 +90,14 @@ void Pause::Update()
 	if (!fadeFlag)
 	{
 		//選択
-		Select();
+		if (flag_sound)
+		{
+			SelectSub_Sound();
+		}
+		else
+		{
+			Select();
+		}
 		//決定
 		Decision();
 	}
@@ -99,6 +119,21 @@ void Pause::Update()
 
 	case Sound:
 		pos_base = sound->pos;
+		//サブメニュー
+		if (flag_sound)
+		{
+			switch (selectState_sound)
+			{
+			case BGM:
+				pos_base = bgm->pos;
+				break;
+			case SE:
+				pos_base = se->pos;
+				break;
+			default:
+				break;
+			}
+		}
 		break;
 
 	default:
@@ -109,6 +144,8 @@ void Pause::Update()
 	restart->Update();
 	toTitle->Update();
 	sound->Update();
+	bgm->Update();
+	se->Update();
 }
 
 void Pause::Draw()
@@ -120,6 +157,11 @@ void Pause::Draw()
 	restart->Draw();
 	toTitle->Draw();
 	sound->Draw();
+	if (flag_sound)
+	{
+		bgm->Draw();
+		se->Draw();
+	}
 
 	sp_base->DrawSprite("selectInPause", pos_base);
 
@@ -159,6 +201,8 @@ void Pause::Select()
 		restart->PreMoveSetting();
 		toTitle->PreMoveSetting();
 		sound->PreMoveSetting();
+		bgm->PreMoveSetting();
+		se->PreMoveSetting();
 	}
 
 	//位置をずらす
@@ -178,6 +222,42 @@ void Pause::Select()
 
 	case Sound:
 		sound->step = 2;
+		bgm->step = 3;
+		se->step = 3;
+		break;
+
+	default:
+		break;
+	}
+}
+
+void Pause::SelectSub_Sound()
+{
+	bool isSelectMove = false;//選択を変えたか
+	int select = selectState_sound;
+	if (Input::TriggerPadLStickUp() && selectState_sound > 0)
+	{
+		Audio::PlayWave("SE_Select");
+		isSelectMove = true;
+		select--;
+	}
+	else if (Input::TriggerPadLStickDown() && selectState_sound < selectMax_sound - 1)
+	{
+		Audio::PlayWave("SE_Select");
+		isSelectMove = true;
+		select++;
+	}
+	selectState_sound = (SelectState_Sound)select;
+
+	//各設定モード
+	switch (selectState_sound)
+	{
+	case BGM:
+		
+		break;
+
+	case SE:
+		
 		break;
 
 	default:
@@ -210,7 +290,7 @@ void Pause::Decision()
 			break;
 		case Sound:
 			//音量設定
-			flag_sound = true;
+			flag_sound = !flag_sound;
 			//設定を閉じない
 			activeFlag = true;
 			break;

@@ -21,6 +21,7 @@ public:
 private:
 	//選択肢を選ぶ処理
 	void Select();
+	void SelectSub_Sound();
 	//決定ボタンを押した後の処理
 	void Decision();
 
@@ -41,8 +42,17 @@ private:
 	//選択肢の個数
 	const int selectMax = 4;
 
+	enum SelectState_Sound
+	{
+		BGM = 0,
+		SE = 1,
+	};
+	SelectState_Sound selectState_sound;
+	//選択肢の個数
+	const int selectMax_sound = 2;
+
 	//X座標のずらす基準
-	static const int positionStepMax = 3;
+	static const int positionStepMax = 4;
 	static float positions_X[positionStepMax];
 
 	//ゲーム画面を暗く
@@ -89,5 +99,11 @@ private:
 	//音量設定
 	SelectSprite* sound = nullptr;
 	bool flag_sound = false;//BGMとSEの設定を展開する
+	//BGM
+	SelectSprite* bgm = nullptr;
+	int volume_bgm = 0;
+	//SE
+	SelectSprite* se = nullptr;
+	int volume_se = 0;
 
 };
