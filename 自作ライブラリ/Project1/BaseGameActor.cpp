@@ -842,6 +842,13 @@ void BaseGameActor::StartSpawn()
 	virtualityPlanePosition = respawnPiece->GetVirtualityPlanePosition();
 	position = respawnPiece->GetVirtualityPlanePosition();
 	position.y = field->GetPosition().y + 10;
+
+	isCrushed = false;
+	isEndGame = false;
+	panelCutLocus->SetCutPower(0);
+	panelCutLocus->Move(Vector3(), 0);
+	cutPower = 0;
+	gottenPanel = 0;
 }
 
 void BaseGameActor::OnSpawn(ActionStateLabel& arg_label)

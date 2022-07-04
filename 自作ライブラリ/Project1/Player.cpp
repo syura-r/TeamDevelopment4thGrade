@@ -28,9 +28,11 @@
 #include "ObjectRegistType.h"
 #include "IActionState.h"
 #include "ActionStateFall.h"
+#include "ActionStateMove.h"
 
 Player::Player(const Vector3& arg_pos)
-	:BaseGameActor(arg_pos)
+	:BaseGameActor(arg_pos),
+	 targetEnemy(nullptr)
 {
 	if (!BaseGameActor::constCameraBuff)
 	{
@@ -59,11 +61,13 @@ Player::~Player()
 void Player::Initialize()
 {	
 	BaseGameActor::Initialize();
+	targetEnemy = nullptr;
 }
 
 void Player::Update()
 {
 	KillRandEnem();
+	SetTargetEnemy();
 
 	BaseGameActor::Update();
 }
@@ -99,6 +103,39 @@ void Player::DrawReady()
 	}
 }
 
+void Player::CompleteCut()
+{
+	panelCutLocus->RecordCuttedPanelPos();
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
+	/*weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;*/
+	if (targetEnemy)
+	{
+		if (targetEnemy->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			targetEnemy->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		{
+			targetEnemy->ForcedWeight(num);
+		}
+	}
+
+	static const int BONUS_COUNT_UNIT = 3;
+	if (bonusCount > bonusCount * 3)
+	{
+		bonusCount = bonusCount * 3;
+	}
+	cutPower = bonusCount / BONUS_COUNT_UNIT;
+	//cutPower = 0;
+
+	ScoreManager::GetInstance()->AddScore_CutPanel(num);
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
+	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+	ChangeActionState(actionState, ActionStateMove::GetInstance());
+	actionState = ActionStateMove::GetInstance();
+}
+
 void Player::KillRandEnem()
 {
 	if (!Input::TriggerKey(DIK_M))
@@ -118,6 +155,78 @@ void Player::KillRandEnem()
 		{
 			e->ChangeActionState(e->GetActionState(), ActionStateFall::GetInstance());
 			e->SetActionState(ActionStateFall::GetInstance());
+			return;
+		}
+	}
+}
+
+void Player::SetTargetEnemy()
+{
+	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
+	static int index = -1;
+
+	if (!targetEnemy)
+	{
+		for (int i = 0; i < enemies.size(); i++)
+		{
+			if (enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+				enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+			{
+				targetEnemy = enemies[i];
+				index = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		if (targetEnemy->GetActionState()->GetLabel() == ActionStateLabel::FALL ||
+			targetEnemy->GetActionState()->GetLabel() == ActionStateLabel::SPAWN)
+		{
+			targetEnemy = nullptr;
+			index = -1;
+			for (int i = 0; i < enemies.size(); i++)
+			{
+				if (enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+					enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+				{
+					targetEnemy = enemies[i];
+					index = i;
+					break;
+				}
+			}
+		}
+	}
+
+	if (!targetEnemy)
+	{
+		return;
+	}
+
+	if (!Input::TriggerPadRightTrigger())
+	{
+		return;
+	}
+
+	//åªç›ÇÃtargetEnemyÇÊÇËå„ÇÎ
+	for (int i = index + 1; i < enemies.size(); i++)
+	{
+		if (enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		{
+			targetEnemy = enemies[i];
+			index = i;
+			return;
+		}
+	}
+	//åªç›ÇÃtargetEnemyÇÊÇËëO
+	for (int i = 0; i < index; i++)
+	{
+		if (enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		{
+			targetEnemy = enemies[i];
+			index = i;
 			return;
 		}
 	}

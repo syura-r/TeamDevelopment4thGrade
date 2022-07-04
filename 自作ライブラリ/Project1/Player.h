@@ -28,8 +28,15 @@ public:
 	void Update()override;
 	void Draw() override;
 	void DrawReady() override;
+
+	//---Cut---
+	//Ø‚è”²‚«I—¹CircularSaw‚©‚çŒÄ‚Î‚ê‚é
+	virtual void CompleteCut()override;
 	
 private:
+	StandardEnemy* targetEnemy;
+
 	void KillRandEnem();
+	void SetTargetEnemy();
 };
 

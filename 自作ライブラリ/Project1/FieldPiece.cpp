@@ -155,7 +155,7 @@ void FieldPiece::CutOneself(Object* arg_obj)
 {
 	isActive = false;
 	cutterPos = arg_obj->GetPosition();
-	ParticleEmitter::PieceGetEffect(position, scale, rotation, color, arg_obj);
+	//ParticleEmitter::PieceGetEffect(position, scale, rotation, color, arg_obj);
 }
 
 float FieldPiece::GetSize()

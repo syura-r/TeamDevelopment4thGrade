@@ -23,6 +23,7 @@
 #include "ScoreManager.h"
 #include "ObjectRegistType.h"
 #include "IActionState.h"
+#include "ActionStateMove.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 
@@ -256,6 +257,37 @@ void StandardEnemy::OnWithstand(ActionStateLabel& arg_label)
 	//}
 
 	//UpdatePos();
+}
+
+void StandardEnemy::CompleteCut()
+{
+	panelCutLocus->RecordCuttedPanelPos();
+	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
+	/*weight += num * FieldPiece::GetWeight();
+	gottenPanel += num;*/
+	auto player = ActorManager::GetInstance()->GetPlayer();
+	if (player->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+		player->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+	{
+		player->ForcedWeight(num);
+	}
+
+	static const int BONUS_COUNT_UNIT = 3;
+	if (bonusCount > bonusCount * 3)
+	{
+		bonusCount = bonusCount * 3;
+	}
+	cutPower = bonusCount / BONUS_COUNT_UNIT;
+	//cutPower = 0;
+
+	ScoreManager::GetInstance()->AddScore_CutPanel(num);
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(this);
+	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
+	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+	ChangeActionState(actionState, ActionStateMove::GetInstance());
+	actionState = ActionStateMove::GetInstance();
 }
 
 void StandardEnemy::DecideDirection(Vector3& arg_direction)

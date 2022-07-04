@@ -43,6 +43,10 @@ public:
 	virtual void StartWithstand()override;
 	virtual void OnWithstand(ActionStateLabel& arg_label)override;
 
+	//---Cut---
+	//Ø‚è”²‚«I—¹CircularSaw‚©‚çŒÄ‚Î‚ê‚é
+	virtual void CompleteCut()override;
+
 private:
 	//---Move---
 	//ˆÚ“®•ûŒü‚ÌŒˆ’è
