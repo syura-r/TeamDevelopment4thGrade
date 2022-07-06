@@ -8,10 +8,8 @@ Ending::Ending()
 
 	selectState = SelectState::Restart;
 
-	sp_result = new Sprite();
-
-	totalScore = new ResultSet();
-	cutPanel = new ResultSet();
+	//totalScore = new ResultSet();
+	//cutPanel = new ResultSet();
 	dropEnemy = new ResultSet();
 
 	sp_select = new Sprite();
@@ -22,10 +20,8 @@ Ending::Ending()
 
 Ending::~Ending()
 {
-	delete sp_result;
-
-	delete totalScore;
-	delete cutPanel;
+	//delete totalScore;
+	//delete cutPanel;
 	delete dropEnemy;
 
 	delete sp_select;
@@ -40,8 +36,8 @@ void Ending::Initialize()
 	selectState = SelectState::Restart;
 
 	ScoreManager* sManager = ScoreManager::GetInstance();
-	totalScore->Initialize(sManager->GetTotalScore());
-	cutPanel->Initialize(sManager->GetCutPanelNum_All());
+	//totalScore->Initialize(sManager->GetTotalScore());
+	//cutPanel->Initialize(sManager->GetCutPanelNum_All());
 	dropEnemy->Initialize(sManager->GetFallEnemyNum());
 
 	pos_select = pos_restart;
@@ -54,9 +50,9 @@ void Ending::Update()
 	SelectMenu();
 
 	//各数値の加算
-	totalScore->Update();
-	cutPanel->Update(totalScore->isCountEnd);
-	dropEnemy->Update(cutPanel->isCountEnd);
+	//totalScore->Update();
+	//cutPanel->Update(totalScore->isCountEnd);
+	dropEnemy->Update(/*cutPanel->isCountEnd*/);
 }
 
 void Ending::PreDraw()
@@ -66,10 +62,10 @@ void Ending::PreDraw()
 		const Vector2 scale_mini = { 0.7f, 0.7f };//総スコア以外の項目の大きさ
 		//score
 		float pos_y = 300.0f;
-		totalScore->Draw("Result_UI_Totalscore_Text", pos_y, scale_big);
+		//totalScore->Draw("Result_UI_Totalscore_Text", pos_y, scale_big);
 		//panel
-		pos_y += 200.0f;
-		cutPanel->Draw("Result_UI_Gettriangle_text", pos_y, scale_mini);
+		//pos_y += 200.0f;
+		//cutPanel->Draw("Result_UI_Gettriangle_text", pos_y, scale_mini);
 		//enemy
 		pos_y += 200.0f;
 		dropEnemy->Draw("Result_UI_Drop_text", pos_y, scale_mini);
@@ -121,8 +117,8 @@ void Ending::SelectMenu()
 
 	//シーン切り替え
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) &&
-		totalScore->isCountEnd &&
-		cutPanel->isCountEnd &&
+		//totalScore->isCountEnd &&
+		//cutPanel->isCountEnd &&
 		dropEnemy->isCountEnd)
 	{
 		switch (selectState)

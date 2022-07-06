@@ -25,9 +25,6 @@ private:
 	};
 	SelectState selectState;
 
-	//リザルト
-	Sprite* sp_result = nullptr;
-
 	//文字と数値のセット
 	struct ResultSet
 	{
@@ -48,9 +45,9 @@ private:
 	};
 
 	//累計スコア
-	ResultSet* totalScore = nullptr;
+	//ResultSet* totalScore = nullptr;
 	//切り抜いたパネル数
-	ResultSet* cutPanel = nullptr;
+	//ResultSet* cutPanel = nullptr;
 	//落とした敵の数
 	ResultSet* dropEnemy = nullptr;
 
