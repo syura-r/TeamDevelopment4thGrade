@@ -28,7 +28,7 @@ TimeLimit::~TimeLimit()
 void TimeLimit::Initialize()
 {
 	timer->SetLimit(limit, true);
-	color = { 1,1,1,0.8f };
+	color = { 1,1,1,1.0f };
 
 	alarm_position = alarm_position_first;
 	timeLeft = 0;

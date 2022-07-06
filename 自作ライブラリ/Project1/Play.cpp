@@ -44,23 +44,19 @@ Play::Play()
 	//ƒ‰ƒCƒgF‚ðÝ’è
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, XMFLOAT3(color0));
-	//menu = std::make_unique<Menu>();
 	collisionManager = CollisionManager::GetInstance();
 	objectManager = ObjectManager::GetInstance();
 	actorManager = ActorManager::GetInstance();
 	actorManager->Initialize();
 
-	//result = std::make_unique<Result>();
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
 	timeLimit = new TimeLimit(180 * 60);//§ŒÀŽžŠÔ‚ÌÝ’è‚Í‚±‚±
-	scoreUI = new ScoreUI();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
 
-	//test = new Sprite3D();
 
 	ParticleEmitter::SetObjectManager(objectManager);
 }
@@ -71,11 +67,9 @@ Play::~Play()
 	LevelEditor::GetInstance()->Clear();
 	delete pause;
 	delete timeLimit;
-	delete scoreUI;
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
-	//PtrDelete(test);
 	ScoreManager::GetInstance()->Finalize();
 }
 
@@ -112,7 +106,6 @@ void Play::Initialize()
 	pause->Initialize();
 	timeLimit->Initialize();
 	gameEndCount = 0;
-	scoreUI->Initialize();
 
 	ScoreManager::GetInstance()->Inisitlize();
 
@@ -170,7 +163,6 @@ void Play::Update()
 
 		return;
 	}
-	scoreUI->Update();
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
@@ -211,7 +203,6 @@ void Play::Update()
 void Play::PreDraw()
 {
 	timeLimit->Draw();
-	scoreUI->Draw();
 
 		objectManager->DrawReady();
 #ifdef _DEBUG
@@ -274,8 +265,6 @@ void Play::PostDraw()
 	{
 		pos.y += 0.3f;
 	}
-	//test->SpriteSetTextureRect("stadiumMap.png", 100, 100, 300, 300);
-	//test->DrawSprite("stadiumMap.png", pos);
 	if (!Object3D::GetDrawShadow())
 	{
 		DirectXLib::GetInstance()->DepthClear();

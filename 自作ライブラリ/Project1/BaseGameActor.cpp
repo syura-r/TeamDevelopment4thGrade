@@ -751,7 +751,7 @@ void BaseGameActor::CompleteCut()
 	cutPower = bonusCount / BONUS_COUNT_UNIT;
 	//cutPower = 0;
 
-	ScoreManager::GetInstance()->AddScore_CutPanel(num);
+	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	CuttingInfo* info = field->GetCuttingInfo(this);
