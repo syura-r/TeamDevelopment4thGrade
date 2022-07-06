@@ -81,7 +81,7 @@ public:
 	//切り抜き中に衝突を受けたとき
 	virtual void SuspendCut();
 	//相手の重さを増やす
-	void ForcedWeight(const int arg_num);
+	virtual void ForcedWeight(const int arg_num, BaseGameActor* arg_actor);
 
 	//---Fall---
 	//場外に落下
@@ -140,6 +140,18 @@ public:
 	}	
 	inline void SetActionState(IActionState* arg_state) {
 		this->actionState = arg_state;
+	}
+	inline int GetKillCount()const {
+		return killCount;
+	}
+	inline void SetKillCount(const int arg_num) {
+		killCount = arg_num;
+	}
+	inline void AddKillCount(const int arg_num) {
+		killCount += arg_num;
+	}
+	inline void SubtructKillCount(const int arg_num) {
+		killCount -= arg_num;
 	}
 	inline bool IsHitDuringTackle()const {
 		return isHitDuringTackle;
@@ -202,6 +214,9 @@ protected:
 	bool isEndGame;
 	//行動状態
 	IActionState* actionState;
+	//撃墜数
+	int killCount;
+	std::unordered_map<BaseGameActor*, int> weightInfluenceMap;
 	//傾きで滑る処理
 	virtual void SlidingDown();
 	//イージングでの移動
@@ -258,6 +273,9 @@ protected:
 	int cutPower;
 	int gottenPanel;
 	int bonusCount;
+	BaseGameActor* targetActor;
+	int targetIndex;
+	virtual void SetTargetActor();
 
 	//---Fall---	
 	//落下までの猶予

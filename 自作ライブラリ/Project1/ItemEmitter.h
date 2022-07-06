@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include "Vector.h"
 
+class FieldPiece;
 class EnergyItem;
 enum class RankEnergyItem;
 
@@ -14,7 +15,9 @@ public:
 	void Initialize();
 	void Update();
 
-	void EmitEnergyItem(const Vector3& arg_pos, const RankEnergyItem arg_rank);
+	bool IsClushedWithRemainItem(FieldPiece* arg_piece);
+
+	void EmitEnergyItem(const Vector3& arg_pos, const RankEnergyItem arg_rank, FieldPiece* arg_piece);
 	void EmitPanelItem(const Vector3& arg_pos);
 	Vector3 GetRandomEmitPosition(const int arg_min, const int arg_max);
 	Vector3 GetEnergyItemEmitPosition();

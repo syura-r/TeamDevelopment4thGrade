@@ -51,6 +51,7 @@ public:
 	FieldPiece* GetRespawnPiece(const ObjectRegistType arg_type);
 	void ChangeIsCutableWithAround(FieldPiece* arg_piece, const bool arg_flag);
 	std::vector<FieldPiece*> GetAroundPiece(FieldPiece* arg_piece, const int colNum, const int rowNum);
+	FieldPiece* GetRandomActivePiece();
 
 	static float GetRadius();
 	static std::vector<Vector2>& GetEdges();

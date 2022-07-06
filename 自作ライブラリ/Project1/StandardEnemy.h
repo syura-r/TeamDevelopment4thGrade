@@ -52,6 +52,9 @@ private:
 	//ˆÚ“®•ûŒü‚ÌŒˆ’è
 	virtual void DecideDirection(Vector3& arg_direction)override;
 
+	//---Cut---
+	virtual void SetTargetActor()override;
+
 	//--------------------------------------
 	// ŽžŠÔ
 	Timer* actionTimer = nullptr;

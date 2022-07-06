@@ -31,8 +31,7 @@
 #include "ActionStateMove.h"
 
 Player::Player(const Vector3& arg_pos)
-	:BaseGameActor(arg_pos),
-	 targetEnemy(nullptr)
+	:BaseGameActor(arg_pos)
 {
 	if (!BaseGameActor::constCameraBuff)
 	{
@@ -61,13 +60,11 @@ Player::~Player()
 void Player::Initialize()
 {	
 	BaseGameActor::Initialize();
-	targetEnemy = nullptr;
 }
 
 void Player::Update()
 {
 	KillRandEnem();
-	SetTargetEnemy();
 
 	BaseGameActor::Update();
 }
@@ -109,12 +106,12 @@ void Player::CompleteCut()
 	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
-	if (targetEnemy)
+	if (targetActor)
 	{
-		if (targetEnemy->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
-			targetEnemy->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		if (targetActor->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			targetActor->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
 		{
-			targetEnemy->ForcedWeight(num);
+			targetActor->ForcedWeight(num, this);
 		}
 	}
 
@@ -160,45 +157,59 @@ void Player::KillRandEnem()
 	}
 }
 
-void Player::SetTargetEnemy()
+void Player::SetTargetActor()
 {
-	auto enemies = ActorManager::GetInstance()->GetStandardEnemies();
-	static int index = -1;
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
 
-	if (!targetEnemy)
+	if (!targetActor)
 	{
-		for (int i = 0; i < enemies.size(); i++)
+		for (int i = 0; i < actors.size(); i++)
 		{
-			if (enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
-				enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+			if (actors[i] == this)
 			{
-				targetEnemy = enemies[i];
-				index = i;
+				continue;
+			}
+
+			if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+				actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+			{
+				targetActor = actors[i];
+				targetIndex = i;
 				break;
 			}
 		}
 	}
 	else
 	{
-		if (targetEnemy->GetActionState()->GetLabel() == ActionStateLabel::FALL ||
-			targetEnemy->GetActionState()->GetLabel() == ActionStateLabel::SPAWN)
+		if (targetActor->GetActionState()->GetLabel() == ActionStateLabel::FALL ||
+			targetActor->GetActionState()->GetLabel() == ActionStateLabel::SPAWN)
 		{
-			targetEnemy = nullptr;
-			index = -1;
-			for (int i = 0; i < enemies.size(); i++)
+			targetActor = nullptr;
+			targetIndex = -1;
+			for (int i = 0; i < actors.size(); i++)
 			{
-				if (enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
-					enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+				if (actors[i] == this)
 				{
-					targetEnemy = enemies[i];
-					index = i;
+					continue;
+				}
+
+				if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+					actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+				{
+					targetActor = actors[i];
+					targetIndex = i;
 					break;
 				}
 			}
 		}
 	}
 
-	if (!targetEnemy)
+	if (!targetActor)
+	{
+		return;
+	}
+
+	if (actionState->GetLabel() != ActionStateLabel::MOVE)
 	{
 		return;
 	}
@@ -209,24 +220,34 @@ void Player::SetTargetEnemy()
 	}
 
 	//åªç›ÇÃtargetEnemyÇÊÇËå„ÇÎ
-	for (int i = index + 1; i < enemies.size(); i++)
+	for (int i = targetIndex + 1; i < actors.size(); i++)
 	{
-		if (enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
-			enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		if (actors[i] == this)
 		{
-			targetEnemy = enemies[i];
-			index = i;
+			continue;
+		}
+
+		if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		{
+			targetActor = actors[i];
+			targetIndex = i;
 			return;
 		}
 	}
 	//åªç›ÇÃtargetEnemyÇÊÇËëO
-	for (int i = 0; i < index; i++)
+	for (int i = 0; i < targetIndex; i++)
 	{
-		if (enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
-			enemies[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		if (actors[i] == this)
 		{
-			targetEnemy = enemies[i];
-			index = i;
+			continue;
+		}
+
+		if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		{
+			targetActor = actors[i];
+			targetIndex = i;
 			return;
 		}
 	}

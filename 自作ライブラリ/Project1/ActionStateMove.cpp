@@ -28,7 +28,7 @@ IActionState* ActionStateMove::Update(BaseGameActor* arg_actor)
 	}
 	else
 	{
-		next = ActionStateLabel::MOVE;
+		next = ActionStateLabel::MOVE;		
 		arg_actor->OnMove(next);
 	}
 	

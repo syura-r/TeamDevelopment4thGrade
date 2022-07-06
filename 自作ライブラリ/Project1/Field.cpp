@@ -890,6 +890,19 @@ std::vector<FieldPiece*> Field::GetAroundPiece(FieldPiece* arg_piece, const int 
 	return std::vector<FieldPiece*>();
 }
 
+FieldPiece* Field::GetRandomActivePiece()
+{
+	int columnNum, rowNum;
+	
+	do
+	{
+		columnNum = rand() % (PIECE_LAYER_NUM * 2);
+		rowNum = rand() % pieces[columnNum].size();
+	} while (!pieces[columnNum][rowNum]->IsActive());
+
+	return pieces[columnNum][rowNum];
+}
+
 float Field::GetRadius()
 {
 	return RADIUS;

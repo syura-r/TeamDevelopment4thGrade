@@ -42,6 +42,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 isCrushed(false),
 	 isEndGame(false),
 	 actionState(ActionStateMove::GetInstance()),
+	 killCount(0),
 	 speed(0.18f),
 	 WALK_SPEED(0.18f),
 	 DRAWING_SPEED(0.36f),
@@ -67,6 +68,8 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 cutPower(0),
 	 gottenPanel(0),
 	 bonusCount(0),
+	 targetActor(nullptr),
+	 targetIndex(-1),
 	 fallEasingCount(0),
 	 fallStartPos(Vector3()),
 	 fallEndPos(Vector3()),
@@ -78,6 +81,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, XMFLOAT4(1, 1, 0, 0.6f));
 	panelCutLocus->SetParentObject(this);
+	weightInfluenceMap.clear();
 }
 
 BaseGameActor::~BaseGameActor()
@@ -100,6 +104,8 @@ void BaseGameActor::Initialize()
 	isEndGame = false;
 	actionState = ActionStateMove::GetInstance();
 	actionState->Initialize(this);
+	killCount = 0;
+	weightInfluenceMap.clear();
 	speed = WALK_SPEED;
 	isHitDuringTackle = false;
 	tackleStartPos = Vector3();
@@ -123,6 +129,8 @@ void BaseGameActor::Initialize()
 	cutPower = 0;
 	gottenPanel = 0;
 	bonusCount = 0;
+	targetActor = nullptr;
+	targetIndex = -1;
 	fallEasingCount = 0;
 	fallStartPos = Vector3();
 	fallEndPos = Vector3();
@@ -151,6 +159,7 @@ void BaseGameActor::Update()
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
 		CuttingInfo* info = field->GetCuttingInfo(this);
 
+		SetTargetActor();
 		IActionState* state = actionState->Update(this);
 		if (state != actionState)
 		{
@@ -745,19 +754,13 @@ void BaseGameActor::CompleteCut()
 	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
-	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
-	for (auto a : actors)
+	if (targetActor)
 	{
-		if (a == this)
+		if (targetActor->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			targetActor->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
 		{
-			continue;
+			targetActor->ForcedWeight(num, this);
 		}
-
-		if (a->GetActionState()->GetLabel() == ActionStateLabel::FALL)
-		{
-			continue;
-		}
-		a->ForcedWeight(num);
 	}
 
 	static const int BONUS_COUNT_UNIT = 3;
@@ -787,10 +790,20 @@ void BaseGameActor::SuspendCut()
 	}
 }
 
-void BaseGameActor::ForcedWeight(const int arg_num)
+void BaseGameActor::ForcedWeight(const int arg_num, BaseGameActor* arg_actor)
 {
 	weight += FieldPiece::GetWeight() * arg_num;
 	gottenPanel += arg_num;
+
+	auto itr = weightInfluenceMap.find(arg_actor);
+	if (itr == weightInfluenceMap.end())
+	{
+		weightInfluenceMap.emplace(arg_actor, arg_num);
+	}
+	else
+	{
+		itr->second += arg_num;
+	}
 }
 
 void BaseGameActor::StartFall()
@@ -878,10 +891,13 @@ void BaseGameActor::EndSpawn()
 	panelCountSprite3D->Initialize();
 	isCrushed = false;
 	isEndGame = false;
+	weightInfluenceMap.clear();
 	panelCutLocus->SetCutPower(0);
 	panelCutLocus->Move(Vector3(), 0);
 	cutPower = 0;
 	gottenPanel = 0;
+	targetActor = nullptr;
+	targetIndex = -1;
 	isPlayedFallSound = false;
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
@@ -1158,6 +1174,97 @@ void BaseGameActor::DecideDirection(Vector3& arg_direction)
 	arg_direction.Normalize();
 	//îΩî≠ópÇ…ë„ì¸
 	velocity = arg_direction;
+}
+
+void BaseGameActor::SetTargetActor()
+{
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+
+	if (!targetActor)
+	{
+		for (int i = 0; i < actors.size(); i++)
+		{
+			if (actors[i] == this)
+			{
+				continue;
+			}
+
+			if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+				actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+			{
+				targetActor = actors[i];
+				targetIndex = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		if (targetActor->GetActionState()->GetLabel() == ActionStateLabel::FALL ||
+			targetActor->GetActionState()->GetLabel() == ActionStateLabel::SPAWN)
+		{
+			targetActor = nullptr;
+			targetIndex = -1;
+			for (int i = 0; i < actors.size(); i++)
+			{
+				if (actors[i] == this)
+				{
+					continue;
+				}
+
+				if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+					actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+				{
+					targetActor = actors[i];
+					targetIndex = i;
+					break;
+				}
+			}
+		}
+	}
+
+	if (!targetActor)
+	{
+		return;
+	}
+
+	if (!Input::TriggerPadRightTrigger())
+	{
+		return;
+	}
+
+	//åªç›ÇÃtargetEnemyÇÊÇËå„ÇÎ
+	for (int i = targetIndex + 1; i < actors.size(); i++)
+	{
+		if (actors[i] == this)
+		{
+			continue;
+		}
+
+		if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		{
+			targetActor = actors[i];
+			targetIndex = i;
+			return;
+		}
+	}
+	//åªç›ÇÃtargetEnemyÇÊÇËëO
+	for (int i = 0; i < targetIndex; i++)
+	{
+		if (actors[i] == this)
+		{
+			continue;
+		}
+
+		if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		{
+			targetActor = actors[i];
+			targetIndex = i;
+			return;
+		}
+	}
 }
 
 bool BaseGameActor::IsChangeMoveToTackle()

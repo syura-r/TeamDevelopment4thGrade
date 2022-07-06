@@ -34,9 +34,9 @@ public:
 	virtual void CompleteCut()override;
 	
 private:
-	StandardEnemy* targetEnemy;
-
 	void KillRandEnem();
-	void SetTargetEnemy();
+
+	//---Cut---
+	virtual void SetTargetActor()override;
 };
 

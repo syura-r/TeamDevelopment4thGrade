@@ -48,7 +48,7 @@ void ItemEmitter::Update()
 	energyItemTimer->Update();
 	if (energyItemTimer->IsTime())
 	{
-		static const int EMIT_NUM = 3;
+		static const int EMIT_NUM = 2;
 		for (int i = 0; i < EMIT_NUM; i++)
 		{
 			int n = ActorManager::GetInstance()->GetEnergyItems().size();
@@ -57,9 +57,15 @@ void ItemEmitter::Update()
 				break;
 			}
 
-			Vector3 emitPos = GetEnergyItemEmitPosition();
+			//Vector3 emitPos = GetEnergyItemEmitPosition();
+			Field* field = ActorManager::GetInstance()->GetFields()[0];
+			FieldPiece* piece = nullptr;
+			do
+			{
+				piece = field->GetRandomActivePiece();
+			} while (IsClushedWithRemainItem(piece));
 
-			EmitEnergyItem(emitPos, RankEnergyItem::NORMAL);
+			EmitEnergyItem(piece->GetVirtualityPlanePosition() + Vector3(0, EnergyItem::GetRadius(), 0), RankEnergyItem::NORMAL, piece);
 		}
 	}
 
@@ -71,9 +77,25 @@ void ItemEmitter::Update()
 #endif // _DEBUG
 }
 
-void ItemEmitter::EmitEnergyItem(const Vector3& arg_pos, const RankEnergyItem arg_rank)
+bool ItemEmitter::IsClushedWithRemainItem(FieldPiece* arg_piece)
+{
+	auto energyItems = ActorManager::GetInstance()->GetEnergyItems();
+
+	for (auto e : energyItems)
+	{
+		if (arg_piece == e->GetRidingPiece())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void ItemEmitter::EmitEnergyItem(const Vector3& arg_pos, const RankEnergyItem arg_rank, FieldPiece* arg_piece)
 {
 	EnergyItem* item = new EnergyItem(arg_pos, arg_rank);
+	item->SetRidingPiece(arg_piece);
 	ObjectManager::GetInstance()->Add(item);	
 	energyItemTimer->Reset();
 }

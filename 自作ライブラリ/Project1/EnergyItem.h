@@ -3,6 +3,8 @@
 #include "LocusDef.h"
 #include "Timer.h"
 
+class FieldPiece;
+
 enum class RankEnergyItem
 {
 	NORMAL,
@@ -28,6 +30,8 @@ public:
 	static float GetRadius();
 	bool IsAppeared();
 	RankEnergyItem GetRank()const;
+	FieldPiece* GetRidingPiece()const;
+	void SetRidingPiece(FieldPiece* arg_piece);
 
 private:
 
@@ -43,5 +47,5 @@ private:
 	//‚Ü‚é‚Ì‚±‚ÌŽí—Þ
 	RankEnergyItem rank;
 
-public:	
+	FieldPiece* ridingPiece;
 };

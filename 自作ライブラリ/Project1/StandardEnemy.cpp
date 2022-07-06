@@ -265,11 +265,13 @@ void StandardEnemy::CompleteCut()
 	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
-	auto player = ActorManager::GetInstance()->GetPlayer();
-	if (player->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
-		player->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+	if (targetActor)
 	{
-		player->ForcedWeight(num);
+		if (targetActor->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+			targetActor->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+		{
+			targetActor->ForcedWeight(num, this);
+		}
 	}
 
 	static const int BONUS_COUNT_UNIT = 3;
@@ -309,6 +311,54 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 	arg_direction.Normalize();
 	//”½”­—p‚É‘ã“ü
 	velocity = arg_direction;
+}
+
+void StandardEnemy::SetTargetActor()
+{
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+
+	if (!targetActor)
+	{
+		for (int i = 0; i < actors.size(); i++)
+		{
+			if (actors[i] == this)
+			{
+				continue;
+			}
+
+			if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+				actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+			{
+				targetActor = actors[i];
+				targetIndex = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		if (targetActor->GetActionState()->GetLabel() == ActionStateLabel::FALL ||
+			targetActor->GetActionState()->GetLabel() == ActionStateLabel::SPAWN)
+		{
+			targetActor = nullptr;
+			targetIndex = -1;
+			for (int i = 0; i < actors.size(); i++)
+			{
+				if (actors[i] == this)
+				{
+					continue;
+				}
+
+				if (actors[i]->GetActionState()->GetLabel() != ActionStateLabel::FALL &&
+					actors[i]->GetActionState()->GetLabel() != ActionStateLabel::SPAWN)
+				{
+					targetActor = actors[i];
+					targetIndex = i;
+					break;
+				}
+			}
+		}
+	}
 }
 
 Vector2 StandardEnemy::RandomDir()

@@ -12,9 +12,11 @@ const float EnergyItem::RADIUS = 1.5f;
 EnergyItem::EnergyItem(const Vector3& arg_position, const RankEnergyItem arg_rank)
 	:virtualityPlanePosition(arg_position),
 	 preVirtualityPlanePosition(arg_position),
-	 rank(arg_rank)
+	 rank(arg_rank),
+	 ridingPiece(nullptr)
 {
 	Create(OBJLoader::GetModel("Saw"));
+	SetBillboardType(BILLBOARD_TYPE::Y_AXIS);
 
 	appearTimer = new Timer(60);
 
@@ -49,10 +51,10 @@ void EnergyItem::Update()
 		Appear();
 	}
 
-	if (IsAppeared())
+	/*if (IsAppeared())
 	{
 		SlidingDown();
-	}
+	}*/
 
 	StayOnRemainPanels();
 
@@ -155,6 +157,12 @@ void EnergyItem::StayOnRemainPanels()
 		return;
 	}
 
+	if (!ridingPiece->IsActive())
+	{
+		Dead();
+	}
+	return;
+
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, 0.01f);
 
@@ -217,4 +225,14 @@ bool EnergyItem::IsAppeared()
 RankEnergyItem EnergyItem::GetRank() const
 {
 	return rank;
+}
+
+FieldPiece* EnergyItem::GetRidingPiece() const
+{
+	return ridingPiece;
+}
+
+void EnergyItem::SetRidingPiece(FieldPiece* arg_piece)
+{
+	ridingPiece = arg_piece;
 }
