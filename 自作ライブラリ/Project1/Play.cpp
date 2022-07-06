@@ -136,7 +136,11 @@ void Play::Update()
 	}
 	//ポーズ画面を開いているとき
 	if (pause->GetActivePause())
+	{
+		//BGMの音量変更
+		Audio::VolumeChangeWave("BGM_Play", 0.1f * Audio::volume_bgm);
 		return;
+	}
 
 
 #ifdef _DEBUG

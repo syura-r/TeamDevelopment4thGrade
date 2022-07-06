@@ -71,6 +71,7 @@ void Pause::Update()
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_START))
 	{
 		activeFlag = !activeFlag;
+		Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
 		if (!activeFlag)
 		{
 			fadeFlag = true;

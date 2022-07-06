@@ -121,6 +121,13 @@ void Audio::StopWave(const std::string& keyName)
 
 }
 
+void Audio::VolumeChangeWave(const std::string& keyName, const float& soundVol)
+{
+	if (soundVoices[keyName] == nullptr)
+		return;
+	soundVoices[keyName]->SetVolume(soundVol, XAUDIO2_COMMIT_NOW);
+}
+
 void Audio::End()
 {
 	masterVoice->DestroyVoice();
