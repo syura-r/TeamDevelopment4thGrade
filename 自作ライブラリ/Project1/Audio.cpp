@@ -7,8 +7,9 @@ XAudio2VoiceCallback voiceCallback = {};
 ComPtr<IXAudio2> Audio::xAudio2 = {};
 IXAudio2MasteringVoice* Audio::masterVoice = {};
 std::map<std::string, File> Audio::soundFiles = {};
-std::map <std::string, IXAudio2SourceVoice* > Audio::seSourceVoices = {};
-std::map <std::string, IXAudio2SourceVoice* > Audio::bgmSourceVoices = {};
+std::map<std::string, IXAudio2SourceVoice*> Audio::soundVoices = {};
+std::map<std::string, IXAudio2SourceVoice* > Audio::seSourceVoices = {};
+std::map<std::string, IXAudio2SourceVoice* > Audio::bgmSourceVoices = {};
 
 float Audio::masterVolume = 1.0f;
 float Audio::seVolume = 1.0f;
@@ -79,7 +80,6 @@ void Audio::End()
 	}
 }
 
-/*
 void Audio::PlayWave(const std::string& keyName, const float& soundVol, bool loop, int loopCount)
 {
 	HRESULT result;
@@ -143,7 +143,6 @@ void Audio::Stop(const std::string& arg_name)
 	if (soundVoices[arg_name] == nullptr) return;
 	soundVoices[arg_name]->Stop();
 }
-*/
 
 void Audio::SetMasterVolume(const float arg_volume)
 {

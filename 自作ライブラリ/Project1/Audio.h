@@ -50,12 +50,12 @@ public:
 	static void LoadFile(const std::string& keyName, const std::string& fileName);
 	static void End();
 
-	/*
+	
 	static void PlayWave(const std::string& keyName, const float& soundVol = 1.0f, bool loop = false, int loopCount = XAUDIO2_LOOP_INFINITE);
 	static void StopWave(const std::string& keyName);
 	static void Play(const std::string& arg_name);
 	static void Stop(const std::string& arg_name);
-	*/
+	
 
 	static void SetMasterVolume(const float arg_volume);
 	static void SetSEVolume(const float arg_volume);
@@ -81,6 +81,7 @@ private:
 	static ComPtr<IXAudio2> xAudio2;
 	static IXAudio2MasteringVoice* masterVoice;
 	static std::map <std::string, File> soundFiles;
+	static std::map <std::string, IXAudio2SourceVoice*> soundVoices;
 	static std::map <std::string, IXAudio2SourceVoice*> bgmSourceVoices;
 	static std::map <std::string, IXAudio2SourceVoice*> seSourceVoices;
 
