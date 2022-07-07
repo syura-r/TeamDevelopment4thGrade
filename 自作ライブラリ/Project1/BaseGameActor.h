@@ -176,6 +176,9 @@ public:
 	inline int GetGottenPanel()const {
 		return gottenPanel;
 	}
+	inline BaseGameActor* GetTarget()const {
+		return targetActor;
+	}
 
 protected:
 	struct ConstLightCameraBuff
