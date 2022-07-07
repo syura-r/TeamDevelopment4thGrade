@@ -43,6 +43,8 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 isEndGame(false),
 	 actionState(ActionStateMove::GetInstance()),
 	 killCount(0),
+	 isInFever(false),
+	 feverTimer(new Timer(5 * 60)),
 	 speed(0.18f),
 	 WALK_SPEED(0.18f),
 	 DRAWING_SPEED(0.36f),
@@ -87,6 +89,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 BaseGameActor::~BaseGameActor()
 {
 	delete panelCountSprite3D;
+	delete feverTimer;
 }
 
 void BaseGameActor::Initialize()
@@ -106,6 +109,8 @@ void BaseGameActor::Initialize()
 	actionState->Initialize(this);
 	killCount = 0;
 	weightInfluenceMap.clear();
+	isInFever = false;
+	feverTimer->Reset();
 	speed = WALK_SPEED;
 	isHitDuringTackle = false;
 	tackleStartPos = Vector3();
@@ -156,6 +161,19 @@ void BaseGameActor::Update()
 	}
 	else
 	{
+		if (isInFever)
+		{
+			feverTimer->Update();
+			cutPower = 6;
+
+			if (feverTimer->IsTime() && actionState->GetLabel() != ActionStateLabel::CUT)
+			{
+				cutPower = 0;
+				isInFever = false;
+				feverTimer->Reset();
+			}
+		}
+
 		Field* field = ActorManager::GetInstance()->GetFields()[0];
 		CuttingInfo* info = field->GetCuttingInfo(this);
 
@@ -168,8 +186,12 @@ void BaseGameActor::Update()
 		}
 
 		field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
-		panelCutLocus->SetCutPower(cutPower);
-		panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
+
+		if (actionState->GetLabel() != ActionStateLabel::CUT)
+		{
+			panelCutLocus->SetCutPower(cutPower);
+			panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
+		}
 	}
 
 	Object::Update();
@@ -479,6 +501,12 @@ void BaseGameActor::ChangeActionState(IActionState* arg_current, IActionState* a
 	arg_next->Initialize(this);
 }
 
+void BaseGameActor::InFever()
+{
+	isInFever = true;
+	feverTimer->Reset();
+}
+
 void BaseGameActor::StartMove()
 {
 }
@@ -751,7 +779,8 @@ void BaseGameActor::EndCut()
 void BaseGameActor::CompleteCut()
 {
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	int num = field->CutPanel(panelCutLocus, bonusCount);
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
 	if (targetActor)
@@ -763,17 +792,14 @@ void BaseGameActor::CompleteCut()
 		}
 	}
 
-	static const int BONUS_COUNT_UNIT = 3;
-	if (bonusCount > bonusCount * 3)
-	{
-		bonusCount = bonusCount * 3;
-	}
-	cutPower = bonusCount / BONUS_COUNT_UNIT;
-	//cutPower = 0;
+	cutPower = 0;
 
+	if (field->IsNewFeverPlayer())
+	{
+		InFever();
+	}
 	ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
@@ -810,6 +836,8 @@ void BaseGameActor::StartFall()
 {
 	fallEasingCount = 0;
 	isPlayedFallSound = false;
+	isInFever = false;
+	feverTimer->Reset();
 }
 
 void BaseGameActor::OnFall(ActionStateLabel& arg_label)
@@ -892,6 +920,8 @@ void BaseGameActor::EndSpawn()
 	isCrushed = false;
 	isEndGame = false;
 	weightInfluenceMap.clear();
+	isInFever = false;
+	feverTimer->Reset();
 	panelCutLocus->SetCutPower(0);
 	panelCutLocus->Move(Vector3(), 0);
 	cutPower = 0;
@@ -984,7 +1014,8 @@ void BaseGameActor::HitCheckEnergyItem(EnergyItem* arg_energyItem)
 		return;
 	}
 
-	if (actionState->GetLabel() == ActionStateLabel::FALL ||
+	if (actionState->GetLabel() == ActionStateLabel::CUT ||
+		actionState->GetLabel() == ActionStateLabel::FALL ||
 		actionState->GetLabel() == ActionStateLabel::SPAWN)
 	{
 		return;
@@ -1000,7 +1031,7 @@ void BaseGameActor::HitCheckEnergyItem(EnergyItem* arg_energyItem)
 
 void BaseGameActor::HitEnergyItem(EnergyItem* arg_energyItem)
 {
-	switch (arg_energyItem->GetRank())
+	/*switch (arg_energyItem->GetRank())
 	{
 	case RankEnergyItem::NORMAL:
 		cutPower++;
@@ -1014,7 +1045,14 @@ void BaseGameActor::HitEnergyItem(EnergyItem* arg_energyItem)
 	default:
 		cutPower++;
 		break;
+	}*/
+	const int BONUS_COUNT_UINT = 5;
+	int add = bonusCount / BONUS_COUNT_UINT + 1;
+	if (add > 3)
+	{
+		add = 3;
 	}
+	cutPower += add;
 
 	if (cutPower > 6)
 	{

@@ -32,7 +32,9 @@ Field::Field()
 	 fallingBlockCountMax(0),
 	 fallIntervalTimer(new Timer(INTERVAL_CREATE)),
 	 lastTimeEdge(nullptr),
-	 bonusPanelCount(0)
+	 bonusPanelCount(0),
+	 gottenCount(0),
+	 previousGottenCount(0)
 {
 	if (edges.empty())
 	{
@@ -81,6 +83,8 @@ void Field::Initialize()
 	setBonusPanelTimer->Reset();
 	bonusPanelCount = 0;
 	SetBonusPanel();
+	gottenCount = 0;
+	previousGottenCount = 0;
 }
 
 void Field::Update()
@@ -102,11 +106,11 @@ void Field::Update()
 		FallingBlock();
 	}
 
-	setBonusPanelTimer->Update();
+	/*setBonusPanelTimer->Update();
 	if (setBonusPanelTimer->IsTime())
 	{
 		SetBonusPanel();
-	}
+	}*/
 
 	CalcTilt();
 	SetRotation(angleTilt);	
@@ -134,27 +138,6 @@ void Field::Draw()
 void Field::CalcTilt()
 {
 	tiltDirection = Vector2();
-
-	/*Player* player = ActorManager::GetInstance()->GetPlayer();
-	if (player && player->GetActionState()->GetLabel() != ActionStateLabel::FALL)
-	{
-		Vector2 posVector = LocusUtility::Dim3ToDim2XZ(player->GetVirtualityPlanePosition());
-		posVector = Vector2::Normalize(posVector) * player->GetWeight() * GetMultiplyingFactor(Vector3::Length(player->GetVirtualityPlanePosition()));
-		tiltDirection += posVector;
-	}
-
-	std::vector<StandardEnemy*> enemies = ActorManager::GetInstance()->GetStandardEnemies();
-	for (auto itr = enemies.begin(); itr != enemies.end(); itr++)
-	{
-		if ((*itr)->GetActionState()->GetLabel() == ActionStateLabel::FALL)
-		{
-			continue;
-		}
-
-		Vector2 posVector = LocusUtility::Dim3ToDim2XZ((*itr)->GetVirtualityPlanePosition());
-		posVector = Vector2::Normalize(posVector) * (*itr)->GetWeight() * GetMultiplyingFactor(Vector3::Length((*itr)->GetVirtualityPlanePosition()));
-		tiltDirection += posVector;
-	}*/
 
 	//Actor‘S‘Ì
 	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
@@ -548,7 +531,7 @@ void Field::SetBonusPanel()
 		{
 			yRand = std::rand() % (PIECE_LAYER_NUM * 2);
 			xRand = std::rand() % pieces[yRand].size();
-		} while (pieces[yRand][xRand]->IsBonus());
+		} while (pieces[yRand][xRand]->IsBonus() || !pieces[yRand][xRand]->IsActive());
 		pieces[yRand][xRand]->ChangeIsBonus(true);
 	}
 
@@ -784,6 +767,9 @@ int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount)
 		SetBonusPanel();
 	}
 
+	previousGottenCount = gottenCount;
+	gottenCount += returnVal;
+
 	return returnVal;
 }
 
@@ -903,6 +889,18 @@ FieldPiece* Field::GetRandomActivePiece()
 	return pieces[columnNum][rowNum];
 }
 
+bool Field::IsNewFeverPlayer()
+{
+	const int feverNolma = 50;
+	int nowRate = gottenCount / feverNolma;
+	if (nowRate == 0)
+	{
+		return false;
+	}
+	int previousRate = previousGottenCount / feverNolma;
+	return nowRate != previousRate;
+}
+
 float Field::GetRadius()
 {
 	return RADIUS;
@@ -931,4 +929,9 @@ float Field::GetDepthMagnitude() const
 std::vector<FieldPiece*>& Field::GetGottenPieces()
 {
 	return gottenPieces;
+}
+
+int Field::GetGottenCount()
+{
+	return gottenCount;
 }

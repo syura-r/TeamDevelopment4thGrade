@@ -262,7 +262,8 @@ void StandardEnemy::OnWithstand(ActionStateLabel& arg_label)
 void StandardEnemy::CompleteCut()
 {
 	panelCutLocus->RecordCuttedPanelPos();
-	int num = ActorManager::GetInstance()->GetFields()[0]->CutPanel(panelCutLocus, bonusCount);
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	int num = field->CutPanel(panelCutLocus, bonusCount);
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
 	if (targetActor)
@@ -274,17 +275,14 @@ void StandardEnemy::CompleteCut()
 		}
 	}
 
-	static const int BONUS_COUNT_UNIT = 3;
-	if (bonusCount > bonusCount * 3)
-	{
-		bonusCount = bonusCount * 3;
-	}
-	cutPower = bonusCount / BONUS_COUNT_UNIT;
-	//cutPower = 0;
+	cutPower = 0;
 
+	if (field->IsNewFeverPlayer())
+	{
+		InFever();
+	}
 	ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
-	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());

@@ -33,6 +33,10 @@ CircularSaw::~CircularSaw()
 void CircularSaw::Initialize()
 {
 	speed = 0.3f;
+	if (parentObj->IsInFever())
+	{
+		speed *= 5;
+	}
 	length = 0;
 	currentLineNum = 0;
 	scale = { 5,5,5 };
@@ -64,6 +68,7 @@ void CircularSaw::Update()
 	{
 		currentLineNum++;
 		length = 0;
+		virtualityPlanePosition = nowCuttingLocus->GetLine(currentLineNum)->GetVirtualityPlaneStartPos();
 		
 		if (currentLineNum >= nowCuttingLocus->GetMaxNumLine())
 		{

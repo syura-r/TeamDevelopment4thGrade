@@ -45,6 +45,8 @@ public:
 	virtual void UpdatePos();
 	//ActionState変更
 	void ChangeActionState(IActionState* arg_current, IActionState* arg_next);
+	//フィーバーにする
+	void InFever();
 
 	//---Move---
 	//移動処理
@@ -153,6 +155,12 @@ public:
 	inline void SubtructKillCount(const int arg_num) {
 		killCount -= arg_num;
 	}
+	inline bool IsInFever()const {
+		return isInFever;
+	}
+	inline void SetIsInFever(const bool arg_flag) {
+		isInFever = arg_flag;
+	}
 	inline bool IsHitDuringTackle()const {
 		return isHitDuringTackle;
 	}		
@@ -217,6 +225,9 @@ protected:
 	//撃墜数
 	int killCount;
 	std::unordered_map<BaseGameActor*, int> weightInfluenceMap;
+	//フィーバー状態
+	bool isInFever;
+	Timer* feverTimer;
 	//傾きで滑る処理
 	virtual void SlidingDown();
 	//イージングでの移動

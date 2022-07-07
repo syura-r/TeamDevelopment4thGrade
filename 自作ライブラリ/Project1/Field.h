@@ -52,6 +52,7 @@ public:
 	void ChangeIsCutableWithAround(FieldPiece* arg_piece, const bool arg_flag);
 	std::vector<FieldPiece*> GetAroundPiece(FieldPiece* arg_piece, const int colNum, const int rowNum);
 	FieldPiece* GetRandomActivePiece();
+	bool IsNewFeverPlayer();
 
 	static float GetRadius();
 	static std::vector<Vector2>& GetEdges();
@@ -59,6 +60,7 @@ public:
 	Vector3 GetTilt();
 	float GetDepthMagnitude()const;	
 	std::vector<FieldPiece*>& GetGottenPieces();
+	int GetGottenCount();
 
 private:
 	//広さ
@@ -99,6 +101,10 @@ private:
 	Timer* setBonusPanelTimer;
 	const unsigned int setBonusPanelInterval = 10 * 60;
 	int bonusPanelCount;
+
+	//フィーバー管理用
+	int gottenCount;
+	int previousGottenCount;
 
 	//端点の用意
 	void SetEdges();
