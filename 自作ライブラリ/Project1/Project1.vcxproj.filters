@@ -453,6 +453,12 @@
     <ClCompile Include="FeverCutEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyAICareful.cpp">
+      <Filter>ソース ファイル\GameObject\EnemyAI</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyAIPositiv.cpp">
+      <Filter>ソース ファイル\GameObject\EnemyAI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -814,12 +820,18 @@
     </ClInclude>
     <ClInclude Include="IEnemyAI.h">
       <Filter>ヘッダー ファイル\GameObject\EnemyAI</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="InGameCamera.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
 	</ClInclude>
     <ClInclude Include="FeverCutEffect.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyAICareful.h">
+      <Filter>ヘッダー ファイル\GameObject\EnemyAI</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyAIPositiv.h">
+      <Filter>ヘッダー ファイル\GameObject\EnemyAI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

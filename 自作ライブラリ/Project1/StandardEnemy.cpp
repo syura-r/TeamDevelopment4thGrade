@@ -24,10 +24,11 @@
 #include "ObjectRegistType.h"
 #include "IActionState.h"
 #include "ActionStateMove.h"
+#include "EnemyAIPositiv.h"
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 
-StandardEnemy::StandardEnemy(const Vector3& arg_pos)
+StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel)
 	:BaseGameActor(arg_pos)
 {
 	//アニメーション用にモデルのポインタを格納
@@ -42,6 +43,11 @@ StandardEnemy::StandardEnemy(const Vector3& arg_pos)
 
 	actionTimer = new Timer(INTERVAL_ACTIONTIMER);
 
+	// AIラベルとポインターの取得
+	enemyAILabel = arg_AILabel;		// ←ラベルによって何を呼ぶか決めるようにする
+	enemyAI = EnemyAIPositiv::GetInstance();
+
+
 	Initialize();
 }
 
@@ -54,7 +60,7 @@ StandardEnemy::~StandardEnemy()
 void StandardEnemy::Initialize()
 {
 	actionTimer->Initialize();
-
+	firstMoved = false;
 	BaseGameActor::Initialize();
 }
 
@@ -309,9 +315,18 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 
 	if (actionTimer->IsTime())
 	{
+		//---方向決定系---
+		Vector2 fixVel = { enemyAI->KeepAwayFromGottenPieces(this,velocity,position).x,enemyAI->KeepAwayFromGottenPieces(this,velocity,position).z };
+		moveDir = fixVel;
+
 		// 向きを指定して移動
-		//moveDir = RandomDir();
-		moveDir = NearObjDir();
+		if (firstMoved == false)
+		{
+			moveDir = RandomDir();
+			//moveDir = NearObjDir();
+			firstMoved == true;
+		}
+
 		actionTimer->Reset();
 	}
 	arg_direction = cameraDirectionX * moveDir.x + cameraDirectionZ * moveDir.y;
@@ -477,5 +492,7 @@ bool StandardEnemy::IsChangeMoveToCut()
 		return false;
 	}
 	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
+	//---切り抜き判断系---
+	//enemyAI->StartCutKillActorInFever();
 	return (cutPower >= cutPowerLowerLimit && cutPower <= cutPowerUpperLimit) && cutPower > 0 && info->ridingPiece;
 }

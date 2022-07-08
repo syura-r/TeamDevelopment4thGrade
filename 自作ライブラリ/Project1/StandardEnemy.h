@@ -18,11 +18,13 @@ class EnergyItem;
 class PanelItem;
 class PanelCutLocus;
 class Player;
+class IEnemyAI;
+enum class EnemyAILabel;
 
 class StandardEnemy : public BaseGameActor
 {
 public:
-	StandardEnemy(const Vector3& arg_pos);
+	StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel);
 	~StandardEnemy();
 	void Initialize()override;
 	void Update()override;
@@ -87,4 +89,11 @@ protected:
 	// 移動方向
 	Vector2 moveDir;
 	//--------------------------------------
+
+	//---AI---
+	EnemyAILabel enemyAILabel;
+	IEnemyAI* enemyAI = nullptr;
+
+	// 最初の一回移動←後でどうにかしますbyイイジマ
+	bool firstMoved;
 };
