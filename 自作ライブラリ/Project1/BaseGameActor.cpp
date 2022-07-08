@@ -885,6 +885,22 @@ void BaseGameActor::OnFall(ActionStateLabel& arg_label)
 
 void BaseGameActor::EndFall()
 {
+	BaseGameActor* mostForcedActor = nullptr;
+	for (auto m : weightInfluenceMap)
+	{
+		if (!mostForcedActor)
+		{
+			mostForcedActor = m.first;
+		}
+		else
+		{
+			if (m.second > weightInfluenceMap[mostForcedActor])
+			{
+				mostForcedActor = m.first;
+			}
+		}
+	}
+	mostForcedActor->AddKillCount(1);
 }
 
 void BaseGameActor::StartSpawn()
