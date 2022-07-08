@@ -230,7 +230,7 @@ void Play::PreDraw()
 {
 	timeLimit->Draw();
 	feverUI->Draw();
-	//levelGauge->Draw();
+	levelGauge->Draw();
 
 		objectManager->DrawReady();
 #ifdef _DEBUG
