@@ -55,21 +55,23 @@ IActionState* ActionStateMove::Update(BaseGameActor* arg_actor)
 		return ActionStateFall::GetInstance();
 	}
 
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	CuttingInfo* info = field->GetCuttingInfo(arg_actor);
 	switch (next)
 	{
 	case ActionStateLabel::TACKLE:
 		return ActionStateTackle::GetInstance();
 		break;
 	case ActionStateLabel::CUT:
-		Field* field = ActorManager::GetInstance()->GetFields()[0];
+		
 		field->DecideCuttingInfo(arg_actor, arg_actor->virtualityPlanePosition, arg_actor->direction);
 		arg_actor->panelCutLocus->SetCutPower(arg_actor->cutPower);
-		CuttingInfo* info = field->GetCuttingInfo(arg_actor);
+		info = field->GetCuttingInfo(arg_actor);
 		arg_actor->panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
 		return ActionStateCut::GetInstance();
 		break;
-	//default:
-	//	break;
+	default:
+		break;
 	}
 	return this;
 }
