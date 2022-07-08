@@ -15,6 +15,7 @@
 #include "ActorManager.h"
 #include "Pause.h"
 #include "TimeLimit.h"
+#include "FeverUI.h"
 
 
 class TouchAbleObject;
@@ -72,5 +73,6 @@ private:
 	Pause* pause = nullptr;
 	TimeLimit* timeLimit = nullptr;
 	int gameEndCount;
+	FeverUI* feverUI = nullptr;
 };
 

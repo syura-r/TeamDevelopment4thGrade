@@ -120,6 +120,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("BGM", "Pause/BGM.png");
 		Texture::LoadTexture("SE", "Pause/SE.png");
 		Texture::LoadTexture("circle", "Pause/circle.png");
+		Texture::LoadTexture("GamePlay_UI_FeverText", "GamePlay_UI_FeverText.png");
 
 		break; 
 	case 2:

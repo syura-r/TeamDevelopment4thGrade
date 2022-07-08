@@ -60,6 +60,7 @@ public:
 	Vector3 GetTilt();
 	float GetDepthMagnitude()const;	
 	std::vector<FieldPiece*>& GetGottenPieces();
+	int GetFeverNolma();
 	int GetGottenCount();
 
 private:
@@ -103,6 +104,7 @@ private:
 	int bonusPanelCount;
 
 	//フィーバー管理用
+	int feverNolma;
 	int gottenCount;
 	int previousGottenCount;
 

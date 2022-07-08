@@ -53,6 +53,7 @@ Play::Play()
 
 	pause = new Pause();
 	timeLimit = new TimeLimit(180 * 60);//§ŒÀŽžŠÔ‚ÌÝ’è‚Í‚±‚±
+	feverUI = new FeverUI();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
@@ -65,8 +66,9 @@ Play::Play()
 Play::~Play()
 {
 	LevelEditor::GetInstance()->Clear();
-	delete pause;
-	delete timeLimit;
+	PtrDelete(pause);
+	PtrDelete(timeLimit);
+	PtrDelete(feverUI);
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
@@ -106,6 +108,7 @@ void Play::Initialize()
 	pause->Initialize();
 	timeLimit->Initialize();
 	gameEndCount = 0;
+	feverUI->Initialize();
 
 	ScoreManager::GetInstance()->Inisitlize();
 
@@ -165,6 +168,7 @@ void Play::Update()
 
 		return;
 	}
+	feverUI->Update();
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
@@ -205,6 +209,7 @@ void Play::Update()
 void Play::PreDraw()
 {
 	timeLimit->Draw();
+	feverUI->Draw();
 
 		objectManager->DrawReady();
 #ifdef _DEBUG
