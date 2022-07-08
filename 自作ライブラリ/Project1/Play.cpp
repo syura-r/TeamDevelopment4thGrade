@@ -109,7 +109,7 @@ void Play::Initialize()
 
 	ScoreManager::GetInstance()->Inisitlize();
 
-	Audio::PlayWave("BGM_Play", 0.1f * Audio::volume_bgm, true);
+	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
 }
 
 void Play::Update()
@@ -129,7 +129,7 @@ void Play::Update()
 	//タイトルにもどる
 	if (pause->GetToTitle())
 	{
-		Audio::StopWave("BGM_Play");
+		Audio::StopBGM("BGM_Play");
 		next = Title;
 		ShutDown();
 		return;
@@ -138,7 +138,7 @@ void Play::Update()
 	if (pause->GetActivePause())
 	{
 		//BGMの音量変更
-		Audio::VolumeChangeWave("BGM_Play", 0.1f * Audio::volume_bgm);
+		Audio::VolumeChangeBGM("BGM_Play", 0.1f * Audio::volume_bgm);
 		return;
 	}
 
@@ -146,7 +146,7 @@ void Play::Update()
 #ifdef _DEBUG
 	if (Input::TriggerKey(DIK_E))//終了処理
 	{
-		Audio::StopWave("BGM_Play");
+		Audio::StopBGM("BGM_Play");
 		ShutDown();
 		return;
 	}
@@ -159,7 +159,7 @@ void Play::Update()
 
 		if (gameEndCount >= 60)
 		{
-			Audio::StopWave("BGM_Play");
+			Audio::StopBGM("BGM_Play");
 			ShutDown();
 		}
 

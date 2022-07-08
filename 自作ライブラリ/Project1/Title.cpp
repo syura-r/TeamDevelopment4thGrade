@@ -65,7 +65,7 @@ void Title::Initialize()
 	easingTimer_zoom = 0;
 	isSceneChange = false;
 
-	Audio::PlayWave("BGM_Title", 0.1f * Audio::volume_bgm, true);
+	Audio::PlayBGM("BGM_Title", 0.1f * Audio::volume_bgm);
 }
 
 void Title::Update()
@@ -78,7 +78,7 @@ void Title::Update()
 			if(ZoomIn())
 			{
 				//シーン切り替え
-				Audio::StopWave("BGM_Title");
+				Audio::StopBGM("BGM_Title");
 				ShutDown();
 			}
 		}
@@ -88,7 +88,7 @@ void Title::Update()
 		//シーン切り替え開始
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 		{
-			Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
+			Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
 			isSceneChange = true;
 			velocity_pupUp = velocity_init;
 		}
@@ -96,7 +96,7 @@ void Title::Update()
 		//#ifdef _DEBUG
 		if (Input::TriggerKey(DIK_SPACE))
 		{
-			Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
+			Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
 			isSceneChange = true;
 			velocity_pupUp = velocity_init;
 		}
@@ -112,6 +112,7 @@ void Title::Update()
 	lightGroup->SetAmbientColor({ 1,1,1 });
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });
 	lightGroup->Update();
+//#endif
 }
 
 void Title::PreDraw()
