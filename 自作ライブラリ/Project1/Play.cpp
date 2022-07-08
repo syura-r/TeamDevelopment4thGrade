@@ -26,6 +26,8 @@
 #include "PtrDelete.h"
 #include "ScreenCamera.h"
 #include "InGameCamera.h"
+#include "IEnemyAI.h"
+
 Play::Play()
 {
 	next = Ending;
@@ -91,10 +93,10 @@ void Play::Initialize()
 	Player* player = new Player(Vector3(0, -5, 10));
 	objectManager->Add(player);	
 	
-	StandardEnemy* testEnemy = new StandardEnemy(Vector3(-10, -5, -10));
+	StandardEnemy* testEnemy = new StandardEnemy(Vector3(-10, -5, -10), EnemyAILabel::POSITIVE);
 	objectManager->Add(testEnemy);	
 
-	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10));
+	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10), EnemyAILabel::CAREFUL);
 	objectManager->Add(testEnemy2);
 
 	stadium->Initialize();
