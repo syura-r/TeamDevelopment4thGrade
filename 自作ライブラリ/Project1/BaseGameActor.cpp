@@ -109,7 +109,7 @@ void BaseGameActor::Initialize()
 	actionState->Initialize(this);
 	killCount = 0;
 	weightInfluenceMap.clear();
-	isInFever = false;
+	isInFever = true;
 	feverTimer->Reset();
 	speed = WALK_SPEED;
 	isHitDuringTackle = false;
@@ -191,6 +191,15 @@ void BaseGameActor::Update()
 		{
 			panelCutLocus->SetCutPower(cutPower);
 			panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
+		}
+
+		if (isInFever)
+		{
+			if (feverTimer->GetTime() % 3 == 0)
+			{
+				ParticleEmitter::FeverEffect(position);
+			}
+
 		}
 	}
 
