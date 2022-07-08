@@ -10,8 +10,8 @@
 #include "BaseLocus.h"
 #include "Timer.h"
 #include "NumberSprite.h"
-#include "PanelCountUI.h"
 #include "PanelCountSprite3D.h"
+#include "DropPointGetUI.h"
 
 class IActionState;
 enum class ActionStateLabel;
@@ -227,6 +227,8 @@ protected:
 	IActionState* actionState;
 	//撃墜数
 	int killCount;
+	//撃墜数+1表示
+	DropPointGetUI* dropPointGetUI;
 	std::unordered_map<BaseGameActor*, int> weightInfluenceMap;
 	//フィーバー状態
 	bool isInFever;

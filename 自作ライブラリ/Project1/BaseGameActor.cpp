@@ -89,6 +89,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 BaseGameActor::~BaseGameActor()
 {
 	delete panelCountSprite3D;
+	delete dropPointGetUI;
 	delete feverTimer;
 }
 
@@ -108,6 +109,7 @@ void BaseGameActor::Initialize()
 	actionState = ActionStateMove::GetInstance();
 	actionState->Initialize(this);
 	killCount = 0;
+	dropPointGetUI->Initialize();
 	weightInfluenceMap.clear();
 	isInFever = false;
 	feverTimer->Reset();
@@ -196,6 +198,7 @@ void BaseGameActor::Update()
 
 	Object::Update();
 	panelCountSprite3D->Update();
+	dropPointGetUI->Update();
 }
 
 void BaseGameActor::Draw()
@@ -209,6 +212,7 @@ void BaseGameActor::Draw()
 	}
 	CustomDraw(true, true);
 	
+	dropPointGetUI->Draw();
 	panelCountSprite3D->Draw();
 }
 
@@ -919,6 +923,7 @@ void BaseGameActor::EndSpawn()
 	panelCountSprite3D->Initialize();
 	isCrushed = false;
 	isEndGame = false;
+	dropPointGetUI->Initialize();
 	weightInfluenceMap.clear();
 	isInFever = false;
 	feverTimer->Reset();

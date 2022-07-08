@@ -121,6 +121,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("SE", "Pause/SE.png");
 		Texture::LoadTexture("circle", "Pause/circle.png");
 		Texture::LoadTexture("GamePlay_UI_FeverText", "GamePlay_UI_FeverText.png");
+		Texture::LoadTexture("GamePlay_UI_Playerpoint", "GamePlay_UI_Playerpoint.png");
+		Texture::LoadTexture("GamePlay_UI_Enemypoint", "GamePlay_UI_Enemypoint.png");
 
 		break; 
 	case 2:

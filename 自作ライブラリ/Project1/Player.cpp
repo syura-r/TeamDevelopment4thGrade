@@ -47,6 +47,7 @@ Player::Player(const Vector3& arg_pos)
 	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::PLAYER);
 
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
+	dropPointGetUI = new DropPointGetUI(position, name);
 
 	Initialize();
 }

@@ -39,6 +39,7 @@ StandardEnemy::StandardEnemy(const Vector3& arg_pos)
 	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::STANDARD_ENEMY);
 
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
+	dropPointGetUI = new DropPointGetUI(position, name);
 
 	actionTimer = new Timer(INTERVAL_ACTIONTIMER);
 
