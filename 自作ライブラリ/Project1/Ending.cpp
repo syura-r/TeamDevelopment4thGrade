@@ -31,8 +31,8 @@ Ending::Ending()
 	}
 
 	sp_select = new Sprite();
-	sp_restart = new Sprite();
 	sp_title = new Sprite();
+	sp_restart = new Sprite();
 
 	stadium = new Stadium();
 }
@@ -46,8 +46,8 @@ Ending::~Ending()
 	}
 
 	delete sp_select;
-	delete sp_restart;
 	delete sp_title;
+	delete sp_restart;
 
 	delete stadium;
 }
@@ -59,7 +59,7 @@ void Ending::Initialize()
 	Object3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());
 
-	selectState = SelectState::Restart;
+	selectState = SelectState::ToTitle;
 
 	for (int i = 0; i < enemyCount + 1; i++)
 	{
@@ -75,8 +75,9 @@ void Ending::Initialize()
 	topKillCount = 0;
 	TopSearch();
 	GaugeSize();
+	isSkipOrFinish = false;
 
-	pos_select = pos_restart;
+	pos_select = pos_title;
 
 	Audio::PlayBGM("BGM_Result", 0.1f * Audio::volume_bgm);
 
@@ -108,8 +109,8 @@ void Ending::PreDraw()
 	}
 
 	//選択項目
-	sp_restart->DrawSprite("restart", pos_restart);
 	sp_title->DrawSprite("toTitle", pos_title);
+	sp_restart->DrawSprite("restart", pos_restart);
 
 	sp_select->DrawSprite("white1x1", pos_select, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,1 });
 
@@ -127,13 +128,13 @@ void Ending::SelectMenu()
 	if (Input::TriggerPadLStickLeft())
 	{
 		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
-		selectState = SelectState::Restart;
+		selectState = SelectState::ToTitle;
 		isSelectMove = true;
 	}
 	else if (Input::TriggerPadLStickRight())
 	{
 		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
-		selectState = SelectState::ToTitle;
+		selectState = SelectState::Restart;
 		isSelectMove = true;
 	}
 
@@ -142,11 +143,11 @@ void Ending::SelectMenu()
 	{
 		switch (selectState)
 		{
-		case Restart:
-			pos_select = pos_restart;
-			break;
 		case ToTitle:
 			pos_select = pos_title;
+			break;
+		case Restart:
+			pos_select = pos_restart;
 			break;
 		default:
 			break;
@@ -154,23 +155,27 @@ void Ending::SelectMenu()
 	}
 
 	//シーン切り替え
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) &&
+		isSkipOrFinish)
 	{
 		switch (selectState)
 		{
-		case Restart:
-			next = Play;
-			break;
 		case ToTitle:
 			next = Title;
+			break;
+		case Restart:
+			next = Play;
 			break;
 		default:
 			break;
 		}
 		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
-		Audio::StopSE("BGM_Result");
+		Audio::StopBGM("BGM_Result");
 		ShutDown();
 	}
+
+	//スキップ
+	MotionSkip();
 }
 
 void Ending::TopSearch()
@@ -224,6 +229,37 @@ void Ending::GaugeSize()
 	for (int i = 0; i < enemyCount + 1; i++)
 	{
 		set[i]->scaleY_gauge = set[i]->killCount / topCount;
+	}
+}
+
+void Ending::MotionSkip()
+{
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) &&
+		!isSkipOrFinish)
+	{
+		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
+		isSkipOrFinish = true;
+	}
+
+	if (isSkipOrFinish)
+	{
+		for (int i = 0; i < enemyCount + 1; i++)
+		{
+			set[i]->killCount_draw = set[i]->killCount;
+			set[i]->scaleY_gauge_draw = set[i]->scaleY_gauge;
+		}
+	}
+	else
+	{
+		//全てのゲージと数値の動きが終わったら真
+		isSkipOrFinish = true;
+		for (int i = 0; i < enemyCount + 1; i++)
+		{
+			isSkipOrFinish =
+				set[i]->killCount_draw >= set[i]->killCount &&
+				set[i]->scaleY_gauge_draw >= set[i]->scaleY_gauge &&
+				isSkipOrFinish;
+		}
 	}
 }
 

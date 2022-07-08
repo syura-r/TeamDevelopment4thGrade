@@ -31,8 +31,8 @@ private:
 
 	enum SelectState
 	{
-		Restart = 0,
-		ToTitle = 1,
+		ToTitle = 0,
+		Restart = 1,
 	};
 	SelectState selectState;
 
@@ -85,17 +85,21 @@ private:
 	//数字を増やす時用
 	int topKillCount = 0;
 
+	//スキップ
+	void MotionSkip();
+	bool isSkipOrFinish = false;
+
 	//選択項目
 	Sprite* sp_select = nullptr;
 	Vector2 pos_select = {};
 
-	//リスタート
-	Sprite* sp_restart = nullptr;
-	const Vector2 pos_restart = { 640, 950 };
-
 	//タイトル
 	Sprite* sp_title = nullptr;
-	const Vector2 pos_title = { 1280, 950 };
+	const Vector2 pos_title = { 640, 950 };
+
+	//リスタート
+	Sprite* sp_restart = nullptr;
+	const Vector2 pos_restart = { 1280, 950 };
 
 	Stadium* stadium = nullptr;
 };

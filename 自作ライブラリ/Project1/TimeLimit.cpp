@@ -55,8 +55,8 @@ void TimeLimit::Update()
 	if (nowTime <= redTime)
 	{
 		color.x = 1.0f;
-		color.y = 0.0f;
-		color.z = 0.0f;
+		color.y = 0.2f;
+		color.z = 0.2f;
 	}
 }
 

@@ -114,6 +114,7 @@ void Play::Initialize()
 	feverUI->Initialize();
 	levelGauge->Initialize();
 
+	Audio::StopBGM("BGM_Play");
 	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
 }
 
