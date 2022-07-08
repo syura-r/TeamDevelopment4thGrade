@@ -69,8 +69,11 @@ void CircularSaw::Update()
 	{
 		currentLineNum++;
 		length = 0;
-		virtualityPlanePosition = nowCuttingLocus->GetLine(currentLineNum)->GetVirtualityPlaneStartPos();
-		
+		if (currentLineNum < 7)
+		{
+			virtualityPlanePosition = nowCuttingLocus->GetLine(currentLineNum)->GetVirtualityPlaneStartPos();
+		}
+			
 		if (currentLineNum >= nowCuttingLocus->GetMaxNumLine())
 		{
 			Dead();
