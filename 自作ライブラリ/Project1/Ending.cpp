@@ -113,7 +113,6 @@ void Ending::PreDraw()
 
 	sp_select->DrawSprite("white1x1", pos_select, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,1 });
 
-	PipelineState::SetPipeline("BasicObj");
 	stadium->Draw();
 }
 

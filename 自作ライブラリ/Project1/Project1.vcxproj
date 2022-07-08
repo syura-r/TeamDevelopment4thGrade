@@ -212,6 +212,7 @@
     <ClCompile Include="GSShaderTestObj.cpp" />
     <ClCompile Include="ItemEmitter.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
+    <ClCompile Include="LevelGauge.cpp" />
     <ClCompile Include="LightCamera.cpp" />
     <ClCompile Include="LightGroup.cpp" />
     <ClCompile Include="Line.cpp" />
@@ -328,6 +329,7 @@
     <ClInclude Include="IActionState.h" />
     <ClInclude Include="ItemEmitter.h" />
     <ClInclude Include="LevelEditor.h" />
+    <ClInclude Include="LevelGauge.h" />
     <ClInclude Include="LightCamera.h" />
     <ClInclude Include="LightGroup.h" />
     <ClInclude Include="Line.h" />

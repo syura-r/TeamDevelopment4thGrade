@@ -441,6 +441,9 @@
     <ClCompile Include="DropPointGetUI.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="LevelGauge.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -799,6 +802,9 @@
     </ClInclude>
     <ClInclude Include="DropPointGetUI.h">
       <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelGauge.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

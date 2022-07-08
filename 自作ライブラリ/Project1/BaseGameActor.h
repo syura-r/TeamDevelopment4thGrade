@@ -176,6 +176,9 @@ public:
 	inline int GetGottenPanel()const {
 		return gottenPanel;
 	}
+	inline int GetBonusCount()const {
+		return bonusCount;
+	}
 	inline BaseGameActor* GetTarget()const {
 		return targetActor;
 	}
