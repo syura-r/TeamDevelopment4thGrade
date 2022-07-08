@@ -12,9 +12,9 @@ Title::Title()
 {
 	next = Play;
 
-	camera = std::make_unique<DebugCamera>();
-	Object3D::SetCamera(camera.get());
-	Sprite3D::SetCamera(camera.get());
+	camera = new Camera();
+	Object3D::SetCamera(camera);
+	Sprite3D::SetCamera(camera);
 
 	//ライト生成
 	lightGroup.reset(LightGroup::Create());
@@ -36,6 +36,7 @@ Title::Title()
 
 Title::~Title()
 {
+	delete camera;
 	delete titleLogo;
 	delete titleStart;
 	for (int i = 0; i < panelsNum_ALL; i++)
@@ -49,9 +50,9 @@ void Title::Initialize()
 	isEnd = false;
 
 	cameraDistance = cameraDistance_init;
-	camera.get()->SetDistance(cameraDistance);
-	Object3D::SetCamera(camera.get());
-	Sprite3D::SetCamera(camera.get());
+	camera->SetMatrixView({ 0,0,-cameraDistance }, { 0,0,0 }, { 0,1,0 });
+	Object3D::SetCamera(camera);
+	Sprite3D::SetCamera(camera);
 	Object3D::SetLightGroup(lightGroup.get());
 
 	for (int i = 0; i < panelsNum_ALL; i++)
@@ -208,7 +209,7 @@ bool Title::ZoomIn()
 	cameraDistance = Easing::EaseInCirc(cameraDistance_init, endDistance, easingLimit, easingTimer_zoom);
 	easingTimer_zoom++;
 	//反映
-	camera.get()->SetDistance(cameraDistance);
+	camera->SetMatrixView({ 0,0,-cameraDistance }, { 0,0,0 }, { 0,1,0 });
 
 	//目標地点まで近づいたら真を返す
 	return cameraDistance <= endDistance;
