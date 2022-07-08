@@ -23,7 +23,12 @@ void FeverUI::Initialize()
 void FeverUI::Update()
 {
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	const int toFeverNum = field->GetFeverNolma() - field->GetGottenCount();
+	int cutPanelNum = field->GetGottenCount();
+	while (cutPanelNum >= field->GetFeverNolma())
+	{
+		cutPanelNum -= field->GetFeverNolma();
+	}
+	const int toFeverNum = field->GetFeverNolma() - cutPanelNum;
 
 	//Œ…‚É‡‚í‚¹‚Ä‰ÁZ
 	if (drawNum < toFeverNum)
