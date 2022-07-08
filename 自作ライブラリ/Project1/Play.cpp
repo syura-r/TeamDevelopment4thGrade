@@ -166,6 +166,16 @@ void Play::Update()
 
 		return;
 	}
+
+	// ゲームパッドの右スティックでのカメラ操作
+	if (Input::CheckPadRStickLeft() || Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown())
+	{
+		Vector2 vec;
+		vec.x = Input::GetRStickDirection().x;
+		vec.y = Input::GetRStickDirection().y;
+		camera->RotateYaxis(vec);
+	}
+
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
