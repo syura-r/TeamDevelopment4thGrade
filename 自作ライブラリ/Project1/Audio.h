@@ -48,32 +48,19 @@ public:
 	~Audio();
 	static void Initialize();
 	static void LoadFile(const std::string& keyName, const std::string& fileName);
-	static void End();
-	
-	static void PlayWave(const std::string& keyName, const float& soundVol = 1.0f, bool loop = false, int loopCount = XAUDIO2_LOOP_INFINITE);
-	static void StopWave(const std::string& keyName);
+	static void End();	
 
-	static void VolumeChangeWave(const std::string& keyName, const float& soundVol);
-
-	static float volume_bgm;
-	static float volume_se;
-private:
-	static void Play(const std::string& arg_name);
-	static void Stop(const std::string& arg_name);
-	
-
-	static void SetMasterVolume(const float arg_volume);
-	static void SetSEVolume(const float arg_volume);
-	static void SetBGMVolume(const float arg_volume);
+	static void VolumeChangeBGM(const std::string& keyName, const float& soundVol);
+	static void VolumeChangeSE(const std::string& keyName, const float& soundVol);
 
 	//çƒê∂ÅEí‚é~
-	static void PlayBGM(const std::string& arg_name);
+	static void PlayBGM(const std::string& arg_name, const float arg_volume);
 	static void StopBGM(const std::string& arg_name);
 	//àÍéûí‚é~ÅEçƒäJ
 	static void PauseBGM(const std::string& arg_name);
 	static void ResumeBGM(const std::string& arg_name);
 
-	static void PlaySE(const std::string& arg_name, bool loop = false, int loopCount = XAUDIO2_LOOP_INFINITE);
+	static void PlaySE(const std::string& arg_name, const float arg_volume, bool loop = false, int loopCount = XAUDIO2_LOOP_INFINITE);
 	static void StopSE(const std::string& arg_name);
 	
 	static void PauseSE(const std::string& arg_name);
@@ -82,15 +69,14 @@ private:
 	static void AllPauseSE();
 	static void AllResumeSE();
 
+	static float volume_bgm;
+	static float volume_se;
+
 private:
 	static ComPtr<IXAudio2> xAudio2;
 	static IXAudio2MasteringVoice* masterVoice;
 	static std::map <std::string, File> soundFiles;
-	static std::map <std::string, IXAudio2SourceVoice*> soundVoices;
+	//static std::map <std::string, IXAudio2SourceVoice*> soundVoices;
 	static std::map <std::string, IXAudio2SourceVoice*> bgmSourceVoices;
 	static std::map <std::string, IXAudio2SourceVoice*> seSourceVoices;
-
-	static float masterVolume;
-	static float seVolume;
-	static float bgmVolume;
 };

@@ -53,7 +53,6 @@ Player::Player(const Vector3& arg_pos)
 
 Player::~Player()
 {			
-	Audio::StopWave("SE_SteppingOn");		
 	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::PLAYER);
 }
 

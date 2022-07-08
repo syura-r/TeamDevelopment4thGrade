@@ -11,6 +11,7 @@ Sprite3D::Sprite3D()
 	CreateSprite3D();
 }
 
+
 void Sprite3D::CreateSprite3D()
 {
 	HRESULT result;
@@ -104,8 +105,17 @@ void Sprite3D::CreateSprite3D()
 
 
 }
+void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, const float& rotation, const XMFLOAT2& scale, const XMFLOAT2& anchorPoint, bool billboard)
+{
+	DrawSprite(name, position, rotation, scale, { 1,1,1,1 }, anchorPoint, "NoShade", ALPHA, billboard);
+}
 
-void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, const float& rotation, const XMFLOAT2& scale, const XMFLOAT4& color, const XMFLOAT2& anchorPoint, const std::string& pipelineName, BLENDTYPE type)
+void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, const float& rotation, const XMFLOAT2& scale, const XMFLOAT4& color, const XMFLOAT2& anchorPoint, bool billboard)
+{
+	DrawSprite(name, position, rotation, scale, color, anchorPoint, "NoShade", ALPHA, billboard);
+}
+
+void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, const float& rotation, const XMFLOAT2& scale, const XMFLOAT4& color, const XMFLOAT2& anchorPoint, const std::string& pipelineName, BLENDTYPE type,bool billboard)
 {
 	auto cmdList = DirectXLib::GetInstance()->GetCommandList();
 
@@ -141,9 +151,12 @@ void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, cons
 	spriteMatWorld = XMMatrixIdentity();
 	spriteMatWorld *= matScale;
 	spriteMatWorld *= matRot;
-	const XMMATRIX& matBillboard = camera->GetMatBillboard();
-	if (parent == nullptr) {
-		spriteMatWorld *= matBillboard;
+	if (billboard)
+	{
+		const XMMATRIX& matBillboard = camera->GetMatBillboard();
+		if (parent == nullptr) {
+			spriteMatWorld *= matBillboard;
+		}
 	}
 	spriteMatWorld *= matTrans;
 
@@ -179,8 +192,7 @@ void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, cons
 		constBuff2->Unmap(0, nullptr);
 	}
 
-
-	PipelineState::SetPipeline("NoShade", type);
+	PipelineState::SetPipeline(pipelineName, type);
 
 	//デスクリプタヒープの配列
 	ID3D12DescriptorHeap* ppHeaps[] = { Texture::GetBasicDescHeap().Get() };

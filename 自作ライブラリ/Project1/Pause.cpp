@@ -71,7 +71,17 @@ void Pause::Update()
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_START))
 	{
 		activeFlag = !activeFlag;
-		Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
+
+		if (activeFlag)
+		{
+			Audio::AllPauseSE();
+		}
+		else
+		{
+			Audio::AllResumeSE();
+		}
+
+		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
 		if (!activeFlag)
 		{
 			fadeFlag = true;
@@ -197,13 +207,13 @@ void Pause::Select()
 	int select = selectState;
 	if (Input::TriggerPadLStickUp() && selectState > 0)
 	{
-		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
+		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
 		select--;
 	}
 	else if (Input::TriggerPadLStickDown() && selectState < selectMax - 1)
 	{
-		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
+		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
 		select++;
 	}
@@ -258,13 +268,13 @@ void Pause::SelectSub_Sound()
 	int select = selectState_sound;
 	if (Input::TriggerPadLStickUp() && selectState_sound > 0)
 	{
-		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
+		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
 		select--;
 	}
 	else if (Input::TriggerPadLStickDown() && selectState_sound < selectMax_sound - 1)
 	{
-		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
+		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
 		select++;
 	}
@@ -317,7 +327,7 @@ void Pause::Decision()
 {
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
-		Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
+		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
 
 		//Ý’è‚ð•Â‚¶‚é
 		activeFlag = false;
