@@ -146,6 +146,7 @@ void StandardEnemy::OnMove(ActionStateLabel& arg_label)
 	if (CrossVec.y < 0)
 		rotSpeed *= -1;
 	rotation.y += rotSpeed;
+
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotSpeed));
 	XMVECTOR dir = { direction.x,direction.y,direction.z,0 };
 	dir = XMVector3TransformNormal(dir, matRot);
@@ -465,6 +466,16 @@ bool StandardEnemy::IsChangeMoveToCut()
 	{
 		return false;
 	}
+	int randRatio = (1 + cutPowerUpperLimit - cutPower) * 10;
+	if (randRatio <= 0)
+	{
+		randRatio = 1;
+	}
+	rnd = std::rand() % randRatio;
+	if (rnd != 0)
+	{
+		return false;
+	}
 	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
-	return cutPower >= cutPowerLimit && cutPower > 0 && info->ridingPiece;
+	return (cutPower >= cutPowerLowerLimit && cutPower <= cutPowerUpperLimit) && cutPower > 0 && info->ridingPiece;
 }

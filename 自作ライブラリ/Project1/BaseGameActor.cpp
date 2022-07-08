@@ -33,7 +33,7 @@ int BaseGameActor::cameraRotCount = 0;
 const int BaseGameActor::ROT_TIME = 10;
 
 BaseGameActor::BaseGameActor(const Vector3& arg_pos)
-	:startPos(arg_pos),
+	 :startPos(arg_pos),
 	 RADIUS(1.0f),
 	 weight(10),
 	 prePos(arg_pos),
