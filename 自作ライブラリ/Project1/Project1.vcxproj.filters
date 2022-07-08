@@ -447,6 +447,9 @@
     <ClCompile Include="ActionStateSpawn.cpp">
       <Filter>ソース ファイル\GameObject\GameActor</Filter>
     </ClCompile>
+    <ClCompile Include="InGameCamera.cpp">
+      <Filter>ソース ファイル\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -808,6 +811,9 @@
     </ClInclude>
     <ClInclude Include="IEnemyAI.h">
       <Filter>ヘッダー ファイル\GameObject\EnemyAI</Filter>
+	</ClInclude>
+    <ClInclude Include="InGameCamera.h">
+      <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

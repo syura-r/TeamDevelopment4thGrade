@@ -12,7 +12,7 @@ Title::Title()
 {
 	next = Play;
 
-	camera = std::make_unique<DebugCamera>();
+	camera = std::make_unique<InGameCamera>();
 	Object3D::SetCamera(camera.get());
 	Sprite3D::SetCamera(camera.get());
 

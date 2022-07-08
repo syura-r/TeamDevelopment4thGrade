@@ -95,6 +95,7 @@ void Player::DrawReady()
 		ImGui::End();
 	}
 #endif
+	panelCountSprite3D->Draw();
 
 	panelCountSprite3D->Draw();
 

@@ -3,6 +3,7 @@
 
 #include "BoxCollider.h"
 #include "DebugCamera.h"
+#include "InGameCamera.h"
 #include "FBXModel.h"
 #include "Object.h"
 #include "ObjectManager.h"
@@ -31,7 +32,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw() override;
 	virtual void DrawReady() override;
-	static void SetDebugCamera(DebugCamera* cameraPtr) { camera = cameraPtr; }
+	static void SetCamera(InGameCamera* cameraPtr) { camera = cameraPtr; }
 	static void InitCamera(const Vector3& arg_pos);
 	//カメラの制御
 	static void MoveCamera(Vector3 arg_dir);
@@ -194,7 +195,8 @@ protected:
 	friend class ActionStateFall;
 
 	static ComPtr<ID3D12Resource> constCameraBuff; // 定数バッファ
-	static DebugCamera* camera;
+	//static DebugCamera* camera;
+	static InGameCamera* camera;
 	//カメラ回転中
 	static bool rotCamera;
 	//カメラの回転度合い
