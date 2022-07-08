@@ -2,6 +2,8 @@
 #include "ActorManager.h"
 #include "Player.h"
 
+int PanelCountSprite3D::enemyCount = 0;
+
 PanelCountSprite3D::PanelCountSprite3D(Vector3& parentPosition, const std::string& parentName, int& panelNum)
 	:parentPosition(parentPosition), panelNum(panelNum)
 {
@@ -13,7 +15,12 @@ PanelCountSprite3D::PanelCountSprite3D(Vector3& parentPosition, const std::strin
 	}
 	else
 	{
-		iconTexName = "GamePlay_UI_Gettriangle_Enemy";
+		if(enemyCount % 2)
+			iconTexName = "GamePlay_UI_Gettriangle_Enemy2";
+		else
+			iconTexName = "GamePlay_UI_Gettriangle_Enemy";
+
+		enemyCount++;
 	}
 
 	icon_sp3D = new Sprite3D();

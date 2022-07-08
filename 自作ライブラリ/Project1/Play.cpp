@@ -95,10 +95,10 @@ void Play::Initialize()
 	Player* player = new Player(Vector3(0, -5, 10));
 	objectManager->Add(player);	
 	
-	StandardEnemy* testEnemy = new StandardEnemy(Vector3(-10, -5, -10), EnemyAILabel::POSITIVE);
+	StandardEnemy* testEnemy = new StandardEnemy(Vector3(-10, -5, -10), EnemyAILabel::POSITIVE, "GamePlay_Enemy");
 	objectManager->Add(testEnemy);	
 
-	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10), EnemyAILabel::CAREFUL);
+	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10), EnemyAILabel::CAREFUL, "GamePlay_Enemy2");
 	objectManager->Add(testEnemy2);
 
 	stadium->Initialize();
@@ -307,6 +307,6 @@ void Play::TimeUpdate()
 void Play::KillCountToEnding()
 {
 	Ending::killCount_player = actorManager->GetPlayer()->GetKillCount();
-	Ending::killCount_enemyA = actorManager->GetStandardEnemies()[0]->GetKillCount();
-	Ending::killCount_enemyB = actorManager->GetStandardEnemies()[1]->GetKillCount();
+	Ending::killCount_enemy_red = actorManager->GetStandardEnemies()[0]->GetKillCount();
+	Ending::killCount_enemy_green = actorManager->GetStandardEnemies()[1]->GetKillCount();
 }

@@ -5,8 +5,8 @@
 #include "OBJLoader.h"
 
 int Ending::killCount_player = 0;
-int Ending::killCount_enemyA = 0;
-int Ending::killCount_enemyB = 0;
+int Ending::killCount_enemy_red = 0;
+int Ending::killCount_enemy_green = 0;
 
 Ending::Ending()
 {
@@ -25,10 +25,10 @@ Ending::Ending()
 
 	selectState = SelectState::Restart;
 
-	for (int i = 0; i < enemyCount+1; i++)
-	{
-		set[i] = new ResultSet(i == 0);
-	}
+	set[0] = new ResultSet(ActorTag::PLAYER);
+	set[1] = new ResultSet(ActorTag::ENEMY_RED);
+	set[2] = new ResultSet(ActorTag::ENEMY_GREEN);
+
 
 	sp_select = new Sprite();
 	sp_title = new Sprite();
@@ -67,9 +67,9 @@ void Ending::Initialize()
 		if (i == 0)
 			killCount = killCount_player;
 		else if (i == 1)
-			killCount = killCount_enemyA;
+			killCount = killCount_enemy_red;
 		else
-			killCount = killCount_enemyB;
+			killCount = killCount_enemy_green;
 		set[i]->Initialize(killCount, positions_3d[i], positions_2d[i]);
 	}
 	topKillCount = 0;
@@ -263,12 +263,24 @@ void Ending::MotionSkip()
 	}
 }
 
-Ending::ResultSet::ResultSet(const bool arg_isPlayer)
-	:isPlayer(arg_isPlayer)
+Ending::ResultSet::ResultSet(const ActorTag& arg_tag)
+	:tag(arg_tag)
 {
-	std::string modelName = "GamePlay_Player";
-	if (!isPlayer)
+	std::string modelName;
+	switch (tag)
+	{
+	case ActorTag::PLAYER:
+		modelName = "GamePlay_Player";
+		break;
+	case ActorTag::ENEMY_RED:
 		modelName = "GamePlay_Enemy";
+		break;
+	case ActorTag::ENEMY_GREEN:
+		modelName = "GamePlay_Enemy2";
+		break;
+	default:
+		break;
+	}
 
 	object = Object3D::Create(FBXManager::GetModel(modelName), position, scale, rotation, color);
 	obj_crown = Object3D::Create(OBJLoader::GetModel("Crown"), pos_crown, scale_crown, rotation_crown, color_crown);
@@ -336,8 +348,21 @@ void Ending::ResultSet::Draw()
 	const int digit = 2;
 	numberSprite->Draw(digit, "GamePlay_UI_Number", { positionX_2d, 200.0f });
 
-	std::string texName = "Result_Player_Gauge";
-	if (!isPlayer)
+	std::string texName;
+	switch (tag)
+	{
+	case ActorTag::PLAYER:
+		texName = "Result_Player_Gauge";
+		break;
+	case ActorTag::ENEMY_RED:
 		texName = "Result_Enemy_Gauge";
+		break;
+	case ActorTag::ENEMY_GREEN:
+		texName = "Result_Enemy2_Gauge";
+		break;
+	default:
+		break;
+	}
+
 	sp_gauge->DrawSprite(texName, { positionX_2d, 770.0f }, 0.0f, { 1.0f, scaleY_gauge_draw }, { 1,1,1,1 }, { 0.5f, 1.0f });
 }

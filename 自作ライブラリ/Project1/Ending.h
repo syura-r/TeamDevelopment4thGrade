@@ -20,8 +20,8 @@ public:
 
 public:
 	static int killCount_player;
-	static int killCount_enemyA;
-	static int killCount_enemyB;
+	static int killCount_enemy_red;
+	static int killCount_enemy_green;
 
 private:
 	std::unique_ptr<InGameCamera> camera;
@@ -37,9 +37,16 @@ private:
 	SelectState selectState;
 
 	//
+	enum ActorTag
+	{
+		PLAYER,
+		ENEMY_RED,
+		ENEMY_GREEN,
+	};
+
 	struct ResultSet
 	{
-		ResultSet(const bool arg_isPlayer);
+		ResultSet(const ActorTag& arg_tag);
 		~ResultSet();
 		void Initialize(const int arg_killCount, const float arg_positionX_3d, const float arg_positionX_2d);
 		void Update(const int arg_topKillCount);
@@ -69,7 +76,7 @@ private:
 		float killCount_draw = 0.0f;
 		float positionX_2d;
 
-		bool isPlayer = false;
+		ActorTag tag;
 	};
 	static const int enemyCount = 2;//ìGÇÃêî
 	ResultSet* set[enemyCount + 1];

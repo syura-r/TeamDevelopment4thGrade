@@ -23,7 +23,7 @@ enum class EnemyAILabel;
 class StandardEnemy : public BaseGameActor
 {
 public:
-	StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel);
+	StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel, const std::string& modelName = "GamePlay_Enemy");
 	~StandardEnemy();
 	void Initialize()override;
 	void Update()override;

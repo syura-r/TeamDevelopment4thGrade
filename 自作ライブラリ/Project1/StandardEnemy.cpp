@@ -27,11 +27,11 @@
 
 const float INTERVAL_ACTIONTIMER = 180.0f;
 
-StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel)
+StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel, const std::string& modelName)
 	:BaseGameActor(arg_pos)
 {
 	//アニメーション用にモデルのポインタを格納
-	myModel = FBXManager::GetModel("GamePlay_Enemy");
+	myModel = FBXManager::GetModel(modelName);
 	//モデルの生成
 	Create(myModel);
 

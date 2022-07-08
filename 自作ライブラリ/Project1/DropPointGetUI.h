@@ -15,6 +15,8 @@ public:
 	void PointGet();
 
 private:
+	static int enemyCount;
+
 	//e‚ÌÀ•W
 	Vector3& parentPosition;
 	std::string texName;

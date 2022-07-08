@@ -11,6 +11,8 @@ public:
 	void Draw();
 
 private:
+	static int enemyCount;
+
 	//ŠeŒ…‚Ì”’l‚ğ‹‚ß‚é
 	void DigitNum();
 

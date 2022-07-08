@@ -1,6 +1,8 @@
 #include "DropPointGetUI.h"
 #include "Easing.h"
 
+int DropPointGetUI::enemyCount = 0;
+
 DropPointGetUI::DropPointGetUI(Vector3& parentPosition, const std::string& parentName)
 	:parentPosition(parentPosition)
 {
@@ -12,7 +14,12 @@ DropPointGetUI::DropPointGetUI(Vector3& parentPosition, const std::string& paren
 	}
 	else
 	{
-		texName = "GamePlay_UI_Enemypoint";
+		if (enemyCount % 2)
+			texName = "GamePlay_UI_Enemy2point";
+		else
+			texName = "GamePlay_UI_Enemypoint";
+
+		enemyCount++;
 	}
 }
 

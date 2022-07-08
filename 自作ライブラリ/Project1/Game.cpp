@@ -107,6 +107,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Colon", "GamePlay_UI_Colon.png");
 		Texture::LoadTexture("GamePlay_UI_Gettriangle_Player", "GamePlay_UI_Gettriangle_Player.png");
 		Texture::LoadTexture("GamePlay_UI_Gettriangle_Enemy", "GamePlay_UI_Gettriangle_Enemy.png");
+		Texture::LoadTexture("GamePlay_UI_Gettriangle_Enemy2", "GamePlay_UI_Gettriangle_Enemy2.png");
 		Texture::LoadTexture("Result_UI_Gettriangle_text", "Result/Result_UI_Gettriangle_text.png");
 		Texture::LoadTexture("Result_UI_Totalscore_Text", "Result/Result_UI_Totalscore_Text.png");
 		Texture::LoadTexture("GamePlay_UI_Score_Text", "GamePlay_UI_Score_Text.png");
@@ -125,8 +126,10 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_FeverText", "GamePlay_UI_FeverText.png");
 		Texture::LoadTexture("GamePlay_UI_Playerpoint", "GamePlay_UI_Playerpoint.png");
 		Texture::LoadTexture("GamePlay_UI_Enemypoint", "GamePlay_UI_Enemypoint.png");
+		Texture::LoadTexture("GamePlay_UI_Enemy2point", "GamePlay_UI_Enemy2point.png");
 		Texture::LoadTexture("Result_Player_Gauge", "Result_Player_Gauge.png");
 		Texture::LoadTexture("Result_Enemy_Gauge", "Result_Enemy_Gauge.png");
+		Texture::LoadTexture("Result_Enemy2_Gauge", "Result_Enemy2_Gauge.png");
 		Texture::LoadTexture("Result_UV_Crown", "Result_UV_Crown.png");
 		Texture::LoadTexture("GamePlay_UI_Level1", "LevelGauge/GamePlay_UI_Level1.png");
 		Texture::LoadTexture("GamePlay_UI_Level2", "LevelGauge/GamePlay_UI_Level2.png");
@@ -165,6 +168,7 @@ void Game::RoadAsset()
 		FBXManager::LoadModelFile("enemy", "player", false);
 		FBXManager::LoadModelFile("GamePlay_Player", "GamePlay_Player", false);
 		FBXManager::LoadModelFile("GamePlay_Enemy", "GamePlay_Enemy", false);
+		FBXManager::LoadModelFile("GamePlay_Enemy2", "GamePlay_Enemy2", false);
 
 		//WAVÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›
 		Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
