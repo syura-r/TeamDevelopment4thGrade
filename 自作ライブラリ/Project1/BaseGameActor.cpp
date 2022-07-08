@@ -780,7 +780,7 @@ void BaseGameActor::CompleteCut()
 {
 	panelCutLocus->RecordCuttedPanelPos();
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	int num = field->CutPanel(panelCutLocus, bonusCount);
+	int num = field->CutPanel(panelCutLocus, bonusCount, targetActor);
 	/*weight += num * FieldPiece::GetWeight();
 	gottenPanel += num;*/
 	if (targetActor)

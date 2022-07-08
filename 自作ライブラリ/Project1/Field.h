@@ -9,6 +9,7 @@ class FieldPiece;
 class UnableThroughBlock;
 class UnableThroughEdge;
 class PanelCutLocus;
+class BaseGameActor;
 enum class ObjectRegistType;
 
 struct CuttingInfo
@@ -41,7 +42,7 @@ public:
 	//ê}å`äÆê¨Ç…ÇÊÇ¡ÇƒåXÇ≠Ç∆Ç´
 	void AddInfluence(const LocusFieldInfluence& arg_inf);
 	void ResetInfluences();
-	int CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount);
+	int CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount, BaseGameActor* arg_target);
 	void ReviveGottenPanel(FieldPiece* arg_piece);
 	void StartFallingBlock();
 
@@ -53,6 +54,8 @@ public:
 	std::vector<FieldPiece*> GetAroundPiece(FieldPiece* arg_piece, const int colNum, const int rowNum);
 	FieldPiece* GetRandomActivePiece();
 	bool IsNewFeverPlayer();
+	float GetLengthToFieldBorder(const int arg_index, const Vector3& arg_pos);
+	Vector3 GetFieldBorderNormal(const int arg_index);
 
 	static float GetRadius();
 	static std::vector<Vector2>& GetEdges();

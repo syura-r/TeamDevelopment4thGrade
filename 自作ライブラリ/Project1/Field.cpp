@@ -676,7 +676,7 @@ void Field::ResetInfluences()
 	gottenPieces.clear();
 }
 
-int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount)
+int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount, BaseGameActor* arg_target)
 {
 	auto vecPos = arg_locus->GetCuttedPanelPos();
 
@@ -721,7 +721,7 @@ int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount)
 						bonusPanelCount--;
 						pieces[columnNum][j]->ChangeIsBonus(false);
 					}
-					pieces[columnNum][j]->CutOneself(arg_locus->GetParentObject());
+					pieces[columnNum][j]->CutOneself(arg_target);
 					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
 					gottenPieces.push_back(pieces[columnNum][j]);
@@ -738,7 +738,7 @@ int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount)
 						bonusPanelCount--;
 						pieces[columnNum][j]->ChangeIsBonus(false);
 					}
-					pieces[columnNum][j]->CutOneself(arg_locus->GetParentObject());
+					pieces[columnNum][j]->CutOneself(arg_target);
 					AddInfluence(LocusFieldInfluence(pieces[columnNum][j]->GetVirtualityPlanePosition(), FieldPiece::GetWeight()));
 					returnVal++;
 					gottenPieces.push_back(pieces[columnNum][j]);
@@ -899,6 +899,43 @@ bool Field::IsNewFeverPlayer()
 	}
 	int previousRate = previousGottenCount / feverNolma;
 	return nowRate != previousRate;
+}
+
+float Field::GetLengthToFieldBorder(const int arg_index, const Vector3& arg_pos)
+{
+	Vector2 edgeStart = edges[arg_index];
+	Vector2 edgeEnd = edges[(arg_index + 1) % 6];
+	Vector2 actorPos = LocusUtility::Dim3ToDim2XZ(arg_pos);
+
+	float a = edgeEnd.x - edgeStart.x;
+	float b = edgeEnd.y - edgeStart.y;
+	float a2 = a * a;
+	float b2 = b * b;
+	float r2 = a2 + b2;
+	float tt = -(a * (edgeStart.x - actorPos.x) + b * (edgeStart.y - actorPos.y));
+	
+	if (tt < 0)
+	{
+		return Vector2::Length(edgeStart - actorPos);
+	}
+	else if (tt > r2)
+	{
+		return Vector2::Length(edgeEnd - actorPos);
+	}
+	
+	float f1 = a * (edgeStart.y - actorPos.y) - b * (edgeStart.x - actorPos.x);
+	return sqrtf((f1 * f1) / r2);
+}
+
+Vector3 Field::GetFieldBorderNormal(const int arg_index)
+{
+	if (arg_index >= edges.size())
+	{
+		return Vector3(1, 0, 0);
+	}
+
+	Vector3 edgeVec = LocusUtility::Dim2XZToDim3(Vector2(edges[(arg_index + 1) % 6] - edges[arg_index]));
+	return Vector3::Normalize(Vector3(-edgeVec.z, 0, edgeVec.x));
 }
 
 float Field::GetRadius()
