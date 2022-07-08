@@ -4,7 +4,7 @@
 #include"Alpha.h"
 #include "NumberSprite.h"
 #include "Object3D.h"
-#include "DebugCamera.h"
+#include "InGameCamera.h"
 #include"LightGroup.h"
 #include "Stadium.h"
 
@@ -24,7 +24,7 @@ public:
 	static int killCount_enemyB;
 
 private:
-	std::unique_ptr<DebugCamera> camera;
+	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;
 
 	void SelectMenu();

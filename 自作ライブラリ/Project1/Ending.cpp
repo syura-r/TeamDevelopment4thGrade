@@ -12,7 +12,7 @@ Ending::Ending()
 {
 	next = Title;
 
-	camera = std::make_unique<DebugCamera>();
+	camera = std::make_unique<InGameCamera>();
 	Object3D::SetCamera(camera.get());
 
 	//ƒ‰ƒCƒg¶¬
