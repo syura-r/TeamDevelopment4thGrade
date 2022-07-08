@@ -7,7 +7,7 @@
 #include "TitleText.h"
 #include "Sprite3D.h"
 #include "Object3D.h"
-#include "Camera.h"
+#include "DebugCamera.h"
 #include"LightGroup.h"
 
 class Title :
@@ -37,7 +37,7 @@ private:
 	bool ZoomIn();
 	int easingTimer_zoom;
 
-	Camera* camera;
+	std::unique_ptr<DebugCamera> camera;
 	float cameraDistance;
 	const float cameraDistance_init = 23.0f;
 	std::unique_ptr<LightGroup> lightGroup;
