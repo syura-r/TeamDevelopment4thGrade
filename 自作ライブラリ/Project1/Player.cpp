@@ -127,7 +127,7 @@ void Player::CompleteCut()
 	{
 		InFever();
 	}
-	ScoreManager::GetInstance()->AddScore_CutPanel(num);
+	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();

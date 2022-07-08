@@ -25,22 +25,31 @@ private:
 	};
 	SelectState selectState;
 
-	//リザルト
-	Sprite* sp_result = nullptr;
+	//文字と数値のセット
+	struct ResultSet
+	{
+		ResultSet();
+		~ResultSet();
+		void Initialize(const float arg_num);
+		void Update(const bool skipLook = true);
+		void Draw(
+			const std::string& arg_texName_text,
+			const float arg_position_y,
+			const Vector2& arg_scale);
+
+		Sprite* sp_text = nullptr;
+		NumberSprite* numSp_number = nullptr;
+		float num = 0.0f;
+		float drawNum = 0.0f;
+		bool isCountEnd = false;
+	};
 
 	//累計スコア
-	Sprite* sp_score = nullptr;
-	NumberSprite* numSp_score = nullptr;
-	float score = 0.0f;
-	float drawScore = 0.0f;
-	bool isCountEnd_score = false;
-
+	//ResultSet* totalScore = nullptr;
 	//切り抜いたパネル数
-	Sprite* sp_panel = nullptr;
-	NumberSprite* numSp_panel = nullptr;
-	float panelNum = 0.0f;
-	float drawPanelNum = 0.0f;
-	bool isCountEnd_panel = false;
+	//ResultSet* cutPanel = nullptr;
+	//落とした敵の数
+	ResultSet* dropEnemy = nullptr;
 
 	//選択項目
 	Sprite* sp_select = nullptr;

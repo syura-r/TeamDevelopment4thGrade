@@ -485,7 +485,7 @@ void BaseGameActor::DischargeGottenPanel(BaseGameActor* arg_actor)
 
 	if (maxEmit != 0)
 	{
-		//Audio::PlayWave("SE_TriangleLost");
+		//Audio::PlayWave("SE_TriangleLost", 1.0f * Audio::volume_se);
 	}
 }
 
@@ -591,7 +591,7 @@ void BaseGameActor::StartTackle()
 	moveDirection.Normalize();
 	tackleEndPos = virtualityPlanePosition + moveDirection * 16;
 
-	Audio::PlayWave("SE_Dash");
+	Audio::PlayWave("SE_Dash", 1.0f * Audio::volume_se);
 }
 
 void BaseGameActor::OnTackle(ActionStateLabel& arg_label)
@@ -668,7 +668,7 @@ void BaseGameActor::StartWithstand()
 	preWithstandVec.y = 0;
 	preWithstandVec.Normalize();
 
-	Audio::PlayWave("SE_SteppingOn", 0.25f, true);
+	Audio::PlayWave("SE_SteppingOn", 0.25f * Audio::volume_se, true);
 }
 
 void BaseGameActor::OnWithstand(ActionStateLabel& arg_label)
@@ -798,7 +798,7 @@ void BaseGameActor::CompleteCut()
 	{
 		InFever();
 	}
-	ScoreManager::GetInstance()->AddScore_CutPanel(num);
+	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
@@ -867,7 +867,7 @@ void BaseGameActor::OnFall(ActionStateLabel& arg_label)
 		if (!isPlayedFallSound)
 		{
 			Audio::StopWave("SE_SteppingOn");
-			Audio::PlayWave("SE_Fall", 1.0f);
+			Audio::PlayWave("SE_Fall", 1.0f * Audio::volume_se);
 			isPlayedFallSound = true;
 		}
 		//isEndGame = true;
@@ -969,7 +969,7 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 		return;
 	}
 
-	Audio::PlayWave("SE_Collision", 1.0f);
+	Audio::PlayWave("SE_Collision", 1.0f * Audio::volume_se);
 	//パーティクル
 	ParticleEmitter::ShockEffect((arg_actor->GetPosition() + position) / 2.0f, Vector3(255.0f, 255.0f, 255.0f));
 
@@ -1059,7 +1059,7 @@ void BaseGameActor::HitEnergyItem(EnergyItem* arg_energyItem)
 		cutPower = 6;
 	}
 
-	Audio::PlayWave("SE_GetTriangle");
+	Audio::PlayWave("SE_GetTriangle", 1.0f * Audio::volume_se);
 	arg_energyItem->Dead();
 }
 

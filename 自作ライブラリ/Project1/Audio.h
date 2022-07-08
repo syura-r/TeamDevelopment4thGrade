@@ -46,7 +46,11 @@ public:
 	static void LoadFile(const std::string& keyName, const std::string& fileName);
 	static void PlayWave(const std::string& keyName, const float& soundVol = 1.0f, bool loop = false, int loopCount = XAUDIO2_LOOP_INFINITE);
 	static void StopWave(const std::string& keyName);
+	static void VolumeChangeWave(const std::string& keyName, const float& soundVol);
 	static void End();
+
+	static float volume_bgm;
+	static float volume_se;
 private:
 
 	static ComPtr<IXAudio2> xAudio2;

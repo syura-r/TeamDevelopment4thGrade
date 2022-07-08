@@ -44,23 +44,19 @@ Play::Play()
 	//ライト色を設定
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, XMFLOAT3(color0));
-	//menu = std::make_unique<Menu>();
 	collisionManager = CollisionManager::GetInstance();
 	objectManager = ObjectManager::GetInstance();
 	actorManager = ActorManager::GetInstance();
 	actorManager->Initialize();
 
-	//result = std::make_unique<Result>();
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
 	timeLimit = new TimeLimit(180 * 60);//制限時間の設定はここ
-	scoreUI = new ScoreUI();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
 
-	//test = new Sprite3D();
 
 	ParticleEmitter::SetObjectManager(objectManager);
 }
@@ -71,11 +67,9 @@ Play::~Play()
 	LevelEditor::GetInstance()->Clear();
 	delete pause;
 	delete timeLimit;
-	delete scoreUI;
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
-	//PtrDelete(test);
 	ScoreManager::GetInstance()->Finalize();
 }
 
@@ -112,11 +106,10 @@ void Play::Initialize()
 	pause->Initialize();
 	timeLimit->Initialize();
 	gameEndCount = 0;
-	scoreUI->Initialize();
 
 	ScoreManager::GetInstance()->Inisitlize();
 
-	Audio::PlayWave("BGM_Play", 0.1f, true);
+	Audio::PlayWave("BGM_Play", 0.1f * Audio::volume_bgm, true);
 }
 
 void Play::Update()
@@ -143,7 +136,11 @@ void Play::Update()
 	}
 	//ポーズ画面を開いているとき
 	if (pause->GetActivePause())
+	{
+		//BGMの音量変更
+		Audio::VolumeChangeWave("BGM_Play", 0.1f * Audio::volume_bgm);
 		return;
+	}
 
 
 #ifdef _DEBUG
@@ -168,7 +165,6 @@ void Play::Update()
 
 		return;
 	}
-	scoreUI->Update();
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
 	lightGroup->Update();
@@ -209,7 +205,6 @@ void Play::Update()
 void Play::PreDraw()
 {
 	timeLimit->Draw();
-	scoreUI->Draw();
 
 		objectManager->DrawReady();
 #ifdef _DEBUG
@@ -272,8 +267,6 @@ void Play::PostDraw()
 	{
 		pos.y += 0.3f;
 	}
-	//test->SpriteSetTextureRect("stadiumMap.png", 100, 100, 300, 300);
-	//test->DrawSprite("stadiumMap.png", pos);
 	if (!Object3D::GetDrawShadow())
 	{
 		DirectXLib::GetInstance()->DepthClear();

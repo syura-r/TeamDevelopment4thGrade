@@ -60,7 +60,6 @@ void PanelCountSprite3D::Draw()
 	const Vector2 iconTexSize = { 432, 258 };
 	const Vector2 numTexSize = { 47, 86 };
 	//拡大率
-	const Vector2 inSprite3dScale = { 0.1f, 0.1f };//Sprite3D内部で行われている分
 	const Vector2 iconTexScale = { 0.1f, 0.1f };
 	const Vector2 numTexScale = { 0.008f, 0.013f };
 
@@ -70,7 +69,7 @@ void PanelCountSprite3D::Draw()
 	//数字部分
 	for (int i = 0; i < std::to_string((int)panelNum).size(); i++)
 	{
-		const float engineScale = 0.1f;
+		const float engineScale = 0.1f;//Sprite3D内部で行われている分
 
 		Vector3 drawPosition = { 0,0,0 };
 		//icon_sp3Dのアンカーポイント分ずらす

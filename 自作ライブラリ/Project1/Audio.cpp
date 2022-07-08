@@ -1,6 +1,8 @@
 #include "Audio.h"
 #include<fstream>
 #include<cassert>
+float Audio::volume_bgm = 1.0f;
+float Audio::volume_se = 1.0f;
 ComPtr<IXAudio2> Audio::xAudio2 = {};
 IXAudio2MasteringVoice* Audio::masterVoice = {};
 std::map < std::string, IXAudio2SourceVoice* > Audio::soundVoices = {};
@@ -117,6 +119,13 @@ void Audio::StopWave(const std::string& keyName)
 	soundVoices[keyName]->DestroyVoice();
 	soundVoices.erase(keyName);
 
+}
+
+void Audio::VolumeChangeWave(const std::string& keyName, const float& soundVol)
+{
+	if (soundVoices[keyName] == nullptr)
+		return;
+	soundVoices[keyName]->SetVolume(soundVol, XAUDIO2_COMMIT_NOW);
 }
 
 void Audio::End()

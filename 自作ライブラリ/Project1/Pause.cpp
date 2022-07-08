@@ -3,7 +3,7 @@
 #include "Audio.h"
 #include "Easing.h"
 
-float Pause::positions_X[Pause::positionStepMax] = { -100.0f, 160.0f, 300.0f };
+float Pause::positions_X[Pause::positionStepMax] = { -100.0f, 160.0f, 300.0f, 600.0f };
 bool Pause::fadeFlag = false;
 
 Pause::Pause()
@@ -13,6 +13,13 @@ Pause::Pause()
 	toGame = new SelectSprite();
 	restart = new SelectSprite();
 	toTitle = new SelectSprite();
+	sound = new SelectSprite();
+	bgm = new SelectSprite();
+	bar_bgm = new Sprite();
+	circle_bgm = new Sprite();
+	se = new SelectSprite();
+	bar_se = new Sprite();
+	circle_se = new Sprite();
 }
 
 Pause::~Pause()
@@ -22,6 +29,13 @@ Pause::~Pause()
 	delete toGame;
 	delete restart;
 	delete toTitle;
+	delete sound;
+	delete bgm;
+	delete bar_bgm;
+	delete circle_bgm;
+	delete se;
+	delete bar_se;
+	delete circle_se;
 }
 
 void Pause::Initialize()
@@ -30,13 +44,23 @@ void Pause::Initialize()
 	fadeFlag = false;
 
 	selectState = ToGame;
+	selectState_sound = BGM;
 
-	toGame->Initialize("toGame", 340.0f);
+	float pos_y_standard = 1080.0f / (selectMax + 2);
+	toGame->Initialize("toGame", pos_y_standard);
 	flag_toGame = false;
-	restart->Initialize("restart", 540.0f);
+	restart->Initialize("restart", pos_y_standard * 2);
 	flag_restart = false;
-	toTitle->Initialize("toTitle", 740.0f);
+	toTitle->Initialize("toTitle", pos_y_standard * 3);
 	flag_toTitle = false;
+	sound->Initialize("sound", pos_y_standard * 4);
+	flag_sound = false;
+	bgm->Initialize("BGM", pos_y_standard * 4);
+	barPositionLeft_bgm = { positions_X[3] + 150.0f,bgm->pos.y };
+	circlePosition_bgm = barPositionLeft_bgm;
+	se->Initialize("SE", pos_y_standard * 5);
+	barPositionLeft_se = { positions_X[3] + 150.0f,se->pos.y };
+	circlePosition_se = barPositionLeft_se;
 
 	pos_base = toGame->pos;
 }
@@ -47,6 +71,7 @@ void Pause::Update()
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_START))
 	{
 		activeFlag = !activeFlag;
+		Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
 		if (!activeFlag)
 		{
 			fadeFlag = true;
@@ -54,10 +79,16 @@ void Pause::Update()
 			toGame->step = 0;
 			restart->step = 0;
 			toTitle->step = 0;
+			sound->step = 0;
+			bgm->step = 0;
+			se->step = 0;
 
 			toGame->PreMoveSetting();
 			restart->PreMoveSetting();
 			toTitle->PreMoveSetting();
+			sound->PreMoveSetting();
+			bgm->PreMoveSetting();
+			se->PreMoveSetting();
 		}
 	}
 
@@ -70,7 +101,14 @@ void Pause::Update()
 	if (!fadeFlag)
 	{
 		//選択
-		Select();
+		if (flag_sound)
+		{
+			SelectSub_Sound();
+		}
+		else
+		{
+			Select();
+		}
 		//決定
 		Decision();
 	}
@@ -89,6 +127,26 @@ void Pause::Update()
 	case ToTitle:
 		pos_base = toTitle->pos;
 		break;
+
+	case Sound:
+		pos_base = sound->pos;
+		//サブメニュー
+		if (flag_sound)
+		{
+			switch (selectState_sound)
+			{
+			case BGM:
+				pos_base = bgm->pos;
+				break;
+			case SE:
+				pos_base = se->pos;
+				break;
+			default:
+				break;
+			}
+		}
+		break;
+
 	default:
 		break;
 	}
@@ -96,6 +154,9 @@ void Pause::Update()
 	toGame->Update();
 	restart->Update();
 	toTitle->Update();
+	sound->Update();
+	bgm->Update();
+	se->Update();
 }
 
 void Pause::Draw()
@@ -106,8 +167,24 @@ void Pause::Draw()
 	toGame->Draw();
 	restart->Draw();
 	toTitle->Draw();
+	sound->Draw();
+	if (flag_sound)
+	{
+		bgm->Draw();
+		se->Draw();
 
-	sp_base->DrawSprite("selectInPause", pos_base);
+		if (!fadeFlag)
+		{
+			const Vector2 scale_circle = { 0.7f, 0.7f };
+			bar_bgm->DrawSprite("white1x1", barPositionLeft_bgm, 0.0f, bar_scale, { 1,1,1,1 }, { 0.0f,0.5f });
+			circle_bgm->DrawSprite("circle", circlePosition_bgm, 0.0f, scale_circle);
+			bar_se->DrawSprite("white1x1", barPositionLeft_se, 0.0f, bar_scale, { 1,1,1,1 }, { 0.0f,0.5f });
+			circle_se->DrawSprite("circle", circlePosition_se, 0.0f, scale_circle);
+		}
+
+	}
+
+	sp_base->DrawSprite("white1x1", pos_base, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,1 });
 
 	const XMFLOAT2 scale = { 1920, 1080 };
 	const XMFLOAT4 color = { 0,0,0,0.4f };
@@ -120,13 +197,13 @@ void Pause::Select()
 	int select = selectState;
 	if (Input::TriggerPadLStickUp() && selectState > 0)
 	{
-		Audio::PlayWave("SE_Select");
+		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
 		select--;
 	}
 	else if (Input::TriggerPadLStickDown() && selectState < selectMax - 1)
 	{
-		Audio::PlayWave("SE_Select");
+		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
 		select++;
 	}
@@ -139,10 +216,14 @@ void Pause::Select()
 		toGame->step = 1;
 		restart->step = 1;
 		toTitle->step = 1;
+		sound->step = 1;
 
 		toGame->PreMoveSetting();
 		restart->PreMoveSetting();
 		toTitle->PreMoveSetting();
+		sound->PreMoveSetting();
+		bgm->PreMoveSetting();
+		se->PreMoveSetting();
 	}
 
 	//位置をずらす
@@ -159,16 +240,87 @@ void Pause::Select()
 	case ToTitle:
 		toTitle->step = 2;
 		break;
+
+	case Sound:
+		sound->step = 2;
+		bgm->step = 3;
+		se->step = 3;
+		break;
+
 	default:
 		break;
 	}
+}
+
+void Pause::SelectSub_Sound()
+{
+	bool isSelectMove = false;//選択を変えたか
+	int select = selectState_sound;
+	if (Input::TriggerPadLStickUp() && selectState_sound > 0)
+	{
+		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
+		isSelectMove = true;
+		select--;
+	}
+	else if (Input::TriggerPadLStickDown() && selectState_sound < selectMax_sound - 1)
+	{
+		Audio::PlayWave("SE_Select", 1.0f * Audio::volume_se);
+		isSelectMove = true;
+		select++;
+	}
+	selectState_sound = (SelectState_Sound)select;
+
+	//各設定モード
+	const float volumeMax = 2.0f;
+	const float volumeOneScale= 0.1f;
+	float stock_volume_bgm = Audio::volume_bgm;
+	float stock_volume_se = Audio::volume_se;
+	switch (selectState_sound)
+	{
+	case BGM:
+		//音量変更
+		if (Input::CheckPadLStickLeft() && stock_volume_bgm > 0.0f)
+		{
+			stock_volume_bgm -= volumeOneScale;
+		}
+		else if (Input::CheckPadLStickRight() && volumeMax > stock_volume_bgm)
+		{
+			stock_volume_bgm += volumeOneScale;
+		}
+		break;
+
+	case SE:
+		//音量変更
+		if (Input::CheckPadLStickLeft() && stock_volume_se > 0.0f)
+		{
+			stock_volume_se -= volumeOneScale;
+		}
+		else if (Input::CheckPadLStickRight() && volumeMax > stock_volume_se)
+		{
+			stock_volume_se += volumeOneScale;
+		}
+		break;
+
+	default:
+		break;
+	}
+	//丸の位置変更
+	circlePosition_bgm.x = barPositionLeft_bgm.x + (stock_volume_bgm * (bar_scale.x / volumeMax));
+	circlePosition_se.x = barPositionLeft_se.x + (stock_volume_se * (bar_scale.x / volumeMax));
+
+	//audioの変数に反映
+	Audio::volume_bgm = stock_volume_bgm;
+	Audio::volume_se = stock_volume_se;
 }
 
 void Pause::Decision()
 {
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
-		Audio::PlayWave("SE_Decision");
+		Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
+
+		//設定を閉じる
+		activeFlag = false;
 
 		switch (selectState)
 		{
@@ -184,12 +336,15 @@ void Pause::Decision()
 			//タイトルにもどる
 			flag_toTitle = true;
 			break;
+		case Sound:
+			//音量設定
+			flag_sound = !flag_sound;
+			//設定を閉じない
+			activeFlag = true;
+			break;
 		default:
 			break;
 		}
-
-		//設定を閉じる
-		activeFlag = false;
 	}
 }
 

@@ -65,7 +65,7 @@ void Title::Initialize()
 	easingTimer_zoom = 0;
 	isSceneChange = false;
 
-	Audio::PlayWave("BGM_Title", 0.1f, true);
+	Audio::PlayWave("BGM_Title", 0.1f * Audio::volume_bgm, true);
 }
 
 void Title::Update()
@@ -88,7 +88,7 @@ void Title::Update()
 		//シーン切り替え開始
 		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 		{
-			Audio::PlayWave("SE_Decision");
+			Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
 			isSceneChange = true;
 			velocity_pupUp = velocity_init;
 		}
@@ -96,7 +96,7 @@ void Title::Update()
 		//#ifdef _DEBUG
 		if (Input::TriggerKey(DIK_SPACE))
 		{
-			Audio::PlayWave("SE_Decision");
+			Audio::PlayWave("SE_Decision", 1.0f * Audio::volume_se);
 			isSceneChange = true;
 			velocity_pupUp = velocity_init;
 		}

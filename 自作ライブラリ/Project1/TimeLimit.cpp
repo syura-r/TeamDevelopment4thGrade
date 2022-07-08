@@ -1,5 +1,6 @@
 #include "TimeLimit.h"
 #include "Vector.h"
+#include "Easing.h"
 
 TimeLimit::TimeLimit(const unsigned int arg_limit)
 {
@@ -11,6 +12,8 @@ TimeLimit::TimeLimit(const unsigned int arg_limit)
 	minute_sprite = new NumberSprite(minute);
 	colon_sprite = new Sprite();
 	seconds_sprite = new NumberSprite(seconds);
+
+	alarm_sprite = new Sprite();
 }
 
 TimeLimit::~TimeLimit()
@@ -19,12 +22,18 @@ TimeLimit::~TimeLimit()
 	delete minute_sprite;
 	delete colon_sprite;
 	delete seconds_sprite;
+	delete alarm_sprite;
 }
 
 void TimeLimit::Initialize()
 {
 	timer->SetLimit(limit, true);
-	color = { 1,1,1,0.8f };
+	color = { 1,1,1,1.0f };
+
+	alarm_position = alarm_position_first;
+	timeLeft = 0;
+	isMoveStart = false;
+	easeMoveCount = 0.0f;
 }
 
 void TimeLimit::Update()
@@ -37,6 +46,9 @@ void TimeLimit::Update()
 	seconds = nowTime % 60;
 
 	timer->Update();
+
+	//残り時間の警告
+	Alarm((timer->GetLimit() - timer->GetTime()) / 60);
 
 	//終了間際に色を変える
 	const int redTime = 10;
@@ -67,4 +79,46 @@ void TimeLimit::Draw()
 
 	position.x += (numberTexSize.x / 4) * 5;//秒の中心にずらす
 	seconds_sprite->Draw(2, "GamePlay_UI_Number", position, { 1,1 }, color/*, { 0.5f,0.5f }, "NoAlphaToCoverageSprite"*/);
+
+	alarm_sprite->DrawSprite(alarmTime[timeLeft].texName, alarm_position);
+}
+
+void TimeLimit::Alarm(const int arg_nowTime)
+{
+	//区切りの時間になったか
+	for (int i = 0; i < alarmTime_count; i++)
+	{
+		if (alarmTime[i].time == arg_nowTime)
+		{
+			timeLeft = i;
+			isMoveStart = true;
+		}
+	}
+
+	//移動
+	if (isMoveStart)
+	{
+		const float endPositionX_first = 1920.0f / 2.0f;
+		const float endPositionX_end = -320.0f;
+
+		const float easeLimit = 3.0f * 60.0f;
+		//前半
+		if (easeMoveCount <= easeLimit / 2.0f)
+		{
+			alarm_position.x = Easing::EaseOutQuad(alarm_position_first.x, endPositionX_first, easeLimit / 2.0f, easeMoveCount);
+		}
+		//後半
+		else
+		{
+			alarm_position.x = Easing::EaseInQuad(endPositionX_first, endPositionX_end, easeLimit / 2.0f, easeMoveCount - (easeLimit / 2.0f));
+		}
+		easeMoveCount++;
+	}
+	//移動終了後
+	if (alarm_position.x < 0.0f)
+	{
+		isMoveStart = false;
+		easeMoveCount = 0.0f;
+		alarm_position = alarm_position_first;
+	}
 }
