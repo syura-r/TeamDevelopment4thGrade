@@ -10,13 +10,9 @@ XAudio2VoiceCallback voiceCallback = {};
 ComPtr<IXAudio2> Audio::xAudio2 = {};
 IXAudio2MasteringVoice* Audio::masterVoice = {};
 std::map<std::string, File> Audio::soundFiles = {};
-std::map<std::string, IXAudio2SourceVoice*> Audio::soundVoices = {};
+//std::map<std::string, IXAudio2SourceVoice*> Audio::soundVoices = {};
 std::map<std::string, IXAudio2SourceVoice* > Audio::seSourceVoices = {};
 std::map<std::string, IXAudio2SourceVoice* > Audio::bgmSourceVoices = {};
-
-float Audio::masterVolume = 1.0f;
-float Audio::seVolume = 1.0f;
-float Audio::bgmVolume = 1.0f;
 
 Audio::Audio()
 {
@@ -83,6 +79,21 @@ void Audio::End()
 	}
 }
 
+void Audio::VolumeChangeBGM(const std::string& keyName, const float& soundVol)
+{
+	if (bgmSourceVoices[keyName] == nullptr)
+		return;
+	bgmSourceVoices[keyName]->SetVolume(soundVol, XAUDIO2_COMMIT_NOW);
+}
+
+void Audio::VolumeChangeSE(const std::string& keyName, const float& soundVol)
+{
+	if (seSourceVoices[keyName] == nullptr)
+		return;
+	seSourceVoices[keyName]->SetVolume(soundVol, XAUDIO2_COMMIT_NOW);
+}
+
+/*
 void Audio::PlayWave(const std::string& keyName, const float& soundVol, bool loop, int loopCount)
 {
 	HRESULT result;
@@ -135,41 +146,21 @@ void Audio::StopWave(const std::string& keyName)
 	soundVoices[keyName]->DestroyVoice();
 	soundVoices.erase(keyName);
 }
-
 void Audio::Play(const std::string& arg_name)
 {
 	soundVoices[arg_name]->Start();
 }
 
-void Audio::VolumeChangeWave(const std::string& keyName, const float& soundVol)
-{
-	if (soundVoices[keyName] == nullptr)
-		return;
-	soundVoices[keyName]->SetVolume(soundVol, XAUDIO2_COMMIT_NOW);
-}
+
 
 void Audio::Stop(const std::string& arg_name)
 {
 	if (soundVoices[arg_name] == nullptr) return;
 	soundVoices[arg_name]->Stop();
 }
+*/
 
-void Audio::SetMasterVolume(const float arg_volume)
-{
-	masterVolume = arg_volume;
-}
-
-void Audio::SetSEVolume(const float arg_volume)
-{
-	seVolume = arg_volume;
-}
-
-void Audio::SetBGMVolume(const float arg_volume)
-{
-	bgmVolume = arg_volume;
-}
-
-void Audio::PlayBGM(const std::string& arg_name)
+void Audio::PlayBGM(const std::string& arg_name, const float arg_volume)
 {
 	HRESULT result;
 
@@ -188,7 +179,7 @@ void Audio::PlayBGM(const std::string& arg_name)
 		delete[] soundFiles[arg_name].buff;
 		return;
 	}
-	pSourceVoice->SetVolume(masterVolume * bgmVolume);
+	pSourceVoice->SetVolume(arg_volume);
 	//再生する波形データの設定
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = (BYTE*)soundFiles[arg_name].buff;
@@ -227,8 +218,10 @@ void Audio::ResumeBGM(const std::string& arg_name)
 	bgmSourceVoices[arg_name]->Start();
 }
 
-void Audio::PlaySE(const std::string& arg_name, bool loop, int loopCount)
+void Audio::PlaySE(const std::string& arg_name, const float arg_volume, bool loop, int loopCount)
 {
+	if (seSourceVoices[arg_name] != nullptr && loop) return;
+
 	HRESULT result;
 
 	//サウンド再生
@@ -246,7 +239,7 @@ void Audio::PlaySE(const std::string& arg_name, bool loop, int loopCount)
 		delete[] soundFiles[arg_name].buff;
 		return;
 	}
-	pSourceVoice->SetVolume(masterVolume * bgmVolume);
+	pSourceVoice->SetVolume(arg_volume);
 	//再生する波形データの設定
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = (BYTE*)soundFiles[arg_name].buff;
