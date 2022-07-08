@@ -271,7 +271,7 @@ void Game::LoadFinish()
 	sceneManeger->Add(Scene::SCENE::Play, new Play());
 	sceneManeger->Add(Scene::SCENE::Ending, new Ending());
 
-	sceneManeger->Change(Scene::SCENE::Title);
+	sceneManeger->Change(Scene::SCENE::Ending);
 
 	//shadowMap.reset(new TextureResource("shadowMap",{1920,1080}, DXGI_FORMAT_R32_FLOAT,{0,0,0,0}));
 

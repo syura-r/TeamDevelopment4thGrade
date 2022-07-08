@@ -33,6 +33,8 @@ Ending::Ending()
 	sp_select = new Sprite();
 	sp_restart = new Sprite();
 	sp_title = new Sprite();
+
+	stadium = new Stadium();
 }
 
 
@@ -46,6 +48,8 @@ Ending::~Ending()
 	delete sp_select;
 	delete sp_restart;
 	delete sp_title;
+
+	delete stadium;
 }
 
 void Ending::Initialize()
@@ -74,6 +78,9 @@ void Ending::Initialize()
 
 	pos_select = pos_restart;
 
+	stadium->Initialize();
+	stadium->SetPosition({ 0.0f,-40.0f,0.0f });
+
 	Audio::PlayWave("BGM_Result", 0.1f * Audio::volume_bgm, true);
 }
 
@@ -85,6 +92,7 @@ void Ending::Update()
 	{
 		set[i]->Update(topKillCount);
 	}
+	stadium->Update();
 
 	camera->Update();
 	lightGroup->SetAmbientColor({ 1,1,1 });
@@ -104,6 +112,9 @@ void Ending::PreDraw()
 	sp_title->DrawSprite("toTitle", pos_title);
 
 	sp_select->DrawSprite("white1x1", pos_select, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,1 });
+
+	PipelineState::SetPipeline("BasicObj");
+	stadium->Draw();
 }
 
 void Ending::PostDraw()

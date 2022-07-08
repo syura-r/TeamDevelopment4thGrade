@@ -6,6 +6,7 @@
 #include "Object3D.h"
 #include "DebugCamera.h"
 #include"LightGroup.h"
+#include "Stadium.h"
 
 class Ending :public Scene
 {
@@ -96,5 +97,6 @@ private:
 	Sprite* sp_title = nullptr;
 	const Vector2 pos_title = { 1280, 950 };
 
+	Stadium* stadium = nullptr;
 };
 

@@ -64,7 +64,9 @@ void Stadium::Update()
 	constMap->uvOffset = uvOffset;
 	constBuff->Unmap(0, nullptr);
 
+	lavaObj->SetPosition(position);
 	lavaObj->Update();
+	Object::Update();
 }
 
 void Stadium::Draw()
