@@ -28,6 +28,7 @@ public:
 	void ChangeIsDraw(const bool arg_isDraw);
 	Vector3 GetVirtualityPlaneStartPos()const;
 	Vector3 GetVirtualityPlaneEndPos()const;
+	Vector3 GetCenter()const;
 
 private:
 	Vector3 endPos;

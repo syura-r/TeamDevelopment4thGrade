@@ -215,6 +215,107 @@ void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, cons
 
 }
 
+void Sprite3D::DrawSpriteCutEffect(const std::string& name, const Vector3& position, const float& rotation, const Vector3& fieldRotation, const XMFLOAT2& scale, const XMFLOAT2& anchorPoint, bool billboard)
+{
+	auto cmdList = DirectXLib::GetInstance()->GetCommandList();
+
+	D3D12_RESOURCE_DESC resDesc = Texture::GetTexBuff(name).Get()->GetDesc();
+	float width = (float)resDesc.Width; //画像の横幅
+	float height = (float)resDesc.Height; //画像の縦幅
+	HRESULT result;
+	vertices[0].pos = { (0.0f - anchorPoint.x) * 0.1f,(1.0f - anchorPoint.y) * 0.1f,0.0f };
+	vertices[1].pos = { (0.0f - anchorPoint.x) * 0.1f,(0.0f - anchorPoint.y) * 0.1f,0.0f };
+	vertices[2].pos = { (1.0f - anchorPoint.x) * 0.1f,(1.0f - anchorPoint.y) * 0.1f,0.0f };
+	vertices[3].pos = { (1.0f - anchorPoint.x) * 0.1f,(0.0f - anchorPoint.y) * 0.1f,0.0f };
+	VERTEX* vertMap = nullptr;
+	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(result));
+	memcpy(vertMap, vertices.data(), sizeof(vertices));
+	vertBuff->Unmap(0, nullptr);
+
+	//ワールド行列の更新
+	XMMATRIX matScale, matRot, matTrans;
+	if (rect)
+	{
+		matScale = XMMatrixScaling(scale.x * rectTexSize.x, scale.y * rectTexSize.y, 1);
+	}
+	else
+	{
+		matScale = XMMatrixScaling(scale.x * width, scale.y * height, 1);
+	}
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation));
+	matRot *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(fieldRotation.x), XMConvertToRadians(fieldRotation.y), XMConvertToRadians(fieldRotation.z));
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+	//ワールド行列の合成
+	spriteMatWorld = XMMatrixIdentity();
+	spriteMatWorld *= matScale;
+	spriteMatWorld *= matRot;
+	if (billboard)
+	{
+		const XMMATRIX& matBillboard = camera->GetMatBillboard();
+		if (parent == nullptr) {
+			spriteMatWorld *= matBillboard;
+		}
+	}
+	spriteMatWorld *= matTrans;
+
+	// 親オブジェクトがあれば
+	if (parent != nullptr) {
+		// 親オブジェクトのワールド行列を掛ける
+		spriteMatWorld *= parent->spriteMatWorld;
+	}
+
+	const XMMATRIX& matViewProjection = camera->GetMatViewProjection();
+	const XMFLOAT3& cameraPos = camera->GetEye();
+	if (!Object3D::GetScreenDraw())
+	{
+		// 定数バッファへデータ転送
+		ConstBufferData* constMap = nullptr;
+		result = constBuff->Map(0, nullptr, (void**)&constMap);
+		assert(SUCCEEDED(result));
+		constMap->viewprojection = matViewProjection;
+		constMap->cameraPos = cameraPos;
+		constMap->world = spriteMatWorld;
+		constMap->color = Vector4(1,1,1,0.5f);
+		constBuff->Unmap(0, nullptr);
+	}
+	else
+	{
+		ConstBufferData* constMap2 = nullptr;
+		result = constBuff2->Map(0, nullptr, (void**)&constMap2);
+		assert(SUCCEEDED(result));
+		constMap2->viewprojection = matViewProjection;
+		constMap2->cameraPos = cameraPos;
+		constMap2->world = spriteMatWorld;
+		constMap2->color = Vector4(1, 1, 1, 0.5f);
+		constBuff2->Unmap(0, nullptr);
+	}
+
+	PipelineState::SetPipeline("NoShade", ALPHA);
+
+	//デスクリプタヒープの配列
+	ID3D12DescriptorHeap* ppHeaps[] = { Texture::GetBasicDescHeap().Get() };
+	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	cmdList->IASetVertexBuffers(0, 1, &vbView);
+	cmdList->IASetIndexBuffer(&ibView);
+	if (!Object3D::GetScreenDraw())
+	{
+		cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
+	}
+	else
+	{
+		cmdList->SetGraphicsRootConstantBufferView(0, constBuff2->GetGPUVirtualAddress());
+	}
+	//インデックスバッファのセットコマンド
+	cmdList->SetGraphicsRootDescriptorTable(2, Texture::GetGpuDescHandleSRV(name));
+
+	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+
+
+}
+
 void Sprite3D::SpriteSetTextureRect(const std::string& name, const float& tex_x, const float& tex_y, const float& tex_width, const float& tex_height)
 {
 

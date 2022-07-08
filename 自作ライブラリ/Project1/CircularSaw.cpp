@@ -28,6 +28,12 @@ CircularSaw::~CircularSaw()
 	ActorManager::GetInstance()->DeleteObject(this, ObjectRegistType::CIRCULAR_SAW);
 	Audio::StopSE("SE_SawCutNow");
 	Audio::PlaySE("SE_GetSaw", 1.0f * Audio::volume_se);
+
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		delete feverCutEffects[i];
+	}
+	feverCutEffects.clear();
 }
 
 void CircularSaw::Initialize()
@@ -36,6 +42,8 @@ void CircularSaw::Initialize()
 	if (parentObj->IsInFever())
 	{
 		speed *= 5;
+
+		feverCutEffects.push_back(new FeverCutEffect(nowCuttingLocus->GetLine(0)));
 	}
 	length = 0;
 	currentLineNum = 0;
@@ -76,11 +84,29 @@ void CircularSaw::Update()
 			Dead();
 
 			parentObj->CompleteCut();
+
+			for (int i = 0; i < feverCutEffects.size(); i++)
+			{
+				delete feverCutEffects[i];
+			}
+			feverCutEffects.clear();
+			return;
+		}
+
+		if (parentObj->IsInFever())
+		{
+			feverCutEffects.push_back(new FeverCutEffect(nowCuttingLocus->GetLine(currentLineNum)));
 		}
 	}
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
+
+
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		feverCutEffects[i]->Upate();
+	}
 
 	Object::Update();
 
@@ -90,6 +116,17 @@ void CircularSaw::Update()
 
 void CircularSaw::DrawReady()
 {
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		feverCutEffects[i]->Draw();
+	}
+}
+
+void CircularSaw::Draw()
+{
+
+
+	Object::Draw();
 }
 
 void CircularSaw::CopyLocus()
