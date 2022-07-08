@@ -96,12 +96,13 @@ void Player::DrawReady()
 		ImGui::End();
 	}
 #endif
+	panelCountSprite3D->Draw();
 
 	if (Object3D::GetDrawShadow())
 		pipelineName = "FBXShadowMap";
 	else
 	{
-			pipelineName = "FBX";
+		pipelineName = "FBX";
 	}
 }
 

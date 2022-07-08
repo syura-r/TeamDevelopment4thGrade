@@ -209,7 +209,7 @@ void BaseGameActor::Draw()
 	}
 	CustomDraw(true, true);
 	
-	panelCountSprite3D->Draw();
+	
 }
 
 void BaseGameActor::DrawReady()
@@ -229,6 +229,8 @@ void BaseGameActor::DrawReady()
 		ImGui::End();
 	}
 #endif
+
+	panelCountSprite3D->Draw();
 
 	if (Object3D::GetDrawShadow())
 		pipelineName = "FBXShadowMap";

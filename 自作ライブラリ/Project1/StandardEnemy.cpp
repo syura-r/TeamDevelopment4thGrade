@@ -88,7 +88,14 @@ void StandardEnemy::DrawReady()
 
 #endif
 
-	pipelineName = "FBX";
+	panelCountSprite3D->Draw();
+
+	if (Object3D::GetDrawShadow())
+		pipelineName = "FBXShadowMap";
+	else
+	{
+		pipelineName = "FBX";
+	}
 }
 
 void StandardEnemy::StartMove()
