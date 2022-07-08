@@ -64,8 +64,9 @@ private:
 	// 近くにある物への方向
 	Vector2 NearObjDir();
 
-	// 切り抜きを実行する数
-	int cutPowerLimit = 3;
+	// 切り抜きを実行する数の上限、下限
+	int cutPowerUpperLimit = 3;
+	int cutPowerLowerLimit = 1;
 	// プレイヤーの位置
 	Vector3 playerPos;
 	// 一番近いアイテムの位置
