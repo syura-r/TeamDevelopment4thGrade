@@ -25,7 +25,8 @@
 #include "Easing.h"
 
 ComPtr<ID3D12Resource> BaseGameActor::constCameraBuff = nullptr;
-DebugCamera* BaseGameActor::camera = nullptr;
+//DebugCamera* BaseGameActor::camera = nullptr;
+InGameCamera* BaseGameActor::camera = nullptr;
 bool BaseGameActor::rotCamera = false;
 float BaseGameActor::radY = 0;
 int BaseGameActor::cameraRotCount = 0;

@@ -4,6 +4,7 @@
 #include"CollisionManager.h"
 #include "ComputeShade.h"
 #include "DebugCamera.h"
+#include "InGameCamera.h"
 #include"Grass.h"
 #include "Menu.h"
 #include "NumberSprite.h"
@@ -53,7 +54,8 @@ private:
 	ScreenCamera* screenCamera = nullptr;
 
 
-	std::unique_ptr<DebugCamera> camera;
+	//std::unique_ptr<DebugCamera> camera;
+	std::unique_ptr<InGameCamera> camera;
 	std::array<std::array<float,3>,9>lightPos = 
 	{
 		-6.000f,19.404f,2.137f,

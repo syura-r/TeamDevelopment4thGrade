@@ -24,11 +24,12 @@
 #include "ItemEmitter.h"
 #include "Stadium.h"
 #include "PtrDelete.h"
-#include"ScreenCamera.h"
+#include "ScreenCamera.h"
+#include "InGameCamera.h"
 Play::Play()
 {
 	next = Ending;
-	camera = std::make_unique<DebugCamera>();
+	camera = std::make_unique<InGameCamera>();
 	Object3D::SetCamera(camera.get());
 	Sprite3D::SetCamera(camera.get());
 
@@ -36,7 +37,7 @@ Play::Play()
 	
 	//ParticleEmitter::Initialize(camera.get());
 	ParticleManager::GetInstance()->SetCamera(camera.get());
-	Player::SetDebugCamera(camera.get());
+	Player::SetCamera(camera.get());
 	//ライト生成
 	lightGroup.reset(LightGroup::Create());
 	//3Dオブジェクトにライトをセット

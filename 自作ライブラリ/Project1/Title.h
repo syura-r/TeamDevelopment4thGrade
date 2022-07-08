@@ -8,6 +8,7 @@
 #include "Sprite3D.h"
 #include "Object3D.h"
 #include "DebugCamera.h"
+#include "InGameCamera.h"
 #include"LightGroup.h"
 
 class Title :
@@ -37,7 +38,7 @@ private:
 	bool ZoomIn();
 	int easingTimer_zoom;
 
-	std::unique_ptr<DebugCamera> camera;
+	std::unique_ptr<InGameCamera> camera;
 	float cameraDistance;
 	const float cameraDistance_init = 23.0f;
 	std::unique_ptr<LightGroup> lightGroup;

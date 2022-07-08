@@ -210,6 +210,7 @@
     <ClCompile Include="ComputeShade.cpp" />
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="GSShaderTestObj.cpp" />
+    <ClCompile Include="InGameCamera.cpp" />
     <ClCompile Include="ItemEmitter.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
     <ClCompile Include="LightCamera.cpp" />
@@ -326,6 +327,7 @@
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />
     <ClInclude Include="IActionState.h" />
+    <ClInclude Include="InGameCamera.h" />
     <ClInclude Include="ItemEmitter.h" />
     <ClInclude Include="LevelEditor.h" />
     <ClInclude Include="LightCamera.h" />
