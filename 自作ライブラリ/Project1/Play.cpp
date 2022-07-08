@@ -16,7 +16,6 @@
 #include "Floor.h"
 #include "Field.h"
 #include "Ending.h"
-#include "ScoreManager.h"
 #include "BaseGameActor.h"
 
 #include "TextureResource.h"
@@ -72,7 +71,6 @@ Play::~Play()
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
-	ScoreManager::GetInstance()->Finalize();
 }
 
 void Play::Initialize()
@@ -110,8 +108,6 @@ void Play::Initialize()
 	gameEndCount = 0;
 	feverUI->Initialize();
 
-	ScoreManager::GetInstance()->Inisitlize();
-
 	Audio::PlayWave("BGM_Play", 0.1f * Audio::volume_bgm, true);
 }
 
@@ -134,6 +130,7 @@ void Play::Update()
 	{
 		Audio::StopWave("BGM_Play");
 		next = Title;
+		KillCountToEnding();
 		ShutDown();
 		return;
 	}
@@ -150,6 +147,7 @@ void Play::Update()
 	if (Input::TriggerKey(DIK_E))//I—¹ˆ—
 	{
 		Audio::StopWave("BGM_Play");
+		KillCountToEnding();
 		ShutDown();
 		return;
 	}
@@ -163,6 +161,7 @@ void Play::Update()
 		if (gameEndCount >= 60)
 		{
 			Audio::StopWave("BGM_Play");
+			KillCountToEnding();
 			ShutDown();
 		}
 
@@ -184,6 +183,7 @@ void Play::Update()
 	/*if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
 	{
 		Audio::StopWave("BGM_Play");
+		KillCountToEnding();
 		ShutDown();
 		return;
 	}
@@ -201,6 +201,7 @@ void Play::Update()
 	if (allEnemiesOutField)
 	{
 		Audio::StopWave("BGM_Play");
+		KillCountToEnding();
 		ShutDown();
 		return;
 	}*/
@@ -281,4 +282,11 @@ void Play::PostDraw()
 
 void Play::TimeUpdate()
 {
+}
+
+void Play::KillCountToEnding()
+{
+	Ending::killCount_player = actorManager->GetPlayer()->GetKillCount();
+	Ending::killCount_enemyA = actorManager->GetStandardEnemies()[0]->GetKillCount();
+	Ending::killCount_enemyB = actorManager->GetStandardEnemies()[1]->GetKillCount();
 }

@@ -123,6 +123,9 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_FeverText", "GamePlay_UI_FeverText.png");
 		Texture::LoadTexture("GamePlay_UI_Playerpoint", "GamePlay_UI_Playerpoint.png");
 		Texture::LoadTexture("GamePlay_UI_Enemypoint", "GamePlay_UI_Enemypoint.png");
+		Texture::LoadTexture("Result_Player_Gauge", "Result_Player_Gauge.png");
+		Texture::LoadTexture("Result_Enemy_Gauge", "Result_Enemy_Gauge.png");
+		Texture::LoadTexture("Result_UV_Crown", "Result_UV_Crown.png");
 
 		break; 
 	case 2:
@@ -143,6 +146,7 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("stadium", "stadium.obj", false);
 		OBJLoader::LoadModelFile("lava", "GamePlay_Magma.obj", false);
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
+		OBJLoader::LoadModelFile("Crown", "Result_Crown.obj", false);
 		break;
 	case 4:
 		//FBXÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›

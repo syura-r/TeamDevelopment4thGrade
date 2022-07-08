@@ -1,5 +1,4 @@
 #include "FeverUI.h"
-#include "ScoreManager.h"
 #include "Vector.h"
 #include "ActorManager.h"
 #include "Field.h"

@@ -20,7 +20,6 @@
 #include "ItemEmitter.h"
 #include "Player.h"
 #include "Audio.h"
-#include "ScoreManager.h"
 #include "ObjectRegistType.h"
 #include "IActionState.h"
 #include "ActionStateMove.h"
@@ -282,7 +281,6 @@ void StandardEnemy::CompleteCut()
 	{
 		InFever();
 	}
-	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();

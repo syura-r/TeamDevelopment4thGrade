@@ -33,6 +33,7 @@ public:
 	void PostDraw()override;
 private:
 	void TimeUpdate();
+	void KillCountToEnding();
 	std::unique_ptr<LightGroup> lightGroup;
 	XMFLOAT3 pos = { 1,0,0 };
 	float coloramb[3] = { 1,1,1 };

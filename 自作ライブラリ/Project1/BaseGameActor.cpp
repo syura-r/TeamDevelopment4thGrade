@@ -14,7 +14,6 @@
 #include "ParticleEmitter.h"
 #include "ActorManager.h"
 #include "ItemEmitter.h"
-#include "ScoreManager.h"
 #include "IActionState.h"
 #include "ActionStateMove.h"
 #include "ActionStateTackle.h"
@@ -802,7 +801,6 @@ void BaseGameActor::CompleteCut()
 	{
 		InFever();
 	}
-	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();

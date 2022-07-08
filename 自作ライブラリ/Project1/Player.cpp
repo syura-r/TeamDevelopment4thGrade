@@ -22,7 +22,6 @@
 #include "ItemEmitter.h"
 #include "UnableThroughEdge.h"
 #include "UnableThroughBlock.h"
-#include "ScoreManager.h"
 #include "Audio.h"
 #include "ParticleEmitter.h"
 #include "ObjectRegistType.h"
@@ -128,7 +127,6 @@ void Player::CompleteCut()
 	{
 		InFever();
 	}
-	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
