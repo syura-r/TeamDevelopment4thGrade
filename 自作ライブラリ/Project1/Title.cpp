@@ -112,6 +112,7 @@ void Title::Update()
 	lightGroup->SetAmbientColor({ 1,1,1 });
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });
 	lightGroup->Update();
+//#endif
 }
 
 void Title::PreDraw()

@@ -1,18 +1,26 @@
 #include "Audio.h"
 #include<fstream>
 #include<cassert>
+
 float Audio::volume_bgm = 1.0f;
 float Audio::volume_se = 1.0f;
+
+XAudio2VoiceCallback voiceCallback = {};
+
 ComPtr<IXAudio2> Audio::xAudio2 = {};
 IXAudio2MasteringVoice* Audio::masterVoice = {};
-std::map < std::string, IXAudio2SourceVoice* > Audio::soundVoices = {};
-XAudio2VoiceCallback voiceCallback = {};
 std::map<std::string, File> Audio::soundFiles = {};
+std::map<std::string, IXAudio2SourceVoice*> Audio::soundVoices = {};
+std::map<std::string, IXAudio2SourceVoice* > Audio::seSourceVoices = {};
+std::map<std::string, IXAudio2SourceVoice* > Audio::bgmSourceVoices = {};
+
+float Audio::masterVolume = 1.0f;
+float Audio::seVolume = 1.0f;
+float Audio::bgmVolume = 1.0f;
 
 Audio::Audio()
 {
 }
-
 
 Audio::~Audio()
 {
@@ -29,7 +37,6 @@ void Audio::Initialize()
 
 void Audio::LoadFile(const std::string& keyName, const std::string& fileName)
 {
-
 	File waveFile;
 
 	//ファイル入力ストリームのインスタンス
@@ -64,7 +71,16 @@ void Audio::LoadFile(const std::string& keyName, const std::string& fileName)
 	file.close();
 
 	soundFiles.emplace(keyName, waveFile);
+}
 
+void Audio::End()
+{
+	masterVoice->DestroyVoice();
+	if (xAudio2.Get() != nullptr)xAudio2->StopEngine();
+	for (auto& it : soundFiles)
+	{
+		delete[]it.second.buff;
+	}
 }
 
 void Audio::PlayWave(const std::string& keyName, const float& soundVol, bool loop, int loopCount)
@@ -118,7 +134,11 @@ void Audio::StopWave(const std::string& keyName)
 	soundVoices[keyName]->Stop();
 	soundVoices[keyName]->DestroyVoice();
 	soundVoices.erase(keyName);
+}
 
+void Audio::Play(const std::string& arg_name)
+{
+	soundVoices[arg_name]->Start();
 }
 
 void Audio::VolumeChangeWave(const std::string& keyName, const float& soundVol)
@@ -128,12 +148,158 @@ void Audio::VolumeChangeWave(const std::string& keyName, const float& soundVol)
 	soundVoices[keyName]->SetVolume(soundVol, XAUDIO2_COMMIT_NOW);
 }
 
-void Audio::End()
+void Audio::Stop(const std::string& arg_name)
 {
-	masterVoice->DestroyVoice();
-	if (xAudio2.Get() != nullptr)xAudio2->StopEngine();
-	for (auto& it : soundFiles)
+	if (soundVoices[arg_name] == nullptr) return;
+	soundVoices[arg_name]->Stop();
+}
+
+void Audio::SetMasterVolume(const float arg_volume)
+{
+	masterVolume = arg_volume;
+}
+
+void Audio::SetSEVolume(const float arg_volume)
+{
+	seVolume = arg_volume;
+}
+
+void Audio::SetBGMVolume(const float arg_volume)
+{
+	bgmVolume = arg_volume;
+}
+
+void Audio::PlayBGM(const std::string& arg_name)
+{
+	HRESULT result;
+
+	//サウンド再生
+	WAVEFORMATEX wfex{};
+
+	//波形フォーマットの設定
+	memcpy(&wfex, &soundFiles[arg_name].fChunk.fmt, sizeof(soundFiles[arg_name].fChunk.fmt));
+	wfex.wBitsPerSample = soundFiles[arg_name].fChunk.fmt.nBlockAlign * 8 / soundFiles[arg_name].fChunk.fmt.nChannels;
+
+	//波形フォーマットを元にSourceVoiceの再生
+	IXAudio2SourceVoice* pSourceVoice = nullptr;
+	result = xAudio2->CreateSourceVoice(&pSourceVoice, &wfex);
+	if FAILED(result)
 	{
-		delete[]it.second.buff;
+		delete[] soundFiles[arg_name].buff;
+		return;
+	}
+	pSourceVoice->SetVolume(masterVolume * bgmVolume);
+	//再生する波形データの設定
+	XAUDIO2_BUFFER buf{};
+	buf.pAudioData = (BYTE*)soundFiles[arg_name].buff;
+	buf.pContext = soundFiles[arg_name].buff;
+	buf.Flags = XAUDIO2_END_OF_STREAM;
+	buf.AudioBytes = soundFiles[arg_name].chunk.size;
+	buf.LoopBegin = 0;
+	buf.LoopLength = 0;
+	buf.LoopCount = XAUDIO2_LOOP_INFINITE;
+
+	//波形データの再生
+	result = pSourceVoice->SubmitSourceBuffer(&buf);
+	assert(SUCCEEDED(result));
+	result = pSourceVoice->Start();
+	assert(SUCCEEDED(result));
+	bgmSourceVoices[arg_name] = pSourceVoice;
+}
+
+void Audio::StopBGM(const std::string& arg_name)
+{
+	if (bgmSourceVoices[arg_name] == nullptr)
+		return;
+	bgmSourceVoices[arg_name]->Stop();
+	bgmSourceVoices[arg_name]->DestroyVoice();
+	bgmSourceVoices.erase(arg_name);
+}
+
+void Audio::PauseBGM(const std::string& arg_name)
+{
+	if (bgmSourceVoices[arg_name] == nullptr) return;
+	bgmSourceVoices[arg_name]->Stop();
+}
+
+void Audio::ResumeBGM(const std::string& arg_name)
+{
+	bgmSourceVoices[arg_name]->Start();
+}
+
+void Audio::PlaySE(const std::string& arg_name, bool loop, int loopCount)
+{
+	HRESULT result;
+
+	//サウンド再生
+	WAVEFORMATEX wfex{};
+
+	//波形フォーマットの設定
+	memcpy(&wfex, &soundFiles[arg_name].fChunk.fmt, sizeof(soundFiles[arg_name].fChunk.fmt));
+	wfex.wBitsPerSample = soundFiles[arg_name].fChunk.fmt.nBlockAlign * 8 / soundFiles[arg_name].fChunk.fmt.nChannels;
+
+	//波形フォーマットを元にSourceVoiceの再生
+	IXAudio2SourceVoice* pSourceVoice = nullptr;
+	result = xAudio2->CreateSourceVoice(&pSourceVoice, &wfex);
+	if FAILED(result)
+	{
+		delete[] soundFiles[arg_name].buff;
+		return;
+	}
+	pSourceVoice->SetVolume(masterVolume * bgmVolume);
+	//再生する波形データの設定
+	XAUDIO2_BUFFER buf{};
+	buf.pAudioData = (BYTE*)soundFiles[arg_name].buff;
+	buf.pContext = soundFiles[arg_name].buff;
+	buf.Flags = XAUDIO2_END_OF_STREAM;
+	buf.AudioBytes = soundFiles[arg_name].chunk.size;
+	if (loop)
+	{
+		buf.LoopBegin = 0;
+		buf.LoopLength = 0;
+		buf.LoopCount = loopCount;
+	}
+
+	//波形データの再生
+	result = pSourceVoice->SubmitSourceBuffer(&buf);
+	assert(SUCCEEDED(result));
+	result = pSourceVoice->Start();
+	assert(SUCCEEDED(result));
+	seSourceVoices[arg_name] = pSourceVoice;
+}
+
+void Audio::StopSE(const std::string& arg_name)
+{
+	if (seSourceVoices[arg_name] == nullptr)
+		return;
+	seSourceVoices[arg_name]->Stop();
+	seSourceVoices[arg_name]->DestroyVoice();
+	seSourceVoices.erase(arg_name);
+}
+
+void Audio::PauseSE(const std::string& arg_name)
+{
+	if (seSourceVoices[arg_name] == nullptr) return;
+	seSourceVoices[arg_name]->Stop();
+}
+
+void Audio::ResumeSE(const std::string& arg_name)
+{
+	seSourceVoices[arg_name]->Start();
+}
+
+void Audio::AllPauseSE()
+{
+	for (auto itr = seSourceVoices.begin(); itr != seSourceVoices.end(); ++itr)
+	{
+		itr->second->Stop();
+	}
+}
+
+void Audio::AllResumeSE()
+{
+	for (auto itr = seSourceVoices.begin(); itr != seSourceVoices.end(); ++itr)
+	{
+		itr->second->Start();
 	}
 }
