@@ -326,6 +326,7 @@
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />
     <ClInclude Include="IActionState.h" />
+    <ClInclude Include="IEnemyAI.h" />
     <ClInclude Include="ItemEmitter.h" />
     <ClInclude Include="LevelEditor.h" />
     <ClInclude Include="LightCamera.h" />

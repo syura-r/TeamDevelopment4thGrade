@@ -208,8 +208,6 @@ void BaseGameActor::Draw()
 		DirectXLib::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(1, constCameraBuff->GetGPUVirtualAddress());
 	}
 	CustomDraw(true, true);
-	
-	panelCountSprite3D->Draw();
 }
 
 void BaseGameActor::DrawReady()
@@ -230,8 +228,12 @@ void BaseGameActor::DrawReady()
 	}
 #endif
 
+	panelCountSprite3D->Draw();
+
 	if (Object3D::GetDrawShadow())
+	{
 		pipelineName = "FBXShadowMap";
+	}
 	else
 	{
 		pipelineName = "FBX";

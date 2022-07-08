@@ -47,7 +47,7 @@ public:
 	//Ø‚è”²‚«I—¹CircularSaw‚©‚çŒÄ‚Î‚ê‚é
 	virtual void CompleteCut()override;
 
-private:
+protected:
 	//---Move---
 	//ˆÚ“®•ûŒü‚ÌŒˆ’è
 	virtual void DecideDirection(Vector3& arg_direction)override;

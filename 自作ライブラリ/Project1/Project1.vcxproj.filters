@@ -142,6 +142,12 @@
     <Filter Include="ヘッダー ファイル\GameObject\GameActor">
       <UniqueIdentifier>{a627253c-aba9-4c16-9916-7a51d5fce59d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject\EnemyAI">
+      <UniqueIdentifier>{cf823a1c-f00d-4b66-951f-75d5ff1732fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObject\EnemyAI">
+      <UniqueIdentifier>{09977c6d-8da0-4f69-b9f8-9d90857d1e15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -799,6 +805,9 @@
     </ClInclude>
     <ClInclude Include="ActionStateSpawn.h">
       <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="IEnemyAI.h">
+      <Filter>ヘッダー ファイル\GameObject\EnemyAI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
