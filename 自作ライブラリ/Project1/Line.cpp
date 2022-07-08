@@ -123,6 +123,11 @@ Vector3 Line::GetVirtualityPlaneEndPos() const
 	return virtualityPlaneEndPos;
 }
 
+Vector3 Line::GetCenter() const
+{
+	return (position + endPos) / 2;
+}
+
 void Line::UpdateRotation()
 {
 	XMMATRIX rotMat = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));

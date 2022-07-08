@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "BaseLocus.h"
 #include "LocusDef.h"
+#include "FeverCutEffect.h"
 
 class BaseGameActor;
 
@@ -21,7 +22,7 @@ public:
 	void Initialize()override;
 	void Update()override;
 	void DrawReady()override;
-
+	void Draw() override;
 	void CopyLocus();
 	Object* GetParentObject();
 	
@@ -42,5 +43,7 @@ private:
 	Vector3 virtualityPlanePosition;
 
 	BaseGameActor* parentObj;
+
+	std::vector< FeverCutEffect*> feverCutEffects;
 };
 

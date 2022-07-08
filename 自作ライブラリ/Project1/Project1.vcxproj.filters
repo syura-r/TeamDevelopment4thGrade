@@ -449,6 +449,9 @@
     </ClCompile>
     <ClCompile Include="InGameCamera.cpp">
       <Filter>ソース ファイル\Camera</Filter>
+	</ClCompile>
+    <ClCompile Include="FeverCutEffect.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -814,6 +817,9 @@
 	</ClInclude>
     <ClInclude Include="InGameCamera.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
+	</ClInclude>
+    <ClInclude Include="FeverCutEffect.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

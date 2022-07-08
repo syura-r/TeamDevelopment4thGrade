@@ -191,7 +191,16 @@ void BaseGameActor::Update()
 		if (actionState->GetLabel() != ActionStateLabel::CUT)
 		{
 			panelCutLocus->SetCutPower(cutPower);
-			panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
+		}
+		panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
+
+		if (isInFever)
+		{
+			if (feverTimer->GetTime() % 3 == 0)
+			{
+				ParticleEmitter::FeverEffect(position);
+			}
+
 		}
 	}
 

@@ -23,6 +23,9 @@ public:
     //パネル回収時エフェクト
     static void PieceGetEffect(const Vector3& arg_position, const Vector3& arg_scale, const Vector3& arg_rotation, const DirectX::XMFLOAT4& arg_color, Object* arg_getActorObj);
 
+    //フィーバーエフェクト
+    static void FeverEffect(const Vector3& arg_position);
+
 private:
     static float GetRandom(float arg_min, float arg_max);
 };
