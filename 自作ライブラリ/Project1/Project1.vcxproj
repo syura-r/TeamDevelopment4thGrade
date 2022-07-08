@@ -199,6 +199,7 @@
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FBXManager.cpp" />
     <ClCompile Include="FBXModel.cpp" />
+    <ClCompile Include="FeverCutEffect.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldPiece.cpp" />
     <ClCompile Include="Floor.cpp" />
@@ -313,6 +314,7 @@
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FBXManager.h" />
     <ClInclude Include="FBXModel.h" />
+    <ClInclude Include="FeverCutEffect.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldPiece.h" />
     <ClInclude Include="Floor.h" />
