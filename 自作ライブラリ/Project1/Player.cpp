@@ -22,7 +22,6 @@
 #include "ItemEmitter.h"
 #include "UnableThroughEdge.h"
 #include "UnableThroughBlock.h"
-#include "ScoreManager.h"
 #include "Audio.h"
 #include "ParticleEmitter.h"
 #include "ObjectRegistType.h"
@@ -47,6 +46,7 @@ Player::Player(const Vector3& arg_pos)
 	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::PLAYER);
 
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
+	dropPointGetUI = new DropPointGetUI(position, name);
 
 	Initialize();
 }
@@ -131,7 +131,6 @@ void Player::CompleteCut()
 	{
 		InFever();
 	}
-	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();

@@ -16,6 +16,8 @@
 #include "ActorManager.h"
 #include "Pause.h"
 #include "TimeLimit.h"
+#include "FeverUI.h"
+#include "LevelGauge.h"
 
 
 class TouchAbleObject;
@@ -33,6 +35,7 @@ public:
 	void PostDraw()override;
 private:
 	void TimeUpdate();
+	void KillCountToEnding();
 	std::unique_ptr<LightGroup> lightGroup;
 	XMFLOAT3 pos = { 1,0,0 };
 	float coloramb[3] = { 1,1,1 };
@@ -74,5 +77,7 @@ private:
 	Pause* pause = nullptr;
 	TimeLimit* timeLimit = nullptr;
 	int gameEndCount;
+	FeverUI* feverUI = nullptr;
+	LevelGauge* levelGauge = nullptr;
 };
 

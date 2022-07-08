@@ -396,9 +396,6 @@
     <ClCompile Include="StandardEnemy.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
-    <ClCompile Include="PanelCountUI.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Stadium.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
@@ -417,7 +414,7 @@
     <ClCompile Include="ScoreManager.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreUI.cpp">
+    <ClCompile Include="FeverUI.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
     <ClCompile Include="BaseGameActor.cpp">
@@ -458,6 +455,12 @@
     </ClCompile>
     <ClCompile Include="EnemyAIPositiv.cpp">
       <Filter>ソース ファイル\GameObject\EnemyAI</Filter>
+    </ClCompile>
+    <ClCompile Include="DropPointGetUI.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelGauge.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -761,9 +764,6 @@
     <ClInclude Include="StandardEnemy.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
-    <ClInclude Include="PanelCountUI.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Stadium.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
@@ -782,7 +782,7 @@
     <ClInclude Include="ScoreManager.h">
       <Filter>ヘッダー ファイル\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreUI.h">
+    <ClInclude Include="FeverUI.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
     <ClInclude Include="BaseGameActor.h">
@@ -832,6 +832,12 @@
     </ClInclude>
     <ClInclude Include="EnemyAIPositiv.h">
       <Filter>ヘッダー ファイル\GameObject\EnemyAI</Filter>
+	</ClInclude>
+    <ClInclude Include="DropPointGetUI.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelGauge.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

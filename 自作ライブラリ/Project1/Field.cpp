@@ -83,6 +83,7 @@ void Field::Initialize()
 	setBonusPanelTimer->Reset();
 	bonusPanelCount = 0;
 	SetBonusPanel();
+	feverNolma = 50;
 	gottenCount = 0;
 	previousGottenCount = 0;
 }
@@ -891,7 +892,6 @@ FieldPiece* Field::GetRandomActivePiece()
 
 bool Field::IsNewFeverPlayer()
 {
-	const int feverNolma = 50;
 	int nowRate = gottenCount / feverNolma;
 	if (nowRate == 0)
 	{
@@ -966,6 +966,11 @@ float Field::GetDepthMagnitude() const
 std::vector<FieldPiece*>& Field::GetGottenPieces()
 {
 	return gottenPieces;
+}
+
+int Field::GetFeverNolma()
+{
+	return feverNolma;
 }
 
 int Field::GetGottenCount()

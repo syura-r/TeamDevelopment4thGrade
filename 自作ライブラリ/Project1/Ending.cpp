@@ -1,74 +1,110 @@
 #include "Ending.h"
-#include "ScoreManager.h"
 #include "Audio.h"
+#include "Input.h"
+#include "FBXManager.h"
+#include "OBJLoader.h"
+
+int Ending::killCount_player = 0;
+int Ending::killCount_enemyA = 0;
+int Ending::killCount_enemyB = 0;
 
 Ending::Ending()
 {
 	next = Title;
 
+	camera = std::make_unique<DebugCamera>();
+	Object3D::SetCamera(camera.get());
+
+	//ライト生成
+	lightGroup.reset(LightGroup::Create());
+	//3Dオブジェクトにライトをセット
+	Object3D::SetLightGroup(lightGroup.get());
+	//ライト色を設定
+	lightGroup->SetDirLightActive(0, true);
+	lightGroup->SetDirLightColor(0, { 1,1,1 });
+
 	selectState = SelectState::Restart;
 
-	//totalScore = new ResultSet();
-	//cutPanel = new ResultSet();
-	dropEnemy = new ResultSet();
+	for (int i = 0; i < enemyCount+1; i++)
+	{
+		set[i] = new ResultSet(i == 0);
+	}
 
 	sp_select = new Sprite();
 	sp_restart = new Sprite();
 	sp_title = new Sprite();
+
+	stadium = new Stadium();
 }
 
 
 Ending::~Ending()
 {
-	//delete totalScore;
-	//delete cutPanel;
-	delete dropEnemy;
+	for (int i = 0; i < enemyCount + 1; i++)
+	{
+		delete set[i];
+	}
 
 	delete sp_select;
 	delete sp_restart;
 	delete sp_title;
+
+	delete stadium;
 }
 
 void Ending::Initialize()
 {
 	isEnd = false;
 
+	Object3D::SetCamera(camera.get());
+	Object3D::SetLightGroup(lightGroup.get());
+
 	selectState = SelectState::Restart;
 
-	ScoreManager* sManager = ScoreManager::GetInstance();
-	//totalScore->Initialize(sManager->GetTotalScore());
-	//cutPanel->Initialize(sManager->GetCutPanelNum_All());
-	dropEnemy->Initialize(sManager->GetFallEnemyNum());
+	for (int i = 0; i < enemyCount + 1; i++)
+	{
+		int killCount = 0;
+		if (i == 0)
+			killCount = killCount_player;
+		else if (i == 1)
+			killCount = killCount_enemyA;
+		else
+			killCount = killCount_enemyB;
+		set[i]->Initialize(killCount, positions_3d[i], positions_2d[i]);
+	}
+	topKillCount = 0;
+	TopSearch();
+	GaugeSize();
 
 	pos_select = pos_restart;
 
 	Audio::PlayBGM("BGM_Result", 0.1f * Audio::volume_bgm);
+
+	stadium->Initialize();
+	stadium->SetPosition({ 0.0f,-40.0f,0.0f });
 }
 
 void Ending::Update()
 {
 	SelectMenu();
 
-	//各数値の加算
-	//totalScore->Update();
-	//cutPanel->Update(totalScore->isCountEnd);
-	dropEnemy->Update(/*cutPanel->isCountEnd*/);
+	for (int i = 0; i < enemyCount + 1; i++)
+	{
+		set[i]->Update(topKillCount);
+	}
+	stadium->Update();
+
+	camera->Update();
+	lightGroup->SetAmbientColor({ 1,1,1 });
+	lightGroup->SetDirLightDir(0, { 0.0f,0.0f,0.2f,1 });
+	lightGroup->Update();
 }
 
 void Ending::PreDraw()
 {
+	for (int i = 0; i < enemyCount + 1; i++)
 	{
-		const Vector2 scale_big = { 1.2f, 1.2f };
-		const Vector2 scale_mini = { 0.7f, 0.7f };//総スコア以外の項目の大きさ
-		//score
-		float pos_y = 300.0f;
-		//totalScore->Draw("Result_UI_Totalscore_Text", pos_y, scale_big);
-		//panel
-		//pos_y += 200.0f;
-		//cutPanel->Draw("Result_UI_Gettriangle_text", pos_y, scale_mini);
-		//enemy
-		pos_y += 200.0f;
-		dropEnemy->Draw("Result_UI_Drop_text", pos_y, scale_mini);
+		set[i]->Draw();
 	}
 
 	//選択項目
@@ -76,6 +112,8 @@ void Ending::PreDraw()
 	sp_title->DrawSprite("toTitle", pos_title);
 
 	sp_select->DrawSprite("white1x1", pos_select, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,1 });
+
+	stadium->Draw();
 }
 
 void Ending::PostDraw()
@@ -116,10 +154,7 @@ void Ending::SelectMenu()
 	}
 
 	//シーン切り替え
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) &&
-		//totalScore->isCountEnd &&
-		//cutPanel->isCountEnd &&
-		dropEnemy->isCountEnd)
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
 	{
 		switch (selectState)
 		{
@@ -138,82 +173,135 @@ void Ending::SelectMenu()
 	}
 }
 
-Ending::ResultSet::ResultSet()
+void Ending::TopSearch()
 {
-	sp_text = new Sprite();
-	numSp_number = new NumberSprite(drawNum);
+	bool isTops[enemyCount + 1] = { false,false,false };
+	for (int i = 0; i < enemyCount+1; i++)
+	{
+		//0以下はスルー
+		if (set[i]->killCount <= 0)
+			continue;
+
+		//記録更新
+		if (topKillCount < set[i]->killCount)
+		{
+			topKillCount = set[i]->killCount;
+			for (int j = 0; j < enemyCount+1; j++)
+			{
+				isTops[j] = false;
+			}
+			isTops[i] = true;
+		}
+		//同率
+		else if (topKillCount == set[i]->killCount)
+		{
+			topKillCount = set[i]->killCount;
+			isTops[i] = true;
+		}
+	}
+
+	//反映
+	for (int i = 0; i < enemyCount + 1; i++)
+	{
+		set[i]->isTop = isTops[i];
+	}
+}
+
+void Ending::GaugeSize()
+{
+	//一位を基準（1.0f）にする
+	int topCount = 0;
+	for (int i = 0; i < enemyCount+1; i++)
+	{
+		if (set[i]->isTop)
+		{
+			set[i]->scaleY_gauge = 1.0f;
+			topCount = set[i]->killCount;
+		}
+	}
+
+	//
+	for (int i = 0; i < enemyCount + 1; i++)
+	{
+		set[i]->scaleY_gauge = set[i]->killCount / topCount;
+	}
+}
+
+Ending::ResultSet::ResultSet(const bool arg_isPlayer)
+	:isPlayer(arg_isPlayer)
+{
+	std::string modelName = "GamePlay_Player";
+	if (!isPlayer)
+		modelName = "GamePlay_Enemy";
+
+	object = Object3D::Create(FBXManager::GetModel(modelName), position, scale, rotation, color);
+	obj_crown = Object3D::Create(OBJLoader::GetModel("Crown"), pos_crown, scale_crown, rotation_crown, color_crown);
+	numberSprite = new NumberSprite(killCount_draw);
+	sp_gauge = new Sprite();
 }
 
 Ending::ResultSet::~ResultSet()
 {
-	delete sp_text;
-	delete numSp_number;
+	delete object;
+	delete obj_crown;
+	delete numberSprite;
+	delete sp_gauge;
 }
 
-void Ending::ResultSet::Initialize(const float arg_num)
+void Ending::ResultSet::Initialize(const int arg_killCount, const float arg_positionX_3d, const float arg_positionX_2d)
 {
-	num = arg_num;
-	drawNum = 0.0f;
-	isCountEnd = false;
+	killCount = arg_killCount;
+	killCount_draw = 0.0f;
+	position.x = arg_positionX_3d;
+	pos_crown.x = arg_positionX_3d;
+	positionX_2d = arg_positionX_2d;
+	scaleY_gauge = 0.0f;
+	scaleY_gauge_draw = 0.0f;
+	isTop = false;
+	drawCrown = false;
 }
 
-void Ending::ResultSet::Update(const bool skipLook)
+void Ending::ResultSet::Update(const int arg_topKillCount)
 {
-	//加算して表示
-	if (drawNum < num)
+	//ゲージを伸ばす
+	const bool gaugeExtend = scaleY_gauge_draw < scaleY_gauge;
+	if (gaugeExtend)
 	{
-		const int sub = num - drawNum;
-		int addNum = 1;
-		if (sub <= 10)
-		{
-			addNum = 1;
-		}
-		else if (sub <= 100)
-		{
-			addNum = 10;
-		}
-		else if (sub <= 1000)
-		{
-			addNum = 100;
-		}
-		else if (sub <= 10000)
-		{
-			addNum = 1000;
-		}
-		else if (sub <= 100000)
-		{
-			addNum = 10000;
-		}
-		else
-		{
-			addNum = 100000;
-		}
-
-		drawNum += addNum;
-
-		//スキップ
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) &&
-			skipLook)
-		{
-			drawNum = num;
-		}
+		scaleY_gauge_draw += 1.0f / 120.0f;
 	}
 
-	//加算が終了しているか
-	isCountEnd = drawNum >= num;
+	//数値を増やす
+	const bool killCountAdd = killCount_draw < killCount;
+	if (killCountAdd)
+	{
+		killCount_draw += arg_topKillCount / 120.0f;
+	}
+
+	//王冠の表示
+	drawCrown = !gaugeExtend && !killCountAdd;
+
+	object->Update();
+	obj_crown->Update();
 }
 
-void Ending::ResultSet::Draw(const std::string& arg_texName_text, const float arg_position_y, const Vector2& arg_scale)
+void Ending::ResultSet::Draw()
 {
-	//画像の大きさ
-	const Vector2 texSize_text = { 640,225 };
-	const Vector2 texSize_num = { 47,86 };
-	//各数値の桁数
-	const int digit = 6;
-	//基準X座標
-	const float position_text_x = 700.0f;
-	const float position_number_x = position_text_x + (texSize_text.x / 2) + (texSize_num.x / 2 * (digit * 2 - 1));//文字のすぐ後ろの位置
+	PipelineState::SetPipeline("FBX");
+	object->Draw(true);
 
-	sp_text->DrawSprite(arg_texName_text, { position_text_x, arg_position_y }, 0.0f, arg_scale);
-	numSp_number->Draw(digit, "GamePlay_UI_Number", { position_number_x, arg_position_y }, arg_scale);
+	if (isTop && drawCrown)
+	{
+		PipelineState::SetPipeline("BasicObj");
+		obj_crown->Draw();
+	}
+
+	PipelineState::SetPipeline("Sprite");
+
+	const int digit = 2;
+	numberSprite->Draw(digit, "GamePlay_UI_Number", { positionX_2d, 200.0f });
+
+	std::string texName = "Result_Player_Gauge";
+	if (!isPlayer)
+		texName = "Result_Enemy_Gauge";
+	sp_gauge->DrawSprite(texName, { positionX_2d, 770.0f }, 0.0f, { 1.0f, scaleY_gauge_draw }, { 1,1,1,1 }, { 0.5f, 1.0f });
 }

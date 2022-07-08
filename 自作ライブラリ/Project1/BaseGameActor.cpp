@@ -14,7 +14,6 @@
 #include "ParticleEmitter.h"
 #include "ActorManager.h"
 #include "ItemEmitter.h"
-#include "ScoreManager.h"
 #include "IActionState.h"
 #include "ActionStateMove.h"
 #include "ActionStateTackle.h"
@@ -90,6 +89,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 BaseGameActor::~BaseGameActor()
 {
 	delete panelCountSprite3D;
+	delete dropPointGetUI;
 	delete feverTimer;
 }
 
@@ -109,6 +109,7 @@ void BaseGameActor::Initialize()
 	actionState = ActionStateMove::GetInstance();
 	actionState->Initialize(this);
 	killCount = 0;
+	dropPointGetUI->Initialize();
 	weightInfluenceMap.clear();
 	isInFever = false;
 	feverTimer->Reset();
@@ -206,6 +207,7 @@ void BaseGameActor::Update()
 
 	Object::Update();
 	panelCountSprite3D->Update();
+	dropPointGetUI->Update();
 }
 
 void BaseGameActor::Draw()
@@ -218,6 +220,9 @@ void BaseGameActor::Draw()
 		DirectXLib::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(1, constCameraBuff->GetGPUVirtualAddress());
 	}
 	CustomDraw(true, true);
+	
+	dropPointGetUI->Draw();
+	panelCountSprite3D->Draw();
 }
 
 void BaseGameActor::DrawReady()
@@ -807,7 +812,6 @@ void BaseGameActor::CompleteCut()
 	{
 		InFever();
 	}
-	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();
@@ -900,7 +904,11 @@ void BaseGameActor::EndFall()
 			}
 		}
 	}
-	mostForcedActor->AddKillCount(1);
+
+	if (mostForcedActor)
+	{
+		mostForcedActor->AddKillCount(1);
+	}
 }
 
 void BaseGameActor::StartSpawn()
@@ -943,6 +951,7 @@ void BaseGameActor::EndSpawn()
 	panelCountSprite3D->Initialize();
 	isCrushed = false;
 	isEndGame = false;
+	dropPointGetUI->Initialize();
 	weightInfluenceMap.clear();
 	isInFever = false;
 	feverTimer->Reset();

@@ -20,7 +20,6 @@
 #include "ItemEmitter.h"
 #include "Player.h"
 #include "Audio.h"
-#include "ScoreManager.h"
 #include "ObjectRegistType.h"
 #include "IActionState.h"
 #include "ActionStateMove.h"
@@ -40,6 +39,7 @@ StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AIL
 	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::STANDARD_ENEMY);
 
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
+	dropPointGetUI = new DropPointGetUI(position, name);
 
 	actionTimer = new Timer(INTERVAL_ACTIONTIMER);
 
@@ -297,7 +297,6 @@ void StandardEnemy::CompleteCut()
 	{
 		InFever();
 	}
-	//ScoreManager::GetInstance()->AddScore_CutPanel(num);
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
 	virtualityPlanePosition = info->ridingPiece->GetVirtualityPlanePosition();

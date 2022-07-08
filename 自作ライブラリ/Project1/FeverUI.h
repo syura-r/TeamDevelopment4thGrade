@@ -1,18 +1,18 @@
 #pragma once
 #include "NumberSprite.h"
 
-class ScoreUI
+class FeverUI
 {
 public:
-	ScoreUI();
-	~ScoreUI();
+	FeverUI();
+	~FeverUI();
 
 	void Initialize();
 	void Update();
 	void Draw();
 
 private:
-	float drawScore;
+	float drawNum;
 
 	Sprite* sp;
 	NumberSprite* numsp;

@@ -216,6 +216,7 @@
     <ClCompile Include="InGameCamera.cpp" />
     <ClCompile Include="ItemEmitter.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
+    <ClCompile Include="LevelGauge.cpp" />
     <ClCompile Include="LightCamera.cpp" />
     <ClCompile Include="LightGroup.cpp" />
     <ClCompile Include="Line.cpp" />
@@ -234,8 +235,8 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="PanelCountSprite3D.cpp" />
-    <ClCompile Include="PanelCountUI.cpp" />
     <ClCompile Include="PanelCutLocus.cpp" />
+    <ClCompile Include="DropPointGetUI.cpp" />
     <ClCompile Include="PanelItem.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
@@ -252,7 +253,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="ScoreManager.cpp" />
-    <ClCompile Include="ScoreUI.cpp" />
+    <ClCompile Include="FeverUI.cpp" />
     <ClCompile Include="StandardEnemy.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScreenCamera.cpp" />
@@ -337,6 +338,7 @@
     <ClInclude Include="InGameCamera.h" />
     <ClInclude Include="ItemEmitter.h" />
     <ClInclude Include="LevelEditor.h" />
+    <ClInclude Include="LevelGauge.h" />
     <ClInclude Include="LightCamera.h" />
     <ClInclude Include="LightGroup.h" />
     <ClInclude Include="Line.h" />
@@ -358,8 +360,8 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="PanelCountSprite3D.h" />
-    <ClInclude Include="PanelCountUI.h" />
     <ClInclude Include="PanelCutLocus.h" />
+    <ClInclude Include="DropPointGetUI.h" />
     <ClInclude Include="PanelItem.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleEmitter.h" />
@@ -381,7 +383,7 @@
     <ClInclude Include="RaycastHit.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="ScoreManager.h" />
-    <ClInclude Include="ScoreUI.h" />
+    <ClInclude Include="FeverUI.h" />
     <ClInclude Include="StandardEnemy.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />

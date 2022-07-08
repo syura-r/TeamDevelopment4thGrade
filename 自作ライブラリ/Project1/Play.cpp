@@ -16,7 +16,6 @@
 #include "Floor.h"
 #include "Field.h"
 #include "Ending.h"
-#include "ScoreManager.h"
 #include "BaseGameActor.h"
 
 #include "TextureResource.h"
@@ -56,6 +55,8 @@ Play::Play()
 
 	pause = new Pause();
 	timeLimit = new TimeLimit(180 * 60);//§ŒÀŠÔ‚Ìİ’è‚Í‚±‚±
+	feverUI = new FeverUI();
+	levelGauge = new LevelGauge();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
@@ -68,12 +69,13 @@ Play::Play()
 Play::~Play()
 {
 	LevelEditor::GetInstance()->Clear();
-	delete pause;
-	delete timeLimit;
+	PtrDelete(pause);
+	PtrDelete(timeLimit);
+	PtrDelete(feverUI);
+	PtrDelete(levelGauge);
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
-	ScoreManager::GetInstance()->Finalize();
 }
 
 void Play::Initialize()
@@ -109,8 +111,8 @@ void Play::Initialize()
 	pause->Initialize();
 	timeLimit->Initialize();
 	gameEndCount = 0;
-
-	ScoreManager::GetInstance()->Inisitlize();
+	feverUI->Initialize();
+	levelGauge->Initialize();
 
 	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
 }
@@ -134,6 +136,7 @@ void Play::Update()
 	{
 		Audio::StopBGM("BGM_Play");
 		next = Title;
+		KillCountToEnding();
 		ShutDown();
 		return;
 	}
@@ -150,6 +153,7 @@ void Play::Update()
 	if (Input::TriggerKey(DIK_E))//I—¹ˆ—
 	{
 		Audio::StopBGM("BGM_Play");
+		KillCountToEnding();
 		ShutDown();
 		return;
 	}
@@ -163,6 +167,7 @@ void Play::Update()
 		if (gameEndCount >= 60)
 		{
 			Audio::StopBGM("BGM_Play");
+			KillCountToEnding();
 			ShutDown();
 		}
 
@@ -177,6 +182,9 @@ void Play::Update()
 		vec.y = Input::GetRStickDirection().y;
 		camera->RotateYaxis(vec);
 	}
+
+	feverUI->Update();
+	levelGauge->Update();
 
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
@@ -193,6 +201,7 @@ void Play::Update()
 	/*if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
 	{
 		Audio::StopWave("BGM_Play");
+		KillCountToEnding();
 		ShutDown();
 		return;
 	}
@@ -210,6 +219,7 @@ void Play::Update()
 	if (allEnemiesOutField)
 	{
 		Audio::StopWave("BGM_Play");
+		KillCountToEnding();
 		ShutDown();
 		return;
 	}*/
@@ -218,6 +228,8 @@ void Play::Update()
 void Play::PreDraw()
 {
 	timeLimit->Draw();
+	feverUI->Draw();
+	//levelGauge->Draw();
 
 		objectManager->DrawReady();
 #ifdef _DEBUG
@@ -289,4 +301,11 @@ void Play::PostDraw()
 
 void Play::TimeUpdate()
 {
+}
+
+void Play::KillCountToEnding()
+{
+	Ending::killCount_player = actorManager->GetPlayer()->GetKillCount();
+	Ending::killCount_enemyA = actorManager->GetStandardEnemies()[0]->GetKillCount();
+	Ending::killCount_enemyB = actorManager->GetStandardEnemies()[1]->GetKillCount();
 }

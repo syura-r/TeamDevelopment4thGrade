@@ -11,8 +11,8 @@
 #include "BaseLocus.h"
 #include "Timer.h"
 #include "NumberSprite.h"
-#include "PanelCountUI.h"
 #include "PanelCountSprite3D.h"
+#include "DropPointGetUI.h"
 
 class IActionState;
 enum class ActionStateLabel;
@@ -177,6 +177,9 @@ public:
 	inline int GetGottenPanel()const {
 		return gottenPanel;
 	}
+	inline int GetBonusCount()const {
+		return bonusCount;
+	}
 	inline BaseGameActor* GetTarget()const {
 		return targetActor;
 	}
@@ -229,6 +232,8 @@ protected:
 	IActionState* actionState;
 	//撃墜数
 	int killCount;
+	//撃墜数+1表示
+	DropPointGetUI* dropPointGetUI;
 	std::unordered_map<BaseGameActor*, int> weightInfluenceMap;
 	//フィーバー状態
 	bool isInFever;
