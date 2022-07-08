@@ -60,7 +60,7 @@ StandardEnemy::~StandardEnemy()
 void StandardEnemy::Initialize()
 {
 	actionTimer->Initialize();
-
+	firstMoved = false;
 	BaseGameActor::Initialize();
 }
 
@@ -315,11 +315,18 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 
 	if (actionTimer->IsTime())
 	{
-		// Œü‚«‚ðŽw’è‚µ‚ÄˆÚ“®
-		//moveDir = RandomDir();
-		moveDir = NearObjDir();
 		//---•ûŒüŒˆ’èŒn---
-		//enemyAI->ApproachEnergyItem();
+		Vector2 fixVel = { enemyAI->KeepAwayFromGottenPieces(this,velocity,position).x,enemyAI->KeepAwayFromGottenPieces(this,velocity,position).z };
+		moveDir = fixVel;
+
+		// Œü‚«‚ðŽw’è‚µ‚ÄˆÚ“®
+		if (firstMoved == false)
+		{
+			moveDir = RandomDir();
+			//moveDir = NearObjDir();
+			firstMoved == true;
+		}
+
 		actionTimer->Reset();
 	}
 	arg_direction = cameraDirectionX * moveDir.x + cameraDirectionZ * moveDir.y;

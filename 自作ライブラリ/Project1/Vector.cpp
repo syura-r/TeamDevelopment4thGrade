@@ -341,7 +341,7 @@ Vector3& Vector3::operator=(float num)
 
 float Vector3::Length()
 {
-	return sqrt(x*x + y * y + z * z);
+	return sqrt(x * x + y * y + z * z);
 }
 
 Vector3& Vector3::Normalize()

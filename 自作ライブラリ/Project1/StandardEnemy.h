@@ -93,4 +93,7 @@ protected:
 	//---AI---
 	EnemyAILabel enemyAILabel;
 	IEnemyAI* enemyAI = nullptr;
+
+	// 最初の一回移動←後でどうにかしますbyイイジマ
+	bool firstMoved;
 };
