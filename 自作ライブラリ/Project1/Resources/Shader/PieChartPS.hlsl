@@ -20,8 +20,8 @@ float4 PSmain(VSOutput input) : SV_TARGET
     float2 nowPoint = input.uv;
     float2 nowVector = nowPoint - center;
     float dis = length(nowVector);
-    //if (dis > 0.5f)
-    //    clip(-1);
+    if (dis > 0.5f)
+        clip(-1);
     nowVector = normalize(nowVector);
     float cro = baseVector.x * nowVector.y - baseVector.y * nowVector.x;
     float nowAngle = acos(dot(baseVector, nowVector));
