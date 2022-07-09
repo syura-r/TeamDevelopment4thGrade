@@ -18,6 +18,7 @@
 #include "TimeLimit.h"
 #include "FeverUI.h"
 #include "LevelGauge.h"
+#include "LockonMarker.h"
 
 
 class TouchAbleObject;
@@ -79,5 +80,6 @@ private:
 	int gameEndCount;
 	FeverUI* feverUI = nullptr;
 	LevelGauge* levelGauge = nullptr;
+	LockonMarker* lockonMarker = nullptr;
 };
 

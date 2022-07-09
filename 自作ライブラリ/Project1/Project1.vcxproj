@@ -220,6 +220,7 @@
     <ClCompile Include="LightCamera.cpp" />
     <ClCompile Include="LightGroup.cpp" />
     <ClCompile Include="Line.cpp" />
+    <ClCompile Include="LockonMarker.cpp" />
     <ClCompile Include="MapBox.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Matrix4.cpp" />
@@ -342,6 +343,7 @@
     <ClInclude Include="LightCamera.h" />
     <ClInclude Include="LightGroup.h" />
     <ClInclude Include="Line.h" />
+    <ClInclude Include="LockonMarker.h" />
     <ClInclude Include="LocusDef.h" />
     <ClInclude Include="MapBox.h" />
     <ClInclude Include="Material.h" />

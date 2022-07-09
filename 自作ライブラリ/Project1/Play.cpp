@@ -57,6 +57,7 @@ Play::Play()
 	timeLimit = new TimeLimit(180 * 60);//制限時間の設定はここ
 	feverUI = new FeverUI();
 	levelGauge = new LevelGauge();
+	lockonMarker = new LockonMarker();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
@@ -73,6 +74,7 @@ Play::~Play()
 	PtrDelete(timeLimit);
 	PtrDelete(feverUI);
 	PtrDelete(levelGauge);
+	PtrDelete(lockonMarker);
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
@@ -113,6 +115,7 @@ void Play::Initialize()
 	gameEndCount = 0;
 	feverUI->Initialize();
 	levelGauge->Initialize();
+	lockonMarker->Initialize();
 
 	Audio::StopBGM("BGM_Play");
 	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
@@ -198,6 +201,18 @@ void Play::Update()
 
 	actorManager->CollisionCheck();
 	collisionManager->CheckAllCollisions();
+
+	//プレイヤーの押し付け先
+	BaseGameActor* targetActor = actorManager->GetPlayer()->GetTarget();
+	if (targetActor)
+	{
+		lockonMarker->SetParentPosition(targetActor->GetPosition());
+		lockonMarker->SetIsActive(true);
+	}
+	else
+	{
+		lockonMarker->SetIsActive(false);
+	}
 
 	/*if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
 	{
@@ -297,7 +312,7 @@ void Play::PostDraw()
 	{
 		DirectXLib::GetInstance()->DepthClear();
 	}
-
+	lockonMarker->Draw();
 }
 
 void Play::TimeUpdate()
