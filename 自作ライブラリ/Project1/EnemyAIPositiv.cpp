@@ -37,8 +37,6 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 		}
 	}
 
-	// 距離の規定値←後で避ける
-	float specifiedValueDistance = nearestPiece->GetSidewaysLength() * 8;
 	float a = nearestDistance.Length();
 	// 最も近いパネルが規定値よりも遠かったらリターン
 	if (nearestDistance.Length() >= specifiedValueDistance) return arg_velocity;
@@ -48,8 +46,6 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 	Vector3 VecB = Vector3::Normalize(nearestDistance);
 	float dot = Vector3::Dot(VecA, VecB);
 
-	// 内積の規定値
-	float specifiedValueDot = 0.5f;
 	// 内積の絶対値が規定値以下だったらリターン
 	if (abs(dot) <= specifiedValueDot)return arg_velocity;
 
@@ -67,7 +63,57 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 
 Vector3 EnemyAIPositiv::KeepAwayFromFieldBorder(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
 {
-	return Vector3();
+	// 一番近い辺の算出
+	float distance = 100;	// 辺との距離
+	Vector2 nearyEdgS;		// 最も近い辺
+	Vector2 nearyEdgE;
+	auto edgs = Field::GetEdges();
+
+	for (int i = 0; i < edgs.size(); i++)
+	{
+		Vector2 point = { arg_enemy->GetPosition().x,arg_enemy->GetPosition().y };
+		Vector2 start = edgs[i];
+		Vector2 end;
+		if (i == edgs.size())
+		{
+			end = edgs[0];
+		}
+		else
+		{
+			end = edgs[i + 1];
+		}
+
+		float d = PointToLineDistance(point, start, end);
+
+		if (d <= distance)
+		{
+			distance = d;
+			nearyEdgS = start;
+			nearyEdgE = end;
+		}
+	}
+
+	// 一番近い辺との距離が規定値以上だったらリターン
+	if (distance >= specifiedValueDistance) return arg_velocity;
+
+	// 進行方向と辺の法線との外積
+	Vector2 n = (nearyEdgS + nearyEdgE) / 2;	//フィールドの中心から辺の中心へのベクトル
+	n = Vector2::Normalize(n);
+	Vector3 VecA = Vector3::Normalize(arg_velocity);
+	Vector3 VecB = { n.x, 0, n.y };
+
+	float dot = Vector3::Dot(VecA, VecB);
+
+	// 内積の絶対値が規定値以下だったらリターン
+	if (abs(dot) <= specifiedValueDot)return arg_velocity;
+
+	// 進行方向の調整（とりあえず真反対に）
+	Vector3 fixVel = -VecB;
+
+	// 算出した修正ベクトルで一度確認する
+	KeepAwayFromGottenPieces(arg_enemy, fixVel, arg_enemy->GetPosition());
+
+	return fixVel;
 }
 
 Vector3 EnemyAIPositiv::AgainstFieldTilt(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
@@ -113,4 +159,26 @@ bool EnemyAIPositiv::StartCutKillActorInFever(StandardEnemy* arg_enemy)
 EnemyAILabel EnemyAIPositiv::GetLabel() const
 {
 	return EnemyAILabel();
+}
+
+float EnemyAIPositiv::PointToLineDistance(Vector2 arg_point, Vector2 arg_linestart, Vector2 arg_lineend)
+{
+	float x0 = arg_point.x, y0 = arg_point.y;
+	float x1 = arg_linestart.x, y1 = arg_linestart.y;
+	float x2 = arg_lineend.x, y2 = arg_lineend.y;
+
+	float a = x2 - x1;
+	float b = y2 - y1;
+	float a2 = a * a;
+	float b2 = b * b;
+	float r2 = a2 + b2;
+	float tt = -(a * (x1 - x0) + b * (y1 - y0));
+
+	if (tt < 0)
+		return sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+	else if (tt > r2)
+		return sqrt((x2 - x0) * (x2 - x0) + (y2 - y0) * (y2 - y0));
+
+	double f1 = a * (y1 - y0) - b * (x1 - x0);
+	return sqrt((f1 * f1) / r2);
 }
