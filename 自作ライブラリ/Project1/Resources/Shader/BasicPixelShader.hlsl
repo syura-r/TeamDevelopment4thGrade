@@ -13,7 +13,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
 
     if (texcolor.w == 0)
     {
-        discard;
+        clip(-1);
     }
 
     const float zlnLVP = input.shadowPos.z / input.shadowPos.w;

@@ -285,12 +285,6 @@
     <ClCompile Include="TextureResource.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="Menu.cpp">
-      <Filter>ソース ファイル\GameText</Filter>
-    </ClCompile>
-    <ClCompile Include="Result.cpp">
-      <Filter>ソース ファイル\GameText</Filter>
-    </ClCompile>
     <ClCompile Include="TitleText.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
@@ -440,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="ActionStateSpawn.cpp">
       <Filter>ソース ファイル\GameObject\GameActor</Filter>
+    </ClCompile>
+    <ClCompile Include="PieChart.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -659,9 +656,6 @@
     <ClInclude Include="GameSettingParam.h">
       <Filter>ヘッダー ファイル\Tool</Filter>
     </ClInclude>
-    <ClInclude Include="Menu.h">
-      <Filter>ヘッダー ファイル\GameText</Filter>
-    </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル\Object</Filter>
     </ClInclude>
@@ -679,9 +673,6 @@
     </ClInclude>
     <ClInclude Include="Bloom.h">
       <Filter>ヘッダー ファイル\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Result.h">
-      <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
     <ClInclude Include="ShadowMap.h">
       <Filter>ヘッダー ファイル\PostEffect</Filter>
@@ -799,6 +790,9 @@
     </ClInclude>
     <ClInclude Include="ActionStateSpawn.h">
       <Filter>ヘッダー ファイル\GameObject\GameActor</Filter>
+    </ClInclude>
+    <ClInclude Include="PieChart.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -966,6 +960,9 @@
     </FxCompile>
     <FxCompile Include="Resources\Shader\MigratePS.hlsl">
       <Filter>シェーダファイル\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\PieChartPS.hlsl">
+      <Filter>シェーダファイル\OBJ</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -45,6 +45,7 @@ enum ShaderType
 	FisheyeLens,
 	Migrate,
 	DepthSPRITE,
+	PIECHART,
 };
 
 class PipelineState

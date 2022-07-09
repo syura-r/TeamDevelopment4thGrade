@@ -5,11 +5,9 @@
 #include "ComputeShade.h"
 #include "DebugCamera.h"
 #include"Grass.h"
-#include "Menu.h"
 #include "NumberSprite.h"
 #include "ObjectManager.h"
 #include "Player.h"
-#include "Result.h"
 #include "Sprite.h"
 
 #include "ActorManager.h"
@@ -72,5 +70,6 @@ private:
 	Pause* pause = nullptr;
 	TimeLimit* timeLimit = nullptr;
 	int gameEndCount;
+
 };
 
