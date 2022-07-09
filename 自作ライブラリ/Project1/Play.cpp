@@ -278,7 +278,6 @@ void Play::PostDraw()
 {
 	//if (migrate)
 	//	return;
-	pause->Draw();
 
 	objectManager->PostDraw();
 
@@ -313,6 +312,7 @@ void Play::PostDraw()
 		DirectXLib::GetInstance()->DepthClear();
 	}
 	lockonMarker->Draw();
+	pause->Draw();
 }
 
 void Play::TimeUpdate()
