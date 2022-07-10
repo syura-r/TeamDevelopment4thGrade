@@ -2,6 +2,8 @@
 #include "ActorManager.h"
 #include "Field.h"
 #include "FieldPiece.h"
+#include "ActorManager.h"
+#include "EnergyItem.h"
 
 EnemyAIPositiv* EnemyAIPositiv::GetInstance()
 {
@@ -123,7 +125,58 @@ Vector3 EnemyAIPositiv::AgainstFieldTilt(StandardEnemy* arg_enemy, const Vector3
 
 Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
 {
-	return Vector3();
+	// フィールド上のアイテムを近い順に並べる
+	std::vector<EnergyItem*> items = ActorManager::GetInstance()->GetEnergyItems();
+	// vectorが空だったら
+	if (items.size() <= 0) return arg_velocity;
+
+	std::vector<ItemRange*> itemRanges;
+
+	Vector3 itemDistance;
+	// 全アイテムを走査
+	for (auto item : items)
+	{
+		// 距離を記録
+		itemDistance = item->GetPosition() - arg_enemy->GetPosition();
+
+		ItemRange* itemRange;
+		itemRange->item = item;
+		itemRange->range = itemDistance.Length();
+
+		itemRanges.push_back(itemRange);
+	}
+
+	// 距離順でソート
+	std::sort(itemRanges.begin(), itemRanges.end(), [](const ItemRange* x, const ItemRange* y) {return x->range < y->range; });
+
+	// 他のActorとアイテムとの距離を見る
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+	// 他のActorがいなかったらリターン
+	if (actors.size() <= 0)	return arg_velocity;
+	// 全アイテムを走査
+	for (auto itemRange : itemRanges)
+	{
+		// 全actorを走査
+		for (auto actor : actors)
+		{
+			Vector3 r = itemRange->item->GetPosition() - actor->GetPosition();
+			float otherRange = r.Length();
+			
+			// 自分より近いActorが居たら終了
+			if (otherRange < itemRange->range)
+			{
+				break;
+			}
+
+			// 自分が一番近かった場合そこに向かう
+			return itemRange->item->GetPosition() - arg_enemy->GetPosition();
+		}
+	}
+
+	// 自分が一番近いアイテムが無かったら自分に一番近いアイテムへ向かう
+	Vector3 fixVel = itemRanges[0]->item->GetPosition() - arg_enemy->GetPosition();
+
+	return fixVel;
 }
 
 Vector3 EnemyAIPositiv::ApproachCuttingActor(StandardEnemy* arg_enemy, const Vector3& arg_velocity)

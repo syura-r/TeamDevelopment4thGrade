@@ -36,5 +36,11 @@ private:
 	//“_‚Æ•Ó‚Ì‹——£
 	float PointToLineDistance(Vector2 arg_point, Vector2 arg_linestart, Vector2 arg_lineend);
 
+	struct ItemRange
+	{
+		EnergyItem* item;
+		float range;
+	};
+
 };
 
