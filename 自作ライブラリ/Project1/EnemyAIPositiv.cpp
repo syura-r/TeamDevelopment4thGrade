@@ -4,6 +4,7 @@
 #include "FieldPiece.h"
 #include "ActorManager.h"
 #include "EnergyItem.h"
+#include "IActionState.h"
 
 EnemyAIPositiv* EnemyAIPositiv::GetInstance()
 {
@@ -16,7 +17,7 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
 	auto gottenPanels = field->GetGottenPieces();
 
-	// １つも切り抜かれていなかったらリターン
+	// １つも切り抜かれていなかったらreturn
 	if (gottenPanels.size() <= 0) return arg_velocity;
 	// パネルとの距離
 	Vector3 distance = { 0,0,0 };
@@ -40,7 +41,7 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 	}
 
 	float a = nearestDistance.Length();
-	// 最も近いパネルが規定値よりも遠かったらリターン
+	// 最も近いパネルが規定値よりも遠かったらreturn
 	if (nearestDistance.Length() >= specifiedValueDistance) return arg_velocity;
 
 	// 正規化した一番近い穴へのベクトルと現在の進行方向ベクトルの内積
@@ -48,7 +49,7 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 	Vector3 VecB = Vector3::Normalize(nearestDistance);
 	float dot = Vector3::Dot(VecA, VecB);
 
-	// 内積の絶対値が規定値以下だったらリターン
+	// 内積の絶対値が規定値以下だったらreturn
 	if (abs(dot) <= specifiedValueDot)return arg_velocity;
 
 	// 進行方向の調整（現在の進行方向とその逆方向の外積から直角なベクトルを出す）
@@ -95,7 +96,7 @@ Vector3 EnemyAIPositiv::KeepAwayFromFieldBorder(StandardEnemy* arg_enemy, const 
 		}
 	}
 
-	// 一番近い辺との距離が規定値以上だったらリターン
+	// 一番近い辺との距離が規定値以上だったらreturn
 	if (distance >= specifiedValueDistance) return arg_velocity;
 
 	// 進行方向と辺の法線との外積
@@ -106,7 +107,7 @@ Vector3 EnemyAIPositiv::KeepAwayFromFieldBorder(StandardEnemy* arg_enemy, const 
 
 	float dot = Vector3::Dot(VecA, VecB);
 
-	// 内積の絶対値が規定値以下だったらリターン
+	// 内積の絶対値が規定値以下だったらreturn
 	if (abs(dot) <= specifiedValueDot)return arg_velocity;
 
 	// 進行方向の調整（とりあえず真反対に）
@@ -127,7 +128,7 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 {
 	// フィールド上のアイテムを近い順に並べる
 	std::vector<EnergyItem*> items = ActorManager::GetInstance()->GetEnergyItems();
-	// vectorが空だったら
+	// vectorが空だったらreturn
 	if (items.size() <= 0) return arg_velocity;
 
 	std::vector<ItemRange*> itemRanges;
@@ -151,7 +152,7 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 
 	// 他のActorとアイテムとの距離を見る
 	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
-	// 他のActorがいなかったらリターン
+	// 他のActorがいなかったらreturn
 	if (actors.size() <= 0)	return arg_velocity;
 	// 全アイテムを走査
 	for (auto itemRange : itemRanges)
@@ -181,7 +182,29 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 
 Vector3 EnemyAIPositiv::ApproachCuttingActor(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
 {
-	return Vector3();
+	// 切り抜き中のActorを探す
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+	// 他のActorがいなかったらリターン
+	if (actors.size() <= 0)	return arg_velocity;
+	// 全Actorを走査
+	for (auto actor : actors)
+	{
+		// 切り抜き中で無かったらcontinue
+		if (actor->GetActionState()->GetLabel() != ActionStateLabel::CUT) continue;
+
+		// 距離を測る
+		Vector3 v = actor->GetPosition() - arg_enemy->GetPosition();
+		float distance = v.Length();
+
+		// 距離が規定値以上だったらcontinue
+		if (distance > specifiedValueDistance) continue;
+
+		// Actorへの方向をreturn
+		return v;
+	}
+
+	// 切り抜き中のActorがいないか規定距離より離れていたので元のvelocityをreturn
+	return arg_velocity;
 }
 
 bool EnemyAIPositiv::StartCutOnSafeTiming(StandardEnemy* arg_enemy)
