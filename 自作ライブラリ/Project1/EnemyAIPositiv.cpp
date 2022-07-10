@@ -281,6 +281,13 @@ bool EnemyAIPositiv::StartCutIncludeBonus(StandardEnemy* arg_enemy)
 
 bool EnemyAIPositiv::StartCutReachFever(StandardEnemy* arg_enemy)
 {
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	int feverNolma = field->GetFeverNolma();	// フィーバーまでのノルマ
+	int gottenCount = field->GetGottenCount();	// 現在の獲得数
+
+	// cutPowerとフィーバーまでの残り枚数を比較
+	if (arg_enemy->GetCutPower() > feverNolma - gottenCount) return true;
+
 	return false;
 }
 
@@ -291,7 +298,7 @@ bool EnemyAIPositiv::StartCutKillActorInFever(StandardEnemy* arg_enemy)
 
 EnemyAILabel EnemyAIPositiv::GetLabel() const
 {
-	return EnemyAILabel();
+	return EnemyAILabel::POSITIVE;
 }
 
 float EnemyAIPositiv::PointToLineDistance(Vector2 arg_point, Vector2 arg_linestart, Vector2 arg_lineend)

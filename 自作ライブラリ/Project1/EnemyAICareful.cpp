@@ -63,5 +63,5 @@ bool EnemyAICareful::StartCutKillActorInFever(StandardEnemy* arg_enemy)
 
 EnemyAILabel EnemyAICareful::GetLabel() const
 {
-	return EnemyAILabel();
+	return EnemyAILabel::CAREFUL;
 }
