@@ -13,6 +13,7 @@
 #include "NumberSprite.h"
 #include "PanelCountSprite3D.h"
 #include "DropPointGetUI.h"
+#include "PieChart.h"
 
 class IActionState;
 enum class ActionStateLabel;
@@ -236,6 +237,8 @@ protected:
 	//撃墜数+1表示
 	DropPointGetUI* dropPointGetUI;
 	std::unordered_map<BaseGameActor*, int> weightInfluenceMap;
+	PieChart* chart;//-//
+	DirectX::XMFLOAT4 actorColor;//-//
 	//フィーバー状態
 	bool isInFever;
 	Timer* feverTimer;

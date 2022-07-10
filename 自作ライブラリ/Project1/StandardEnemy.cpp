@@ -40,6 +40,17 @@ StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AIL
 
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 	dropPointGetUI = new DropPointGetUI(position, name);
+	chart = new PieChart({ 1, 0, 0, 1 }, { 0, 0, 0, 1 });
+	chart->SetScale(Vector3(4, 4, 4));
+	if (modelName == "GamePlay_Enemy")
+	{
+		actorColor = { 0.96f, 0.53f, 0.54f, 1 };
+	}
+	else
+	{
+		actorColor = { 0.51f, 0.92f, 0.60f, 1 };
+	}
+	ObjectManager::GetInstance()->Add(chart);
 
 	actionTimer = new Timer(INTERVAL_ACTIONTIMER);
 
