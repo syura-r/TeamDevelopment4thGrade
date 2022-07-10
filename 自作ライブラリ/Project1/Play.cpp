@@ -103,6 +103,8 @@ void Play::Initialize()
 	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10), EnemyAILabel::CAREFUL, "GamePlay_Enemy2");
 	objectManager->Add(testEnemy2);
 
+	camera->Initialize();
+	camera->SetDistance(100);
 	stadium->Initialize();
 
 	screenCamera->SetTargetObj(player);

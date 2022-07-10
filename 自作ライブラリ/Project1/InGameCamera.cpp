@@ -5,11 +5,30 @@
 #include "GameSettingParam.h"
 #include "Vector.h"
 #include "window.h"
+#include "ActorManager.h"
+#include "Field.h"
 
 InGameCamera::InGameCamera()
 {
 	phi = -3.14159265f / 2;
 	theta = 0;
+}
+
+void InGameCamera::Initialize()
+{
+	auto fields = ActorManager::GetInstance()->GetFields();
+	if (fields.empty())
+	{
+		SetTarget(Vector3(0, -5, 0));
+	}
+	else
+	{
+		SetTarget(fields[0]->GetPosition());
+	}
+	SetPhi(DirectX::XMConvertToRadians(-90));
+	SetTheta(120);
+	SetDistance(100);
+	Update();
 }
 
 void InGameCamera::Update()

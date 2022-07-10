@@ -7,6 +7,7 @@ class InGameCamera :
 public:
 
     InGameCamera();
+	void Initialize();
 	void Update();
 	void RotateYaxis(Vector2 arg_inputVec);
 
