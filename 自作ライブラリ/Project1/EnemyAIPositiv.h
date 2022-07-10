@@ -1,5 +1,6 @@
 #pragma once
 #include "IEnemyAI.h"
+#include "FieldPiece.h"
 
 class EnemyAIPositiv : public IEnemyAI
 {
@@ -25,6 +26,21 @@ private:
 	~EnemyAIPositiv() {}
 	EnemyAIPositiv(const EnemyAIPositiv& another) = delete;
 	EnemyAIPositiv& operator=(const EnemyAIPositiv& another) = delete;
+
+private:
+	// ‹——£‚Ì‹K’è’l
+	const float specifiedValueDistance = FieldPiece::GetSidewaysLength() * 8;
+	// “àÏ‚Ì‹K’è’l
+	float specifiedValueDot = 0.5f;
+
+	//“_‚Æ•Ó‚Ì‹——£
+	float PointToLineDistance(Vector2 arg_point, Vector2 arg_linestart, Vector2 arg_lineend);
+
+	struct ItemRange
+	{
+		EnergyItem* item;
+		float range;
+	};
 
 };
 
