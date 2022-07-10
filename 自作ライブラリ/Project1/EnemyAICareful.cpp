@@ -31,6 +31,11 @@ Vector3 EnemyAICareful::ApproachCuttingActor(StandardEnemy* arg_enemy, const Vec
 	return Vector3();
 }
 
+Vector3 EnemyAICareful::ApproachActorInFever(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
+{
+	return Vector3();
+}
+
 bool EnemyAICareful::StartCutOnSafeTiming(StandardEnemy* arg_enemy)
 {
 	return false;
@@ -58,5 +63,5 @@ bool EnemyAICareful::StartCutKillActorInFever(StandardEnemy* arg_enemy)
 
 EnemyAILabel EnemyAICareful::GetLabel() const
 {
-	return EnemyAILabel();
+	return EnemyAILabel::CAREFUL;
 }

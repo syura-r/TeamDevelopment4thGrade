@@ -12,6 +12,7 @@ public:
 	virtual Vector3 AgainstFieldTilt(StandardEnemy* arg_enemy, const Vector3& arg_velocity) override;
 	virtual Vector3 ApproachEnergyItem(StandardEnemy* arg_enemy, const Vector3& arg_velocity) override;
 	virtual Vector3 ApproachCuttingActor(StandardEnemy* arg_enemy, const Vector3& arg_velocity) override;
+	virtual Vector3 ApproachActorInFever(StandardEnemy* arg_enemy, const Vector3& arg_velocity) override;
 
 	virtual bool StartCutOnSafeTiming(StandardEnemy* arg_enemy) override;
 	virtual bool StartCutEnoughActivePieces(StandardEnemy* arg_enemy) override;
@@ -32,6 +33,8 @@ private:
 	const float specifiedValueDistance = FieldPiece::GetSidewaysLength() * 8;
 	// “àÏ‚Ì‹K’è’l
 	float specifiedValueDot = 0.5f;
+	// ŒX‚«‚Ì‹K’è’l
+	const float specifiedValueInclination = 1.0f;
 
 	//“_‚Æ•Ó‚Ì‹——£
 	float PointToLineDistance(Vector2 arg_point, Vector2 arg_linestart, Vector2 arg_lineend);

@@ -11,6 +11,7 @@ public:
 	virtual Vector3 AgainstFieldTilt(StandardEnemy* arg_enemy, const Vector3& arg_velocity) override;
 	virtual Vector3 ApproachEnergyItem(StandardEnemy* arg_enemy, const Vector3& arg_velocity) override;
 	virtual Vector3 ApproachCuttingActor(StandardEnemy* arg_enemy, const Vector3& arg_velocity) override;
+	virtual Vector3 ApproachActorInFever(StandardEnemy* arg_enemy, const Vector3& arg_velocity) override;
 
 	virtual bool StartCutOnSafeTiming(StandardEnemy* arg_enemy) override;
 	virtual bool StartCutEnoughActivePieces(StandardEnemy* arg_enemy) override;
