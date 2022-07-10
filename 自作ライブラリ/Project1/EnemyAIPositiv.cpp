@@ -191,12 +191,36 @@ bool EnemyAIPositiv::StartCutOnSafeTiming(StandardEnemy* arg_enemy)
 
 bool EnemyAIPositiv::StartCutEnoughActivePieces(StandardEnemy* arg_enemy)
 {
-	return false;
+	static std::vector<FieldPiece*> vecPieces;
+	vecPieces.clear();
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	field->GetPiecesWithinSawRange(arg_enemy->GetPanelCutLocus(), vecPieces);
+	int cutNum = 0;
+	for (auto p : vecPieces)
+	{
+		if (p->IsActive())
+		{
+			cutNum++;
+		}
+	}
+	return cutNum >= (arg_enemy->cutPowerUpperLimit + arg_enemy->cutPowerLowerLimit) / 2;
 }
 
 bool EnemyAIPositiv::StartCutIncludeBonus(StandardEnemy* arg_enemy)
 {
-	return false;
+	static std::vector<FieldPiece*> vecPieces;
+	vecPieces.clear();
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	field->GetPiecesWithinSawRange(arg_enemy->GetPanelCutLocus(), vecPieces);
+	int bonusNum = 0;
+	for (auto p : vecPieces)
+	{
+		if (p->IsBonus())
+		{
+			bonusNum++;
+		}
+	}
+	return bonusNum > 0;
 }
 
 bool EnemyAIPositiv::StartCutReachFever(StandardEnemy* arg_enemy)
@@ -206,12 +230,41 @@ bool EnemyAIPositiv::StartCutReachFever(StandardEnemy* arg_enemy)
 
 bool EnemyAIPositiv::StartCutKillActorInFever(StandardEnemy* arg_enemy)
 {
+	static const float R = 2.0f;
+	static std::vector<FieldPiece*> vecPieces;
+	vecPieces.clear();
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	field->GetPiecesWithinSawRange(arg_enemy->GetPanelCutLocus(), vecPieces);
+
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+	for (auto a : actors)
+	{
+		if (a == arg_enemy)
+		{
+			continue;
+		}
+
+		CuttingInfo* info = field->GetCuttingInfo(a);
+		for (auto p : vecPieces)
+		{
+			if (info->ridingPiece != p)
+			{
+				continue;
+			}
+
+			if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(a->GetVirtualityPlanePosition() - info->ridingPiece->GetVirtualityPlanePosition())) < R)
+			{
+				return true;
+			}
+		}
+	}
+
 	return false;
 }
 
 EnemyAILabel EnemyAIPositiv::GetLabel() const
 {
-	return EnemyAILabel();
+	return EnemyAILabel::POSITIVE;
 }
 
 float EnemyAIPositiv::PointToLineDistance(Vector2 arg_point, Vector2 arg_linestart, Vector2 arg_lineend)

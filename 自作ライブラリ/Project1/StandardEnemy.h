@@ -49,6 +49,9 @@ public:
 	virtual void CompleteCut()override;
 
 protected:
+	friend class EnemyAIPositiv;
+	friend class EnemyAICareful;
+
 	//---Move---
 	//ˆÚ“®•ûŒü‚ÌŒˆ’è
 	virtual void DecideDirection(Vector3& arg_direction)override;

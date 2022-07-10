@@ -938,6 +938,52 @@ Vector3 Field::GetFieldBorderNormal(const int arg_index)
 	return Vector3::Normalize(Vector3(-edgeVec.z, 0, edgeVec.x));
 }
 
+void Field::GetPiecesWithinSawRange(PanelCutLocus* arg_locus, std::vector<FieldPiece*>& arg_vecPieces)
+{
+	auto vecPos = arg_locus->GetCuttedPanelPos();
+	float halfHeight = FieldPiece::GetFullOffset() * PIECE_LAYER_NUM;
+
+	for (int i = 0; i < vecPos.size(); i++)
+	{
+		//óÒì¡íË
+		float adjustedZPos = -vecPos[i].y + halfHeight;
+		if (adjustedZPos < 0)
+		{
+			continue;
+		}
+		else if (adjustedZPos > halfHeight * 2)
+		{
+			continue;
+		}
+		int columnNum = adjustedZPos / FieldPiece::GetFullOffset();
+		if (columnNum == PIECE_LAYER_NUM * 2)
+		{
+			columnNum = PIECE_LAYER_NUM * 2 - 1;
+		}
+
+		//çsì¡íË
+		for (int j = 0; j < pieces[columnNum].size(); j++)
+		{
+			std::vector<Vector2> piecePoints = pieces[columnNum][j]->GetPoints();
+
+			float cross01 = Vector2::Cross(Vector2::Normalize(piecePoints[1] - piecePoints[0]), Vector2::Normalize(vecPos[i] - piecePoints[0]));
+			float cross12 = Vector2::Cross(Vector2::Normalize(piecePoints[2] - piecePoints[1]), Vector2::Normalize(vecPos[i] - piecePoints[1]));
+			float cross20 = Vector2::Cross(Vector2::Normalize(piecePoints[0] - piecePoints[2]), Vector2::Normalize(vecPos[i] - piecePoints[2]));
+
+			if (cross01 > 0 && cross12 > 0 && cross20 > 0)
+			{
+				arg_vecPieces.push_back(pieces[columnNum][j]);
+				break;
+			}
+			else if (cross01 < 0 && cross12 < 0 && cross20 < 0)
+			{
+				arg_vecPieces.push_back(pieces[columnNum][j]);
+				break;
+			}
+		}
+	}
+}
+
 float Field::GetRadius()
 {
 	return RADIUS;

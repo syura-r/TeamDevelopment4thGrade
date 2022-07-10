@@ -95,6 +95,7 @@ void Player::DrawReady()
 		ImGui::End();
 	}
 #endif
+	dropPointGetUI->Draw();
 	panelCountSprite3D->Draw();
 
 	if (Object3D::GetDrawShadow())

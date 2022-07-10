@@ -94,6 +94,7 @@ void StandardEnemy::DrawReady()
 
 #endif
 
+	dropPointGetUI->Draw();
 	panelCountSprite3D->Draw();
 
 	if (Object3D::GetDrawShadow())

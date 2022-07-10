@@ -56,6 +56,7 @@ public:
 	bool IsNewFeverPlayer();
 	float GetLengthToFieldBorder(const int arg_index, const Vector3& arg_pos);
 	Vector3 GetFieldBorderNormal(const int arg_index);
+	void GetPiecesWithinSawRange(PanelCutLocus* arg_locus, std::vector<FieldPiece*>& arg_vecPieces);
 
 	static float GetRadius();
 	static std::vector<Vector2>& GetEdges();

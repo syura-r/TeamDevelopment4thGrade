@@ -220,9 +220,6 @@ void BaseGameActor::Draw()
 		DirectXLib::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(1, constCameraBuff->GetGPUVirtualAddress());
 	}
 	CustomDraw(true, true);
-	
-	dropPointGetUI->Draw();
-	panelCountSprite3D->Draw();
 }
 
 void BaseGameActor::DrawReady()
@@ -243,6 +240,7 @@ void BaseGameActor::DrawReady()
 	}
 #endif
 
+	dropPointGetUI->Draw();
 	panelCountSprite3D->Draw();
 
 	if (Object3D::GetDrawShadow())
