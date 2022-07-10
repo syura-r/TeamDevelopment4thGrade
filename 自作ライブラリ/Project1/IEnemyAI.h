@@ -17,6 +17,7 @@ public:
 	virtual Vector3 AgainstFieldTilt(StandardEnemy* arg_enemy, const Vector3& arg_velocity) = 0;		// フィールドの傾きに逆らう
 	virtual Vector3 ApproachEnergyItem(StandardEnemy* arg_enemy, const Vector3& arg_velocity) = 0;		// 一番近いのこぎりに向かう
 	virtual Vector3 ApproachCuttingActor(StandardEnemy* arg_enemy, const Vector3& arg_velocity) = 0;	// 切り抜き中のキャラに向かう
+	virtual Vector3 ApproachActorInFever(StandardEnemy* arg_enemy, const Vector3& arg_velocity) = 0;	// フィーバー中のみ一番近いActorへ向かう
 
 	virtual bool StartCutOnSafeTiming(StandardEnemy* arg_enemy) = 0;		// 安全なタイミングで切り抜き
 	virtual bool StartCutEnoughActivePieces(StandardEnemy* arg_enemy) = 0;	// ガイド内にパネルがあったら切り抜き

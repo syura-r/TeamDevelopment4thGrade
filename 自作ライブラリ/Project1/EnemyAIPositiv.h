@@ -33,6 +33,8 @@ private:
 	const float specifiedValueDistance = FieldPiece::GetSidewaysLength() * 8;
 	// “àÏ‚Ì‹K’è’l
 	float specifiedValueDot = 0.5f;
+	// ŒX‚«‚Ì‹K’è’l
+	const float specifiedValueInclination = 1.0f;
 
 	//“_‚Æ•Ó‚Ì‹——£
 	float PointToLineDistance(Vector2 arg_point, Vector2 arg_linestart, Vector2 arg_lineend);

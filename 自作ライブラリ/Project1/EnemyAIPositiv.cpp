@@ -121,7 +121,25 @@ Vector3 EnemyAIPositiv::KeepAwayFromFieldBorder(StandardEnemy* arg_enemy, const 
 
 Vector3 EnemyAIPositiv::AgainstFieldTilt(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
 {
-	return Vector3();
+	// フィールドの傾きを取得
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	Vector3 tiltDir = field->GetAngleTilt();			// 傾きの向き
+	float depthMagnitude = field->GetDepthMagnitude();	// 傾きの強さ
+
+	// 傾きの強さが規定値以下だったらreturn
+	if (depthMagnitude < specifiedValueInclination) return arg_velocity;
+
+	// 傾きの正規化とフィールドの中心からの方向の正規化との内積
+	Vector3 dir = arg_enemy->GetPosition() - field->GetPosition();	// フィールドの中心からの方向
+	float dot = Vector3::Dot(tiltDir.Normalize(), dir.Normalize());
+
+	// 内積の絶対値が規定値以下だったらreturn
+	if (abs(dot) <= specifiedValueDot)return arg_velocity;
+
+	// 傾きに逆らうベクトルをreturn
+	Vector3 fixVel = -tiltDir;
+
+	return fixVel;
 }
 
 Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
