@@ -252,7 +252,21 @@ Vector3 EnemyAIPositiv::ApproachActorInFever(StandardEnemy* arg_enemy, const Vec
 
 bool EnemyAIPositiv::StartCutOnSafeTiming(StandardEnemy* arg_enemy)
 {
-	return false;
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+	// Actorへのベクトル
+	Vector3 vector = { 0,0,0 };
+	for (auto actor : actors)
+	{
+		vector = actor->GetPosition() - arg_enemy->GetPosition();
+
+		// 規定値より近いActorが見つかったら
+		if (vector.Length() < specifiedValueDistance)
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool EnemyAIPositiv::StartCutEnoughActivePieces(StandardEnemy* arg_enemy)
