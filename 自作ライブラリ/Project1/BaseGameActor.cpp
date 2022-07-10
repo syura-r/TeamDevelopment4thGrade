@@ -522,6 +522,7 @@ void BaseGameActor::InFever()
 {
 	isInFever = true;
 	feverTimer->Reset();
+	Audio::PlaySE("SE_InFever", Audio::volume_se);
 }
 
 void BaseGameActor::StartMove()

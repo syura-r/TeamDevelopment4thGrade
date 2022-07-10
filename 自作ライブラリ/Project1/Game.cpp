@@ -186,6 +186,9 @@ void Game::RoadAsset()
 		Audio::LoadFile("SE_SawCutOut", "SE/GamePlay_SE_Sawcut_Out.wav");
 		Audio::LoadFile("SE_SteppingOn", "SE/GamePlay_SE_Steppingon.wav");
 		Audio::LoadFile("SE_TriangleLost", "SE/GamePlay_SE_Trianglelost.wav");
+		Audio::LoadFile("SE_InFever", "SE/GamePlay_InFever.wav");
+		Audio::LoadFile("SE_FeverCut", "SE/GamePlay_FeverCut.wav");
+
 		break;
 	case 5:
 		//FBXアニメーションの登録
