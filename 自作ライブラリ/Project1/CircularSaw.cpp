@@ -44,6 +44,7 @@ void CircularSaw::Initialize()
 		speed *= 5;
 
 		feverCutEffects.push_back(new FeverCutEffect(nowCuttingLocus->GetLine(0)));
+		Audio::PlaySE("SE_FeverCut", Audio::volume_se);
 	}
 	length = 0;
 	currentLineNum = 0;
@@ -77,7 +78,7 @@ void CircularSaw::Update()
 	{
 		currentLineNum++;
 		length = 0;
-			
+
 		if (currentLineNum >= nowCuttingLocus->GetMaxNumLine())
 		{
 			Dead();
@@ -96,6 +97,7 @@ void CircularSaw::Update()
 		if (parentObj->IsInFever())
 		{
 			feverCutEffects.push_back(new FeverCutEffect(nowCuttingLocus->GetLine(currentLineNum)));
+			Audio::PlaySE("SE_FeverCut", Audio::volume_se);
 		}
 	}
 
