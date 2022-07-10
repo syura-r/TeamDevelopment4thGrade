@@ -104,7 +104,6 @@ void Play::Initialize()
 	objectManager->Add(testEnemy2);
 
 	camera->Initialize();
-	camera->SetDistance(100);
 	stadium->Initialize();
 
 	screenCamera->SetTargetObj(player);

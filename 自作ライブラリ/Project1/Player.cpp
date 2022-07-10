@@ -97,8 +97,6 @@ void Player::DrawReady()
 #endif
 	panelCountSprite3D->Draw();
 
-	panelCountSprite3D->Draw();
-
 	if (Object3D::GetDrawShadow())
 	{
 		pipelineName = "FBXShadowMap";
