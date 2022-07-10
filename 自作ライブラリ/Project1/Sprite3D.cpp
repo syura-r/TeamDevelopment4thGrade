@@ -278,7 +278,7 @@ void Sprite3D::DrawSpriteCutEffect(const std::string& name, const Vector3& posit
 		constMap->viewprojection = matViewProjection;
 		constMap->cameraPos = cameraPos;
 		constMap->world = spriteMatWorld;
-		constMap->color = Vector4(1,1,1,0.5f);
+		constMap->color = Vector4(1,1,1,1);
 		constBuff->Unmap(0, nullptr);
 	}
 	else
@@ -289,7 +289,7 @@ void Sprite3D::DrawSpriteCutEffect(const std::string& name, const Vector3& posit
 		constMap2->viewprojection = matViewProjection;
 		constMap2->cameraPos = cameraPos;
 		constMap2->world = spriteMatWorld;
-		constMap2->color = Vector4(1, 1, 1, 0.5f);
+		constMap2->color = Vector4(1, 1, 1, 1);
 		constBuff2->Unmap(0, nullptr);
 	}
 
