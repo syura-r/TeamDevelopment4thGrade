@@ -148,7 +148,7 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("box", "box.obj", false);
 		OBJLoader::LoadModelFile("sphere", "sphere.obj", true);
 		OBJLoader::LoadModelFile("obBox", "bottomOriginBox.obj", false);
-
+		OBJLoader::LoadModelFile("plate", "plate.obj", false);		
 		break;
 	case 3:
 		//ObjÉÇÉfÉãÇÃì«Ç›çûÇ›
@@ -230,14 +230,14 @@ void Game::CreatePipeline()
 		PipelineState::CreatePipeline("NoShade", NoShade);
 		PipelineState::CreatePipeline("UVScrolling", AreaEffect);
 
-		
+
 		break;
 	case 4:
 		PipelineState::CreatePipeline("CollisionBox", ViewCollisionBox);
 		PipelineState::CreatePipeline("CollisionSphere", ViewCollisionSphere);
 		break;
 	case 5:
-		//PipelineState::CreatePipeline("PolygonBreak", PolygonBreak);
+		PipelineState::CreatePipeline("PieChart", PIECHART);
 		break;
 	case 6:
 		//PipelineState::CreatePipeline("FBXShadowMap", FBXShadowMap);
@@ -249,7 +249,7 @@ void Game::CreatePipeline()
 		//PipelineState::CreatePipeline("DrawShadowOBJ", DrawShadowOBJ);
 		break;
 	case 9:
-		break; 
+		break;
 	case 10:
 		PipelineState::CreatePipeline("NoAlphaToCoverageSprite", NoAlphaToCoverageSprite, ADD);
 		break;
@@ -258,8 +258,8 @@ void Game::CreatePipeline()
 		PipelineState::CreatePipeline("Migrate", Migrate);
 
 		break;
-	//case 12:
-	//	break;
+		//case 12:
+		//	break;
 	default:
 		createPipelineFinish = true;
 

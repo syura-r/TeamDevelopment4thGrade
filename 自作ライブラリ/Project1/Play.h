@@ -6,11 +6,9 @@
 #include "DebugCamera.h"
 #include "InGameCamera.h"
 #include"Grass.h"
-#include "Menu.h"
 #include "NumberSprite.h"
 #include "ObjectManager.h"
 #include "Player.h"
-#include "Result.h"
 #include "Sprite.h"
 
 #include "ActorManager.h"
@@ -78,6 +76,7 @@ private:
 	Pause* pause = nullptr;
 	TimeLimit* timeLimit = nullptr;
 	int gameEndCount;
+
 	FeverUI* feverUI = nullptr;
 	LevelGauge* levelGauge = nullptr;
 	LockonMarker* lockonMarker = nullptr;

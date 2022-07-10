@@ -224,7 +224,6 @@
     <ClCompile Include="MapBox.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Matrix4.cpp" />
-    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshCollider.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
@@ -242,6 +241,7 @@
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="PieChart.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="DirectXLib.cpp" />
     <ClCompile Include="Ending.cpp" />
@@ -252,7 +252,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="Result.cpp" />
     <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="FeverUI.cpp" />
     <ClCompile Include="StandardEnemy.cpp" />
@@ -348,7 +347,6 @@
     <ClInclude Include="MapBox.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Matrix4.h" />
-    <ClInclude Include="Menu.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshCollider.h" />
     <ClInclude Include="Model.h" />
@@ -370,6 +368,7 @@
     <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="ParticleParameter.h" />
     <ClInclude Include="Pause.h" />
+    <ClInclude Include="PieChart.h" />
     <ClInclude Include="PipelineState.h" />
     <ClInclude Include="DirectXLib.h" />
     <ClInclude Include="Ending.h" />
@@ -383,7 +382,6 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="RaycastHit.h" />
-    <ClInclude Include="Result.h" />
     <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="FeverUI.h" />
     <ClInclude Include="StandardEnemy.h" />
@@ -800,6 +798,16 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VSmain</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VSmain</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\PieChartPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PSmain</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PSmain</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\Shader\Sky2PS.hlsl">

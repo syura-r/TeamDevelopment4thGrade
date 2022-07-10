@@ -567,6 +567,22 @@ void PipelineState::CreatePipeline(const std::string& keyName, const ShaderType 
 
 		break;
 	}
+	case PIECHART:
+	{
+		CompileShader("NoShadeVS", vsBlob, errorBlob, VS);
+		CompileShader("PieChartPS", psBlob, errorBlob, PS);
+
+		SetVSLayout("POSITION", inputLayout, DXGI_FORMAT_R32G32B32_FLOAT);
+		SetVSLayout("NORMAL", inputLayout, DXGI_FORMAT_R32G32B32_FLOAT);
+		SetVSLayout("TEXCOORD", inputLayout, DXGI_FORMAT_R32G32_FLOAT);
+
+		SetDescriptorConstantBuffer(rootparams, 3, 1, descRangeSRVs);
+
+		rootSignatureDesc.Init_1_0(rootparams.size(), rootparams.data(), 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+		break;
+	}
+
 	case DrawShadowOBJ:
 	{
 		CompileShader("DrawShadowOBJVS", vsBlob, errorBlob, VS);

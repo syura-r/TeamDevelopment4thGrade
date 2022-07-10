@@ -9,7 +9,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
 	float4 texcolor = tex0.Sample(smp, input.uv);
 	
 	if(texcolor.w == 0)
-        discard;
+        clip(-1);
 	
 	//シェーディングによる色
 	//float4 shadecolor;
