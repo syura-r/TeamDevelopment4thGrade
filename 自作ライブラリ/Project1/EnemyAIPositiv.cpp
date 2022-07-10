@@ -207,6 +207,31 @@ Vector3 EnemyAIPositiv::ApproachCuttingActor(StandardEnemy* arg_enemy, const Vec
 	return arg_velocity;
 }
 
+Vector3 EnemyAIPositiv::ApproachActorInFever(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
+{
+	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
+	// 他のActorがいなかったらリターン
+	if (actors.size() <= 0)	return arg_velocity;
+	// Actorへのベクトル
+	Vector3 vector = { 0,0,0 };
+	// 一番近いActorへのベクトル
+	Vector3 nearestVector = actors[0]->GetPosition() - arg_enemy->GetPosition();
+	// 全Actorを走査
+	for (auto actor : actors)
+	{
+		vector = actor->GetPosition() - arg_enemy->GetPosition();
+
+		// より自分に近いActorが見つかったら
+		if (vector.Length() < nearestVector.Length())
+		{
+			// 一番近いActorへのベクトルの更新
+			nearestVector = vector;
+		}
+	}
+
+	return nearestVector;
+}
+
 bool EnemyAIPositiv::StartCutOnSafeTiming(StandardEnemy* arg_enemy)
 {
 	return false;
