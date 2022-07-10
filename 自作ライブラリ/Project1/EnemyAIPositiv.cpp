@@ -77,7 +77,7 @@ Vector3 EnemyAIPositiv::KeepAwayFromFieldBorder(StandardEnemy* arg_enemy, const 
 		Vector2 point = { arg_enemy->GetPosition().x,arg_enemy->GetPosition().y };
 		Vector2 start = edgs[i];
 		Vector2 end;
-		if (i == edgs.size())
+		if (i == edgs.size() - 1)
 		{
 			end = edgs[0];
 		}
@@ -158,7 +158,7 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 		// ‹——£‚ð‹L˜^
 		itemDistance = item->GetPosition() - arg_enemy->GetPosition();
 
-		ItemRange* itemRange;
+		ItemRange* itemRange = new ItemRange();
 		itemRange->item = item;
 		itemRange->range = itemDistance.Length();
 

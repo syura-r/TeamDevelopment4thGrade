@@ -283,7 +283,7 @@ void FieldPiece::ChangeColorForRidden()
 
 	if (!isCutable)
 	{
-		color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		//color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		return;
 	}
 
@@ -300,7 +300,7 @@ void FieldPiece::ChangeColorForRidden()
 	CuttingInfo* info = aManager->GetFields()[0]->GetCuttingInfo((Object*)aManager->GetPlayer());
 	if (info->ridingPiece == this)
 	{
-		color = { 0.8f, 0.1f, 0.1f, 1.0f };
+		//color = { 0.8f, 0.1f, 0.1f, 1.0f };
 		return;
 	}
 
@@ -311,7 +311,7 @@ void FieldPiece::ChangeColorForRidden()
 		info = aManager->GetFields()[0]->GetCuttingInfo((Object*)e);
 		if (info->ridingPiece == this)
 		{
-			color = { 0.8f, 0.1f, 0.1f, 1.0f };
+			//color = { 0.8f, 0.1f, 0.1f, 1.0f };
 			return;
 		}
 	}

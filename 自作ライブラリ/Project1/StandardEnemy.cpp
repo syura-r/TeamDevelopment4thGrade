@@ -25,7 +25,7 @@
 #include "ActionStateMove.h"
 #include "EnemyAIPositiv.h"
 
-const float INTERVAL_ACTIONTIMER = 180.0f;
+const float INTERVAL_ACTIONTIMER = 60.0f;
 
 StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel, const std::string& modelName)
 	:BaseGameActor(arg_pos)
@@ -327,7 +327,11 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 	if (actionTimer->IsTime())
 	{
 		//---•ûŒüŒˆ’èŒn---
-		Vector2 fixVel = { enemyAI->KeepAwayFromGottenPieces(this,velocity,position).x,enemyAI->KeepAwayFromGottenPieces(this,velocity,position).z };
+		Vector3 vel = enemyAI->ApproachEnergyItem(this, velocity);
+		vel = enemyAI->KeepAwayFromFieldBorder(this, vel);
+		vel = enemyAI->KeepAwayFromGottenPieces(this, vel, virtualityPlanePosition);
+
+		Vector2 fixVel = LocusUtility::Dim3ToDim2XZ(vel);
 		moveDir = fixVel;
 
 		// Œü‚«‚ðŽw’è‚µ‚ÄˆÚ“®

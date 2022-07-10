@@ -43,6 +43,12 @@ private:
 	{
 		EnergyItem* item;
 		float range;
+
+		ItemRange(EnergyItem* arg_item = nullptr, float arg_range = 1.0f)
+			:item(arg_item),
+			 range(arg_range)
+		{
+		}
 	};
 
 };

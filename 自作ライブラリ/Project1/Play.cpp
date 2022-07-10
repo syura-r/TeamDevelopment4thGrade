@@ -100,7 +100,7 @@ void Play::Initialize()
 	StandardEnemy* testEnemy = new StandardEnemy(Vector3(-10, -5, -10), EnemyAILabel::POSITIVE, "GamePlay_Enemy");
 	objectManager->Add(testEnemy);	
 
-	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10), EnemyAILabel::CAREFUL, "GamePlay_Enemy2");
+	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10), EnemyAILabel::POSITIVE, "GamePlay_Enemy2");
 	objectManager->Add(testEnemy2);
 
 	camera->Initialize();
