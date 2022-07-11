@@ -18,8 +18,9 @@ void LockonMarker::Initialize()
 
 void LockonMarker::Draw()
 {
+	float scale = 0.5f;
 	if (isActive)
-		sprite->DrawSprite("GamePlay_UI_Maker", position);
+		sprite->DrawSprite("GamePlay_UI_Maker", position, 0.0f, { scale,scale });
 }
 
 void LockonMarker::SetParentPosition(const Vector3& arg_parentPosition)
