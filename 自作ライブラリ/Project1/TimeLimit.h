@@ -45,14 +45,14 @@ private:
 	};
 	int timeLeft = 0;
 	//åxçêÇèoÇ∑éûä‘
-	static const int alarmTime_count = 5;
+	static const int alarmTime_count = 3;
 	const AlarmTime alarmTime[alarmTime_count] =
 	{
 		{30, "GamePlay_UI_TimeLimit_30"},
 		{60, "GamePlay_UI_TimeLimit_60"},
 		{90, "GamePlay_UI_TimeLimit_90"},
-		{120, "GamePlay_UI_TimeLimit_120"},
-		{150, "GamePlay_UI_TimeLimit_150"}
+		//{120, "GamePlay_UI_TimeLimit_120"},
+		//{150, "GamePlay_UI_TimeLimit_150"}
 	};
 	bool isMoveStart = false;
 	float easeMoveCount = 0.0f;

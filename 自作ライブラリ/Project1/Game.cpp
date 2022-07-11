@@ -115,8 +115,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_TimeLimit_30", "TimeLimit/GamePlay_UI_TimeLimit_30.png");
 		Texture::LoadTexture("GamePlay_UI_TimeLimit_60", "TimeLimit/GamePlay_UI_TimeLimit_60.png");
 		Texture::LoadTexture("GamePlay_UI_TimeLimit_90", "TimeLimit/GamePlay_UI_TimeLimit_90.png");
-		Texture::LoadTexture("GamePlay_UI_TimeLimit_120", "TimeLimit/GamePlay_UI_TimeLimit_120.png");
-		Texture::LoadTexture("GamePlay_UI_TimeLimit_150", "TimeLimit/GamePlay_UI_TimeLimit_150.png");
+		//Texture::LoadTexture("GamePlay_UI_TimeLimit_120", "TimeLimit/GamePlay_UI_TimeLimit_120.png");
+		//Texture::LoadTexture("GamePlay_UI_TimeLimit_150", "TimeLimit/GamePlay_UI_TimeLimit_150.png");
 		Texture::LoadTexture("sound", "Pause/sound.png");
 		Texture::LoadTexture("BGM", "Pause/BGM.png");
 		Texture::LoadTexture("SE", "Pause/SE.png");
