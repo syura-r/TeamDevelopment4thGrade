@@ -308,7 +308,7 @@ void StandardEnemy::CompleteCut()
 
 	if (field->IsNewFeverPlayer())
 	{
-		InFever();
+		InFever(5 * 60);
 	}
 
 	CuttingInfo* info = field->GetCuttingInfo(this);

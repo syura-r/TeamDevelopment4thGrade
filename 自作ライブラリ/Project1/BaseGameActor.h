@@ -48,7 +48,7 @@ public:
 	//ActionState変更
 	void ChangeActionState(IActionState* arg_current, IActionState* arg_next);
 	//フィーバーにする
-	void InFever();
+	void InFever(const int arg_feverFrame);
 
 	//---Move---
 	//移動処理

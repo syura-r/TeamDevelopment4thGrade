@@ -72,7 +72,7 @@ void Player::Update()
 
 	if (Input::TriggerKey(DIK_RETURN))
 	{
-		InFever();
+		InFever(5 * 60);
 	}
 #endif // _DEBUG
 
@@ -135,7 +135,7 @@ void Player::CompleteCut()
 
 	if (field->IsNewFeverPlayer())
 	{
-		InFever();
+		InFever(5 * 60);
 	}
 
 	CuttingInfo* info = field->GetCuttingInfo(this);

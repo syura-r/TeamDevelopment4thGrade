@@ -520,10 +520,10 @@ void BaseGameActor::ChangeActionState(IActionState* arg_current, IActionState* a
 	arg_next->Initialize(this);
 }
 
-void BaseGameActor::InFever()
+void BaseGameActor::InFever(const int arg_feverFrame)
 {
 	isInFever = true;
-	feverTimer->Reset();
+	feverTimer->SetLimit(arg_feverFrame, true);
 	Audio::PlaySE("SE_InFever", Audio::volume_se);
 }
 
@@ -814,7 +814,7 @@ void BaseGameActor::CompleteCut()
 
 	if (field->IsNewFeverPlayer())
 	{
-		InFever();
+		InFever(5 * 60);
 	}
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
