@@ -302,6 +302,7 @@ void StandardEnemy::CompleteCut()
 			targetActor->ForcedWeight(num, this);
 		}
 	}
+	totalCutCount += num;
 
 	cutPower = 0;
 

@@ -512,9 +512,9 @@ void Field::FallingBlock()
 
 void Field::SetBonusPanel()
 {
-	const int randSetNum = std::rand() % 10 / 3 + 7;
+	const int randSetNum = 20;
 
-	if (bonusPanelCount > 0)
+	/*if (bonusPanelCount > 0)
 	{
 		for (auto vec : pieces)
 		{
@@ -523,9 +523,9 @@ void Field::SetBonusPanel()
 				p->ChangeIsBonus(false);
 			}
 		}
-	}
+	}*/
 
-	for (int i = 0; i < randSetNum; i++)
+	for (int i = bonusPanelCount; i < randSetNum; i++)
 	{
 		int yRand, xRand;
 		do
@@ -763,10 +763,7 @@ int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount, BaseGameActor
 	//ボーナス獲得数
 	arg_bonusCount += bonusCount;
 
-	if (bonusPanelCount <= 0)
-	{
-		SetBonusPanel();
-	}
+	SetBonusPanel();
 
 	previousGottenCount = gottenCount;
 	gottenCount += returnVal;

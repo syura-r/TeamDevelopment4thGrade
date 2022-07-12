@@ -43,6 +43,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 isEndGame(false),
 	 actionState(ActionStateMove::GetInstance()),
 	 killCount(0),
+	 totalCutCount(0),
 	 isInFever(false),
 	 feverTimer(new Timer(5 * 60)),
 	 speed(0.18f),
@@ -112,6 +113,7 @@ void BaseGameActor::Initialize()
 	dropPointGetUI->Initialize();
 	weightInfluenceMap.clear();
 	chart->SetColorCount(0, 0);
+	totalCutCount = 0;
 	isInFever = false;
 	feverTimer->Reset();
 	speed = WALK_SPEED;
@@ -806,6 +808,7 @@ void BaseGameActor::CompleteCut()
 			targetActor->ForcedWeight(num, this);
 		}
 	}
+	totalCutCount += num;
 
 	cutPower = 0;
 
@@ -933,6 +936,12 @@ void BaseGameActor::EndFall()
 	if (mostForcedActor)
 	{
 		mostForcedActor->AddKillCount(1);
+	}
+
+	totalCutCount -= 10;
+	if (totalCutCount < 0)
+	{
+		totalCutCount = 0;
 	}
 }
 

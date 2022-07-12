@@ -159,6 +159,9 @@ public:
 	inline void SubtructKillCount(const int arg_num) {
 		killCount -= arg_num;
 	}
+	inline int GetTotalCutCount()const {
+		return totalCutCount;
+	}
 	inline bool IsInFever()const {
 		return isInFever;
 	}
@@ -240,6 +243,8 @@ protected:
 	std::unordered_map<BaseGameActor*, int> weightInfluenceMap;
 	PieChart* chart;//-//
 	DirectX::XMFLOAT4 actorColor;//-//
+	//ゲーム開始から切った数
+	int totalCutCount;
 	//フィーバー状態
 	bool isInFever;
 	Timer* feverTimer;
