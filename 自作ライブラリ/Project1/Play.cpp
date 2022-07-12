@@ -55,7 +55,7 @@ Play::Play()
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
-	timeLimit = new TimeLimit(5 * 60);//§ŒÀŠÔ‚Ìİ’è‚Í‚±‚±
+	timeLimit = new TimeLimit(180 * 60);//§ŒÀŠÔ‚Ìİ’è‚Í‚±‚±
 	feverUI = new FeverUI();
 	levelGauge = new LevelGauge();
 	lockonMarker = new LockonMarker();

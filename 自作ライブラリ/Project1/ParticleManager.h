@@ -45,6 +45,8 @@ public:
 	void UpdateFeverCutEffect();
 	void DrawFeverCutEffect();
 
+	void EffectSort();
+
 private:
 	ParticleManager() = default;
 	ParticleManager(const ParticleManager&) = delete;

@@ -26,10 +26,10 @@ void FeverCutEffect::Upate()
     angle = line->GetAngle();
     fieldRotation = ActorManager::GetInstance()->GetFields()[0]->GetAngleTilt();
 
-    const float SCALE_Y_MAX = 0.2f;
+    const float SCALE_Y_MAX = 0.5f;
     if (scale.y <= SCALE_Y_MAX)
     {
-        scale.y += 0.005f;
+        scale.y += 0.025f;
     }
 }
 

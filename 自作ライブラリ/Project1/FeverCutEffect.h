@@ -10,6 +10,7 @@ public:
     void Initialize();
     void Upate();
     void Draw();
+    const Vector3& GetEffect() { return position; }
 
 private:
     Sprite3D* effectSprite;
