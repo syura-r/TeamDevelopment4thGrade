@@ -69,6 +69,8 @@ public:
 	static void AllPauseSE();
 	static void AllResumeSE();
 
+	static void AllStopSE();
+
 	static float volume_bgm;
 	static float volume_se;
 
