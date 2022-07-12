@@ -2,6 +2,7 @@
 #include "Matrix4.h"
 #include "ModelParticle.h"
 #include<random>
+#include "FeverCutEffect.h"
 
 ParticleManager* ParticleEmitter::particleManager = nullptr;
 ObjectManager* ParticleEmitter::p_objectManager = nullptr;
@@ -252,6 +253,11 @@ void ParticleEmitter::FeverEffect(const Vector3& arg_position)
 
 
     particleManager->Add(particle, "FeverPlayerEffect");
+}
+
+void ParticleEmitter::FeverCut(Line* arg_line)
+{
+    particleManager->AddFeverCutEffect(new FeverCutEffect(arg_line));
 }
 
 float ParticleEmitter::GetRandom(float arg_min, float arg_max)

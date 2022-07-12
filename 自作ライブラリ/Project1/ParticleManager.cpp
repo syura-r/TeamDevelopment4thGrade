@@ -4,6 +4,7 @@
 #include"DirectXLib.h"
 #include"PipelineState.h"
 #include"Texture.h"
+#include "FeverCutEffect.h"
 
 ParticleManager * ParticleManager::GetInstance()
 {
@@ -205,4 +206,35 @@ void ParticleManager::CreateModel()
 
 void ParticleManager::End()
 {
+	DeleteFeverCutEffect();
+}
+
+void ParticleManager::AddFeverCutEffect(FeverCutEffect* arg_effect)
+{
+	feverCutEffects.push_back(arg_effect);
+}
+
+void ParticleManager::DeleteFeverCutEffect()
+{
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		delete feverCutEffects[i];
+	}
+	feverCutEffects.clear();
+}
+
+void ParticleManager::UpdateFeverCutEffect()
+{
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		feverCutEffects[i]->Upate();
+	}
+}
+
+void ParticleManager::DrawFeverCutEffect()
+{
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		feverCutEffects[i]->Draw();
+	}
 }
