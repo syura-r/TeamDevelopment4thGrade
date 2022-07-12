@@ -5,8 +5,8 @@
 #include "Player.h"
 #include "StandardEnemy.h"
 #include "PanelCutLocus.h"
-
 #include "ParticleEmitter.h"
+#include "ParticleManager.h"
 #include "Audio.h"
 #include "ObjectRegistType.h"
 #include "IActionState.h"
@@ -29,11 +29,7 @@ CircularSaw::~CircularSaw()
 	Audio::StopSE("SE_SawCutNow");
 	Audio::PlaySE("SE_GetSaw", 1.0f * Audio::volume_se);
 
-	for (int i = 0; i < feverCutEffects.size(); i++)
-	{
-		delete feverCutEffects[i];
-	}
-	feverCutEffects.clear();
+	ParticleManager::GetInstance()->DeleteFeverCutEffect();
 }
 
 void CircularSaw::Initialize()
@@ -43,7 +39,7 @@ void CircularSaw::Initialize()
 	{
 		speed *= 5;
 
-		feverCutEffects.push_back(new FeverCutEffect(nowCuttingLocus->GetLine(0)));
+		ParticleEmitter::FeverCut(nowCuttingLocus->GetLine(0));
 		Audio::PlaySE("SE_FeverCut", Audio::volume_se);
 	}
 	length = 0;
@@ -85,18 +81,14 @@ void CircularSaw::Update()
 
 			parentObj->CompleteCut();
 
-			for (int i = 0; i < feverCutEffects.size(); i++)
-			{
-				delete feverCutEffects[i];
-			}
-			feverCutEffects.clear();
+			ParticleManager::GetInstance()->DeleteFeverCutEffect();
 			return;
 		}
 
 		virtualityPlanePosition = nowCuttingLocus->GetLine(currentLineNum)->GetVirtualityPlaneStartPos();
 		if (parentObj->IsInFever())
 		{
-			feverCutEffects.push_back(new FeverCutEffect(nowCuttingLocus->GetLine(currentLineNum)));
+			ParticleEmitter::FeverCut(nowCuttingLocus->GetLine(currentLineNum));
 			Audio::PlaySE("SE_FeverCut", Audio::volume_se);
 		}
 	}
@@ -105,10 +97,8 @@ void CircularSaw::Update()
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 
 
-	for (int i = 0; i < feverCutEffects.size(); i++)
-	{
-		feverCutEffects[i]->Upate();
-	}
+	ParticleManager::GetInstance()->UpdateFeverCutEffect();
+
 
 	Object::Update();
 
@@ -118,10 +108,6 @@ void CircularSaw::Update()
 
 void CircularSaw::DrawReady()
 {
-	for (int i = 0; i < feverCutEffects.size(); i++)
-	{
-		feverCutEffects[i]->Draw();
-	}
 }
 
 void CircularSaw::Draw()

@@ -4,6 +4,7 @@
 #include"Object3D.h"
 #include"Audio.h"
 #include"ParticleEmitter.h"
+#include"ParticleManager.h"
 #include "DrawMode.h"
 #include"imgui.h"
 #include"TouchAbleObject.h"
@@ -172,6 +173,8 @@ void Play::Update()
 		if (gameEndCount >= 60)
 		{
 			Audio::StopBGM("BGM_Play");
+			Audio::AllStopSE();
+
 			KillCountToEnding();
 			ShutDown();
 		}
@@ -273,6 +276,7 @@ void Play::PreDraw()
 
 		objectManager->PreDraw();
 		stadium->Draw();
+		ParticleManager::GetInstance()->DrawFeverCutEffect();
 }
 
 void Play::PostDraw()

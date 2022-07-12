@@ -441,9 +441,6 @@
     <ClCompile Include="InGameCamera.cpp">
       <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="FeverCutEffect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="EnemyAICareful.cpp">
       <Filter>ソース ファイル\GameObject\EnemyAI</Filter>
     </ClCompile>
@@ -457,10 +454,13 @@
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
     <ClCompile Include="LockonMarker.cpp">
-	  <Filter>ソース ファイル\GameText</Filter>
+      <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
     <ClCompile Include="PieChart.cpp">
       <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="FeverCutEffect.cpp">
+      <Filter>ソース ファイル\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -818,9 +818,6 @@
     <ClInclude Include="InGameCamera.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="FeverCutEffect.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="EnemyAICareful.h">
       <Filter>ヘッダー ファイル\GameObject\EnemyAI</Filter>
     </ClInclude>
@@ -838,6 +835,9 @@
     </ClInclude>
     <ClInclude Include="PieChart.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="FeverCutEffect.h">
+      <Filter>ヘッダー ファイル\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

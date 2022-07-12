@@ -296,3 +296,13 @@ void Audio::AllResumeSE()
 		itr->second->Start();
 	}
 }
+
+void Audio::AllStopSE()
+{
+	for (auto itr = seSourceVoices.begin(); itr != seSourceVoices.end(); ++itr)
+	{
+		itr->second->Stop();
+		itr->second->DestroyVoice();
+	}
+	seSourceVoices.clear();
+}

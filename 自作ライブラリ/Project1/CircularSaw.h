@@ -2,7 +2,6 @@
 #include "Object.h"
 #include "BaseLocus.h"
 #include "LocusDef.h"
-#include "FeverCutEffect.h"
 
 class BaseGameActor;
 
@@ -43,7 +42,5 @@ private:
 	Vector3 virtualityPlanePosition;
 
 	BaseGameActor* parentObj;
-
-	std::vector< FeverCutEffect*> feverCutEffects;
 };
 

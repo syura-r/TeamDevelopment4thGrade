@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "ComputeShade.h"
 
+class FeverCutEffect;
 class ParticleManager
 {
 private:
@@ -39,6 +40,13 @@ public:
 	void CreateModel();
 	void End();
 
+	void AddFeverCutEffect(FeverCutEffect* arg_effect);
+	void DeleteFeverCutEffect();
+	void UpdateFeverCutEffect();
+	void DrawFeverCutEffect();
+
+	void EffectSort();
+
 private:
 	ParticleManager() = default;
 	ParticleManager(const ParticleManager&) = delete;
@@ -64,4 +72,5 @@ private:
 	std::unique_ptr<ComputeShade> computeShade;
 	std::vector<OutputData> verts;
 	std::vector<ParticleParameter> params;
+	std::vector<FeverCutEffect*> feverCutEffects;
 };

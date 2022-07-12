@@ -3,6 +3,7 @@
 #include"Camera.h"
 #include "ObjectManager.h"
 
+class Line;
 class ParticleEmitter
 {
 private:
@@ -25,6 +26,9 @@ public:
 
     //フィーバーエフェクト
     static void FeverEffect(const Vector3& arg_position);
+
+    //フィーバー時切り抜きエフェクト
+    static void FeverCut(Line* arg_line);
 
 private:
     static float GetRandom(float arg_min, float arg_max);

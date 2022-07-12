@@ -4,6 +4,7 @@
 #include"DirectXLib.h"
 #include"PipelineState.h"
 #include"Texture.h"
+#include "FeverCutEffect.h"
 
 ParticleManager * ParticleManager::GetInstance()
 {
@@ -205,4 +206,55 @@ void ParticleManager::CreateModel()
 
 void ParticleManager::End()
 {
+	DeleteFeverCutEffect();
+}
+
+void ParticleManager::AddFeverCutEffect(FeverCutEffect* arg_effect)
+{
+	feverCutEffects.push_back(arg_effect);
+}
+
+void ParticleManager::DeleteFeverCutEffect()
+{
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		delete feverCutEffects[i];
+	}
+	feverCutEffects.clear();
+}
+
+void ParticleManager::UpdateFeverCutEffect()
+{
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		feverCutEffects[i]->Upate();
+	}
+}
+
+void ParticleManager::DrawFeverCutEffect()
+{
+	EffectSort();
+	for (int i = 0; i < feverCutEffects.size(); i++)
+	{
+		feverCutEffects[i]->Draw();
+	}
+}
+
+void ParticleManager::EffectSort()
+{
+	Vector3 eyePos = camera->GetEye();
+	if (feverCutEffects.empty())return;
+	for (int i = 0; i < feverCutEffects.size() - 1; i++)
+	{
+		Vector3 pos1 = feverCutEffects[i]->GetEffect();
+		float distance1 = Vector3::Distance(eyePos, pos1);
+
+		Vector3 pos2 = feverCutEffects[i + 1]->GetEffect();
+		float distance2 = Vector3::Distance(eyePos, pos2);
+
+		if (distance1 < distance2)
+		{
+			std::swap(feverCutEffects[i], feverCutEffects[i + 1]);
+		}
+	}
 }
