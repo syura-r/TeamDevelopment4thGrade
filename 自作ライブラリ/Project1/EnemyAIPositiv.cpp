@@ -18,18 +18,21 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 	auto gottenPanels = field->GetGottenPieces();
 
 	// １つも切り抜かれていなかったらreturn
-	if (gottenPanels.size() <= 0) return arg_velocity;
+	if (gottenPanels.size() <= 0)
+	{
+		return arg_velocity;
+	}
 	// パネルとの距離
 	Vector3 distance = { 0,0,0 };
 	// 一番近いパネルとの距離
-	Vector3 nearestDistance = gottenPanels[0]->GetPosition() - arg_currentPos;
+	Vector3 nearestDistance = gottenPanels[0]->GetVirtualityPlanePosition() - arg_currentPos;
 	// 一番近いパネルのポインタ（再計算用）
 	FieldPiece* nearestPiece = gottenPanels[0];
 
 	// 切り抜かれたパネルの位置を走査
 	for (auto panel : gottenPanels)
 	{
-		distance = panel->GetPosition() - arg_currentPos;
+		distance = panel->GetVirtualityPlanePosition() - arg_currentPos;
 
 		// より自分に近い穴が見つかったら
 		if (distance.Length() < nearestDistance.Length())
@@ -40,25 +43,35 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 		}
 	}
 
-	float a = nearestDistance.Length();
+	float a = Vector2::Length(LocusUtility::Dim3ToDim2XZ(nearestDistance));
 	// 最も近いパネルが規定値よりも遠かったらreturn
-	if (nearestDistance.Length() >= specifiedValueDistance) return arg_velocity;
+	if (a >= specifiedValueDistance)
+	{
+		return arg_velocity;
+	}
 
 	// 正規化した一番近い穴へのベクトルと現在の進行方向ベクトルの内積
-	Vector3 VecA = Vector3::Normalize(arg_velocity);
-	Vector3 VecB = Vector3::Normalize(nearestDistance);
-	float dot = Vector3::Dot(VecA, VecB);
+	Vector2 VecA = Vector2::Normalize(LocusUtility::Dim3ToDim2XZ(arg_velocity));
+	Vector2 VecB = Vector2::Normalize(LocusUtility::Dim3ToDim2XZ(nearestDistance));
+	float dot = Vector2::Dot(VecA, VecB);
 
 	// 内積の絶対値が規定値以下だったらreturn
-	if (abs(dot) <= specifiedValueDot)return arg_velocity;
-
+	if (dot <= specifiedValueDot)
+	{
+		return arg_velocity;
+	}
+	
 	// 進行方向の調整（現在の進行方向とその逆方向の外積から直角なベクトルを出す）
-	Vector3 reverseVec = { -arg_velocity.x,-arg_velocity.y,-arg_velocity.z };
-	reverseVec = Vector3::Normalize(reverseVec);
-	Vector3 fixVel = reverseVec.Cross(Vector3::Normalize(arg_velocity));
-
-	// 算出した修正ベクトルで一度確認する
-	KeepAwayFromGottenPieces(arg_enemy, fixVel, arg_currentPos, nearestPiece);
+	float cross = Vector2::Cross(VecB, VecA);
+	Vector3 fixVel = Vector3();
+	if (cross > 0)
+	{
+		fixVel = Vector3(-arg_velocity.z, 0, arg_velocity.x);
+	}
+	else
+	{
+		fixVel = Vector3(arg_velocity.z, 0, -arg_velocity.x);
+	}
 
 	// 進行方向を調整したベクトルを返す
 	return fixVel;

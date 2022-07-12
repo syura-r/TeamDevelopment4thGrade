@@ -154,8 +154,11 @@ bool FieldPiece::IsRidden(const Vector3& arg_pos, const Vector3& arg_prePos, con
 void FieldPiece::CutOneself(Object* arg_obj)
 {
 	isActive = false;
-	cutterPos = arg_obj->GetPosition();
-	ParticleEmitter::PieceGetEffect(position, scale, rotation, color, arg_obj);
+	if (arg_obj)
+	{
+		cutterPos = arg_obj->GetPosition();
+		ParticleEmitter::PieceGetEffect(position, scale, rotation, color, arg_obj);
+	}
 }
 
 float FieldPiece::GetSize()

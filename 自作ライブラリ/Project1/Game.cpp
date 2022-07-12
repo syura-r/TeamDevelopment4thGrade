@@ -141,6 +141,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Leveledge", "LevelGauge/GamePlay_UI_Leveledge.png");
 		Texture::LoadTexture("GamePlay_UI_Levelgauge", "LevelGauge/GamePlay_UI_Levelgauge.png");
 		Texture::LoadTexture("GamePlay_UI_Maker", "GamePlay_UI_Maker.png");
+		Texture::LoadTexture("GamePlay_CircleCover", "GamePlay_CircleCover.png");
 
 		break; 
 	case 2:

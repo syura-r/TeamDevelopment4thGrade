@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "Sprite3D.h"
 class PieChart :
     public Object
 {
@@ -35,5 +36,7 @@ private:
 	//ÉQÅ[ÉWÇÃêF
 	XMFLOAT4 color1;
 	XMFLOAT4 color2;
+
+	Sprite3D* cover;
 };
 

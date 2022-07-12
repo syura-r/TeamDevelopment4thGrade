@@ -20,6 +20,7 @@ PieChart::PieChart(const XMFLOAT4& arg_color1, const XMFLOAT4& arg_color2):color
 		IID_PPV_ARGS(&constBuff));
 	assert(SUCCEEDED(result));
 
+	cover = new Sprite3D();
 }
 
 void PieChart::SetColorCount(const int arg_color1Count, const int arg_color2Count)
@@ -53,6 +54,12 @@ void PieChart::DrawReady()
 	//ImGui::SliderInt("red", &color1Count, 0, 256);
 	//ImGui::End();
 	//ChangeColor();
+
+	if (total > 0)
+	{
+		//cover->DrawSprite("GamePlay_CircleCover", position, 0.0f, { scale.x / 16, scale.x / 16 });
+	}
+
 	pipelineName = "PieChart";
 }
 

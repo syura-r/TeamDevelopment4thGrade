@@ -30,7 +30,7 @@ private:
 
 private:
 	// ‹——£‚Ì‹K’è’l
-	const float specifiedValueDistance = FieldPiece::GetSidewaysLength() * 8;
+	const float specifiedValueDistance = FieldPiece::GetSidewaysLength() * 3;
 	// “àÏ‚Ì‹K’è’l
 	float specifiedValueDot = 0.5f;
 	// ŒX‚«‚Ì‹K’è’l

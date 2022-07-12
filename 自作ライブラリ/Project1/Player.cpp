@@ -67,12 +67,14 @@ void Player::Initialize()
 
 void Player::Update()
 {
+#ifdef _DEBUG
 	KillRandEnem();
 
 	if (Input::TriggerKey(DIK_RETURN))
 	{
 		InFever();
 	}
+#endif // _DEBUG
 
 	BaseGameActor::Update();
 }
