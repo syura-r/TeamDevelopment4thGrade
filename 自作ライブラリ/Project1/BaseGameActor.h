@@ -57,6 +57,7 @@ public:
 	virtual void EndMove();
 	virtual bool IsChangeMoveToTackle();
 	virtual bool IsChangeMoveToCut();
+	virtual bool IsExistPiecesWithinSawRange();
 
 	//---Tackle---
 	//ƒ^ƒbƒNƒ‹‚Ìˆ—

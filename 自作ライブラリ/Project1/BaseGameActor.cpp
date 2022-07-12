@@ -1375,3 +1375,26 @@ bool BaseGameActor::IsChangeMoveToCut()
 	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
 	return Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece;
 }
+
+bool BaseGameActor::IsExistPiecesWithinSawRange()
+{
+	if (cutPower <= 0)
+	{
+		return false;
+	}
+
+	panelCutLocus->RecordCuttedPanelPos();
+	std::vector<FieldPiece*> vecPieces;
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	field->GetPiecesWithinSawRange(panelCutLocus, vecPieces);
+
+	for (auto p : vecPieces)
+	{
+		if (p->IsActive())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}

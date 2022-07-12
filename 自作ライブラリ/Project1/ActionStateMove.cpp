@@ -27,7 +27,10 @@ IActionState* ActionStateMove::Update(BaseGameActor* arg_actor)
 	}
 	else if (arg_actor->IsChangeMoveToCut())
 	{
-		next = ActionStateLabel::CUT;
+		if (arg_actor->IsExistPiecesWithinSawRange())
+		{
+			next = ActionStateLabel::CUT;
+		}
 	}
 	else
 	{
