@@ -23,6 +23,7 @@ class FieldPiece;
 class PanelCutLocus;
 class UnableThroughEdge;
 class UnableThroughBlock;
+class FeverInItem;
 
 class BaseGameActor : public Object
 {
@@ -114,6 +115,9 @@ public:
 	//降ってくるパネル
 	virtual void HitCheckUnableThroughBlock(UnableThroughBlock* arg_block);
 	virtual void HitUnableThroughBlock(UnableThroughBlock* arg_block);
+	//スマッシュボール
+	virtual void HitCheckFeverInItem(FeverInItem* arg_feverInItem);
+	virtual void HitFeverInItem(FeverInItem* arg_feverInItem);
 
 	//---Getter,Setter---
 	inline float GetRadius()const {

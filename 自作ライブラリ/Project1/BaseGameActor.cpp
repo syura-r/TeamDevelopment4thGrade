@@ -21,6 +21,7 @@
 #include "ActionStateWithstand.h"
 #include "ActionStateCut.h"
 #include "ActionStateFall.h"
+#include "FeverInItem.h"
 #include "Easing.h"
 
 ComPtr<ID3D12Resource> BaseGameActor::constCameraBuff = nullptr;
@@ -1212,6 +1213,40 @@ void BaseGameActor::HitUnableThroughBlock(UnableThroughBlock* arg_block)
 	{
 		isCrushed = true;
 	}
+}
+
+void BaseGameActor::HitCheckFeverInItem(FeverInItem* arg_feverInItem)
+{
+	if (arg_feverInItem->IsDead())
+	{
+		return;
+	}
+
+	if (!arg_feverInItem->IsAppeared())
+	{
+		return;
+	}
+
+	if (actionState->GetLabel() == ActionStateLabel::CUT ||
+		actionState->GetLabel() == ActionStateLabel::FALL ||
+		actionState->GetLabel() == ActionStateLabel::SPAWN)
+	{
+		return;
+	}
+
+	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - arg_feverInItem->GetVirtualityPlanePosition()));
+
+	if (length <= RADIUS + FeverInItem::GetRadius())
+	{
+		HitFeverInItem(arg_feverInItem);
+	}
+}
+
+void BaseGameActor::HitFeverInItem(FeverInItem* arg_feverInItem)
+{
+	InFever(5 * 60);
+
+	arg_feverInItem->Dead();
 }
 
 void BaseGameActor::SlidingDown()
