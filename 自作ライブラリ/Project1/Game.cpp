@@ -189,6 +189,8 @@ void Game::RoadAsset()
 		Audio::LoadFile("SE_TriangleLost", "SE/GamePlay_SE_Trianglelost.wav");
 		Audio::LoadFile("SE_InFever", "SE/GamePlay_InFever.wav");
 		Audio::LoadFile("SE_FeverCut", "SE/GamePlay_FeverCut.wav");
+		Audio::LoadFile("SE_GetItemL2", "SE/GamePlay_SE_GetItem_L2.wav");
+		Audio::LoadFile("SE_GetItemL3", "SE/GamePlay_SE_GetItem_L3.wav");
 
 		break;
 	case 5:
@@ -232,6 +234,7 @@ void Game::CreatePipeline()
 		break;
 	case 3:
 		PipelineState::CreatePipeline("NoShade", NoShade);
+
 		PipelineState::CreatePipeline("UVScrolling", AreaEffect);
 
 

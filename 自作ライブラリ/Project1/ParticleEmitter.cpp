@@ -255,9 +255,9 @@ void ParticleEmitter::FeverEffect(const Vector3& arg_position)
     particleManager->Add(particle, "FeverPlayerEffect");
 }
 
-void ParticleEmitter::FeverCut(Line* arg_line)
+void ParticleEmitter::FeverCut(Line* arg_line, const DirectX::XMFLOAT4& arg_color)
 {
-    particleManager->AddFeverCutEffect(new FeverCutEffect(arg_line));
+    particleManager->AddFeverCutEffect(new FeverCutEffect(arg_line, arg_color));
 }
 
 float ParticleEmitter::GetRandom(float arg_min, float arg_max)

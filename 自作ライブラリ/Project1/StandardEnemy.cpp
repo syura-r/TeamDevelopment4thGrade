@@ -45,10 +45,12 @@ StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AIL
 	if (modelName == "GamePlay_Enemy")
 	{
 		actorColor = { 0.96f, 0.53f, 0.54f, 1 };
+		effectColor = { 0.96f, 0.53f, 0.54f, 1 };
 	}
 	else
 	{
 		actorColor = { 0.51f, 0.92f, 0.60f, 1 };
+		effectColor = { 0.51f, 0.92f, 0.60f, 1 };
 	}
 	ObjectManager::GetInstance()->Add(chart);
 
