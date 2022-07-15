@@ -1244,7 +1244,14 @@ void BaseGameActor::HitCheckFeverInItem(FeverInItem* arg_feverInItem)
 
 void BaseGameActor::HitFeverInItem(FeverInItem* arg_feverInItem)
 {
-	InFever(5 * 60);
+	//InFever(5 * 60);
+	const int ADD = 30;
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	field->AddGottenCount(ADD);
+	if (field->IsNewFeverPlayer())
+	{
+		InFever(5 * 60);
+	}
 
 	arg_feverInItem->Dead();
 }

@@ -1020,3 +1020,25 @@ int Field::GetGottenCount()
 {
 	return gottenCount;
 }
+
+void Field::SetGottenCount(const int arg_num)
+{
+	if (arg_num < 0)
+	{
+		return;
+	}
+
+	previousGottenCount = gottenCount;
+	gottenCount = arg_num;
+}
+
+void Field::AddGottenCount(const int arg_add)
+{
+	if (arg_add < 0)
+	{
+		return;
+	}
+
+	previousGottenCount = gottenCount;
+	gottenCount += arg_add;
+}
