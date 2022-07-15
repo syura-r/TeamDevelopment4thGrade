@@ -4,9 +4,9 @@
 #include "FBXManager.h"
 #include "OBJLoader.h"
 
-int Ending::killCount_player = 0;
-int Ending::killCount_enemy_red = 0;
-int Ending::killCount_enemy_green = 0;
+int Ending::score_player = 0;
+int Ending::score_enemy_red = 0;
+int Ending::score_enemy_green = 0;
 
 Ending::Ending()
 {
@@ -63,21 +63,29 @@ void Ending::Initialize()
 
 	for (int i = 0; i < enemyCount + 1; i++)
 	{
-		int killCount = 0;
+		int score = 0;
 		if (i == 0)
-			killCount = killCount_player;
+			score = score_player;
 		else if (i == 1)
-			killCount = killCount_enemy_red;
+			score = score_enemy_red;
 		else
-			killCount = killCount_enemy_green;
-		set[i]->Initialize(killCount, positions_3d[i], positions_2d[i]);
+			score = score_enemy_green;
+		set[i]->Initialize(score, positions_3d[i], positions_2d[i]);
 	}
-	topKillCount = 0;
+	topScore = 0;
 	TopSearch();
 	GaugeSize();
 	isSkipOrFinish = false;
 
 	pos_select = pos_title;
+	scale_select = scaleBig_select;
+	alpha_select = 1.0f;
+	isUP_alphaChange = false;
+
+	scale_title = scaleBig_select;
+	alpha_title = 1.0f;
+	scale_restart = scaleSmall_select;
+	alpha_restart = 1.0f;
 
 	Audio::PlayBGM("BGM_Result", 0.1f * Audio::volume_bgm);
 
@@ -89,9 +97,11 @@ void Ending::Update()
 {
 	SelectMenu();
 
+	FlashMenu();
+
 	for (int i = 0; i < enemyCount + 1; i++)
 	{
-		set[i]->Update(topKillCount);
+		set[i]->Update(topScore);
 	}
 	stadium->Update();
 
@@ -109,12 +119,15 @@ void Ending::PreDraw()
 	}
 
 	//選択項目
-	sp_title->DrawSprite("toTitle", pos_title);
-	sp_restart->DrawSprite("restart", pos_restart);
-
-	sp_select->DrawSprite("white1x1", pos_select, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,1 });
+	sp_title->DrawSprite("toTitle", pos_title, 0.0f, scale_title, { 1,1,1,alpha_title });
+	sp_restart->DrawSprite("restart", pos_restart, 0.0f, scale_restart, { 1,1,1,alpha_restart });
 
 	stadium->Draw();
+
+
+	Vector2 size_select = { 256.0f, 64.0f };
+	sp_select->DrawSprite("white1x1", pos_select, 0.0f, size_select * scale_select, { 0.3f,0.3f,0.3f,alpha_select }, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
+
 }
 
 void Ending::PostDraw()
@@ -152,6 +165,43 @@ void Ending::SelectMenu()
 		default:
 			break;
 		}
+		//透明度リセット
+		alpha_select = 1.0f;
+		alpha_title = 1.0f;
+		alpha_restart = 1.0f;
+		isUP_alphaChange = false;
+	}
+
+	//拡縮
+	const float speed_scale = 0.1f;
+	switch (selectState)
+	{
+	case ToTitle:
+		if (scale_title.x < scaleBig_select.x)
+		{
+			scale_title.x += speed_scale;
+			scale_title.y += speed_scale;
+		}
+		if (scale_restart.x > scaleSmall_select.x)
+		{
+			scale_restart.x -= speed_scale;
+			scale_restart.y -= speed_scale;
+		}
+		break;
+	case Restart:
+		if (scale_restart.x < scaleBig_select.x)
+		{
+			scale_restart.x += speed_scale;
+			scale_restart.y += speed_scale;
+		}
+		if (scale_title.x > scaleSmall_select.x)
+		{
+			scale_title.x -= speed_scale;
+			scale_title.y -= speed_scale;
+		}
+		break;
+	default:
+		break;
 	}
 
 	//シーン切り替え
@@ -178,19 +228,55 @@ void Ending::SelectMenu()
 	MotionSkip();
 }
 
+void Ending::FlashMenu()
+{
+	const float speed_alphaChange = 0.02f;//速度
+	const float min_alphaChange = 0.3f;//下限
+	const float max_alphaChange = 1.0f;//上限
+	if (isUP_alphaChange)//不透明に
+	{
+		alpha_select += speed_alphaChange;
+		if (alpha_select >= max_alphaChange)
+		{
+			isUP_alphaChange = !isUP_alphaChange;
+		}
+	}
+	else//透明に
+	{
+		alpha_select -= speed_alphaChange;
+		if (alpha_select <= min_alphaChange)
+		{
+			isUP_alphaChange = !isUP_alphaChange;
+		}
+	}
+
+	//反映
+	//switch (selectState)
+	//{
+	//case ToTitle:
+	//	alpha_title = alpha_select;
+	//	break;
+	//case Restart:
+	//	alpha_restart = alpha_select;
+	//	break;
+	//default:
+	//	break;
+	//}
+}
+
 void Ending::TopSearch()
 {
 	bool isTops[enemyCount + 1] = { false,false,false };
 	for (int i = 0; i < enemyCount+1; i++)
 	{
 		//0以下はスルー
-		if (set[i]->killCount <= 0)
+		if (set[i]->score <= 0)
 			continue;
 
 		//記録更新
-		if (topKillCount < set[i]->killCount)
+		if (topScore < set[i]->score)
 		{
-			topKillCount = set[i]->killCount;
+			topScore = set[i]->score;
 			for (int j = 0; j < enemyCount+1; j++)
 			{
 				isTops[j] = false;
@@ -198,9 +284,9 @@ void Ending::TopSearch()
 			isTops[i] = true;
 		}
 		//同率
-		else if (topKillCount == set[i]->killCount)
+		else if (topScore == set[i]->score)
 		{
-			topKillCount = set[i]->killCount;
+			topScore = set[i]->score;
 			isTops[i] = true;
 		}
 	}
@@ -215,20 +301,23 @@ void Ending::TopSearch()
 void Ending::GaugeSize()
 {
 	//一位を基準（1.0f）にする
-	int topCount = 0;
+	float topCount = 0.0f;
 	for (int i = 0; i < enemyCount+1; i++)
 	{
 		if (set[i]->isTop)
 		{
 			set[i]->scaleY_gauge = 1.0f;
-			topCount = set[i]->killCount;
+			topCount = set[i]->score;
 		}
 	}
 
 	//
 	for (int i = 0; i < enemyCount + 1; i++)
 	{
-		set[i]->scaleY_gauge = set[i]->killCount / topCount;
+		set[i]->scaleY_gauge = set[i]->score / topCount;
+		//全員0の場合
+		if (topCount <= 0.0f)
+			set[i]->scaleY_gauge = 0.0f;
 	}
 }
 
@@ -245,7 +334,7 @@ void Ending::MotionSkip()
 	{
 		for (int i = 0; i < enemyCount + 1; i++)
 		{
-			set[i]->killCount_draw = set[i]->killCount;
+			set[i]->score_draw = set[i]->score;
 			set[i]->scaleY_gauge_draw = set[i]->scaleY_gauge;
 		}
 	}
@@ -256,7 +345,7 @@ void Ending::MotionSkip()
 		for (int i = 0; i < enemyCount + 1; i++)
 		{
 			isSkipOrFinish =
-				set[i]->killCount_draw >= set[i]->killCount &&
+				set[i]->score_draw >= set[i]->score &&
 				set[i]->scaleY_gauge_draw >= set[i]->scaleY_gauge &&
 				isSkipOrFinish;
 		}
@@ -284,7 +373,7 @@ Ending::ResultSet::ResultSet(const ActorTag& arg_tag)
 
 	object = Object3D::Create(FBXManager::GetModel(modelName), position, scale, rotation, color);
 	obj_crown = Object3D::Create(OBJLoader::GetModel("Crown"), pos_crown, scale_crown, rotation_crown, color_crown);
-	numberSprite = new NumberSprite(killCount_draw);
+	numberSprite = new NumberSprite(score_draw);
 	sp_gauge = new Sprite();
 }
 
@@ -296,10 +385,10 @@ Ending::ResultSet::~ResultSet()
 	delete sp_gauge;
 }
 
-void Ending::ResultSet::Initialize(const int arg_killCount, const float arg_positionX_3d, const float arg_positionX_2d)
+void Ending::ResultSet::Initialize(const int arg_score, const float arg_positionX_3d, const float arg_positionX_2d)
 {
-	killCount = arg_killCount;
-	killCount_draw = 0.0f;
+	score = (float)arg_score;
+	score_draw = 0.0f;
 	position.x = arg_positionX_3d;
 	pos_crown.x = arg_positionX_3d;
 	positionX_2d = arg_positionX_2d;
@@ -309,7 +398,7 @@ void Ending::ResultSet::Initialize(const int arg_killCount, const float arg_posi
 	drawCrown = false;
 }
 
-void Ending::ResultSet::Update(const int arg_topKillCount)
+void Ending::ResultSet::Update(const int arg_topScore)
 {
 	//ゲージを伸ばす
 	const bool gaugeExtend = scaleY_gauge_draw < scaleY_gauge;
@@ -319,14 +408,14 @@ void Ending::ResultSet::Update(const int arg_topKillCount)
 	}
 
 	//数値を増やす
-	const bool killCountAdd = killCount_draw < killCount;
-	if (killCountAdd)
+	const bool scoreAdd = score_draw < score;
+	if (scoreAdd)
 	{
-		killCount_draw += arg_topKillCount / 120.0f;
+		score_draw += arg_topScore / 120.0f;
 	}
 
 	//王冠の表示
-	drawCrown = !gaugeExtend && !killCountAdd;
+	drawCrown = !gaugeExtend && !scoreAdd;
 
 	object->Update();
 	obj_crown->Update();

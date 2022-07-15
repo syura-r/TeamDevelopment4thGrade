@@ -326,7 +326,7 @@ void Play::TimeUpdate()
 
 void Play::KillCountToEnding()
 {
-	Ending::killCount_player = actorManager->GetPlayer()->GetKillCount();
-	Ending::killCount_enemy_red = actorManager->GetStandardEnemies()[0]->GetKillCount();
-	Ending::killCount_enemy_green = actorManager->GetStandardEnemies()[1]->GetKillCount();
+	Ending::score_player = actorManager->GetPlayer()->GetTotalCutCount();
+	Ending::score_enemy_red = actorManager->GetStandardEnemies()[0]->GetTotalCutCount();
+	Ending::score_enemy_green = actorManager->GetStandardEnemies()[1]->GetTotalCutCount();
 }

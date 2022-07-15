@@ -19,15 +19,17 @@ public:
 	void PostDraw()override;
 
 public:
-	static int killCount_player;
-	static int killCount_enemy_red;
-	static int killCount_enemy_green;
+	static int score_player;
+	static int score_enemy_red;
+	static int score_enemy_green;
 
 private:
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;
 
 	void SelectMenu();
+	//点滅
+	void FlashMenu();
 
 	enum SelectState
 	{
@@ -48,8 +50,8 @@ private:
 	{
 		ResultSet(const ActorTag& arg_tag);
 		~ResultSet();
-		void Initialize(const int arg_killCount, const float arg_positionX_3d, const float arg_positionX_2d);
-		void Update(const int arg_topKillCount);
+		void Initialize(const int arg_score, const float arg_positionX_3d, const float arg_positionX_2d);
+		void Update(const int arg_topScore);
 		void Draw();
 
 		//機体モデル関連
@@ -72,8 +74,8 @@ private:
 		Sprite* sp_gauge = nullptr;
 		float scaleY_gauge = 0.0f;
 		float scaleY_gauge_draw = 0.0f;
-		float killCount = 0.0f;
-		float killCount_draw = 0.0f;
+		float score = 0.0f;
+		float score_draw = 0.0f;
 		float positionX_2d;
 
 		ActorTag tag;
@@ -90,7 +92,7 @@ private:
 	const float positions_2d[enemyCount + 1] = { 500,960,1420 };
 
 	//数字を増やす時用
-	int topKillCount = 0;
+	int topScore = 0;
 
 	//スキップ
 	void MotionSkip();
@@ -99,14 +101,24 @@ private:
 	//選択項目
 	Sprite* sp_select = nullptr;
 	Vector2 pos_select = {};
+	Vector2 scale_select = {};
+	float alpha_select = 1.0f;
+	bool isUP_alphaChange = false;
+
+	const Vector2 scaleBig_select = { 1.5f,1.5f };
+	const Vector2 scaleSmall_select = { 1.0f,1.0f };
 
 	//タイトル
 	Sprite* sp_title = nullptr;
-	const Vector2 pos_title = { 640, 950 };
+	const Vector2 pos_title = { 640, 970 };
+	Vector2 scale_title = { 1.0f,1.0f };
+	float alpha_title = 1.0f;
 
 	//リスタート
 	Sprite* sp_restart = nullptr;
-	const Vector2 pos_restart = { 1280, 950 };
+	const Vector2 pos_restart = { 1280, 970 };
+	Vector2 scale_restart = { 1.0f,1.0f };
+	float alpha_restart = 1.0f;
 
 	Stadium* stadium = nullptr;
 };
