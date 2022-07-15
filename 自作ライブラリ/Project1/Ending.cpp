@@ -434,7 +434,8 @@ void Ending::ResultSet::Draw()
 
 	PipelineState::SetPipeline("Sprite");
 
-	const int digit = 2;
+	std::string nuwNum = std::to_string((int)score_draw);
+	int digit = nuwNum.size();//0‚Å–„‚ß‚È‚¢‚½‚ß
 	numberSprite->Draw(digit, "GamePlay_UI_Number", { positionX_2d, 200.0f });
 
 	std::string texName;
