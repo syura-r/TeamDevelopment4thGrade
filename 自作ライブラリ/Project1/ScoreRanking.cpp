@@ -1,4 +1,5 @@
 #include "ScoreRanking.h"
+#include "OBJLoader.h"
 #include "ActorManager.h"
 #include "Player.h"
 #include "StandardEnemy.h"
@@ -10,6 +11,11 @@ ScoreRanking::ScoreRanking()
 	red_UI = new ActorScoreUI("GamePlay_Score_Enemy");
 	green_UI = new ActorScoreUI("GamePlay_Score_Enemy2");
 
+	for (int i = 0; i < 3; i++)
+	{
+		crowns[i] = new Crown();
+		crowns[i]->obj = Object3D::Create(OBJLoader::GetModel("Crown"), crowns[i]->pos, crowns[i]->scale, crowns[i]->rotation, crowns[i]->color);
+	}
 }
 
 ScoreRanking::~ScoreRanking()
@@ -18,6 +24,11 @@ ScoreRanking::~ScoreRanking()
 	delete blue_UI;
 	delete red_UI;
 	delete green_UI;
+
+	for (int i = 0; i < 3; i++)
+	{
+		delete crowns[i];
+	}
 }
 
 void ScoreRanking::Initialize()
@@ -28,11 +39,15 @@ void ScoreRanking::Initialize()
 	blue_UI->Initialize();
 	red_UI->Initialize();
 	green_UI->Initialize();
+
+	for (int i = 0; i < 3; i++)
+	{
+		crowns[i]->obj->Update();
+	}
 }
 
 void ScoreRanking::Update()
 {
-
 	CheckScore();
 	CheckRank();
 	CheckPosition();
@@ -40,15 +55,95 @@ void ScoreRanking::Update()
 	blue_UI->Update();
 	red_UI->Update();
 	green_UI->Update();
+
+	TopSearch();
+	ActorManager* actorManager = ActorManager::GetInstance();
+	Vector3 addPosition = {0,7,0};
+	if (blue_UI->rank ==1)
+	{
+		crowns[0]->pos = actorManager->GetPlayer()->GetPosition() + addPosition;
+	}
+	if (red_UI->rank == 1)
+	{
+		crowns[1]->pos = actorManager->GetStandardEnemies()[0]->GetPosition() + addPosition;
+	}
+	if (green_UI->rank == 1)
+	{
+		crowns[2]->pos = actorManager->GetStandardEnemies()[1]->GetPosition() + addPosition;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		crowns[i]->obj->Update();
+	}
 }
 
-void ScoreRanking::Draw()
+void ScoreRanking::Draw_OBJ()
+{
+	PipelineState::SetPipeline("BasicObj");
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (crowns[i]->isDisplay)
+			crowns[i]->obj->Draw();
+	}
+}
+
+void ScoreRanking::Draw_UI()
 {
 	blue_UI->Draw(position_base.x);
 	red_UI->Draw(position_base.x);
 	green_UI->Draw(position_base.x);
 
 	back->DrawSprite("GamePlay_Score_Rank", position_base, 0.0f, { 1.0f,1.0f }, { 1,1,1,1 }, { 0.0f, 0.0f });
+}
+
+void ScoreRanking::TopSearch()
+{
+	bool isTops[3] = { false,false,false };
+	float scoreStock[3] = { blue_UI->score,red_UI->score,green_UI->score };
+	float topScore = 0.0f;
+	for (int i = 0; i < 3; i++)
+	{
+		//0以下はスルー
+		if (scoreStock[i] <= 0.0f)
+			continue;
+
+		//記録更新
+		if (topScore < scoreStock[i])
+		{
+			topScore = scoreStock[i];
+			for (int j = 0; j < 3; j++)
+			{
+				isTops[j] = false;
+			}
+			isTops[i] = true;
+		}
+		//同率
+		else if (topScore == scoreStock[i])
+		{
+			topScore = scoreStock[i];
+			isTops[i] = true;
+		}
+	}
+
+	//反映
+	for (int i = 0; i < 3; i++)
+	{
+		crowns[i]->isDisplay = isTops[i];
+	}
+	if (isTops[0])
+		blue_UI->rank = 1;
+	else
+		blue_UI->rank = 0;
+	if (isTops[1])
+		red_UI->rank = 1;
+	else
+		red_UI->rank = 0;
+	if (isTops[2])
+		green_UI->rank = 1;
+	else
+		green_UI->rank = 0;
 }
 
 void ScoreRanking::CheckScore()
@@ -140,7 +235,7 @@ void ScoreRanking::ActorScoreUI::Initialize()
 {
 	score = 0;
 	position = {};
-	rank = 1;
+	rank = 0;
 }
 
 void ScoreRanking::ActorScoreUI::Update()

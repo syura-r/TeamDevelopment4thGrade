@@ -252,7 +252,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="FeverUI.cpp" />
     <ClCompile Include="ScoreRanking.cpp" />
     <ClCompile Include="StandardEnemy.cpp" />
@@ -383,7 +382,6 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="RaycastHit.h" />
-    <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="FeverUI.h" />
     <ClInclude Include="ScoreRanking.h" />
     <ClInclude Include="StandardEnemy.h" />

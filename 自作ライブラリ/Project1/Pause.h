@@ -62,6 +62,8 @@ private:
 	//選択を見やすく
 	Sprite* sp_base = nullptr;
 	Vector2 pos_base = {};
+	float alpha_base = 1.0f;
+	bool isUP_alphaChange = false;
 
 	//選択肢1つに必要な変数
 	struct SelectSprite
