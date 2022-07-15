@@ -142,6 +142,11 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Levelgauge", "LevelGauge/GamePlay_UI_Levelgauge.png");
 		Texture::LoadTexture("GamePlay_UI_Maker", "GamePlay_UI_Maker.png");
 		Texture::LoadTexture("GamePlay_CircleCover", "GamePlay_CircleCover.png");
+		Texture::LoadTexture("GamePlay_Score_Rank", "ScoreRanking/GamePlay_Score_Rank.png");
+		Texture::LoadTexture("GamePlay_Score_Batu", "ScoreRanking/GamePlay_Score_Batu.png");
+		Texture::LoadTexture("GamePlay_Score_Player", "ScoreRanking/GamePlay_Score_Player.png");
+		Texture::LoadTexture("GamePlay_Score_Enemy", "ScoreRanking/GamePlay_Score_Enemy.png");
+		Texture::LoadTexture("GamePlay_Score_Enemy2", "ScoreRanking/GamePlay_Score_Enemy2.png");
 
 		break; 
 	case 2:
