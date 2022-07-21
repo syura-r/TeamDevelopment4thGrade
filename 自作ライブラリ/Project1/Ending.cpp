@@ -1,7 +1,6 @@
 #include "Ending.h"
 #include "Audio.h"
 #include "Input.h"
-#include "FBXManager.h"
 #include "OBJLoader.h"
 
 int Ending::score_player = 0;
@@ -15,40 +14,42 @@ Ending::Ending()
 	camera = std::make_unique<InGameCamera>();
 	Object3D::SetCamera(camera.get());
 
-	//ライト生成
 	lightGroup.reset(LightGroup::Create());
-	//3Dオブジェクトにライトをセット
 	Object3D::SetLightGroup(lightGroup.get());
-	//ライト色を設定
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, { 1,1,1 });
 
-	selectState = SelectState::Restart;
-
-	set[0] = new ResultSet(ActorTag::PLAYER);
-	set[1] = new ResultSet(ActorTag::ENEMY_RED);
-	set[2] = new ResultSet(ActorTag::ENEMY_GREEN);
-
+	selectState = SelectState::ToTitle;
 
 	sp_select = new Sprite();
 	sp_title = new Sprite();
 	sp_restart = new Sprite();
 
+	const std::string modelName[actorsCount] = {
+		"GamePlay_Player",
+		"GamePlay_Enemy",
+		"GamePlay_Enemy2"
+	};
+	for (int i = 0; i < actorsCount; i++)
+	{
+		actors[i] = new EndingActor(modelName[i]);
+	}
+	basePanel_object = Object3D::Create(OBJLoader::GetModel("fieldPiece"), basePanel_position, basePanel_scale, basePanel_rotation, basePanel_color);
 	stadium = new Stadium();
 }
 
 
 Ending::~Ending()
 {
-	for (int i = 0; i < enemyCount + 1; i++)
-	{
-		delete set[i];
-	}
-
 	delete sp_select;
 	delete sp_title;
 	delete sp_restart;
 
+	for (int i = 0; i < actorsCount; i++)
+	{
+		delete actors[i];
+	}
+	delete basePanel_object;
 	delete stadium;
 }
 
@@ -56,26 +57,13 @@ void Ending::Initialize()
 {
 	isEnd = false;
 
+	camera->Initialize();
+	camera.get()->SetDistance(30);
+	camera.get()->SetTheta(0.5f);
 	Object3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());
 
 	selectState = SelectState::ToTitle;
-
-	for (int i = 0; i < enemyCount + 1; i++)
-	{
-		int score = 0;
-		if (i == 0)
-			score = score_player;
-		else if (i == 1)
-			score = score_enemy_red;
-		else
-			score = score_enemy_green;
-		set[i]->Initialize(score, positions_3d[i], positions_2d[i]);
-	}
-	topScore = 0;
-	TopSearch();
-	GaugeSize();
-	isSkipOrFinish = false;
 
 	pos_select = pos_title;
 	scale_select = scaleBig_select;
@@ -87,43 +75,51 @@ void Ending::Initialize()
 	scale_restart = scaleSmall_select;
 	alpha_restart = 1.0f;
 
-	Audio::PlayBGM("BGM_Result", 0.1f * Audio::volume_bgm);
+	RankingSearch();
+	actors[0]->Initialize(score_player, ranking[0]);
+	actors[1]->Initialize(score_enemy_red, ranking[1]);
+	actors[2]->Initialize(score_enemy_green, ranking[2]);
 
 	stadium->Initialize();
 	stadium->SetPosition({ 0.0f,-40.0f,0.0f });
+
+	Audio::PlayBGM("BGM_Result", 0.1f * Audio::volume_bgm);
 }
 
 void Ending::Update()
 {
 	SelectMenu();
-
 	FlashMenu();
 
-	for (int i = 0; i < enemyCount + 1; i++)
+	for (int i = 0; i < actorsCount; i++)
 	{
-		set[i]->Update(topScore);
+		actors[i]->Update();
+
+		//1位をカメラで追う
+		if (actors[i]->GetRanking() == 1)
+			camera.get()->SetTarget(actors[i]->GetPosition());
 	}
+	basePanel_object->Update();
 	stadium->Update();
 
 	camera->Update();
 	lightGroup->SetAmbientColor({ 1,1,1 });
-	lightGroup->SetDirLightDir(0, { 0.0f,0.0f,0.2f,1 });
+	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });
 	lightGroup->Update();
 }
 
 void Ending::PreDraw()
 {
-	for (int i = 0; i < enemyCount + 1; i++)
-	{
-		set[i]->Draw();
-	}
-
 	//選択項目
 	sp_title->DrawSprite("toTitle", pos_title, 0.0f, scale_title, { 1,1,1,alpha_title });
 	sp_restart->DrawSprite("restart", pos_restart, 0.0f, scale_restart, { 1,1,1,alpha_restart });
 
+	for (int i = 0; i < actorsCount; i++)
+	{
+		actors[i]->Draw();
+	}
 	stadium->Draw();
-
+	basePanel_object->Draw();
 
 	Vector2 size_select = { 256.0f, 64.0f };
 	sp_select->DrawSprite("white1x1", pos_select, 0.0f, size_select * scale_select, { 0.3f,0.3f,0.3f,alpha_select }, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
@@ -150,6 +146,23 @@ void Ending::SelectMenu()
 		selectState = SelectState::Restart;
 		isSelectMove = true;
 	}
+	//#ifdef _DEBUG
+	if (Input::TriggerKey(DIK_A) ||
+		Input::TriggerKey(DIK_LEFT))
+	{
+		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
+		selectState = SelectState::ToTitle;
+		isSelectMove = true;
+	}
+	else if (Input::TriggerKey(DIK_D) ||
+		Input::TriggerKey(DIK_RIGHT))
+	{
+		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
+		selectState = SelectState::Restart;
+		isSelectMove = true;
+	}
+	//#endif
+
 
 	//カーソル位置
 	if (isSelectMove)
@@ -205,8 +218,10 @@ void Ending::SelectMenu()
 	}
 
 	//シーン切り替え
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) &&
-		isSkipOrFinish)
+	bool isEnd = actors[0]->GetIsAddPanelEnd() &&
+		actors[1]->GetIsAddPanelEnd() &&
+		actors[2]->GetIsAddPanelEnd();
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && isEnd)
 	{
 		switch (selectState)
 		{
@@ -223,9 +238,25 @@ void Ending::SelectMenu()
 		Audio::StopBGM("BGM_Result");
 		ShutDown();
 	}
-
-	//スキップ
-	MotionSkip();
+	//#ifdef _DEBUG
+	if (Input::TriggerKey(DIK_SPACE) && isEnd)
+	{
+		switch (selectState)
+		{
+		case ToTitle:
+			next = Title;
+			break;
+		case Restart:
+			next = Play;
+			break;
+		default:
+			break;
+		}
+		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
+		Audio::StopBGM("BGM_Result");
+		ShutDown();
+	}
+	//#endif
 }
 
 void Ending::FlashMenu()
@@ -264,195 +295,60 @@ void Ending::FlashMenu()
 	//}
 }
 
-void Ending::TopSearch()
+void Ending::RankingSearch()
 {
-	bool isTops[enemyCount + 1] = { false,false,false };
-	for (int i = 0; i < enemyCount+1; i++)
+	enum ActorTag
 	{
-		//0以下はスルー
-		if (set[i]->score <= 0)
-			continue;
+		PLAYER,
+		ENEMY_RED,
+		ENEMY_GREEN
+	};
+	struct ScoreSet
+	{
+		ActorTag tag;
+		int score;
+	};
+	ScoreSet sets[actorsCount] =
+	{
+		{ActorTag::PLAYER, score_player},
+		{ActorTag::ENEMY_RED, score_enemy_red},
+		{ActorTag::ENEMY_GREEN, score_enemy_green},
+	};
 
-		//記録更新
-		if (topScore < set[i]->score)
+	//バブルソート
+	ScoreSet stock_a = {};
+	ScoreSet stock_b = {};
+	for (int i = 0; i < actorsCount; i++)
+	{
+		for (int j = i + 1; j < actorsCount; j++)
 		{
-			topScore = set[i]->score;
-			for (int j = 0; j < enemyCount+1; j++)
+			if (sets[i].score < sets[j].score)
 			{
-				isTops[j] = false;
+				stock_a = sets[i];
+				stock_b = sets[j];
+				sets[i] = stock_b;
+				sets[j] = stock_a;
 			}
-			isTops[i] = true;
 		}
-		//同率
-		else if (topScore == set[i]->score)
+	}
+
+	//順位登録
+	for (int i = 0; i < actorsCount; i++)
+	{
+		switch (sets[i].tag)
 		{
-			topScore = set[i]->score;
-			isTops[i] = true;
-		}
-	}
-
-	//反映
-	for (int i = 0; i < enemyCount + 1; i++)
-	{
-		set[i]->isTop = isTops[i];
-	}
-}
-
-void Ending::GaugeSize()
-{
-	//一位を基準（1.0f）にする
-	float topCount = 0.0f;
-	for (int i = 0; i < enemyCount+1; i++)
-	{
-		if (set[i]->isTop)
-		{
-			set[i]->scaleY_gauge = 1.0f;
-			topCount = set[i]->score;
-		}
-	}
-
-	//
-	for (int i = 0; i < enemyCount + 1; i++)
-	{
-		set[i]->scaleY_gauge = set[i]->score / topCount;
-		//全員0の場合
-		if (topCount <= 0.0f)
-			set[i]->scaleY_gauge = 0.0f;
-	}
-}
-
-void Ending::MotionSkip()
-{
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) &&
-		!isSkipOrFinish)
-	{
-		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
-		isSkipOrFinish = true;
-	}
-
-	if (isSkipOrFinish)
-	{
-		for (int i = 0; i < enemyCount + 1; i++)
-		{
-			set[i]->score_draw = set[i]->score;
-			set[i]->scaleY_gauge_draw = set[i]->scaleY_gauge;
-		}
-	}
-	else
-	{
-		//全てのゲージと数値の動きが終わったら真
-		isSkipOrFinish = true;
-		for (int i = 0; i < enemyCount + 1; i++)
-		{
-			isSkipOrFinish =
-				set[i]->score_draw >= set[i]->score &&
-				set[i]->scaleY_gauge_draw >= set[i]->scaleY_gauge &&
-				isSkipOrFinish;
+		case ActorTag::PLAYER:
+			ranking[0] = i + 1;
+			break;
+		case ActorTag::ENEMY_RED:
+			ranking[1] = i + 1;
+			break;
+		case ActorTag::ENEMY_GREEN:
+			ranking[2] = i + 1;
+			break;
+		default:
+			break;
 		}
 	}
 }
 
-Ending::ResultSet::ResultSet(const ActorTag& arg_tag)
-	:tag(arg_tag)
-{
-	std::string modelName;
-	switch (tag)
-	{
-	case ActorTag::PLAYER:
-		modelName = "GamePlay_Player";
-		break;
-	case ActorTag::ENEMY_RED:
-		modelName = "GamePlay_Enemy";
-		break;
-	case ActorTag::ENEMY_GREEN:
-		modelName = "GamePlay_Enemy2";
-		break;
-	default:
-		break;
-	}
-
-	object = Object3D::Create(FBXManager::GetModel(modelName), position, scale, rotation, color);
-	obj_crown = Object3D::Create(OBJLoader::GetModel("Crown"), pos_crown, scale_crown, rotation_crown, color_crown);
-	numberSprite = new NumberSprite(score_draw);
-	sp_gauge = new Sprite();
-}
-
-Ending::ResultSet::~ResultSet()
-{
-	delete object;
-	delete obj_crown;
-	delete numberSprite;
-	delete sp_gauge;
-}
-
-void Ending::ResultSet::Initialize(const int arg_score, const float arg_positionX_3d, const float arg_positionX_2d)
-{
-	score = (float)arg_score;
-	score_draw = 0.0f;
-	position.x = arg_positionX_3d;
-	pos_crown.x = arg_positionX_3d;
-	positionX_2d = arg_positionX_2d;
-	scaleY_gauge = 0.0f;
-	scaleY_gauge_draw = 0.0f;
-	isTop = false;
-	drawCrown = false;
-}
-
-void Ending::ResultSet::Update(const int arg_topScore)
-{
-	//ゲージを伸ばす
-	const bool gaugeExtend = scaleY_gauge_draw < scaleY_gauge;
-	if (gaugeExtend)
-	{
-		scaleY_gauge_draw += 1.0f / 120.0f;
-	}
-
-	//数値を増やす
-	const bool scoreAdd = score_draw < score;
-	if (scoreAdd)
-	{
-		score_draw += arg_topScore / 120.0f;
-	}
-
-	//王冠の表示
-	drawCrown = !gaugeExtend && !scoreAdd;
-
-	object->Update();
-	obj_crown->Update();
-}
-
-void Ending::ResultSet::Draw()
-{
-	PipelineState::SetPipeline("FBX");
-	object->Draw(true);
-
-	if (isTop && drawCrown)
-	{
-		PipelineState::SetPipeline("BasicObj");
-		obj_crown->Draw();
-	}
-
-	PipelineState::SetPipeline("Sprite");
-
-	std::string nuwNum = std::to_string((int)score_draw);
-	int digit = nuwNum.size();//0で埋めないため
-	numberSprite->Draw(digit, "GamePlay_UI_Number", { positionX_2d, 200.0f });
-
-	std::string texName;
-	switch (tag)
-	{
-	case ActorTag::PLAYER:
-		texName = "Result_Player_Gauge";
-		break;
-	case ActorTag::ENEMY_RED:
-		texName = "Result_Enemy_Gauge";
-		break;
-	case ActorTag::ENEMY_GREEN:
-		texName = "Result_Enemy2_Gauge";
-		break;
-	default:
-		break;
-	}
-
-	sp_gauge->DrawSprite(texName, { positionX_2d, 770.0f }, 0.0f, { 1.0f, scaleY_gauge_draw }, { 1,1,1,1 }, { 0.5f, 1.0f });
-}

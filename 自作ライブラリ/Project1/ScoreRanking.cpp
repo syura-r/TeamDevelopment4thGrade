@@ -27,6 +27,7 @@ ScoreRanking::~ScoreRanking()
 
 	for (int i = 0; i < 3; i++)
 	{
+		delete crowns[i]->obj;
 		delete crowns[i];
 	}
 }

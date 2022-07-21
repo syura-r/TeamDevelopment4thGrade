@@ -195,6 +195,7 @@
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Easing.cpp" />
+    <ClCompile Include="EndingActor.cpp" />
     <ClCompile Include="EnergyItem.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FBXManager.cpp" />
@@ -314,6 +315,7 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DrawMode.h" />
     <ClInclude Include="Easing.h" />
+    <ClInclude Include="EndingActor.h" />
     <ClInclude Include="EnergyItem.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FBXManager.h" />

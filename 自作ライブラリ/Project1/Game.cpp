@@ -127,9 +127,9 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Playerpoint", "GamePlay_UI_Playerpoint.png");
 		Texture::LoadTexture("GamePlay_UI_Enemypoint", "GamePlay_UI_Enemypoint.png");
 		Texture::LoadTexture("GamePlay_UI_Enemy2point", "GamePlay_UI_Enemy2point.png");
-		Texture::LoadTexture("Result_Player_Gauge", "Result_Player_Gauge.png");
-		Texture::LoadTexture("Result_Enemy_Gauge", "Result_Enemy_Gauge.png");
-		Texture::LoadTexture("Result_Enemy2_Gauge", "Result_Enemy2_Gauge.png");
+		//Texture::LoadTexture("Result_Player_Gauge", "Result_Player_Gauge.png");
+		//Texture::LoadTexture("Result_Enemy_Gauge", "Result_Enemy_Gauge.png");
+		//Texture::LoadTexture("Result_Enemy2_Gauge", "Result_Enemy2_Gauge.png");
 		Texture::LoadTexture("Result_UV_Crown", "Result_UV_Crown.png");
 		Texture::LoadTexture("GamePlay_UI_Level1", "LevelGauge/GamePlay_UI_Level1.png");
 		Texture::LoadTexture("GamePlay_UI_Level2", "LevelGauge/GamePlay_UI_Level2.png");
