@@ -8,6 +8,10 @@
 #include "ActorManager.h"
 #include "Field.h"
 
+#include "Player.h"
+#include "StandardEnemy.h"
+#include "IActionState.h"
+
 InGameCamera::InGameCamera()
 {
 	phi = -3.14159265f / 2;
@@ -69,4 +73,45 @@ void InGameCamera::RotateYaxis(Vector2 arg_inputVec)
 
 	}*/
 	dirty = true;
+}
+
+void InGameCamera::AutoFocus(ActorManager* arg_actorManager)
+{
+	float maxDist = 0.0f;
+
+	if (arg_actorManager->GetPlayer()->GetActionState()->GetLabel() != ActionStateLabel::FALL)
+	{
+		maxDist = Vector3::Distance({ 0,0,0 }, arg_actorManager->GetPlayer()->GetVirtualityPlanePosition());
+	}
+	
+	auto end = arg_actorManager->GetStandardEnemies().end();
+	for (auto itr = arg_actorManager->GetStandardEnemies().begin(); itr != end;  ++itr)
+	{
+		if ((*itr)->GetActionState()->GetLabel() == ActionStateLabel::FALL)
+		{
+			continue;
+		}
+		float eDist = Vector3::Distance({ 0,0,0 }, (*itr)->GetVirtualityPlanePosition());
+		if (maxDist < eDist)
+		{
+			maxDist = eDist;
+		}
+	}
+
+
+	maxDist = maxDist / 15;
+
+
+	if (maxDist > 110)
+	{
+		maxDist = 110;
+	}
+
+	if (maxDist < 50)
+	{
+		maxDist = 50;
+	}
+
+	
+	distance = maxDist;
 }

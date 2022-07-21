@@ -191,6 +191,8 @@ void Play::Update()
 		camera->RotateYaxis(vec);
 	}
 
+	camera->AutoFocus(actorManager);
+
 	feverUI->Update();
 	levelGauge->Update();
 

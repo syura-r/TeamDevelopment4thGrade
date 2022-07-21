@@ -1,6 +1,7 @@
 #pragma once
 #include "Camera.h"
 #include "Input.h"
+#include "ActorManager.h"
 class InGameCamera :
     public Camera
 {
@@ -10,9 +11,9 @@ public:
 	void Initialize();
 	void Update();
 	void RotateYaxis(Vector2 arg_inputVec);
+	void AutoFocus(ActorManager* arg_actorManager);
 
-	void ZoomIn();
-	void ZoomOut();
+
 
 	void SetDistance(float distance)
 	{
