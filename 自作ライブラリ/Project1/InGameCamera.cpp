@@ -49,6 +49,12 @@ void InGameCamera::Update()
 
 	}
 
+	if (shakeFlag)
+	{
+		Shake();
+	}
+	
+
 	Camera::Update();
 }
 
@@ -98,7 +104,6 @@ void InGameCamera::AutoFocus(ActorManager* arg_actorManager)
 		}
 	}
 
-
 	maxDist = maxDist / 15;
 
 
@@ -114,4 +119,30 @@ void InGameCamera::AutoFocus(ActorManager* arg_actorManager)
 
 	
 	distance = maxDist;
+}
+
+void InGameCamera::SetShake(const int arg_shakeTime, const float arg_shakePower)
+{
+	shakeTimer = 0;
+	shakeTime = arg_shakeTime;
+	shakePower = arg_shakePower;
+
+	shakeStartEyePos = GetEye();
+	shakeStartTargetPos = GetTarget();
+
+	shakeFlag = true;
+}
+
+void InGameCamera::Shake()
+{
+	Vector3 shakeDirection{};
+
+
+	shakeTimer++;
+	if (shakeTimer == shakeTime)
+	{
+		shakeFlag = false;
+		eye = shakeStartEyePos;
+		target = shakeStartTargetPos;
+	}
 }

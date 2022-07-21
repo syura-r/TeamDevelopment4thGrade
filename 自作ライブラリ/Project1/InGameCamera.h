@@ -13,7 +13,9 @@ public:
 	void RotateYaxis(Vector2 arg_inputVec);
 	void AutoFocus(ActorManager* arg_actorManager);
 
+	void SetShake(const int arg_shakeTime, const float arg_shakePower);
 
+	bool IsShake() { return shakeFlag; }
 
 	void SetDistance(float distance)
 	{
@@ -59,5 +61,14 @@ private:
 	float distance = 10;
 
 	bool dirty;
+
+	bool shakeFlag = false;
+	int shakeTime = 0;
+	int shakeTimer = 0;
+	float shakePower = 0;
+	Vector3 shakeStartEyePos;
+	Vector3 shakeStartTargetPos;
+
+	void Shake();
 };
 
