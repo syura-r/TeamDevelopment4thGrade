@@ -25,7 +25,7 @@
 #include "ActionStateMove.h"
 #include "EnemyAIPositiv.h"
 
-const float INTERVAL_ACTIONTIMER = 60.0f;
+const float INTERVAL_ACTIONTIMER = 10.0f;
 
 StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel, const std::string& modelName)
 	:BaseGameActor(arg_pos)
@@ -321,9 +321,9 @@ void StandardEnemy::CompleteCut()
 void StandardEnemy::DecideDirection(Vector3& arg_direction)
 {
 	//カメラのビュー行列の逆行列を計算
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
+	/*XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
+	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();*/
 
 	if (actionTimer->IsTime())
 	{
@@ -340,12 +340,12 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 		{
 			moveDir = RandomDir();
 			//moveDir = NearObjDir();
-			firstMoved == true;
+			firstMoved = true;
 		}
 
 		actionTimer->Reset();
 	}
-	arg_direction = cameraDirectionX * moveDir.x + cameraDirectionZ * moveDir.y;
+	arg_direction = LocusUtility::Dim2XZToDim3(moveDir);
 
 	arg_direction.Normalize();
 	//反発用に代入

@@ -38,7 +38,7 @@ bool BaseGameActor::IS_EXTEND_VERTICALY = false;
 
 BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 :startPos(arg_pos),
-	 RADIUS(1.0f),
+	 RADIUS(0.3f),
 	 weight(10),
 	 prePos(arg_pos),
 	 virtualityPlanePosition(arg_pos),
@@ -379,7 +379,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		if (multiDot <= 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//arg_label = ActionStateLabel::WITHSTAND;
+			arg_label = ActionStateLabel::WITHSTAND;
 			if (arg_label == ActionStateLabel::TACKLE)
 			{
 				arg_label = ActionStateLabel::MOVE;
@@ -391,7 +391,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//arg_label = ActionStateLabel::WITHSTAND;
+			arg_label = ActionStateLabel::WITHSTAND;
 			if (arg_label == ActionStateLabel::TACKLE)
 			{
 				arg_label = ActionStateLabel::MOVE;
@@ -410,7 +410,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//arg_label = ActionStateLabel::WITHSTAND;
+			arg_label = ActionStateLabel::WITHSTAND;
 			if (arg_label == ActionStateLabel::TACKLE)
 			{
 				arg_label = ActionStateLabel::MOVE;

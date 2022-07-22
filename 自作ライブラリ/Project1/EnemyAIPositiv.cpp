@@ -60,76 +60,85 @@ Vector3 EnemyAIPositiv::KeepAwayFromGottenPieces(StandardEnemy* arg_enemy, const
 	{
 		return arg_velocity;
 	}
+
+	//アイテムが近くにあったら処理を無効に
+	if (a > FieldPiece::GetLowerTimeOffset())
+	{
+		auto items = ActorManager::GetInstance()->GetEnergyItems();
+		for (auto item : items)
+		{
+			if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(item->GetVirtualityPlanePosition() - arg_enemy->GetVirtualityPlanePosition())) <= FieldPiece::GetSidewaysLength() * 2)
+			{
+				return arg_velocity;
+			}
+		}
+	}
 	
 	// 進行方向の調整（現在の進行方向とその逆方向の外積から直角なベクトルを出す）
 	float cross = Vector2::Cross(VecB, VecA);
 	Vector3 fixVel = Vector3();
 	if (cross > 0)
 	{
-		fixVel = Vector3(-arg_velocity.z, 0, arg_velocity.x);
+		fixVel = Vector3(-VecB.y, 0, VecB.x);
 	}
 	else
 	{
-		fixVel = Vector3(arg_velocity.z, 0, -arg_velocity.x);
+		fixVel = Vector3(VecB.y, 0, -VecB.x);
 	}
 
 	// 進行方向を調整したベクトルを返す
-	return fixVel;
+	return Vector3::Normalize(fixVel);
 }
 
 Vector3 EnemyAIPositiv::KeepAwayFromFieldBorder(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
 {
 	// 一番近い辺の算出
-	float distance = 100;	// 辺との距離
-	Vector2 nearyEdgS;		// 最も近い辺
-	Vector2 nearyEdgE;
-	auto edgs = Field::GetEdges();
-
-	for (int i = 0; i < edgs.size(); i++)
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	int minLength = 100;
+	int minIndex = 0;
+	for (int i = 0; i < 6; i++)
 	{
-		Vector2 point = { arg_enemy->GetPosition().x,arg_enemy->GetPosition().y };
-		Vector2 start = edgs[i];
-		Vector2 end;
-		if (i == edgs.size() - 1)
-		{
-			end = edgs[0];
-		}
-		else
-		{
-			end = edgs[i + 1];
-		}
+		int length = field->GetLengthToFieldBorder(i, arg_enemy->GetVirtualityPlanePosition());
 
-		float d = PointToLineDistance(point, start, end);
-
-		if (d <= distance)
+		if (length < minLength)
 		{
-			distance = d;
-			nearyEdgS = start;
-			nearyEdgE = end;
+			minLength = length;
+			minIndex = i;
 		}
 	}
 
 	// 一番近い辺との距離が規定値以上だったらreturn
-	if (distance >= specifiedValueDistance) return arg_velocity;
+	if (minLength >= specifiedValueDistance) return arg_velocity;
+
+	//最近接辺から中心に向かうベクトル
+	Vector3 normalBorder = field->GetFieldBorderNormal(minIndex);
 
 	// 進行方向と辺の法線との外積
-	Vector2 n = (nearyEdgS + nearyEdgE) / 2;	//フィールドの中心から辺の中心へのベクトル
-	n = Vector2::Normalize(n);
-	Vector3 VecA = Vector3::Normalize(arg_velocity);
-	Vector3 VecB = { n.x, 0, n.y };
+	Vector2 VecA = LocusUtility::Dim3ToDim2XZ(arg_velocity);
+	Vector2 VecB = LocusUtility::Dim3ToDim2XZ(normalBorder);
 
-	float dot = Vector3::Dot(VecA, VecB);
+	float dot = Vector2::Dot(VecA, VecB);
 
 	// 内積の絶対値が規定値以下だったらreturn
-	if (abs(dot) <= specifiedValueDot)return arg_velocity;
-
-	// 進行方向の調整（とりあえず真反対に）
-	Vector3 fixVel = -VecB;
+	if (dot <= specifiedValueDot)return arg_velocity;
 
 	// 算出した修正ベクトルで一度確認する
-	KeepAwayFromGottenPieces(arg_enemy, fixVel, arg_enemy->GetPosition());
+	//KeepAwayFromGottenPieces(arg_enemy, fixVel, arg_enemy->GetPosition());
 
-	return fixVel;
+	//アイテムが近くにあったら処理を無効に
+	if (minLength > FieldPiece::GetLowerTimeOffset())
+	{
+		auto items = ActorManager::GetInstance()->GetEnergyItems();
+		for (auto item : items)
+		{
+			if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(item->GetVirtualityPlanePosition() - arg_enemy->GetVirtualityPlanePosition())) <= FieldPiece::GetSidewaysLength() * 2)
+			{
+				return arg_velocity;
+			}
+		}
+	}
+
+	return -normalBorder;
 }
 
 Vector3 EnemyAIPositiv::AgainstFieldTilt(StandardEnemy* arg_enemy, const Vector3& arg_velocity)
@@ -160,7 +169,10 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 	// フィールド上のアイテムを近い順に並べる
 	std::vector<EnergyItem*> items = ActorManager::GetInstance()->GetEnergyItems();
 	// vectorが空だったらreturn
-	if (items.size() <= 0) return arg_velocity;
+	if (items.size() <= 0)
+	{
+		return arg_velocity;
+	}
 
 	std::vector<ItemRange*> itemRanges;
 
@@ -169,7 +181,7 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 	for (auto item : items)
 	{
 		// 距離を記録
-		itemDistance = item->GetPosition() - arg_enemy->GetPosition();
+		itemDistance = item->GetVirtualityPlanePosition() - arg_enemy->GetVirtualityPlanePosition();
 
 		ItemRange* itemRange = new ItemRange();
 		itemRange->item = item;
@@ -180,6 +192,10 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 
 	// 距離順でソート
 	std::sort(itemRanges.begin(), itemRanges.end(), [](const ItemRange* x, const ItemRange* y) {return x->range < y->range; });
+	
+	//簡易版
+	Vector2 returnVec = LocusUtility::Dim3ToDim2XZ(itemRanges[0]->item->GetVirtualityPlanePosition() - arg_enemy->GetVirtualityPlanePosition());
+	return Vector3::Normalize(LocusUtility::Dim2XZToDim3(returnVec));
 
 	// 他のActorとアイテムとの距離を見る
 	auto actors = ActorManager::GetInstance()->GetBaseGameActors();
@@ -191,7 +207,12 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 		// 全actorを走査
 		for (auto actor : actors)
 		{
-			Vector3 r = itemRange->item->GetPosition() - actor->GetPosition();
+			if (actor == arg_enemy)
+			{
+				continue;
+			}
+
+			Vector3 r = itemRange->item->GetVirtualityPlanePosition() - actor->GetVirtualityPlanePosition();
 			float otherRange = r.Length();
 			
 			// 自分より近いActorが居たら終了
@@ -199,10 +220,9 @@ Vector3 EnemyAIPositiv::ApproachEnergyItem(StandardEnemy* arg_enemy, const Vecto
 			{
 				break;
 			}
-
-			// 自分が一番近かった場合そこに向かう
-			return itemRange->item->GetPosition() - arg_enemy->GetPosition();
 		}
+		// 自分が一番近かった場合そこに向かう
+		return itemRange->item->GetPosition() - arg_enemy->GetPosition();
 	}
 
 	// 自分が一番近いアイテムが無かったら自分に一番近いアイテムへ向かう
