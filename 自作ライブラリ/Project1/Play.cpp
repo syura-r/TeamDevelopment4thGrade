@@ -182,8 +182,9 @@ void Play::Update()
 		return;
 	}
 
+
 	// ゲームパッドの右スティックでのカメラ操作
-	if (Input::CheckPadRStickLeft() || Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown())
+	if (!camera->IsShake() && (Input::CheckPadRStickLeft() || Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown()) )
 	{
 		Vector2 vec;
 		vec.x = Input::GetRStickDirection().x;
@@ -191,7 +192,12 @@ void Play::Update()
 		camera->RotateYaxis(vec);
 	}
 
-	camera->AutoFocus(actorManager);
+	//camera->AutoFocus(actorManager);
+
+	/*if (Input::TriggerKey(DIK_SPACE))
+	{
+		camera->SetShake(30, 1);
+	}*/
 
 	feverUI->Update();
 	levelGauge->Update();

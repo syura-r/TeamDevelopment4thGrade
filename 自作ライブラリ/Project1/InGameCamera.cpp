@@ -1,6 +1,8 @@
 #include "InGameCamera.h"
 
 #include <cstdio>
+#include <random>
+#include <algorithm>
 
 #include "GameSettingParam.h"
 #include "Vector.h"
@@ -11,6 +13,7 @@
 #include "Player.h"
 #include "StandardEnemy.h"
 #include "IActionState.h"
+
 
 InGameCamera::InGameCamera()
 {
@@ -136,7 +139,13 @@ void InGameCamera::SetShake(const int arg_shakeTime, const float arg_shakePower)
 void InGameCamera::Shake()
 {
 	Vector3 shakeDirection{};
+	shakeDirection.x = GetIntRand(0, 10) - 5;
+	shakeDirection.y = GetIntRand(0, 10) - 5;
+	shakeDirection.z = 0.0f;
+	shakeDirection.Normalize();
 
+	eye = shakeStartEyePos + shakeDirection * shakePower;
+	target = shakeStartTargetPos + shakeDirection * shakePower;
 
 	shakeTimer++;
 	if (shakeTimer == shakeTime)
@@ -145,4 +154,12 @@ void InGameCamera::Shake()
 		eye = shakeStartEyePos;
 		target = shakeStartTargetPos;
 	}
+}
+
+int InGameCamera::GetIntRand(int minValue, int maxValue)
+{
+	std::random_device rnd;
+	std::mt19937_64 mt64(rnd());
+	std::uniform_int_distribution<int> genRandFloat(minValue, maxValue);
+	return genRandFloat(mt64);
 }

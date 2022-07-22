@@ -70,5 +70,7 @@ private:
 	Vector3 shakeStartTargetPos;
 
 	void Shake();
+
+	int GetIntRand(int minValue, int maxValue);
 };
 
