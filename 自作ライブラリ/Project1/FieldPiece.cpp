@@ -13,8 +13,8 @@ const float FieldPiece::FULL_OFFSET = LOWER_TIME_OFFSET + UPPER_TIME_OFFSET;
 const float FieldPiece::WEIGHT = 1.0f;
 std::vector<Vector2> FieldPiece::basePoints = std::vector<Vector2>();
 
-float FieldPiece::baceColor[3] = { 1.0f, 1.0f ,1.0f };
-float FieldPiece::bonusColor[3] = { 1.0f, 0.0f ,0.0f };
+float FieldPiece::baceColor[3] = { 18.0f / 255.0f, 34.0f / 255.0f ,83.0f / 255.0f };
+float FieldPiece::bonusColor[3] = { 188.0f / 255.0f, 143.0f / 255.0f ,36.0f / 255.0f };
 
 FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_direction)
 	:virtualityPlanePosition(arg_position),
