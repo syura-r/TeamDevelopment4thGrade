@@ -23,6 +23,11 @@ PieChart::PieChart(const XMFLOAT4& arg_color1, const XMFLOAT4& arg_color2):color
 	cover = new Sprite3D();
 }
 
+PieChart::~PieChart()
+{
+	delete 	cover;
+}
+
 void PieChart::SetColorCount(const int arg_color1Count, const int arg_color2Count)
 {
 	color1Count = arg_color1Count;

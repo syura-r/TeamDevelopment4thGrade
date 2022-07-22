@@ -285,33 +285,6 @@ void Play::PostDraw()
 	//	return;
 
 	objectManager->PostDraw();
-
-	static Vector3 pos = { 0,0,0 };
-
-	if (Input::DownKey(DIK_RIGHT))
-	{
-		pos.x += 0.3f;
-	}
-	if (Input::DownKey(DIK_LEFT))
-	{
-		pos.x -= 0.3f;
-	}
-	if (Input::DownKey(DIK_UP))
-	{
-		pos.z += 0.3f;
-	}
-	if (Input::DownKey(DIK_DOWN))
-	{
-		pos.z -= 0.3f;
-	}
-	if (Input::DownKey(DIK_K))
-	{
-		pos.y -= 0.3f;
-	}
-	if (Input::DownKey(DIK_I))
-	{
-		pos.y += 0.3f;
-	}
 	if (!Object3D::GetDrawShadow())
 	{
 		DirectXLib::GetInstance()->DepthClear();
