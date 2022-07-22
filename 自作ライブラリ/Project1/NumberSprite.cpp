@@ -51,7 +51,7 @@ void NumberSprite::Draw(const int digits, const std::string& texName, const XMFL
 		XMFLOAT2 position = pos;
 		position.x += i * width * scale.x - offset * width * scale.x;
 		sprites[i]->SpriteSetTextureRect(texName, drawNumber * width, 0, width, height);
-		sprites[i]->DrawSprite(texName, position, 0, scale, color, { 0.5f,0.5f }, pipelineName);
+		sprites[i]->DrawSprite(texName, position, 0, scale, color, { 0.5f,anchorPoint.y }, pipelineName);
 		k++;
 	}
 

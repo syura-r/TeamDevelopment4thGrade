@@ -63,6 +63,8 @@ void Pause::Initialize()
 	circlePosition_se = barPositionLeft_se;
 
 	pos_base = toGame->pos;
+	alpha_base = 1.0f;
+	isUP_alphaChange = false;
 }
 
 void Pause::Update()
@@ -118,6 +120,26 @@ void Pause::Update()
 		else
 		{
 			Select();
+		}
+		//点滅
+		const float speed_alphaChange = 0.02f;//速度
+		const float min_alphaChange = 0.3f;//下限
+		const float max_alphaChange = 1.0f;//上限
+		if (isUP_alphaChange)//不透明に
+		{
+			alpha_base += speed_alphaChange;
+			if (alpha_base >= max_alphaChange)
+			{
+				isUP_alphaChange = !isUP_alphaChange;
+			}
+		}
+		else//透明に
+		{
+			alpha_base -= speed_alphaChange;
+			if (alpha_base <= min_alphaChange)
+			{
+				isUP_alphaChange = !isUP_alphaChange;
+			}
 		}
 		//決定
 		Decision();
@@ -194,11 +216,11 @@ void Pause::Draw()
 
 	}
 
-	sp_base->DrawSprite("white1x1", pos_base, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,1 });
-
 	const XMFLOAT2 scale = { 1920, 1080 };
 	const XMFLOAT4 color = { 0,0,0,0.4f };
 	sp_back->DrawSprite("white1x1", pos_back, 0.0f, scale, color, { 0.0f,0.0f }, "NoAlphaToCoverageSprite");
+
+	sp_base->DrawSprite("white1x1", pos_base, 0.0f, { 256.0f, 64.0f }, { 0.3f,0.3f,0.3f,alpha_base }, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
 }
 
 void Pause::Select()
@@ -234,6 +256,10 @@ void Pause::Select()
 		sound->PreMoveSetting();
 		bgm->PreMoveSetting();
 		se->PreMoveSetting();
+
+		//透明度リセット
+		alpha_base = 1.0f;
+		isUP_alphaChange = false;
 	}
 
 	//位置をずらす

@@ -59,6 +59,7 @@ Play::Play()
 	feverUI = new FeverUI();
 	levelGauge = new LevelGauge();
 	lockonMarker = new LockonMarker();
+	scoreRanking = new ScoreRanking();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
@@ -76,6 +77,7 @@ Play::~Play()
 	PtrDelete(feverUI);
 	PtrDelete(levelGauge);
 	PtrDelete(lockonMarker);
+	PtrDelete(scoreRanking);
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
@@ -118,6 +120,7 @@ void Play::Initialize()
 	feverUI->Initialize();
 	levelGauge->Initialize();
 	lockonMarker->Initialize();
+	scoreRanking->Initialize();
 
 	Audio::StopBGM("BGM_Play");
 	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
@@ -193,6 +196,7 @@ void Play::Update()
 
 	feverUI->Update();
 	levelGauge->Update();
+	scoreRanking->Update();
 
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
@@ -269,12 +273,14 @@ void Play::PreDraw()
 		Sprite3D::SetCamera(screenCamera);
 		Object3D::SetScreenDraw(true);
 		objectManager->PreDraw();
+		scoreRanking->Draw_OBJ();
 		Object3D::SetScreenDraw(false);
 		Sprite3D::SetCamera(camera.get());
 		Object3D::SetCamera(camera.get());
 		screenResource->PostDraw();
 
 		objectManager->PreDraw();
+		scoreRanking->Draw_OBJ();
 		stadium->Draw();
 		ParticleManager::GetInstance()->DrawFeverCutEffect();
 }
@@ -299,7 +305,7 @@ void Play::TimeUpdate()
 
 void Play::KillCountToEnding()
 {
-	Ending::killCount_player = actorManager->GetPlayer()->GetKillCount();
-	Ending::killCount_enemy_red = actorManager->GetStandardEnemies()[0]->GetKillCount();
-	Ending::killCount_enemy_green = actorManager->GetStandardEnemies()[1]->GetKillCount();
+	Ending::score_player = actorManager->GetPlayer()->GetTotalCutCount();
+	Ending::score_enemy_red = actorManager->GetStandardEnemies()[0]->GetTotalCutCount();
+	Ending::score_enemy_green = actorManager->GetStandardEnemies()[1]->GetTotalCutCount();
 }

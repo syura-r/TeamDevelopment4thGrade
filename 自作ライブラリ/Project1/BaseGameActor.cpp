@@ -113,7 +113,7 @@ void BaseGameActor::Initialize()
 	killCount = 0;
 	dropPointGetUI->Initialize();
 	weightInfluenceMap.clear();
-	chart->SetColorCount(0, 0);
+	//chart->SetColorCount(0, 0);
 	totalCutCount = 0;
 	isInFever = false;
 	feverTimer->Reset();
@@ -212,7 +212,7 @@ void BaseGameActor::Update()
 	Object::Update();
 	panelCountSprite3D->Update();
 	dropPointGetUI->Update();
-	chart->SetPosition(position + Vector3(0, 10, 0));
+	//chart->SetPosition(position + Vector3(0, 10, 0));
 }
 
 void BaseGameActor::Draw()
@@ -858,8 +858,8 @@ void BaseGameActor::ForcedWeight(const int arg_num, BaseGameActor* arg_actor)
 		itr = weightInfluenceMap.begin();
 		DirectX::XMFLOAT4 color1 = itr->first->actorColor;
 		int count1 = itr->second;
-		chart->SetColor(color1, {});
-		chart->SetColorCount(count1, 0);
+		//chart->SetColor(color1, {});
+		//chart->SetColorCount(count1, 0);
 	}
 	else
 	{
@@ -869,8 +869,8 @@ void BaseGameActor::ForcedWeight(const int arg_num, BaseGameActor* arg_actor)
 		itr++;
 		DirectX::XMFLOAT4 color2 = itr->first->actorColor;
 		int count2 = itr->second;
-		chart->SetColor(color1, color2);
-		chart->SetColorCount(count1, count2);
+		//chart->SetColor(color1, color2);
+		//chart->SetColorCount(count1, count2);
 	}
 }
 
@@ -960,7 +960,7 @@ void BaseGameActor::StartSpawn()
 	panelCutLocus->Move(Vector3(), 0);
 	cutPower = 0;
 	gottenPanel = 0;
-	chart->SetColorCount(0, 0);
+	//chart->SetColorCount(0, 0);
 }
 
 void BaseGameActor::OnSpawn(ActionStateLabel& arg_label)

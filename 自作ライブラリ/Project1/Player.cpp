@@ -47,10 +47,10 @@ Player::Player(const Vector3& arg_pos)
 
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 	dropPointGetUI = new DropPointGetUI(position, name);
-	chart = new PieChart({ 1, 0, 0, 1 }, { 0, 0, 0, 1 });
-	chart->SetScale(Vector3(4, 4, 4));
+	//chart = new PieChart({ 1, 0, 0, 1 }, { 0, 0, 0, 1 });
+	//chart->SetScale(Vector3(4, 4, 4));
 	actorColor = { 0.53f, 0.68f, 0.96f, 1 };
-	ObjectManager::GetInstance()->Add(chart);
+	//ObjectManager::GetInstance()->Add(chart);
 
 	Initialize();
 }

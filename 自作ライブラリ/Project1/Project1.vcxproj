@@ -195,6 +195,7 @@
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Easing.cpp" />
+    <ClCompile Include="EndingActor.cpp" />
     <ClCompile Include="EnergyItem.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FBXManager.cpp" />
@@ -253,8 +254,8 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="FeverUI.cpp" />
+    <ClCompile Include="ScoreRanking.cpp" />
     <ClCompile Include="StandardEnemy.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScreenCamera.cpp" />
@@ -315,6 +316,7 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DrawMode.h" />
     <ClInclude Include="Easing.h" />
+    <ClInclude Include="EndingActor.h" />
     <ClInclude Include="EnergyItem.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FBXManager.h" />
@@ -384,8 +386,8 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="RaycastHit.h" />
-    <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="FeverUI.h" />
+    <ClInclude Include="ScoreRanking.h" />
     <ClInclude Include="StandardEnemy.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
