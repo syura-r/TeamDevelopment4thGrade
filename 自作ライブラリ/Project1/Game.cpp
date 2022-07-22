@@ -143,6 +143,8 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Maker", "GamePlay_UI_Maker.png");
 		Texture::LoadTexture("GamePlay_CircleCover", "GamePlay_CircleCover.png");
 
+		Texture::LoadTexture("FeverPlayerEffectWhite", "GamePlay_SPeffect_White.png");
+
 		break; 
 	case 2:
 		//Objƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ

@@ -202,7 +202,8 @@ void BaseGameActor::Update()
 		{
 			if (feverTimer->GetTime() % 3 == 0)
 			{
-				ParticleEmitter::FeverEffect(position);
+				//ParticleEmitter::FeverEffect(position);
+				ParticleEmitter::FeverEffectColor(position, effectColor);
 			}
 
 		}
