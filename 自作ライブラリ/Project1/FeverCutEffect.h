@@ -5,7 +5,7 @@
 class FeverCutEffect
 {
 public:
-    FeverCutEffect(Line* arg_line);
+    FeverCutEffect(Line* arg_line, const DirectX::XMFLOAT4& arg_color);
     ~FeverCutEffect();
     void Initialize();
     void Upate();
@@ -21,4 +21,6 @@ private:
     float angle;
     Vector2 scale;
     Vector3 fieldRotation;
+
+    DirectX::XMFLOAT4 color;
 };

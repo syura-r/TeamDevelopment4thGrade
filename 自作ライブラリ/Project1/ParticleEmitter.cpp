@@ -255,9 +255,61 @@ void ParticleEmitter::FeverEffect(const Vector3& arg_position)
     particleManager->Add(particle, "FeverPlayerEffect");
 }
 
-void ParticleEmitter::FeverCut(Line* arg_line)
+void ParticleEmitter::FeverCut(Line* arg_line, const DirectX::XMFLOAT4& arg_color)
 {
-    particleManager->AddFeverCutEffect(new FeverCutEffect(arg_line));
+    particleManager->AddFeverCutEffect(new FeverCutEffect(arg_line, arg_color));
+}
+
+void ParticleEmitter::FeverEffectColor(const Vector3& arg_position, const DirectX::XMFLOAT4& arg_color)
+{
+    const float RESPAWN_RANGE = 2.5f;
+    float rangeX = GetRandom(-RESPAWN_RANGE, RESPAWN_RANGE);
+    float rangeY = GetRandom(-RESPAWN_RANGE, RESPAWN_RANGE);
+    float rangeZ = GetRandom(-RESPAWN_RANGE, RESPAWN_RANGE);
+
+    Vector3 position = arg_position + Vector3(rangeX, rangeY, rangeZ);
+
+    Particle* particle = new Particle();
+
+    float scale = 1.0f;
+
+    int random = GetRandom(0.0f, 10.0f);
+    //大きいサイズ
+    if (random % 2 == 0)
+    {
+        scale = 2.0f;
+    }
+    //小さいサイズ
+    else
+    {
+        scale = 1.0f;
+    }
+
+
+    particle->parameter.accel = Vector3(0, 0, 0);
+    particle->parameter.num_frame = 15;
+    particle->parameter.s_alpha = 1.0f;
+    particle->parameter.e_alpha = 0.0f;
+    particle->parameter.scaleAce = { 0,0 };
+    particle->parameter.s_scale = scale;
+    particle->parameter.e_scale = scale;
+    particle->parameter.s_color = { arg_color.x, arg_color.y, arg_color.z };
+    particle->parameter.e_color = { arg_color.x, arg_color.y, arg_color.z };
+    particle->parameter.s_rotation = { 0,0,0 };
+    particle->parameter.e_rotation = { 0,0,0 };
+
+    particle->vsParam.position = arg_position + Vector3(rangeX, rangeY, rangeZ);
+    particle->vsParam.velocity = Vector3(0, 0.1f, 0);
+    particle->vsParam.rotation = Vector3(0, 0, 0);
+    particle->vsParam.scale = scale;
+    particle->vsParam.scaleVel = (particle->parameter.e_scale - particle->parameter.s_scale) / particle->parameter.num_frame;
+    particle->vsParam.billboardActive = 1;
+    particle->vsParam.color = { arg_color.x, arg_color.y, arg_color.z, 1.0f };
+    particle->vsParam.frame = 0;
+    particle->vsParam.isDead = false;
+
+
+    particleManager->Add(particle, "FeverPlayerEffectWhite");
 }
 
 float ParticleEmitter::GetRandom(float arg_min, float arg_max)

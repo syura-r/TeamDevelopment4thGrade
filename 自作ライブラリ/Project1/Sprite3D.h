@@ -18,7 +18,7 @@ public:
 	void DrawSprite(const std::string& name, const Vector3& position, const float& rotation, const XMFLOAT2& scale, const XMFLOAT4& color, const XMFLOAT2& anchorPoint, bool billboard );
 	void DrawSprite(const std::string& name, const Vector3& position, const float& rotation = 0.0f, const XMFLOAT2& scale = { 1.0f,1.0f }, const XMFLOAT4& color = { 1,1,1,1 }, const XMFLOAT2& anchorPoint = { 0.5f,0.5f }, const std::string& pipelineName = "NoShade", BLENDTYPE type = ALPHA,bool billboard = true);
 	
-	void DrawSpriteCutEffect(const std::string& name, const Vector3& position, const float& rotation, const Vector3& fieldRotation, const XMFLOAT2& scale, const XMFLOAT2& anchorPoint, bool billboard);
+	void DrawSpriteCutEffect(const std::string& name, const Vector3& position, const float& rotation, const Vector3& fieldRotation, const XMFLOAT2& scale, const XMFLOAT2& anchorPoint, bool billboard, const DirectX::XMFLOAT4& arg_color);
 
 	
 	//void NoPipelineDraw(const std::string& name, const XMFLOAT2& position, const float& rotation, const XMFLOAT2& scale, const XMFLOAT4& color, const XMFLOAT2& anchorPoint);

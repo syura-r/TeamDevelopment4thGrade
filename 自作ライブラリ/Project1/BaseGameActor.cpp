@@ -216,7 +216,8 @@ void BaseGameActor::Update()
 		{
 			if (feverTimer->GetTime() % 3 == 0)
 			{
-				ParticleEmitter::FeverEffect(position);
+				//ParticleEmitter::FeverEffect(position);
+				ParticleEmitter::FeverEffectColor(position, effectColor);
 			}
 
 		}
@@ -1152,7 +1153,22 @@ void BaseGameActor::HitEnergyItem(EnergyItem* arg_energyItem)
 		cutPower = MAX_CUTPOWER;
 	}
 
-	Audio::PlaySE("SE_GetTriangle", 1.0f * Audio::volume_se);
+	switch (add - 1)
+	{
+	case 0:
+		Audio::PlaySE("SE_GetTriangle", 1.0f * Audio::volume_se);
+		break;
+	case 1:
+		Audio::PlaySE("SE_GetItemL2", 1.0f * Audio::volume_se);
+		break;
+	case 2:
+		Audio::PlaySE("SE_GetItemL3", 1.0f * Audio::volume_se);
+		break;
+	default:
+		Audio::PlaySE("SE_GetTriangle", 1.0f * Audio::volume_se);
+	}
+
+
 	arg_energyItem->Dead();
 }
 

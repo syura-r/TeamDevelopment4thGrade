@@ -52,6 +52,11 @@ Player::Player(const Vector3& arg_pos)
 	actorColor = { 0.53f, 0.68f, 0.96f, 1 };
 	//ObjectManager::GetInstance()->Add(chart);
 
+	effectColor = { 0.53f, 0.68f, 0.96f, 1 };
+	//effectColor = { 0.96f, 0.53f, 0.54f, 1 };
+	//effectColor = { 0.51f, 0.92f, 0.60f, 1 };
+
+
 	Initialize();
 }
 

@@ -193,6 +193,12 @@ public:
 	inline BaseGameActor* GetTarget()const {
 		return targetActor;
 	}
+	inline DirectX::XMFLOAT4 GetActorColor()const {
+		return actorColor;
+	}
+	inline DirectX::XMFLOAT4 GetEffectColor()const {
+		return effectColor;
+	}
 
 	//---調整用---
 	static void DrawActorSettingUI();
@@ -253,6 +259,7 @@ protected:
 	std::unordered_map<BaseGameActor*, int> weightInfluenceMap;
 	PieChart* chart;//-//
 	DirectX::XMFLOAT4 actorColor;//-//
+	DirectX::XMFLOAT4 effectColor;
 	//ゲーム開始から切った数
 	int totalCutCount;
 	//フィーバー状態

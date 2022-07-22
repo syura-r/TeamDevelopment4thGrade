@@ -215,7 +215,7 @@ void Sprite3D::DrawSprite(const std::string& name, const Vector3& position, cons
 
 }
 
-void Sprite3D::DrawSpriteCutEffect(const std::string& name, const Vector3& position, const float& rotation, const Vector3& fieldRotation, const XMFLOAT2& scale, const XMFLOAT2& anchorPoint, bool billboard)
+void Sprite3D::DrawSpriteCutEffect(const std::string& name, const Vector3& position, const float& rotation, const Vector3& fieldRotation, const XMFLOAT2& scale, const XMFLOAT2& anchorPoint, bool billboard, const DirectX::XMFLOAT4& arg_color)
 {
 	auto cmdList = DirectXLib::GetInstance()->GetCommandList();
 
@@ -278,7 +278,7 @@ void Sprite3D::DrawSpriteCutEffect(const std::string& name, const Vector3& posit
 		constMap->viewprojection = matViewProjection;
 		constMap->cameraPos = cameraPos;
 		constMap->world = spriteMatWorld;
-		constMap->color = Vector4(1,1,1,1);
+		constMap->color = arg_color;
 		constBuff->Unmap(0, nullptr);
 	}
 	else
@@ -289,7 +289,7 @@ void Sprite3D::DrawSpriteCutEffect(const std::string& name, const Vector3& posit
 		constMap2->viewprojection = matViewProjection;
 		constMap2->cameraPos = cameraPos;
 		constMap2->world = spriteMatWorld;
-		constMap2->color = Vector4(1, 1, 1, 1);
+		constMap2->color = arg_color;
 		constBuff2->Unmap(0, nullptr);
 	}
 

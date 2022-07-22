@@ -28,7 +28,10 @@ public:
     static void FeverEffect(const Vector3& arg_position);
 
     //フィーバー時切り抜きエフェクト
-    static void FeverCut(Line* arg_line);
+    static void FeverCut(Line* arg_line, const DirectX::XMFLOAT4& arg_color);
+
+    //各色フィーバーエフェクト
+    static void FeverEffectColor(const Vector3& arg_position, const DirectX::XMFLOAT4& arg_color);
 
 private:
     static float GetRandom(float arg_min, float arg_max);
