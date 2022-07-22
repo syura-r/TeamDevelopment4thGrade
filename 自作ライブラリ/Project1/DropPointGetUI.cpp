@@ -45,9 +45,9 @@ void DropPointGetUI::Update()
 		{
 			const int limitTime = 45;
 
-			//ã¸
+			//‰º~
 			const float positionUpSpeed = 0.1f;
-			ui[i]->position.y += positionUpSpeed;
+			ui[i]->position.y -= positionUpSpeed;
 
 			//”–‚­
 			ui[i]->alpha = Easing::EaseInQuart(1.0f, 0.6f, limitTime, ui[i]->moveTimer);
