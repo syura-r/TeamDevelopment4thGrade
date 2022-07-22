@@ -25,7 +25,6 @@
 #include "Easing.h"
 
 ComPtr<ID3D12Resource> BaseGameActor::constCameraBuff = nullptr;
-//DebugCamera* BaseGameActor::camera = nullptr;
 InGameCamera* BaseGameActor::camera = nullptr;
 bool BaseGameActor::rotCamera = false;
 float BaseGameActor::radY = 0;
@@ -35,6 +34,7 @@ const int BaseGameActor::ROT_TIME = 10;
 int BaseGameActor::MAX_CUTPOWER = 6;
 int BaseGameActor::MIN_CUTPOWER = 0;
 bool BaseGameActor::IS_ACTIVE_ACTORLEVEL = true;
+bool BaseGameActor::IS_EXTEND_VERTICALY = false;
 
 BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 :startPos(arg_pos),
@@ -1284,10 +1284,12 @@ void BaseGameActor::DrawActorSettingUI()
 	static bool uiMax = true;
 	static bool uiMin = true;
 	static bool uiIsActive = true;
+	static bool uiIsExtend = false;
 	ImGui::Begin("ActorSetting");
 	ImGui::Checkbox("maxPower [true : 6] [false : 3]", &uiMax);
 	ImGui::Checkbox("minPower [true : 0] [false : 1]", &uiMin);
 	ImGui::Checkbox("isActiveActorLevel", &uiIsActive);
+	ImGui::Checkbox("isExtendVerticaly", &uiIsExtend);
 	ImGui::End();
 
 	if (uiMax)
@@ -1307,6 +1309,7 @@ void BaseGameActor::DrawActorSettingUI()
 		BaseGameActor::MIN_CUTPOWER = 1;
 	}
 	BaseGameActor::IS_ACTIVE_ACTORLEVEL = uiIsActive;
+	BaseGameActor::IS_EXTEND_VERTICALY = uiIsExtend;
 }
 
 void BaseGameActor::SlidingDown()

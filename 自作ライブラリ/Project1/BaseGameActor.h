@@ -196,6 +196,9 @@ public:
 
 	//---í≤êÆóp---
 	static void DrawActorSettingUI();
+	static inline bool IsExtendVerticaly() {
+		return IS_EXTEND_VERTICALY;
+	}
 
 protected:
 	struct ConstLightCameraBuff
@@ -331,4 +334,5 @@ protected:
 	static int MAX_CUTPOWER;
 	static int MIN_CUTPOWER;
 	static bool IS_ACTIVE_ACTORLEVEL;
+	static bool IS_EXTEND_VERTICALY;
 };
