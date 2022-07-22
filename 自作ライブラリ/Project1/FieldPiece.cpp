@@ -4,7 +4,7 @@
 #include "OBJLoader.h"
 #include "ActorManager.h"
 #include "ParticleEmitter.h"
-
+#include"Texture.h"
 const float FieldPiece::SIZE = 7.5f / 0.866f / 2.0f;
 const float FieldPiece::SIDEWAYS_LENGTH = 0.866f * SIZE;
 const float FieldPiece::LOWER_TIME_OFFSET = 1.0f * SIZE;
@@ -12,6 +12,9 @@ const float FieldPiece::UPPER_TIME_OFFSET = 0.5f * SIZE;
 const float FieldPiece::FULL_OFFSET = LOWER_TIME_OFFSET + UPPER_TIME_OFFSET;
 const float FieldPiece::WEIGHT = 1.0f;
 std::vector<Vector2> FieldPiece::basePoints = std::vector<Vector2>();
+
+float FieldPiece::baceColor[3] = { 1.0f, 1.0f ,1.0f };
+float FieldPiece::bonusColor[3] = { 1.0f, 0.0f ,0.0f };
 
 FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_direction)
 	:virtualityPlanePosition(arg_position),
@@ -256,6 +259,18 @@ std::vector<Vector2>& FieldPiece::GetPoints()
 	return points;
 }
 
+void FieldPiece::TestChangeColor()
+{
+	static float stadiumColor[3] = { 1,1,1 };
+	ImGui::Begin("FieldColor");
+	ImGui::ColorPicker3("baseColor", baceColor);
+	ImGui::ColorPicker3("bonusColor", bonusColor);
+	ImGui::ColorPicker3("stadiumColor", stadiumColor);
+	ImGui::End();
+	XMFLOAT4 sColor = { stadiumColor[0],stadiumColor[1] ,stadiumColor[2] ,1 };
+	Texture::SendColor("blue.png", &sColor);
+}
+
 void FieldPiece::SetPoints()
 {
 	if (basePoints.empty())
@@ -282,7 +297,7 @@ void FieldPiece::SetPoints()
 
 void FieldPiece::ChangeColorForRidden()
 {
-	color = { 0.25f, 0.58f, 1.0f, 1.0f };
+	color = { baceColor[0],baceColor[1], baceColor[2], 1.0f };
 
 	if (!isCutable)
 	{
@@ -292,7 +307,7 @@ void FieldPiece::ChangeColorForRidden()
 
 	if (isBonus)
 	{
-		color = { 0.9f, 0.9f, 0.1f, 1.0f };
+		color = { bonusColor[0],bonusColor[1], bonusColor[2], 1.0f };
 		return;
 	}
 

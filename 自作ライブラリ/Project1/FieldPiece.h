@@ -43,6 +43,10 @@ public:
 	void ChangeIsCutable(const bool arg_flag);
 	std::vector<Vector2>& GetPoints();
 
+	static void TestChangeColor();
+	static float baceColor[3];
+	static float bonusColor[3];
+
 private:
 	static const float SIZE;
 	static const float SIDEWAYS_LENGTH;

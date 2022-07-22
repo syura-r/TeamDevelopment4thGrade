@@ -28,6 +28,8 @@
 #include "InGameCamera.h"
 #include "IEnemyAI.h"
 
+#include "FieldPiece.h"
+
 Play::Play()
 {
 	next = Ending;
@@ -247,6 +249,8 @@ void Play::Update()
 
 void Play::PreDraw()
 {
+	FieldPiece::TestChangeColor();
+
 	timeLimit->Draw();
 	feverUI->Draw();
 	levelGauge->Draw();
