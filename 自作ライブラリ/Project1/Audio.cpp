@@ -285,6 +285,7 @@ void Audio::AllPauseSE()
 {
 	for (auto itr = seSourceVoices.begin(); itr != seSourceVoices.end(); ++itr)
 	{
+		if (itr->second == nullptr) continue;
 		itr->second->Stop();
 	}
 }
@@ -293,6 +294,7 @@ void Audio::AllResumeSE()
 {
 	for (auto itr = seSourceVoices.begin(); itr != seSourceVoices.end(); ++itr)
 	{
+		if (itr->second == nullptr) continue;
 		itr->second->Start();
 	}
 }
@@ -301,6 +303,7 @@ void Audio::AllStopSE()
 {
 	for (auto itr = seSourceVoices.begin(); itr != seSourceVoices.end(); ++itr)
 	{
+		if (itr->second == nullptr) continue;
 		itr->second->Stop();
 		itr->second->DestroyVoice();
 	}

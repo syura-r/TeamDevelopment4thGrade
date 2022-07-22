@@ -144,6 +144,7 @@ void Play::Update()
 	if (pause->GetToTitle())
 	{
 		Audio::StopBGM("BGM_Play");
+		Audio::AllStopSE();
 		next = Title;
 		KillCountToEnding();
 		ShutDown();
@@ -162,6 +163,7 @@ void Play::Update()
 	if (Input::TriggerKey(DIK_E))//I—¹ˆ—
 	{
 		Audio::StopBGM("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
@@ -225,6 +227,7 @@ void Play::Update()
 	/*if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
 	{
 		Audio::StopWave("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
@@ -243,6 +246,7 @@ void Play::Update()
 	if (allEnemiesOutField)
 	{
 		Audio::StopWave("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
