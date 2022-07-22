@@ -304,7 +304,7 @@ void StandardEnemy::CompleteCut()
 	}
 	totalCutCount += num;
 
-	cutPower = 0;
+	cutPower = MIN_CUTPOWER;
 
 	if (field->IsNewFeverPlayer())
 	{

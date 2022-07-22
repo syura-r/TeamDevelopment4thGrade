@@ -194,6 +194,9 @@ public:
 		return targetActor;
 	}
 
+	//---í≤êÆóp---
+	static void DrawActorSettingUI();
+
 protected:
 	struct ConstLightCameraBuff
 	{
@@ -323,4 +326,9 @@ protected:
 
 	//---Spawn---
 	FieldPiece* respawnPiece;
+
+	//---í≤êÆóp---
+	static int MAX_CUTPOWER;
+	static int MIN_CUTPOWER;
+	static bool IS_ACTIVE_ACTORLEVEL;
 };

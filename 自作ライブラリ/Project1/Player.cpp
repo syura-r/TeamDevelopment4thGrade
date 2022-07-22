@@ -100,6 +100,8 @@ void Player::DrawReady()
 		ImGui::Text("virtualityPlanePosition : {%f,%f,%f}\n", virtualityPlanePosition.x, virtualityPlanePosition.y, virtualityPlanePosition.z);
 		ImGui::End();
 	}
+
+	BaseGameActor::DrawActorSettingUI();
 #endif
 	dropPointGetUI->Draw();
 	panelCountSprite3D->Draw();
@@ -131,7 +133,7 @@ void Player::CompleteCut()
 	}
 	totalCutCount += num;
 
-	cutPower = 0;
+	cutPower = MIN_CUTPOWER;
 
 	if (field->IsNewFeverPlayer())
 	{
