@@ -115,4 +115,6 @@ private:
 	Sprite* circle_se;
 	Vector2 circlePosition_se;
 
+	//‘€ìà–¾
+	Sprite* config_sp = nullptr;
 };

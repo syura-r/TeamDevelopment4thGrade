@@ -121,6 +121,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("BGM", "Pause/BGM.png");
 		Texture::LoadTexture("SE", "Pause/SE.png");
 		Texture::LoadTexture("circle", "Pause/circle.png");
+		Texture::LoadTexture("GamePlay_UI_Operation", "Pause/GamePlay_UI_Operation.png");
 		Texture::LoadTexture("FeverCuttingEffect", "GamePLay_FeverEffect.png");
 		Texture::LoadTexture("FeverPlayerEffect", "GamePlay_SPeffect.png");
 		Texture::LoadTexture("GamePlay_UI_FeverText", "GamePlay_UI_FeverText.png");
