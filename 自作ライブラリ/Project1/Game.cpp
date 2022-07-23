@@ -148,6 +148,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_Score_Player", "ScoreRanking/GamePlay_Score_Player.png");
 		Texture::LoadTexture("GamePlay_Score_Enemy", "ScoreRanking/GamePlay_Score_Enemy.png");
 		Texture::LoadTexture("GamePlay_Score_Enemy2", "ScoreRanking/GamePlay_Score_Enemy2.png");
+		Texture::LoadTexture("Fade_Tri", "Fade_Tri.png");
 		Texture::LoadTexture("GamePlay_UI_Ready", "GamePlay_UI_Ready.png");
 		Texture::LoadTexture("GamePlay_UI_GO", "GamePlay_UI_GO.png");
 

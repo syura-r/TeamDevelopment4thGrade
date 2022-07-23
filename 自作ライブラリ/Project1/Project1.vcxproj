@@ -273,6 +273,7 @@
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="TouchAbleObject.cpp" />
+    <ClCompile Include="TransitionTriangle.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="UnableThroughBlock.cpp" />
     <ClCompile Include="UnableThroughEdge.cpp" />
@@ -408,6 +409,7 @@
     <ClInclude Include="Title.h" />
     <ClInclude Include="TitleText.h" />
     <ClInclude Include="TouchAbleObject.h" />
+    <ClInclude Include="TransitionTriangle.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="UnableThroughBlock.h" />
     <ClInclude Include="UnableThroughEdge.h" />

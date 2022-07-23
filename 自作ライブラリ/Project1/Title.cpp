@@ -56,7 +56,7 @@ void Title::Initialize()
 
 	for (int i = 0; i < panelsNum_ALL; i++)
 	{
-		panels[i]->Initialize((int)GetRandom(0.0f, 5.0f));
+		panels[i]->Initialize((int)GetRandom(0.0f, 8.0f));
 	}
 	//•~‚«‹l‚ß
 	PanelPadding();
@@ -112,7 +112,6 @@ void Title::Update()
 	lightGroup->SetAmbientColor({ 1,1,1 });
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });
 	lightGroup->Update();
-//#endif
 }
 
 void Title::PreDraw()
