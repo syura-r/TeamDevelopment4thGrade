@@ -26,7 +26,7 @@ Stadium::Stadium()
 	lavaObj->SetPosition(position);
 	lavaObj->SetScale({65,1,65});
 	lavaObj->SetRotation({0,45,0});
-	lavaObj->SetColor({ 0.0f, 0.0f,0.9f,1.0f });
+	lavaObj->SetColor({ 1.0f, 1.0f,1.0f,1.0f });
 	lavaObj->Update();
 
 	Initialize();
@@ -74,12 +74,6 @@ void Stadium::Update()
 
 void Stadium::Draw()
 {
-	static float lavaColor[3] = { 1,1,1 };
-	ImGui::Begin("lavaColor");
-	ImGui::ColorPicker3("lavaColor", lavaColor);
-	ImGui::End();
-	lavaObj->SetColor({ lavaColor[0],lavaColor[1], lavaColor[2], 1.0f });
-
 	PipelineState::SetPipeline("UVScrolling");
 	DirectXLib::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
 	lavaObj->CustomDraw(false, false);

@@ -249,8 +249,6 @@ void Play::Update()
 
 void Play::PreDraw()
 {
-	FieldPiece::TestChangeColor();
-
 	timeLimit->Draw();
 	feverUI->Draw();
 	levelGauge->Draw();

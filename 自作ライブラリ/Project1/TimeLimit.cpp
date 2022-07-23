@@ -45,7 +45,7 @@ void TimeLimit::Update()
 	//•\Ž¦ŽžŠÔi•bj
 	seconds = nowTime % 60;
 
-	//timer->Update();
+	timer->Update();
 
 	//Žc‚èŽžŠÔ‚ÌŒx
 	Alarm((timer->GetLimit() - timer->GetTime()) / 60);
