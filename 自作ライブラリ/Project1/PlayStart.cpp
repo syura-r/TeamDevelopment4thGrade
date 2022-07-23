@@ -57,9 +57,9 @@ void PlayStart::Update()
 void PlayStart::Draw()
 {
 	if (!isReadyEnd)
-		sp_ready->DrawSprite("GamePlay_Score_Rank", { 1920 / 2, 1080 / 2 }, 0.0f, { scale_ready,scale_ready });
+		sp_ready->DrawSprite("GamePlay_UI_Ready", { 1920 / 2, 1080 / 2 }, 0.0f, { scale_ready,scale_ready });
 	else if (!isGoEnd)
-		sp_go->DrawSprite("GamePlay_Score_Rank", { positionX_go, 1080 / 2 });
+		sp_go->DrawSprite("GamePlay_UI_GO", { positionX_go, 1080 / 2 });
 }
 
 void PlayStart::CameraZoomOut()
@@ -73,7 +73,6 @@ void PlayStart::CameraZoomOut()
 
 	if (easingCount_camera < easingCount_end)
 	{
-		easingCount_camera++;
 		//‹——£‚Æ’Ž‹“_‚ÌˆÚ“®
 		cameraDistance = Easing::EaseInOutQuint(cameraDistance_init, cameraDistance_end, easingCount_end, easingCount_camera);
 		camera->SetDistance(cameraDistance);
@@ -90,6 +89,7 @@ void PlayStart::CameraZoomOut()
 		easingCount_camera = 0;
 		isCameraZoomEnd = true;
 	}
+	easingCount_camera++;
 }
 
 void PlayStart::ScalingReadySprite()
@@ -98,7 +98,6 @@ void PlayStart::ScalingReadySprite()
 	const float easingCount_end = 40.0f;
 	const float easingCount_endAdd = 20.0f;//—]‰C
 
-	easingCount_ready++;
 	if (easingCount_ready < easingCount_end)
 	{
 		scale_ready = Easing::EaseOutExpo(
@@ -110,6 +109,7 @@ void PlayStart::ScalingReadySprite()
 		easingCount_ready = 0;
 		isReadyEnd = true;
 	}
+	easingCount_ready++;
 }
 
 void PlayStart::TranslationGoSprite()
@@ -118,7 +118,6 @@ void PlayStart::TranslationGoSprite()
 	const float easingCount_end = 40.0f;
 	const float easingCount_endAdd = 20.0f;//—]‰C
 
-	easingCount_go++;
 	if (easingCount_go < easingCount_end)
 	{
 		positionX_go = Easing::EaseOutExpo(
@@ -130,4 +129,5 @@ void PlayStart::TranslationGoSprite()
 		easingCount_go = 0;
 		isGoEnd = true;
 	}
+	easingCount_go++;
 }
