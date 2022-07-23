@@ -38,7 +38,7 @@ void TransitionTriangle::Update()
 		scale_square.x = position_triangle.x;
 
 	//I—¹ðŒ
-	if (position_triangle.x >= position_triangle_end.x)
+	if (position_triangle.x > position_triangle_end.x)
 	{
 		isOpen = false;
 		isClose = false;
@@ -54,13 +54,17 @@ void TransitionTriangle::Draw()
 void TransitionTriangle::IsOpen()
 {
 	isOpen = true;
+	isClose = false;
 	position_triangle = position_triangle_init;
 	anchar_square.x = 0.0f;
+	scale_square.x = 1920.0f - position_triangle.x;
 }
 
 void TransitionTriangle::IsClose()
 {
 	isClose = true;
+	isOpen = false;
 	position_triangle = position_triangle_init;
 	anchar_square.x = 1.0f;
+	scale_square.x = position_triangle.x;
 }

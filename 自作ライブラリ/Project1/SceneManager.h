@@ -10,6 +10,8 @@
 class Sprite;
 class TextureResource;
 
+class TransitionTriangle;
+
 class SceneManager
 {
 public:
@@ -41,7 +43,7 @@ private:
 	bool migrateStart;
 	float migrateTime;
 	int migrateCounter;
-	;
+	std::unique_ptr<TransitionTriangle> transitionTriangle;
 
 };
 
