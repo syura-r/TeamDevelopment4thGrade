@@ -253,6 +253,7 @@
     <ClCompile Include="Play.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Bloom.cpp" />
+    <ClCompile Include="PlayStart.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="FeverUI.cpp" />
     <ClCompile Include="ScoreRanking.cpp" />
@@ -380,6 +381,7 @@
     <ClInclude Include="PlaneCollider.h" />
     <ClInclude Include="Play.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayStart.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Bloom.h" />
     <ClInclude Include="PtrDelete.h" />
