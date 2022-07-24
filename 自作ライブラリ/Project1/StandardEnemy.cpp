@@ -495,10 +495,19 @@ bool StandardEnemy::IsChangeMoveToTackle()
 bool StandardEnemy::IsChangeMoveToCut()
 {
 	int rnd = std::rand() % 30;
-	if (rnd != 0)
+	if (cutPower != 6)
+	{
+		if (rnd != 0)
+		{
+			return false;
+		}
+	}
+
+	if (!IsExistPiecesWithinSawRange())
 	{
 		return false;
 	}
+	
 	int randRatio = (1 + cutPowerUpperLimit - cutPower) * 10;
 	if (randRatio <= 0)
 	{
@@ -512,5 +521,5 @@ bool StandardEnemy::IsChangeMoveToCut()
 	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
 	//---Ø‚è”²‚«”»’fŒn---
 	//enemyAI->StartCutKillActorInFever();
-	return (cutPower >= cutPowerLowerLimit && cutPower <= cutPowerUpperLimit) && cutPower > 0 && info->ridingPiece;
+	return (cutPower >= cutPowerLowerLimit) && cutPower > 0 && info->ridingPiece;
 }

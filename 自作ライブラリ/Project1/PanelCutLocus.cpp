@@ -94,6 +94,10 @@ void PanelCutLocus::Move(const Vector3& arg_movePos, const float arg_angle)
 		{
 			vecInfo = baseInfoVerticaly[cutPower];
 		}
+		if (static_cast<BaseGameActor*>(parentObject)->IsInFever())
+		{
+			vecInfo = baseInfo[cutPower];
+		}
 		int i = 0;
 		for (i = 0; i < vecInfo.size(); i++)
 		{
@@ -131,6 +135,10 @@ void PanelCutLocus::RecordCuttedPanelPos()
 	if (BaseGameActor::IsExtendVerticaly())
 	{
 		vecInfo = baseCuttedDirVerticaly[cutPower];
+	}
+	if (static_cast<BaseGameActor*>(parentObject)->IsInFever())
+	{
+		vecInfo = baseCuttedDir[cutPower];
 	}
 	int i = 0;
 	for (i = 0; i < vecInfo.size(); i++)

@@ -32,9 +32,9 @@ int BaseGameActor::cameraRotCount = 0;
 const int BaseGameActor::ROT_TIME = 10;
 
 int BaseGameActor::MAX_CUTPOWER = 6;
-int BaseGameActor::MIN_CUTPOWER = 0;
+int BaseGameActor::MIN_CUTPOWER = 1;
 bool BaseGameActor::IS_ACTIVE_ACTORLEVEL = true;
-bool BaseGameActor::IS_EXTEND_VERTICALY = false;
+bool BaseGameActor::IS_EXTEND_VERTICALY = true;
 
 BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 :startPos(arg_pos),
@@ -1300,9 +1300,9 @@ void BaseGameActor::HitFeverInItem(FeverInItem* arg_feverInItem)
 void BaseGameActor::DrawActorSettingUI()
 {
 	static bool uiMax = true;
-	static bool uiMin = true;
+	static bool uiMin = false;
 	static bool uiIsActive = true;
-	static bool uiIsExtend = false;
+	static bool uiIsExtend = true;
 	ImGui::Begin("ActorSetting");
 	ImGui::Checkbox("maxPower [true : 6] [false : 3]", &uiMax);
 	ImGui::Checkbox("minPower [true : 0] [false : 1]", &uiMin);
