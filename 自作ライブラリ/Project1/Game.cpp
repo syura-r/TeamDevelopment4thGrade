@@ -151,6 +151,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("Fade_Tri", "Fade_Tri.png");
 		Texture::LoadTexture("GamePlay_UI_Ready", "GamePlay_UI_Ready.png");
 		Texture::LoadTexture("GamePlay_UI_GO", "GamePlay_UI_GO.png");
+		Texture::LoadTexture("GamePlay_UI_FeverTimeText", "GamePlay_UI_FeverTimeText.png");
 
 		break; 
 	case 2:
@@ -167,7 +168,6 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("Hexagon", "Hexagon.obj", false);
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
-		OBJLoader::LoadModelFile("fieldPiece_title", "Title_Triangle.obj", false);
 		OBJLoader::LoadModelFile("stadium", "stadium.obj", false);
 		OBJLoader::LoadModelFile("lava", "GamePlay_Magma.obj", false);
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);

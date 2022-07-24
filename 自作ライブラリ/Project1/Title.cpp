@@ -162,12 +162,14 @@ void Title::PanelPadding()
 				if (k != 0)
 				{
 					panels[count_panel]->rotation.x = -90.0f;
+					panels[count_panel]->position.y += 0.9f;
 				}
 				//ãŒü‚«
 				else
 				{
 					panels[count_panel]->rotation.x = 90.0f;
 					panels[count_panel]->rotation.z = 180.0f;
+					panels[count_panel]->position.y -= 0.9f;
 				}
 
 				count_panel++;
@@ -202,7 +204,7 @@ bool Title::PopUpPanel()
 bool Title::ZoomIn()
 {
 	//‹ß‚Ã‚¯‚é
-	const float endDistance = 8.0f;
+	const float endDistance = 7.0f;
 	const int easingLimit = 45;
 	cameraDistance = Easing::EaseInCirc(cameraDistance_init, endDistance, easingLimit, easingTimer_zoom);
 	easingTimer_zoom++;
@@ -215,7 +217,7 @@ bool Title::ZoomIn()
 
 Title::Panel::Panel()
 {
-	object = Object3D::Create(OBJLoader::GetModel("fieldPiece_title"), position, scale, rotation, color);
+	object = Object3D::Create(OBJLoader::GetModel("fieldPiece"), position, scale, rotation, color);
 }
 
 Title::Panel::~Panel()

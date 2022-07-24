@@ -36,7 +36,7 @@ private:
 
 	Vector2 position_triangle;
 	Vector2 scale_triangle;
-	const float positon_triangle_X_start = -615.0f;
+	const float positon_triangle_X_start = -210.0f;
 	const float positon_triangle_X_end = 1920.0f - positon_triangle_X_start;
 
 	Vector2 anchar_square;
