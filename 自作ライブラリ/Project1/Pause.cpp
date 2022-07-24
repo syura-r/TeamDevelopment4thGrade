@@ -20,6 +20,7 @@ Pause::Pause()
 	se = new SelectSprite();
 	bar_se = new Sprite();
 	circle_se = new Sprite();
+	config_sp = new Sprite();
 }
 
 Pause::~Pause()
@@ -36,6 +37,7 @@ Pause::~Pause()
 	delete se;
 	delete bar_se;
 	delete circle_se;
+	delete config_sp;
 }
 
 void Pause::Initialize()
@@ -215,6 +217,8 @@ void Pause::Draw()
 		}
 
 	}
+
+	config_sp->DrawSprite("GamePlay_UI_Operation", { 960,400 }, 0.0f, { 0.9f, 0.9f });
 
 	const XMFLOAT2 scale = { 1920, 1080 };
 	const XMFLOAT4 color = { 0,0,0,0.4f };

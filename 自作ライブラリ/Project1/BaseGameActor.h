@@ -158,7 +158,6 @@ public:
 	}
 	inline void AddKillCount(const int arg_num) {
 		killCount += arg_num;
-		dropPointGetUI->PointGet();
 	}
 	inline void SubtructKillCount(const int arg_num) {
 		killCount -= arg_num;

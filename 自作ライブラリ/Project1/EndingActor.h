@@ -12,7 +12,9 @@ public:
 	void Update();
 	void Draw();
 
-	bool GetIsAddPanelEnd() { return IsAddPanelEnd; }
+	void SetIsNumberRoll(const bool arg_isNumberRoll) { isNumberRoll = arg_isNumberRoll; }
+
+	bool GetIsAddPanelEnd() { return isAddPanelEnd; }
 	int GetRanking() { return ranking; }
 	Vector3& GetPosition() { return position; }
 
@@ -31,6 +33,8 @@ private:
 	//スコア数値
 	NumberSprite* numberSprite = nullptr;
 	Vector2 position_2d = { 0.0f, 0.0f };
+	int numberRoll_interval = 0;
+	bool isNumberRoll = false;
 
 	//パネル
 	struct Panel
@@ -44,7 +48,7 @@ private:
 	std::vector<Panel*> panels;
 	void AddPanel();
 	void ResetPanel();
-	bool IsAddPanelEnd = false;
+	bool isAddPanelEnd = false;
 
 };
 

@@ -976,6 +976,7 @@ void BaseGameActor::StartSpawn()
 	cutPower = 0;
 	gottenPanel = 0;
 	//chart->SetColorCount(0, 0);
+	dropPointGetUI->PointGet();
 }
 
 void BaseGameActor::OnSpawn(ActionStateLabel& arg_label)

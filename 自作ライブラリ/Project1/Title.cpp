@@ -56,7 +56,7 @@ void Title::Initialize()
 
 	for (int i = 0; i < panelsNum_ALL; i++)
 	{
-		panels[i]->Initialize((int)GetRandom(0.0f, 5.0f));
+		panels[i]->Initialize((int)GetRandom(0.0f, 8.0f));
 	}
 	//•~‚«‹l‚ß
 	PanelPadding();
@@ -112,7 +112,6 @@ void Title::Update()
 	lightGroup->SetAmbientColor({ 1,1,1 });
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });
 	lightGroup->Update();
-//#endif
 }
 
 void Title::PreDraw()
@@ -163,12 +162,14 @@ void Title::PanelPadding()
 				if (k != 0)
 				{
 					panels[count_panel]->rotation.x = -90.0f;
+					panels[count_panel]->position.y += 0.9f;
 				}
 				//ãŒü‚«
 				else
 				{
 					panels[count_panel]->rotation.x = 90.0f;
 					panels[count_panel]->rotation.z = 180.0f;
+					panels[count_panel]->position.y -= 0.9f;
 				}
 
 				count_panel++;
@@ -203,7 +204,7 @@ bool Title::PopUpPanel()
 bool Title::ZoomIn()
 {
 	//‹ß‚Ã‚¯‚é
-	const float endDistance = 8.0f;
+	const float endDistance = 7.0f;
 	const int easingLimit = 45;
 	cameraDistance = Easing::EaseInCirc(cameraDistance_init, endDistance, easingLimit, easingTimer_zoom);
 	easingTimer_zoom++;
@@ -216,7 +217,7 @@ bool Title::ZoomIn()
 
 Title::Panel::Panel()
 {
-	object = Object3D::Create(OBJLoader::GetModel("fieldPiece_title"), position, scale, rotation, color);
+	object = Object3D::Create(OBJLoader::GetModel("fieldPiece"), position, scale, rotation, color);
 }
 
 Title::Panel::~Panel()

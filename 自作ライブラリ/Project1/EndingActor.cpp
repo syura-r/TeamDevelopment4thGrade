@@ -27,19 +27,31 @@ void EndingActor::Initialize(const int arg_score, const int arg_ranking)
 	position = { position_3dx[arg_ranking - 1], 0.0f, 0.0f };
 	position_2d = { position_2dx[arg_ranking - 1], 200.0f };
 
+	numberRoll_interval = 0;
+	isNumberRoll = true;
+
 	ResetPanel();
-	IsAddPanelEnd = false;
+	isAddPanelEnd = false;
 }
 
 void EndingActor::Update()
 {
 	AddPanel();
 
-	//”’l‚ğ‘‚â‚·
-	if (score_draw < score)
+	//”’lƒ[ƒ‹
+	if (isNumberRoll)
 	{
-		const int addSpeed = 1;
-		score_draw += addSpeed;
+		numberRoll_interval++;
+		const int intervalLimit = 3;
+		if (numberRoll_interval > intervalLimit)
+		{
+			numberRoll_interval = 0;
+			score_draw = (int)rand() % 99;
+		}
+	}
+	else
+	{
+		score_draw = score;
 	}
 
 	object->Update();
@@ -72,7 +84,7 @@ void EndingActor::AddPanel()
 {
 	if (score <= panels.size())
 	{
-		IsAddPanelEnd = true;
+		isAddPanelEnd = true;
 		return;
 	}
 

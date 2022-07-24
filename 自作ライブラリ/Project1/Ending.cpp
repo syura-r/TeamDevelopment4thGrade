@@ -98,7 +98,15 @@ void Ending::Update()
 		//1ˆÊ‚ðƒJƒƒ‰‚Å’Ç‚¤
 		if (actors[i]->GetRanking() == 1)
 			camera.get()->SetTarget(actors[i]->GetPosition());
+		//”’l•\Ž¦
+		if (actors[0]->GetIsAddPanelEnd() &&
+			actors[1]->GetIsAddPanelEnd() &&
+			actors[2]->GetIsAddPanelEnd())
+		{
+			actors[i]->SetIsNumberRoll(false);
+		}
 	}
+
 	basePanel_object->Update();
 	stadium->Update();
 

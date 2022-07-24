@@ -60,6 +60,7 @@ Play::Play()
 	levelGauge = new LevelGauge();
 	lockonMarker = new LockonMarker();
 	scoreRanking = new ScoreRanking();
+	playstart = new PlayStart(camera.get());
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
@@ -78,6 +79,7 @@ Play::~Play()
 	PtrDelete(levelGauge);
 	PtrDelete(lockonMarker);
 	PtrDelete(scoreRanking);
+	PtrDelete(playstart);
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
@@ -121,13 +123,21 @@ void Play::Initialize()
 	levelGauge->Initialize();
 	lockonMarker->Initialize();
 	scoreRanking->Initialize();
+	playstart->Initialize();
 
 	Audio::StopBGM("BGM_Play");
 	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
+
+	Update();
+	playstart->SetIsActive(true);
 }
 
 void Play::Update()
 {
+	playstart->Update();
+	if (playstart->GetIsActive())
+		return;
+
 	pause->Update();
 	//ƒQ[ƒ€‚É‚à‚Ç‚é
 	if (pause->GetToGame())
@@ -144,6 +154,7 @@ void Play::Update()
 	if (pause->GetToTitle())
 	{
 		Audio::StopBGM("BGM_Play");
+		Audio::AllStopSE();
 		next = Title;
 		KillCountToEnding();
 		ShutDown();
@@ -162,6 +173,7 @@ void Play::Update()
 	if (Input::TriggerKey(DIK_E))//I—¹ˆ—
 	{
 		Audio::StopBGM("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
@@ -233,6 +245,7 @@ void Play::Update()
 	/*if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
 	{
 		Audio::StopWave("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
@@ -251,6 +264,7 @@ void Play::Update()
 	if (allEnemiesOutField)
 	{
 		Audio::StopWave("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
@@ -263,7 +277,7 @@ void Play::PreDraw()
 	feverUI->Draw();
 	levelGauge->Draw();
 
-		objectManager->DrawReady();
+	objectManager->DrawReady();
 #ifdef _DEBUG
 		if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
 		{
@@ -304,6 +318,7 @@ void Play::PostDraw()
 		DirectXLib::GetInstance()->DepthClear();
 	}
 	lockonMarker->Draw();
+	playstart->Draw();
 	pause->Draw();
 }
 
