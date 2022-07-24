@@ -89,8 +89,7 @@ void SceneManager::Update()
 		}
 		return;
 	}
-	if (currentScene->GetIsEnd() &&
-		!transitionTriangle.get()->GetIsClose())
+	if (currentScene->GetIsEnd())
 	{
 		transitionTriangle.get()->IsClose();
 	}

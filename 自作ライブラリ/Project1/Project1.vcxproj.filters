@@ -474,6 +474,9 @@
     <ClCompile Include="TransitionTriangle.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="TransitionOneLine.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -861,6 +864,9 @@
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
     <ClInclude Include="TransitionTriangle.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TransitionOneLine.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>

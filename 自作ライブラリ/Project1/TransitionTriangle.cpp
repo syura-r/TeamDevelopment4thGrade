@@ -2,24 +2,30 @@
 
 TransitionTriangle::TransitionTriangle()
 {
-	triangle = new Sprite();
-	square = new Sprite();
+	for (int i = 0; i < linesCount; i++)
+	{
+		lines[i] = new TransitionOneLine(linesCount, i);
+	}
 }
 
 TransitionTriangle::~TransitionTriangle()
 {
-	delete triangle;
-	delete square;
+	for (int i = 0; i < linesCount; i++)
+	{
+		delete lines[i];
+	}
 }
 
 void TransitionTriangle::Initialize()
 {
-	position_triangle = position_triangle_init;
-	anchar_square = { 1.0f,0.5f };
-	scale_square = { 1920.0f, 1080.0f };
-
 	isOpen = false;
 	isClose = false;
+	timer = 0;
+
+	for (int i = 0; i < linesCount; i++)
+	{
+		lines[i]->Initialize();
+	}
 }
 
 void TransitionTriangle::Update()
@@ -27,44 +33,67 @@ void TransitionTriangle::Update()
 	if (!isOpen && !isClose)
 		return;
 
-	//移動
-	const float speed = 50.0f;
-	position_triangle.x += speed;
+	bool isLinesEnd = true;//動き終わったか
+	for (int i = 0; i < (timer / gapTime) + 1; i++)
+	{
+		if (i >=linesCount)
+		{
+			continue;
+		}
 
-	//四角引き伸ばし
-	if (isOpen)
-		scale_square.x = 1920.0f - position_triangle.x;
-	if (isClose)
-		scale_square.x = position_triangle.x;
+		lines[i]->Update();
 
-	//終了条件
-	if (position_triangle.x > position_triangle_end.x)
+		isLinesEnd = isLinesEnd && !lines[i]->GetIsActive();
+	}
+
+	//終了
+	if (isLinesEnd)
 	{
 		isOpen = false;
 		isClose = false;
 	}
+
+	timer++;
 }
 
 void TransitionTriangle::Draw()
 {
-	triangle->DrawSprite("Fade_Tri", position_triangle, 0.0f, { 1.28f,1.28f });
-	square->DrawSprite("white1x1", position_triangle, 0.0f, scale_square, { 0,0,0,1 }, anchar_square);
+	for (int i = 0; i < linesCount; i++)
+	{
+		lines[i]->Draw();
+	}
 }
 
 void TransitionTriangle::IsOpen()
 {
+	if (isOpen)
+	{
+		return;
+	}
+
 	isOpen = true;
 	isClose = false;
-	position_triangle = position_triangle_init;
-	anchar_square.x = 0.0f;
-	scale_square.x = 1920.0f - position_triangle.x;
+	timer = 0;
+
+	for (int i = 0; i < linesCount; i++)
+	{
+		lines[i]->StartTransition(TransitionOneLine::Transition::OPEN);
+	}
 }
 
 void TransitionTriangle::IsClose()
 {
+	if (isClose)
+	{
+		return;
+	}
+
 	isClose = true;
 	isOpen = false;
-	position_triangle = position_triangle_init;
-	anchar_square.x = 1.0f;
-	scale_square.x = position_triangle.x;
+	timer = 0;
+
+	for (int i = 0; i < linesCount; i++)
+	{
+		lines[i]->StartTransition(TransitionOneLine::Transition::CLOSE);
+	}
 }
