@@ -15,15 +15,17 @@ public:
 private:
 	//黒い背景
 	Sprite* sp_back = nullptr;
-	//枠
-	Sprite* sp_frame = nullptr;
-	//ゲージの線
-	Sprite* sp_gauge = nullptr;
-	Vector4 colorGauge = { 1,1,1,1 };
+
+	//いくつ毎にレベルが上がるか
+	static const int nextLevelCount = 5;
+
+	//三角形ゲージ
+	Sprite* sp_tri[nextLevelCount];
+	Vector4 color_tri_all;
+	const Vector4 colorBlank = { 0.25f, 0.25f, 0.25f, 1 };
+	const Vector4 colorYellow = { 0.88f, 0.96f, 0.0f, 1 };
 
 	int level = 0;
-	int nextLevelCount = 0;//いくつ毎にレベルが上がるか
-	const int maxGaugeStep = 15;//ゲージの総段数
 	int gaugeCount = 0;
 
 	//レベル文字

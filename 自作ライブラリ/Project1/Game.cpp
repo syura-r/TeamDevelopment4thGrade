@@ -139,8 +139,13 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Level5", "LevelGauge/GamePlay_UI_Level5.png");
 		Texture::LoadTexture("GamePlay_UI_Level6", "LevelGauge/GamePlay_UI_Level6.png");
 		Texture::LoadTexture("GamePlay_UI_Levelback", "LevelGauge/GamePlay_UI_Levelback.png");
-		Texture::LoadTexture("GamePlay_UI_Leveledge", "LevelGauge/GamePlay_UI_Leveledge.png");
+		//Texture::LoadTexture("GamePlay_UI_Leveledge", "LevelGauge/GamePlay_UI_Leveledge.png");
 		Texture::LoadTexture("GamePlay_UI_Levelgauge", "LevelGauge/GamePlay_UI_Levelgauge.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_1", "LevelGauge/GamePlay_UI_Leveltri_1.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_2", "LevelGauge/GamePlay_UI_Leveltri_2.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_3", "LevelGauge/GamePlay_UI_Leveltri_3.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_4", "LevelGauge/GamePlay_UI_Leveltri_4.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_5", "LevelGauge/GamePlay_UI_Leveltri_5.png");
 		Texture::LoadTexture("GamePlay_UI_Maker", "GamePlay_UI_Maker.png");
 		Texture::LoadTexture("GamePlay_CircleCover", "GamePlay_CircleCover.png");
 		Texture::LoadTexture("GamePlay_Score_Rank", "ScoreRanking/GamePlay_Score_Rank.png");
