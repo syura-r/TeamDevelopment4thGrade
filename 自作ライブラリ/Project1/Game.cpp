@@ -176,6 +176,8 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("lava", "GamePlay_Magma.obj", false);
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
 		OBJLoader::LoadModelFile("Crown", "Result_Crown.obj", false);
+		OBJLoader::LoadModelFile("Area", "Area.obj", true);
+
 		break;
 	case 4:
 		//FBXÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›
@@ -248,7 +250,8 @@ void Game::CreatePipeline()
 	case 3:
 		PipelineState::CreatePipeline("NoShade", NoShade);
 
-		PipelineState::CreatePipeline("UVScrolling", AreaEffect);
+		PipelineState::CreatePipeline("UVScrolling", UVScrolling);
+		PipelineState::CreatePipeline("AreaEffect", AREAEFFECT,ADD);
 
 
 		break;

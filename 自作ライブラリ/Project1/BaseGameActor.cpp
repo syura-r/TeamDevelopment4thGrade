@@ -23,7 +23,7 @@
 #include "ActionStateFall.h"
 #include "FeverInItem.h"
 #include "Easing.h"
-
+#include "AreaEffect.h"
 ComPtr<ID3D12Resource> BaseGameActor::constCameraBuff = nullptr;
 InGameCamera* BaseGameActor::camera = nullptr;
 bool BaseGameActor::rotCamera = false;
@@ -90,6 +90,8 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	panelCutLocus = new PanelCutLocus(Vector3(0, -5, 0), 90, XMFLOAT4(1, 1, 0, 0.6f));
 	panelCutLocus->SetParentObject(this);
 	weightInfluenceMap.clear();
+
+	areaEffect = new AreaEffect(position);
 }
 
 BaseGameActor::~BaseGameActor()
@@ -97,6 +99,7 @@ BaseGameActor::~BaseGameActor()
 	delete panelCountSprite3D;
 	delete dropPointGetUI;
 	delete feverTimer;
+	delete areaEffect;
 }
 
 void BaseGameActor::Initialize()
@@ -231,6 +234,10 @@ void BaseGameActor::Update()
 
 void BaseGameActor::Draw()
 {
+	if (actionState->GetLabel() == ActionStateLabel::SPAWN)
+	{
+		areaEffect->Draw();
+	}
 	if (!Object3D::GetDrawShadow())
 	{
 		HRESULT result;
@@ -968,7 +975,7 @@ void BaseGameActor::StartSpawn()
 	virtualityPlanePosition = respawnPiece->GetVirtualityPlanePosition();
 	position = respawnPiece->GetVirtualityPlanePosition();
 	position.y = field->GetPosition().y + 10;
-
+	areaEffect->SetPosition(respawnPiece->GetPosition());
 	isCrushed = false;
 	isEndGame = false;
 	panelCutLocus->SetCutPower(0);
@@ -976,7 +983,7 @@ void BaseGameActor::StartSpawn()
 	cutPower = 0;
 	gottenPanel = 0;
 	//chart->SetColorCount(0, 0);
-	dropPointGetUI->PointGet();
+	dropPointGetUI->PointGet(); 
 }
 
 void BaseGameActor::OnSpawn(ActionStateLabel& arg_label)

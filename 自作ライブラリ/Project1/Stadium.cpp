@@ -64,7 +64,7 @@ void Stadium::Update()
 	ConstBufferData* constMap = nullptr;
 	auto result = constBuff->Map(0, nullptr, (void**)&constMap);
 	assert(SUCCEEDED(result));
-	constMap->uvOffset = uvOffset;
+	constMap->uvOffset.x = uvOffset;
 	constBuff->Unmap(0, nullptr);
 
 	lavaObj->SetPosition(position);

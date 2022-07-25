@@ -24,6 +24,7 @@ class PanelCutLocus;
 class UnableThroughEdge;
 class UnableThroughBlock;
 class FeverInItem;
+class AreaEffect;
 
 class BaseGameActor : public Object
 {
@@ -335,6 +336,7 @@ protected:
 
 	//---Spawn---
 	FieldPiece* respawnPiece;
+	AreaEffect* areaEffect;
 
 	//---í≤êÆóp---
 	static int MAX_CUTPOWER;

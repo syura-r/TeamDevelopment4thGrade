@@ -9,7 +9,7 @@ cbuffer cbuff0 : register(b0)
 };
 cbuffer cbuff2 : register(b2)
 {
-    float offsetTime;//UVスクロール用
+    float2 offsetTime;//UVスクロール用
 };
 
 

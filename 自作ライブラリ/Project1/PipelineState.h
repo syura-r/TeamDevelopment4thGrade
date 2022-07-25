@@ -41,11 +41,12 @@ enum ShaderType
 	Blur,
 	Ssao,
 	SsaoCombine,
-	AreaEffect,
+	AREAEFFECT,
 	FisheyeLens,
 	Migrate,
 	DepthSPRITE,
 	PIECHART,
+	UVScrolling,
 };
 
 class PipelineState

@@ -431,7 +431,24 @@ void PipelineState::CreatePipeline(const std::string& keyName, const ShaderType 
 
 		break;
 	}
-	case AreaEffect:
+	case UVScrolling:
+	{
+		CompileShader("AreaEffectVS", vsBlob, errorBlob, VS);
+		CompileShader("UVScrollingPS", psBlob, errorBlob, PS);
+
+		SetVSLayout("POSITION", inputLayout, DXGI_FORMAT_R32G32B32_FLOAT);
+		SetVSLayout("NORMAL", inputLayout, DXGI_FORMAT_R32G32B32_FLOAT);
+		SetVSLayout("TEXCOORD", inputLayout, DXGI_FORMAT_R32G32_FLOAT);
+
+		SetDescriptorConstantBuffer(rootparams, 3, 1, descRangeSRVs);
+		gpipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+
+		rootSignatureDesc.Init_1_0(rootparams.size(), rootparams.data(), 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+		break;
+	}
+
+	case AREAEFFECT:
 	{
 		CompileShader("AreaEffectVS", vsBlob, errorBlob, VS);
 		CompileShader("AreaEffectPS", psBlob, errorBlob, PS);
