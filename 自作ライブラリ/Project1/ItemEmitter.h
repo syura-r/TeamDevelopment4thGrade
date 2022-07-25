@@ -4,6 +4,7 @@
 
 class FieldPiece;
 class EnergyItem;
+class FeverInItem;
 enum class RankEnergyItem;
 
 class ItemEmitter
@@ -19,6 +20,7 @@ public:
 
 	void EmitEnergyItem(const Vector3& arg_pos, const RankEnergyItem arg_rank, FieldPiece* arg_piece);
 	void EmitPanelItem(const Vector3& arg_pos);
+	void EmitFeverInItem(const Vector3& arg_pos, FieldPiece* arg_piece);
 	Vector3 GetRandomEmitPosition(const int arg_min, const int arg_max);
 	Vector3 GetEnergyItemEmitPosition();
 

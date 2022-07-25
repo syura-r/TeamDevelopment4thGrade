@@ -6,6 +6,7 @@
 #include "Field.h"
 #include "FieldPiece.h"
 #include "PanelItem.h"
+#include "FeverInItem.h"
 #include "ActorManager.h"
 
 ItemEmitter* ItemEmitter::instance = nullptr;
@@ -74,16 +75,30 @@ void ItemEmitter::Update()
 	{
 		EmitPanelItem(ActorManager::GetInstance()->GetPlayer()->GetVirtualityPlanePosition());
 	}
+	if (Input::TriggerKey(DIK_L))
+	{
+		Field* field = ActorManager::GetInstance()->GetFields()[0];
+		Player* player = ActorManager::GetInstance()->GetPlayer();
+		EmitFeverInItem(player->GetVirtualityPlanePosition(), field->GetCuttingInfo(player)->ridingPiece);
+	}
 #endif // _DEBUG
 }
 
 bool ItemEmitter::IsClushedWithRemainItem(FieldPiece* arg_piece)
 {
 	auto energyItems = ActorManager::GetInstance()->GetEnergyItems();
-
 	for (auto e : energyItems)
 	{
 		if (arg_piece == e->GetRidingPiece())
+		{
+			return true;
+		}
+	}
+
+	auto feverInItems = ActorManager::GetInstance()->GetFeverInItems();
+	for (auto f : feverInItems)
+	{
+		if (arg_piece == f->GetRidingPiece())
 		{
 			return true;
 		}
@@ -107,6 +122,18 @@ void ItemEmitter::EmitPanelItem(const Vector3& arg_pos)
 	vel = vel.Normalize();
 
 	PanelItem* item = new PanelItem(arg_pos, vel);
+	ObjectManager::GetInstance()->Add(item);
+}
+
+void ItemEmitter::EmitFeverInItem(const Vector3& arg_pos, FieldPiece* arg_piece)
+{
+	if (IsClushedWithRemainItem(arg_piece))
+	{
+		return;
+	}
+
+	FeverInItem* item = new FeverInItem(arg_piece->GetVirtualityPlanePosition() + Vector3(0, FeverInItem::GetRadius(), 0));
+	item->SetRidingPiece(arg_piece);
 	ObjectManager::GetInstance()->Add(item);
 }
 

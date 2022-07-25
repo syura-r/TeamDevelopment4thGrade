@@ -14,6 +14,7 @@ class UnableThroughBlock;
 class UnableThroughEdge;
 class CircularSaw;
 class BaseGameActor;
+class FeverInItem;
 
 class ActorManager
 {
@@ -36,6 +37,7 @@ public:
 	std::vector<UnableThroughEdge*>& GetUnableThroughEdges();
 	CircularSaw* GetCircularSaw(Object* arg_obj);
 	std::vector<BaseGameActor*>& GetBaseGameActors();
+	std::vector<FeverInItem*>& GetFeverInItems();
 
 private:
 	static ActorManager* instance;
@@ -53,5 +55,6 @@ private:
 	std::vector<UnableThroughEdge*> unableThroughEdges;
 	std::vector<CircularSaw*> circularSaws;
 	std::vector<BaseGameActor*> baseGameActors;
+	std::vector<FeverInItem*> feverInItems;
 };
 

@@ -36,6 +36,10 @@ private:
 	static std::unordered_map<int, std::vector<LocusPointInfo>> baseInfo;
 	static std::unordered_map<int, std::vector<Vector2>> baseCuttedDir;
 
+	//調整　縦に伸ばしてみる用
+	static std::unordered_map<int, std::vector<LocusPointInfo>> baseInfoVerticaly;
+	static std::unordered_map<int, std::vector<Vector2>> baseCuttedDirVerticaly;
+
 	//デフォルトの図形情報を一回だけ計算
 	void PointSetting()override;
 };

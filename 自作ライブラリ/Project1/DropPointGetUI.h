@@ -11,7 +11,6 @@ public:
 	void Update();
 	void Draw();
 
-	//Œ‚’Ä”‚ª‘‚¦‚½‚Æ‚«ŒÄ‚Ô
 	void PointGet();
 
 private:
@@ -20,7 +19,7 @@ private:
 	//e‚ÌÀ•W
 	Vector3& parentPosition;
 	std::string texName;
-	const float addPositionY = 3.0f;
+	const float addPositionY = 4.0f;
 	const float scale = 0.8f;
 
 	struct OneUI

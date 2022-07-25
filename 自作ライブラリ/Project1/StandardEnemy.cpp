@@ -25,7 +25,7 @@
 #include "ActionStateMove.h"
 #include "EnemyAIPositiv.h"
 
-const float INTERVAL_ACTIONTIMER = 60.0f;
+const float INTERVAL_ACTIONTIMER = 10.0f;
 
 StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AILabel, const std::string& modelName)
 	:BaseGameActor(arg_pos)
@@ -40,17 +40,19 @@ StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AIL
 
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 	dropPointGetUI = new DropPointGetUI(position, name);
-	chart = new PieChart({ 1, 0, 0, 1 }, { 0, 0, 0, 1 });
-	chart->SetScale(Vector3(4, 4, 4));
+	//chart = new PieChart({ 1, 0, 0, 1 }, { 0, 0, 0, 1 });
+	//chart->SetScale(Vector3(4, 4, 4));
 	if (modelName == "GamePlay_Enemy")
 	{
 		actorColor = { 0.96f, 0.53f, 0.54f, 1 };
+		effectColor = { 0.96f, 0.53f, 0.54f, 1 };
 	}
 	else
 	{
 		actorColor = { 0.51f, 0.92f, 0.60f, 1 };
+		effectColor = { 0.51f, 0.92f, 0.60f, 1 };
 	}
-	ObjectManager::GetInstance()->Add(chart);
+	//ObjectManager::GetInstance()->Add(chart);
 
 	actionTimer = new Timer(INTERVAL_ACTIONTIMER);
 
@@ -304,7 +306,7 @@ void StandardEnemy::CompleteCut()
 	}
 	totalCutCount += num;
 
-	cutPower = 0;
+	cutPower = MIN_CUTPOWER;
 
 	if (field->IsNewFeverPlayer())
 	{
@@ -321,9 +323,9 @@ void StandardEnemy::CompleteCut()
 void StandardEnemy::DecideDirection(Vector3& arg_direction)
 {
 	//ƒJƒƒ‰‚Ìƒrƒ…[s—ñ‚Ì‹ts—ñ‚ðŒvŽZ
-	XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
+	/*XMMATRIX camMatWorld = XMMatrixInverse(nullptr, Object3D::GetCamera()->GetMatView());
 	const Vector3 cameraDirectionZ = Vector3(camMatWorld.r[2].m128_f32[0], 0, camMatWorld.r[2].m128_f32[2]).Normalize();
-	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();
+	const Vector3 cameraDirectionX = Vector3(camMatWorld.r[0].m128_f32[0], 0, camMatWorld.r[0].m128_f32[2]).Normalize();*/
 
 	if (actionTimer->IsTime())
 	{
@@ -340,12 +342,12 @@ void StandardEnemy::DecideDirection(Vector3& arg_direction)
 		{
 			moveDir = RandomDir();
 			//moveDir = NearObjDir();
-			firstMoved == true;
+			firstMoved = true;
 		}
 
 		actionTimer->Reset();
 	}
-	arg_direction = cameraDirectionX * moveDir.x + cameraDirectionZ * moveDir.y;
+	arg_direction = LocusUtility::Dim2XZToDim3(moveDir);
 
 	arg_direction.Normalize();
 	//”½”­—p‚É‘ã“ü
@@ -493,10 +495,19 @@ bool StandardEnemy::IsChangeMoveToTackle()
 bool StandardEnemy::IsChangeMoveToCut()
 {
 	int rnd = std::rand() % 30;
-	if (rnd != 0)
+	if (cutPower != 6)
+	{
+		if (rnd != 0)
+		{
+			return false;
+		}
+	}
+
+	if (!IsExistPiecesWithinSawRange())
 	{
 		return false;
 	}
+	
 	int randRatio = (1 + cutPowerUpperLimit - cutPower) * 10;
 	if (randRatio <= 0)
 	{
@@ -510,5 +521,5 @@ bool StandardEnemy::IsChangeMoveToCut()
 	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
 	//---Ø‚è”²‚«”»’fŒn---
 	//enemyAI->StartCutKillActorInFever();
-	return (cutPower >= cutPowerLowerLimit && cutPower <= cutPowerUpperLimit) && cutPower > 0 && info->ridingPiece;
+	return (cutPower >= cutPowerLowerLimit) && cutPower > 0 && info->ridingPiece;
 }

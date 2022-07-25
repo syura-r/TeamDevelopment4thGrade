@@ -17,6 +17,8 @@
 #include "FeverUI.h"
 #include "LevelGauge.h"
 #include "LockonMarker.h"
+#include "ScoreRanking.h"
+#include "PlayStart.h"
 
 
 class TouchAbleObject;
@@ -80,5 +82,7 @@ private:
 	FeverUI* feverUI = nullptr;
 	LevelGauge* levelGauge = nullptr;
 	LockonMarker* lockonMarker = nullptr;
+	ScoreRanking* scoreRanking = nullptr;
+	PlayStart* playstart = nullptr;
 };
 

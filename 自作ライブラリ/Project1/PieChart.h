@@ -6,6 +6,7 @@ class PieChart :
 {
 public:
 	PieChart(const XMFLOAT4& arg_color1 = { 1,0,0,1 }, const XMFLOAT4& arg_color2 = { 0,0,1,1 });
+	~PieChart();
 	//比率が変わった時に使う関数
 	void SetColorCount(const int arg_color1Count, const int arg_color2Count);
 	//ゲージの色を変えたいときに使う関数

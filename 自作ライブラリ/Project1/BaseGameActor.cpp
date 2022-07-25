@@ -21,19 +21,24 @@
 #include "ActionStateWithstand.h"
 #include "ActionStateCut.h"
 #include "ActionStateFall.h"
+#include "FeverInItem.h"
 #include "Easing.h"
 
 ComPtr<ID3D12Resource> BaseGameActor::constCameraBuff = nullptr;
-//DebugCamera* BaseGameActor::camera = nullptr;
 InGameCamera* BaseGameActor::camera = nullptr;
 bool BaseGameActor::rotCamera = false;
 float BaseGameActor::radY = 0;
 int BaseGameActor::cameraRotCount = 0;
 const int BaseGameActor::ROT_TIME = 10;
 
+int BaseGameActor::MAX_CUTPOWER = 6;
+int BaseGameActor::MIN_CUTPOWER = 1;
+bool BaseGameActor::IS_ACTIVE_ACTORLEVEL = true;
+bool BaseGameActor::IS_EXTEND_VERTICALY = true;
+
 BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 :startPos(arg_pos),
-	 RADIUS(1.0f),
+	 RADIUS(0.3f),
 	 weight(10),
 	 prePos(arg_pos),
 	 virtualityPlanePosition(arg_pos),
@@ -68,7 +73,7 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 inputStartCount(0),
 	 nextInputStartCount(40),
 	 notWithstandCount(0),
-	 cutPower(0),
+	 cutPower(MIN_CUTPOWER),
 	 gottenPanel(0),
 	 bonusCount(0),
 	 targetActor(nullptr),
@@ -112,7 +117,7 @@ void BaseGameActor::Initialize()
 	killCount = 0;
 	dropPointGetUI->Initialize();
 	weightInfluenceMap.clear();
-	chart->SetColorCount(0, 0);
+	//chart->SetColorCount(0, 0);
 	totalCutCount = 0;
 	isInFever = false;
 	feverTimer->Reset();
@@ -134,9 +139,9 @@ void BaseGameActor::Initialize()
 	inputStartCount = 0;
 	nextInputStartCount = 40;
 	notWithstandCount = 0;
-	panelCutLocus->SetCutPower(0);
+	panelCutLocus->SetCutPower(MIN_CUTPOWER);
 	panelCutLocus->Move(Vector3(), 0);
-	cutPower = 0;
+	cutPower = MIN_CUTPOWER;
 	gottenPanel = 0;
 	bonusCount = 0;
 	targetActor = nullptr;
@@ -169,11 +174,11 @@ void BaseGameActor::Update()
 		if (isInFever)
 		{
 			feverTimer->Update();
-			cutPower = 6;
+			cutPower = MAX_CUTPOWER;
 
 			if (feverTimer->IsTime() && actionState->GetLabel() != ActionStateLabel::CUT)
 			{
-				cutPower = 0;
+				cutPower = MIN_CUTPOWER;
 				isInFever = false;
 				feverTimer->Reset();
 			}
@@ -192,6 +197,15 @@ void BaseGameActor::Update()
 
 		field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
 
+		if (cutPower < BaseGameActor::MIN_CUTPOWER)
+		{
+			cutPower = BaseGameActor::MIN_CUTPOWER;
+		}
+		else if (cutPower > BaseGameActor::MAX_CUTPOWER)
+		{
+			cutPower = BaseGameActor::MAX_CUTPOWER;
+		}
+
 		if (actionState->GetLabel() != ActionStateLabel::CUT)
 		{
 			panelCutLocus->SetCutPower(cutPower);
@@ -202,7 +216,8 @@ void BaseGameActor::Update()
 		{
 			if (feverTimer->GetTime() % 3 == 0)
 			{
-				ParticleEmitter::FeverEffect(position);
+				//ParticleEmitter::FeverEffect(position);
+				ParticleEmitter::FeverEffectColor(position, effectColor);
 			}
 
 		}
@@ -211,7 +226,7 @@ void BaseGameActor::Update()
 	Object::Update();
 	panelCountSprite3D->Update();
 	dropPointGetUI->Update();
-	chart->SetPosition(position + Vector3(0, 10, 0));
+	//chart->SetPosition(position + Vector3(0, 10, 0));
 }
 
 void BaseGameActor::Draw()
@@ -365,7 +380,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		if (multiDot <= 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//arg_label = ActionStateLabel::WITHSTAND;
+			arg_label = ActionStateLabel::WITHSTAND;
 			if (arg_label == ActionStateLabel::TACKLE)
 			{
 				arg_label = ActionStateLabel::MOVE;
@@ -377,7 +392,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//arg_label = ActionStateLabel::WITHSTAND;
+			arg_label = ActionStateLabel::WITHSTAND;
 			if (arg_label == ActionStateLabel::TACKLE)
 			{
 				arg_label = ActionStateLabel::MOVE;
@@ -396,7 +411,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 			LocusUtility::Cross3p(pos, pre, start) * LocusUtility::Cross3p(pos, pre, end) < 0.0f)
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
-			//arg_label = ActionStateLabel::WITHSTAND;
+			arg_label = ActionStateLabel::WITHSTAND;
 			if (arg_label == ActionStateLabel::TACKLE)
 			{
 				arg_label = ActionStateLabel::MOVE;
@@ -810,7 +825,7 @@ void BaseGameActor::CompleteCut()
 	}
 	totalCutCount += num;
 
-	cutPower = 0;
+	cutPower = MIN_CUTPOWER;
 
 	if (field->IsNewFeverPlayer())
 	{
@@ -857,8 +872,8 @@ void BaseGameActor::ForcedWeight(const int arg_num, BaseGameActor* arg_actor)
 		itr = weightInfluenceMap.begin();
 		DirectX::XMFLOAT4 color1 = itr->first->actorColor;
 		int count1 = itr->second;
-		chart->SetColor(color1, {});
-		chart->SetColorCount(count1, 0);
+		//chart->SetColor(color1, {});
+		//chart->SetColorCount(count1, 0);
 	}
 	else
 	{
@@ -868,8 +883,8 @@ void BaseGameActor::ForcedWeight(const int arg_num, BaseGameActor* arg_actor)
 		itr++;
 		DirectX::XMFLOAT4 color2 = itr->first->actorColor;
 		int count2 = itr->second;
-		chart->SetColor(color1, color2);
-		chart->SetColorCount(count1, count2);
+		//chart->SetColor(color1, color2);
+		//chart->SetColorCount(count1, count2);
 	}
 }
 
@@ -917,6 +932,7 @@ void BaseGameActor::OnFall(ActionStateLabel& arg_label)
 
 void BaseGameActor::EndFall()
 {
+	camera->SetShake(10, 1);
 	BaseGameActor* mostForcedActor = nullptr;
 	for (auto m : weightInfluenceMap)
 	{
@@ -959,7 +975,8 @@ void BaseGameActor::StartSpawn()
 	panelCutLocus->Move(Vector3(), 0);
 	cutPower = 0;
 	gottenPanel = 0;
-	chart->SetColorCount(0, 0);
+	//chart->SetColorCount(0, 0);
+	dropPointGetUI->PointGet();
 }
 
 void BaseGameActor::OnSpawn(ActionStateLabel& arg_label)
@@ -990,9 +1007,9 @@ void BaseGameActor::EndSpawn()
 	weightInfluenceMap.clear();
 	isInFever = false;
 	feverTimer->Reset();
-	panelCutLocus->SetCutPower(0);
+	panelCutLocus->SetCutPower(MIN_CUTPOWER);
 	panelCutLocus->Move(Vector3(), 0);
-	cutPower = 0;
+	cutPower = MIN_CUTPOWER;
 	gottenPanel = 0;
 	targetActor = nullptr;
 	targetIndex = -1;
@@ -1089,6 +1106,11 @@ void BaseGameActor::HitCheckEnergyItem(EnergyItem* arg_energyItem)
 		return;
 	}
 
+	if (cutPower >= BaseGameActor::MAX_CUTPOWER)
+	{
+		return;
+	}
+
 	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - arg_energyItem->GetVirtualityPlanePosition()));
 
 	if (length <= RADIUS + EnergyItem::GetRadius())
@@ -1120,14 +1142,34 @@ void BaseGameActor::HitEnergyItem(EnergyItem* arg_energyItem)
 	{
 		add = 3;
 	}
+	//’²®—p
+	if (!BaseGameActor::IS_ACTIVE_ACTORLEVEL)
+	{
+		add = 1;
+	}
 	cutPower += add;
 
-	if (cutPower > 6)
+	if (cutPower > MAX_CUTPOWER)
 	{
-		cutPower = 6;
+		cutPower = MAX_CUTPOWER;
 	}
 
-	Audio::PlaySE("SE_GetTriangle", 1.0f * Audio::volume_se);
+	switch (add - 1)
+	{
+	case 0:
+		Audio::PlaySE("SE_GetTriangle", 1.0f * Audio::volume_se);
+		break;
+	case 1:
+		Audio::PlaySE("SE_GetItemL2", 1.0f * Audio::volume_se);
+		break;
+	case 2:
+		Audio::PlaySE("SE_GetItemL3", 1.0f * Audio::volume_se);
+		break;
+	default:
+		Audio::PlaySE("SE_GetTriangle", 1.0f * Audio::volume_se);
+	}
+
+
 	arg_energyItem->Dead();
 }
 
@@ -1212,6 +1254,80 @@ void BaseGameActor::HitUnableThroughBlock(UnableThroughBlock* arg_block)
 	{
 		isCrushed = true;
 	}
+}
+
+void BaseGameActor::HitCheckFeverInItem(FeverInItem* arg_feverInItem)
+{
+	if (arg_feverInItem->IsDead())
+	{
+		return;
+	}
+
+	if (!arg_feverInItem->IsAppeared())
+	{
+		return;
+	}
+
+	if (actionState->GetLabel() == ActionStateLabel::CUT ||
+		actionState->GetLabel() == ActionStateLabel::FALL ||
+		actionState->GetLabel() == ActionStateLabel::SPAWN)
+	{
+		return;
+	}
+
+	float length = Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - arg_feverInItem->GetVirtualityPlanePosition()));
+
+	if (length <= RADIUS + FeverInItem::GetRadius())
+	{
+		HitFeverInItem(arg_feverInItem);
+	}
+}
+
+void BaseGameActor::HitFeverInItem(FeverInItem* arg_feverInItem)
+{
+	//InFever(5 * 60);
+	const int ADD = 30;
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	field->AddGottenCount(ADD);
+	if (field->IsNewFeverPlayer())
+	{
+		InFever(5 * 60);
+	}
+
+	arg_feverInItem->Dead();
+}
+
+void BaseGameActor::DrawActorSettingUI()
+{
+	static bool uiMax = true;
+	static bool uiMin = false;
+	static bool uiIsActive = true;
+	static bool uiIsExtend = true;
+	ImGui::Begin("ActorSetting");
+	ImGui::Checkbox("maxPower [true : 6] [false : 3]", &uiMax);
+	ImGui::Checkbox("minPower [true : 0] [false : 1]", &uiMin);
+	ImGui::Checkbox("isActiveActorLevel", &uiIsActive);
+	ImGui::Checkbox("isExtendVerticaly", &uiIsExtend);
+	ImGui::End();
+
+	if (uiMax)
+	{
+		BaseGameActor::MAX_CUTPOWER = 6;
+	}
+	else
+	{
+		BaseGameActor::MAX_CUTPOWER = 3;
+	}
+	if (uiMin)
+	{
+		BaseGameActor::MIN_CUTPOWER = 0;
+	}
+	else
+	{
+		BaseGameActor::MIN_CUTPOWER = 1;
+	}
+	BaseGameActor::IS_ACTIVE_ACTORLEVEL = uiIsActive;
+	BaseGameActor::IS_EXTEND_VERTICALY = uiIsExtend;
 }
 
 void BaseGameActor::SlidingDown()

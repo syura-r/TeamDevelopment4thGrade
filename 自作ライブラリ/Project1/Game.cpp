@@ -121,15 +121,16 @@ void Game::RoadAsset()
 		Texture::LoadTexture("BGM", "Pause/BGM.png");
 		Texture::LoadTexture("SE", "Pause/SE.png");
 		Texture::LoadTexture("circle", "Pause/circle.png");
+		Texture::LoadTexture("GamePlay_UI_Operation", "Pause/GamePlay_UI_Operation.png");
 		Texture::LoadTexture("FeverCuttingEffect", "GamePLay_FeverEffect.png");
 		Texture::LoadTexture("FeverPlayerEffect", "GamePlay_SPeffect.png");
 		Texture::LoadTexture("GamePlay_UI_FeverText", "GamePlay_UI_FeverText.png");
 		Texture::LoadTexture("GamePlay_UI_Playerpoint", "GamePlay_UI_Playerpoint.png");
 		Texture::LoadTexture("GamePlay_UI_Enemypoint", "GamePlay_UI_Enemypoint.png");
 		Texture::LoadTexture("GamePlay_UI_Enemy2point", "GamePlay_UI_Enemy2point.png");
-		Texture::LoadTexture("Result_Player_Gauge", "Result_Player_Gauge.png");
-		Texture::LoadTexture("Result_Enemy_Gauge", "Result_Enemy_Gauge.png");
-		Texture::LoadTexture("Result_Enemy2_Gauge", "Result_Enemy2_Gauge.png");
+		//Texture::LoadTexture("Result_Player_Gauge", "Result_Player_Gauge.png");
+		//Texture::LoadTexture("Result_Enemy_Gauge", "Result_Enemy_Gauge.png");
+		//Texture::LoadTexture("Result_Enemy2_Gauge", "Result_Enemy2_Gauge.png");
 		Texture::LoadTexture("Result_UV_Crown", "Result_UV_Crown.png");
 		Texture::LoadTexture("GamePlay_UI_Level1", "LevelGauge/GamePlay_UI_Level1.png");
 		Texture::LoadTexture("GamePlay_UI_Level2", "LevelGauge/GamePlay_UI_Level2.png");
@@ -142,6 +143,17 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Levelgauge", "LevelGauge/GamePlay_UI_Levelgauge.png");
 		Texture::LoadTexture("GamePlay_UI_Maker", "GamePlay_UI_Maker.png");
 		Texture::LoadTexture("GamePlay_CircleCover", "GamePlay_CircleCover.png");
+		Texture::LoadTexture("GamePlay_Score_Rank", "ScoreRanking/GamePlay_Score_Rank.png");
+		Texture::LoadTexture("GamePlay_Score_Batu", "ScoreRanking/GamePlay_Score_Batu.png");
+		Texture::LoadTexture("GamePlay_Score_Player", "ScoreRanking/GamePlay_Score_Player.png");
+		Texture::LoadTexture("GamePlay_Score_Enemy", "ScoreRanking/GamePlay_Score_Enemy.png");
+		Texture::LoadTexture("GamePlay_Score_Enemy2", "ScoreRanking/GamePlay_Score_Enemy2.png");
+		Texture::LoadTexture("Fade_Tri", "Fade_Tri.png");
+		Texture::LoadTexture("GamePlay_UI_Ready", "GamePlay_UI_Ready.png");
+		Texture::LoadTexture("GamePlay_UI_GO", "GamePlay_UI_GO.png");
+		Texture::LoadTexture("GamePlay_UI_FeverTimeText", "GamePlay_UI_FeverTimeText.png");
+
+		Texture::LoadTexture("FeverPlayerEffectWhite", "GamePlay_SPeffect_White.png");
 
 		break; 
 	case 2:
@@ -190,6 +202,8 @@ void Game::RoadAsset()
 		Audio::LoadFile("SE_TriangleLost", "SE/GamePlay_SE_Trianglelost.wav");
 		Audio::LoadFile("SE_InFever", "SE/GamePlay_InFever.wav");
 		Audio::LoadFile("SE_FeverCut", "SE/GamePlay_FeverCut.wav");
+		Audio::LoadFile("SE_GetItemL2", "SE/GamePlay_SE_GetItem_L2.wav");
+		Audio::LoadFile("SE_GetItemL3", "SE/GamePlay_SE_GetItem_L3.wav");
 
 		break;
 	case 5:
@@ -233,6 +247,7 @@ void Game::CreatePipeline()
 		break;
 	case 3:
 		PipelineState::CreatePipeline("NoShade", NoShade);
+
 		PipelineState::CreatePipeline("UVScrolling", AreaEffect);
 
 

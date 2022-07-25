@@ -38,6 +38,7 @@ public:
 	void SetMatrixView(const XMFLOAT3& eye, const XMFLOAT3& target, const XMFLOAT3& up);
 	void MoveVector(const XMVECTOR& moveeye = { }, const XMVECTOR& movetarget = { }, const XMVECTOR& movrup = { });
 	void SetTarget(const XMFLOAT3& target) { this->target = target; viewDirty = true; }
+	void SetEye(const XMFLOAT3& eye) { this->eye = eye; viewDirty = true; }
 protected:
 	XMMATRIX matView;//ƒrƒ…[•ÏŠ·s—ñ
 	float angle = 0.0f;

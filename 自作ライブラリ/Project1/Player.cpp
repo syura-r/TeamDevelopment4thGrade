@@ -47,10 +47,15 @@ Player::Player(const Vector3& arg_pos)
 
 	panelCountSprite3D = new PanelCountSprite3D(position, name, gottenPanel);
 	dropPointGetUI = new DropPointGetUI(position, name);
-	chart = new PieChart({ 1, 0, 0, 1 }, { 0, 0, 0, 1 });
-	chart->SetScale(Vector3(4, 4, 4));
+	//chart = new PieChart({ 1, 0, 0, 1 }, { 0, 0, 0, 1 });
+	//chart->SetScale(Vector3(4, 4, 4));
 	actorColor = { 0.53f, 0.68f, 0.96f, 1 };
-	ObjectManager::GetInstance()->Add(chart);
+	//ObjectManager::GetInstance()->Add(chart);
+
+	effectColor = { 0.53f, 0.68f, 0.96f, 1 };
+	//effectColor = { 0.96f, 0.53f, 0.54f, 1 };
+	//effectColor = { 0.51f, 0.92f, 0.60f, 1 };
+
 
 	Initialize();
 }
@@ -100,6 +105,8 @@ void Player::DrawReady()
 		ImGui::Text("virtualityPlanePosition : {%f,%f,%f}\n", virtualityPlanePosition.x, virtualityPlanePosition.y, virtualityPlanePosition.z);
 		ImGui::End();
 	}
+
+	BaseGameActor::DrawActorSettingUI();
 #endif
 	dropPointGetUI->Draw();
 	panelCountSprite3D->Draw();
@@ -131,7 +138,7 @@ void Player::CompleteCut()
 	}
 	totalCutCount += num;
 
-	cutPower = 0;
+	cutPower = MIN_CUTPOWER;
 
 	if (field->IsNewFeverPlayer())
 	{

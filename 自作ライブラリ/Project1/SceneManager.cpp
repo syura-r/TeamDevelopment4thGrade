@@ -4,6 +4,7 @@
 #include "Object3D.h"
 #include "Sprite.h"
 #include "TextureResource.h"
+#include "TransitionTriangle.h"
 
 
 SceneManager* SceneManager::GetInstance()
@@ -37,6 +38,9 @@ void SceneManager::Initialize()
 	assert(SUCCEEDED(result));
 	migrateTime = 1.0f;
 	migrateCounter = 0;
+
+	transitionTriangle = std::make_unique<TransitionTriangle>();
+	transitionTriangle.get()->Initialize();
 }
 
 void SceneManager::Update()
@@ -45,29 +49,51 @@ void SceneManager::Update()
 	{
 		return;
 	}
-	if(migrateStart)
+	//if(migrateStart)
+	//{
+	//	if (migrateCounter < 60)
+	//		migrateTime = Easing::EaseInOutQuad(1, 0, 60, migrateCounter);
+	//	else
+	//		migrateTime = Easing::EaseInOutQuad(0, 1, 60, migrateCounter-60);
+	//	migrateCounter++;
+	//	if (migrateCounter == 60)
+	//	{
+	//		Change(currentScene->NextScene());
+	//		currentScene->Update();
+	//	}
+	//	if(migrateCounter == 120)
+	//	{
+	//		migrateStart = false;
+	//		migrateCounter = 0;
+	//	}
+	//	return;
+	//}
+	//if (currentScene->GetIsEnd())
+	//{
+	//	migrateStart = true;
+	//}
+
+	const bool prevIsClose = transitionTriangle.get()->GetIsClose();
+	const bool prevIsOpen = transitionTriangle.get()->GetIsOpen();
+
+	if (prevIsClose || prevIsOpen)
 	{
-		if (migrateCounter < 60)
-			migrateTime = Easing::EaseInOutQuad(1, 0, 60, migrateCounter);
-		else
-			migrateTime = Easing::EaseInOutQuad(0, 1, 60, migrateCounter-60);
-		migrateCounter++;
-		if (migrateCounter == 60)
+		transitionTriangle.get()->Update();
+
+		if (prevIsClose &&
+			!transitionTriangle.get()->GetIsClose())
 		{
 			Change(currentScene->NextScene());
 			currentScene->Update();
-		}
-		if(migrateCounter == 120)
-		{
-			migrateStart = false;
-			migrateCounter = 0;
+			transitionTriangle.get()->IsOpen();
 		}
 		return;
 	}
 	if (currentScene->GetIsEnd())
 	{
-		migrateStart = true;
+		transitionTriangle.get()->IsClose();
 	}
+
 	currentScene->Update();
 }
 
@@ -83,8 +109,10 @@ void SceneManager::PreDraw()
 	{
 		return;
 	}
-	if (((!migrateStart && currentScene->GetIsEnd()) || migrateCounter == 60) && !Object3D::GetDrawShadow())
-		resource->PreDraw();
+
+
+	//if (((!migrateStart && currentScene->GetIsEnd()) || migrateCounter == 60) && !Object3D::GetDrawShadow())
+	//	resource->PreDraw();
 	if (!migrateStart || migrateCounter == 60)
 		currentScene->PreDraw();
 }
@@ -97,21 +125,22 @@ void SceneManager::PostDraw()
 	}
 	if (!migrateStart || migrateCounter == 60)
 		currentScene->PostDraw();
-	if (((!migrateStart && currentScene->GetIsEnd()) || migrateCounter == 60) && !Object3D::GetDrawShadow())
-	{
-		resource->PostDraw();
-	}
-	if(migrateStart|| currentScene->GetIsEnd() && !Object3D::GetDrawShadow())
-	{
-		auto libPtr = DirectXLib::GetInstance();
-		ConstBufferDate* constMap = nullptr;
-		auto result = constBuff->Map(0, nullptr, (void**)&constMap);
-		constMap->migrateTime = migrateTime;
-		constBuff->Unmap(0, nullptr);
+	PipelineState::SetPipeline("Sprite");
+	transitionTriangle.get()->Draw();
+	//if (((!migrateStart && currentScene->GetIsEnd()) || migrateCounter == 60) && !Object3D::GetDrawShadow())
+	//{
+	//	resource->PostDraw();
+	//}
+	//if(migrateStart|| currentScene->GetIsEnd() && !Object3D::GetDrawShadow())
+	//{
+	//	auto libPtr = DirectXLib::GetInstance();
+	//	ConstBufferDate* constMap = nullptr;
+	//	auto result = constBuff->Map(0, nullptr, (void**)&constMap);
+	//	constMap->migrateTime = migrateTime;
+	//	constBuff->Unmap(0, nullptr);
 
-		PipelineState::SetPipeline("Migrate");
-		libPtr->GetCommandList()->SetGraphicsRootConstantBufferView(1, constBuff->GetGPUVirtualAddress());
-		migrateTex->NoPipelineDraw("migrateTex", { 960,540 }, 0, { 1,1 }, { 1,1,1,1 }, { 0.5f, 0.5f });
-
-	}
+	//	PipelineState::SetPipeline("Migrate");
+	//	libPtr->GetCommandList()->SetGraphicsRootConstantBufferView(1, constBuff->GetGPUVirtualAddress());
+	//	migrateTex->NoPipelineDraw("migrateTex", { 960,540 }, 0, { 1,1 }, { 1,1,1,1 }, { 0.5f, 0.5f });
+	//}
 }

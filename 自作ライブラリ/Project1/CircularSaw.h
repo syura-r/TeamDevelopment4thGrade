@@ -42,5 +42,7 @@ private:
 	Vector3 virtualityPlanePosition;
 
 	BaseGameActor* parentObj;
+
+	DirectX::XMFLOAT4 effectColor;
 };
 

@@ -61,6 +61,8 @@ Play::Play()
 	feverUI = new FeverUI();
 	levelGauge = new LevelGauge();
 	lockonMarker = new LockonMarker();
+	scoreRanking = new ScoreRanking();
+	playstart = new PlayStart(camera.get());
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
@@ -78,6 +80,8 @@ Play::~Play()
 	PtrDelete(feverUI);
 	PtrDelete(levelGauge);
 	PtrDelete(lockonMarker);
+	PtrDelete(scoreRanking);
+	PtrDelete(playstart);
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
@@ -120,13 +124,22 @@ void Play::Initialize()
 	feverUI->Initialize();
 	levelGauge->Initialize();
 	lockonMarker->Initialize();
+	scoreRanking->Initialize();
+	playstart->Initialize();
 
 	Audio::StopBGM("BGM_Play");
 	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
+
+	Update();
+	playstart->SetIsActive(true);
 }
 
 void Play::Update()
 {
+	playstart->Update();
+	if (playstart->GetIsActive())
+		return;
+
 	pause->Update();
 	//ゲームにもどる
 	if (pause->GetToGame())
@@ -143,6 +156,7 @@ void Play::Update()
 	if (pause->GetToTitle())
 	{
 		Audio::StopBGM("BGM_Play");
+		Audio::AllStopSE();
 		next = Title;
 		KillCountToEnding();
 		ShutDown();
@@ -161,6 +175,7 @@ void Play::Update()
 	if (Input::TriggerKey(DIK_E))//終了処理
 	{
 		Audio::StopBGM("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
@@ -184,8 +199,9 @@ void Play::Update()
 		return;
 	}
 
+
 	// ゲームパッドの右スティックでのカメラ操作
-	if (Input::CheckPadRStickLeft() || Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown())
+	if (!camera->IsShake() && (Input::CheckPadRStickLeft() || Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown()) )
 	{
 		Vector2 vec;
 		vec.x = Input::GetRStickDirection().x;
@@ -193,8 +209,16 @@ void Play::Update()
 		camera->RotateYaxis(vec);
 	}
 
+	//camera->AutoFocus(actorManager);
+
+	/*if (Input::TriggerKey(DIK_SPACE))
+	{
+		camera->SetShake(30, 1);
+	}*/
+
 	feverUI->Update();
 	levelGauge->Update();
+	scoreRanking->Update();
 
 	lightGroup->SetAmbientColor(XMFLOAT3(coloramb));
 	lightGroup->SetDirLightDir(0, { lightDir[0],lightDir[1],lightDir[2],1 });
@@ -223,6 +247,7 @@ void Play::Update()
 	/*if (ActorManager::GetInstance()->GetPlayer()->IsEndGame() )
 	{
 		Audio::StopWave("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
@@ -241,6 +266,7 @@ void Play::Update()
 	if (allEnemiesOutField)
 	{
 		Audio::StopWave("BGM_Play");
+		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
 		return;
@@ -253,7 +279,7 @@ void Play::PreDraw()
 	feverUI->Draw();
 	levelGauge->Draw();
 
-		objectManager->DrawReady();
+	objectManager->DrawReady();
 #ifdef _DEBUG
 		if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
 		{
@@ -271,12 +297,14 @@ void Play::PreDraw()
 		Sprite3D::SetCamera(screenCamera);
 		Object3D::SetScreenDraw(true);
 		objectManager->PreDraw();
+		scoreRanking->Draw_OBJ();
 		Object3D::SetScreenDraw(false);
 		Sprite3D::SetCamera(camera.get());
 		Object3D::SetCamera(camera.get());
 		screenResource->PostDraw();
 
 		objectManager->PreDraw();
+		scoreRanking->Draw_OBJ();
 		stadium->Draw();
 		ParticleManager::GetInstance()->DrawFeverCutEffect();
 }
@@ -287,38 +315,12 @@ void Play::PostDraw()
 	//	return;
 
 	objectManager->PostDraw();
-
-	static Vector3 pos = { 0,0,0 };
-
-	if (Input::DownKey(DIK_RIGHT))
-	{
-		pos.x += 0.3f;
-	}
-	if (Input::DownKey(DIK_LEFT))
-	{
-		pos.x -= 0.3f;
-	}
-	if (Input::DownKey(DIK_UP))
-	{
-		pos.z += 0.3f;
-	}
-	if (Input::DownKey(DIK_DOWN))
-	{
-		pos.z -= 0.3f;
-	}
-	if (Input::DownKey(DIK_K))
-	{
-		pos.y -= 0.3f;
-	}
-	if (Input::DownKey(DIK_I))
-	{
-		pos.y += 0.3f;
-	}
 	if (!Object3D::GetDrawShadow())
 	{
 		DirectXLib::GetInstance()->DepthClear();
 	}
 	lockonMarker->Draw();
+	playstart->Draw();
 	pause->Draw();
 }
 
@@ -328,7 +330,7 @@ void Play::TimeUpdate()
 
 void Play::KillCountToEnding()
 {
-	Ending::killCount_player = actorManager->GetPlayer()->GetKillCount();
-	Ending::killCount_enemy_red = actorManager->GetStandardEnemies()[0]->GetKillCount();
-	Ending::killCount_enemy_green = actorManager->GetStandardEnemies()[1]->GetKillCount();
+	Ending::score_player = actorManager->GetPlayer()->GetTotalCutCount();
+	Ending::score_enemy_red = actorManager->GetStandardEnemies()[0]->GetTotalCutCount();
+	Ending::score_enemy_green = actorManager->GetStandardEnemies()[1]->GetTotalCutCount();
 }

@@ -20,6 +20,7 @@ CircularSaw::CircularSaw(Vector3 arg_virtualityPlanePosition, BaseLocus* arg_now
 	nowCuttingLocus = arg_nowCuttingLocus;
 	name = typeid(*this).name();
 	ActorManager::GetInstance()->AddObject(this, ObjectRegistType::CIRCULAR_SAW);
+	effectColor = arg_object->GetEffectColor();
 	Initialize();
 }
 
@@ -39,7 +40,7 @@ void CircularSaw::Initialize()
 	{
 		speed *= 5;
 
-		ParticleEmitter::FeverCut(nowCuttingLocus->GetLine(0));
+		ParticleEmitter::FeverCut(nowCuttingLocus->GetLine(0), effectColor);
 		Audio::PlaySE("SE_FeverCut", Audio::volume_se);
 	}
 	length = 0;
@@ -88,7 +89,7 @@ void CircularSaw::Update()
 		virtualityPlanePosition = nowCuttingLocus->GetLine(currentLineNum)->GetVirtualityPlaneStartPos();
 		if (parentObj->IsInFever())
 		{
-			ParticleEmitter::FeverCut(nowCuttingLocus->GetLine(currentLineNum));
+			ParticleEmitter::FeverCut(nowCuttingLocus->GetLine(currentLineNum), effectColor);
 			Audio::PlaySE("SE_FeverCut", Audio::volume_se);
 		}
 	}

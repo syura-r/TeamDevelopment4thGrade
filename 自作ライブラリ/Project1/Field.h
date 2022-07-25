@@ -66,6 +66,8 @@ public:
 	std::vector<FieldPiece*>& GetGottenPieces();
 	int GetFeverNolma();
 	int GetGottenCount();
+	void SetGottenCount(const int arg_num);
+	void AddGottenCount(const int arg_add);
 
 private:
 	//çLÇ≥

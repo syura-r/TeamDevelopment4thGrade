@@ -9,6 +9,7 @@
 #include "CircularSaw.h"
 #include "BaseGameActor.h"
 #include "IActionState.h"
+#include "FeverInItem.h"
 
 ActorManager* ActorManager::instance = nullptr;
 
@@ -51,6 +52,7 @@ void ActorManager::Initialize()
 	unableThroughEdges.clear();
 	circularSaws.clear();
 	baseGameActors.clear();
+	feverInItems.clear();
 }
 
 void ActorManager::AddObject(Object* arg_object, const ObjectRegistType arg_type)
@@ -83,6 +85,8 @@ void ActorManager::AddObject(Object* arg_object, const ObjectRegistType arg_type
 	case ObjectRegistType::CIRCULAR_SAW:
 		circularSaws.push_back(static_cast<CircularSaw*>(arg_object));
 		break;
+	case ObjectRegistType::FEVERIN_ITEM:
+		feverInItems.push_back(static_cast<FeverInItem*>(arg_object));
 	default:
 		break;
 	}
@@ -188,6 +192,16 @@ void ActorManager::DeleteObject(Object* arg_object, const ObjectRegistType arg_t
 			}
 		}
 		break;
+	case ObjectRegistType::FEVERIN_ITEM:
+		for (auto itr = feverInItems.begin(); itr != feverInItems.end(); itr++)
+		{
+			if (*itr == arg_object)
+			{
+				feverInItems.erase(itr);
+				break;
+			}
+		}
+		break;
 	default:
 		break;
 	}
@@ -231,6 +245,12 @@ void ActorManager::CollisionCheck()
 		for (int j = 0; j < panelItems.size(); j++)
 		{
 			baseGameActors[i]->HitCheckPanelItem(panelItems[j]);
+		}
+
+		//スマッシュボール的な
+		for (int j = 0; j < feverInItems.size(); j++)
+		{
+			baseGameActors[i]->HitCheckFeverInItem(feverInItems[j]);
 		}
 	}
 }
@@ -296,4 +316,9 @@ CircularSaw* ActorManager::GetCircularSaw(Object* arg_obj)
 std::vector<BaseGameActor*>& ActorManager::GetBaseGameActors()
 {
 	return baseGameActors;
+}
+
+std::vector<FeverInItem*>& ActorManager::GetFeverInItems()
+{
+	return feverInItems;
 }

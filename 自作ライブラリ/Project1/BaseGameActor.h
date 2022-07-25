@@ -23,6 +23,7 @@ class FieldPiece;
 class PanelCutLocus;
 class UnableThroughEdge;
 class UnableThroughBlock;
+class FeverInItem;
 
 class BaseGameActor : public Object
 {
@@ -114,6 +115,9 @@ public:
 	//降ってくるパネル
 	virtual void HitCheckUnableThroughBlock(UnableThroughBlock* arg_block);
 	virtual void HitUnableThroughBlock(UnableThroughBlock* arg_block);
+	//スマッシュボール
+	virtual void HitCheckFeverInItem(FeverInItem* arg_feverInItem);
+	virtual void HitFeverInItem(FeverInItem* arg_feverInItem);
 
 	//---Getter,Setter---
 	inline float GetRadius()const {
@@ -154,7 +158,6 @@ public:
 	}
 	inline void AddKillCount(const int arg_num) {
 		killCount += arg_num;
-		dropPointGetUI->PointGet();
 	}
 	inline void SubtructKillCount(const int arg_num) {
 		killCount -= arg_num;
@@ -188,6 +191,18 @@ public:
 	}
 	inline BaseGameActor* GetTarget()const {
 		return targetActor;
+	}
+	inline DirectX::XMFLOAT4 GetActorColor()const {
+		return actorColor;
+	}
+	inline DirectX::XMFLOAT4 GetEffectColor()const {
+		return effectColor;
+	}
+
+	//---調整用---
+	static void DrawActorSettingUI();
+	static inline bool IsExtendVerticaly() {
+		return IS_EXTEND_VERTICALY;
 	}
 
 protected:
@@ -243,6 +258,7 @@ protected:
 	std::unordered_map<BaseGameActor*, int> weightInfluenceMap;
 	PieChart* chart;//-//
 	DirectX::XMFLOAT4 actorColor;//-//
+	DirectX::XMFLOAT4 effectColor;
 	//ゲーム開始から切った数
 	int totalCutCount;
 	//フィーバー状態
@@ -319,4 +335,10 @@ protected:
 
 	//---Spawn---
 	FieldPiece* respawnPiece;
+
+	//---調整用---
+	static int MAX_CUTPOWER;
+	static int MIN_CUTPOWER;
+	static bool IS_ACTIVE_ACTORLEVEL;
+	static bool IS_EXTEND_VERTICALY;
 };

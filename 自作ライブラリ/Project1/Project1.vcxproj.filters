@@ -405,9 +405,6 @@
     <ClCompile Include="UnableThroughEdge.cpp">
       <Filter>ソース ファイル\GameObject\proto_second</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreManager.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="FeverUI.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
@@ -461,6 +458,24 @@
     </ClCompile>
     <ClCompile Include="FeverCutEffect.cpp">
       <Filter>ソース ファイル\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="FeverInItem.cpp">
+      <Filter>ソース ファイル\GameObject\proto_second</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreRanking.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="EndingActor.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayStart.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="TransitionTriangle.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TransitionOneLine.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -773,9 +788,6 @@
     <ClInclude Include="UnableThroughEdge.h">
       <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreManager.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="FeverUI.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
@@ -838,6 +850,24 @@
     </ClInclude>
     <ClInclude Include="FeverCutEffect.h">
       <Filter>ヘッダー ファイル\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="FeverInItem.h">
+      <Filter>ヘッダー ファイル\GameObject\proto_second</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreRanking.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="EndingActor.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayStart.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="TransitionTriangle.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TransitionOneLine.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

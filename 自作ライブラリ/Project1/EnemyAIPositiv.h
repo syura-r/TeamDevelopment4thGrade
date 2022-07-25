@@ -30,9 +30,9 @@ private:
 
 private:
 	// ‹——£‚Ì‹K’è’l
-	const float specifiedValueDistance = FieldPiece::GetSidewaysLength() * 3;
+	const float specifiedValueDistance = FieldPiece::GetSidewaysLength() * 2;
 	// “àÏ‚Ì‹K’è’l
-	float specifiedValueDot = 0.5f;
+	float specifiedValueDot = /*1.41421356f / 2.0f*/0.5f;
 	// ŒX‚«‚Ì‹K’è’l
 	const float specifiedValueInclination = 1.0f;
 
