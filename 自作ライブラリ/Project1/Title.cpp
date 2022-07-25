@@ -56,7 +56,7 @@ void Title::Initialize()
 
 	for (int i = 0; i < panelsNum_ALL; i++)
 	{
-		panels[i]->Initialize((int)GetRandom(0.0f, 8.0f));
+		panels[i]->Initialize(/*(int)GetRandom(0.0f, 8.0f)*/1);
 	}
 	//敷き詰め
 	PanelPadding();
@@ -110,7 +110,7 @@ void Title::Update()
 	}
 	camera->Update();
 	lightGroup->SetAmbientColor({ 1,1,1 });
-	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });
+	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.5f,1 });
 	lightGroup->Update();
 }
 
@@ -230,13 +230,14 @@ void Title::Panel::Initialize(const int num_color)
 	position = { 0,0,-15 };
 	scale = { 4,4,4, };
 	rotation = { 0,0,0 };
-	const Vector4 blue = { 0.25f, 0.58f, 1.0f, 1.0f };
-	const Vector4 yellow = { 0.9f, 0.9f, 0.1f, 1.0f };
+	color = { 1,1,1,1 };
+	//const Vector4 blue = { 0.25f, 0.58f, 1.0f, 1.0f };
+	//const Vector4 yellow = { 0.9f, 0.9f, 0.1f, 1.0f };
 
-	color = blue;
-	//ランダムでボーナスパネルの色に
-	if (num_color <= 0)
-	{
-		color = yellow;
-	}
+	//color = blue;
+	////ランダムでボーナスパネルの色に
+	//if (num_color <= 0)
+	//{
+	//	color = yellow;
+	//}
 }
