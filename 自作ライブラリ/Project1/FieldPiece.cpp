@@ -4,7 +4,7 @@
 #include "OBJLoader.h"
 #include "ActorManager.h"
 #include "ParticleEmitter.h"
-
+#include"Texture.h"
 const float FieldPiece::SIZE = 7.5f / 0.866f / 2.0f;
 const float FieldPiece::SIDEWAYS_LENGTH = 0.866f * SIZE;
 const float FieldPiece::LOWER_TIME_OFFSET = 1.0f * SIZE;
@@ -28,6 +28,7 @@ FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_dir
 	position = virtualityPlanePosition;
 
 	Create(OBJLoader::GetModel("fieldPiece"));
+	//Create(OBJLoader::GetModel("fieldPiece_bonus"));
 
 	Initialize();
 }
@@ -282,17 +283,22 @@ void FieldPiece::SetPoints()
 
 void FieldPiece::ChangeColorForRidden()
 {
-	color = { 0.25f, 0.58f, 1.0f, 1.0f };
 
 	if (!isCutable)
 	{
-		//color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		return;
 	}
 
 	if (isBonus)
 	{
-		color = { 0.9f, 0.9f, 0.1f, 1.0f };
+		this->object->SetModel(OBJLoader::GetModel("fieldPiece_bonus"));
+		//color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		return;
+	}
+	else
+	{
+		this->object->SetModel(OBJLoader::GetModel("fieldPiece"));
 		return;
 	}
 

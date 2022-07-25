@@ -28,6 +28,8 @@
 #include "InGameCamera.h"
 #include "IEnemyAI.h"
 
+#include "FieldPiece.h"
+
 Play::Play()
 {
 	next = Ending;

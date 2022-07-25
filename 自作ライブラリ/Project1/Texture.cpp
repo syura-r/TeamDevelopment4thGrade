@@ -168,8 +168,10 @@ void Texture::SendColor(const std::string& name, XMFLOAT4* color)
 		0,
 		nullptr,//全領域へコピー
 		color,//元データへのアドレス
-		sizeof(XMFLOAT4) * createTexSize[name].x,//1ラインサイズ
-		sizeof(XMFLOAT4) * createTexSize[name].x * createTexSize[name].y//全サイス
+		sizeof(XMFLOAT4) * texbuffs[name].Get()->GetDesc().Width,
+		sizeof(XMFLOAT4) * texbuffs[name].Get()->GetDesc().Width* texbuffs[name].Get()->GetDesc().Height
+		//sizeof(XMFLOAT4) * createTexSize[name].x,//1ラインサイズ
+		//sizeof(XMFLOAT4) * createTexSize[name].x * createTexSize[name].y//全サイス
 	);
 }
 
@@ -184,6 +186,60 @@ void Texture::ChangeTexture(const std::string& name, ID3D12Resource* texBuff)
 	//シェーダリソースビュー作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
 	srvDesc.Format = texBuff->GetDesc().Format;//RGBA
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+	srvDesc.Texture2D.MipLevels = 1;
+
+
+	dev->CreateShaderResourceView(texbuffs[name].Get(),//ビューと関連付けるバッファ
+		&srvDesc,//テクスチャ設定情報
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(basicDescHeape->GetCPUDescriptorHandleForHeapStart(),
+			texIndexes[name], dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)));
+}
+
+void Texture::CreateChangeTex(const std::string& name, const int& width, const int& height, XMFLOAT4* color)
+{
+	if (texbuffs[name] == nullptr)
+		assert(0);
+
+	HRESULT result;
+	auto dev = DirectXLib::GetInstance()->GetDevice();
+
+	CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
+		DXGI_FORMAT_R32G32B32A32_FLOAT,
+		(UINT64)width,
+		(UINT)height,
+		1,
+		1
+	);
+
+
+	ComPtr < ID3D12Resource> texbuff;
+	result = dev->CreateCommittedResource(//GPUリソースの生成
+		&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
+			D3D12_MEMORY_POOL_L0),
+		D3D12_HEAP_FLAG_NONE,
+		&texresDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,//テクスチャ用指定
+		nullptr,
+		IID_PPV_ARGS(&texbuff));
+
+	result = texbuff->WriteToSubresource(
+		0,
+		nullptr,//全領域へコピー
+		color,//元データへのアドレス
+		sizeof(XMFLOAT4) * width,//1ラインサイズ
+		sizeof(XMFLOAT4) * width * height//全サイス
+	);
+
+	texbuffs[name] = texbuff;
+	createTexSize[name].x = width;
+	createTexSize[name].y = height;
+
+
+	//シェーダリソースビュー作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
+	srvDesc.Format = texbuff->GetDesc().Format;//RGBA
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;

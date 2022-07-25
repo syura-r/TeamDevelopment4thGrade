@@ -1,10 +1,12 @@
 #include "Stadium.h"
 #include "OBJLoader.h"
 #include"TextureResource.h"
+#include"Texture.h"
 Stadium::Stadium()
 {
 	Create(OBJLoader::GetModel("stadium"));
-	
+	XMFLOAT4 col = { 1,1,1,1 };
+	Texture::CreateChangeTex("blue.png", 1, 1,&col );
 	position = { 0,-80,0 };
 	scale = { 15,15,15 };
 	rotation = { 0,90,0 };
@@ -24,6 +26,7 @@ Stadium::Stadium()
 	lavaObj->SetPosition(position);
 	lavaObj->SetScale({65,1,65});
 	lavaObj->SetRotation({0,45,0});
+	lavaObj->SetColor({ 1.0f, 1.0f,1.0f,1.0f });
 	lavaObj->Update();
 
 	Initialize();

@@ -170,6 +170,8 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("Hexagon", "Hexagon.obj", false);
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
+		OBJLoader::LoadModelFile("fieldPiece_bonus", "GamePlay_BonusTriangle.obj", false);
+		OBJLoader::LoadModelFile("fieldPiece_title", "GamePlay_BonusTriangle.obj", false);
 		OBJLoader::LoadModelFile("stadium", "stadium.obj", false);
 		OBJLoader::LoadModelFile("lava", "GamePlay_Magma.obj", false);
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);

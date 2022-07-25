@@ -11,6 +11,8 @@ float4 PSmain(VSOutput input) : SV_TARGET
     	//テクスチャマッピング
     float4 texcolor = tex0.Sample(smp0, input.uv);
 
+    texcolor = pow(texcolor, 2.2);
+
     if (texcolor.w == 0)
     {
         clip(-1);
@@ -146,5 +148,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
 	//シェーディングによる色で描画
     float4 returnColor = shadecolor * texcolor * color;
     return pow(returnColor, 1.0 / 2.2);
+    //return shadecolor * texcolor * color;
+
 
 }
