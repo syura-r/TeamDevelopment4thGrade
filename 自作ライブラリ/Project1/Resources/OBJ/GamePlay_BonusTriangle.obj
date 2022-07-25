@@ -1,6 +1,6 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-mtllib GamePlay_Triangle.mtl
+mtllib GamePlay_BonusTriangle.mtl
 g default
 v 0.539060 0.001058 0.232346
 v 0.460940 0.001058 0.232346
@@ -525,7 +525,7 @@ vn 0.604868 0.796325 0.000989
 vn -0.000000 1.000000 0.000000
 s 1
 g pCylinder4
-usemtl lambert2SG
+usemtl lambert3SG
 f 25/109/1 28/285/2 26/112/3
 f 26/112/3 28/285/2 30/111/4
 f 27/183/5 36/184/6 20/182/7

@@ -13,9 +13,6 @@ const float FieldPiece::FULL_OFFSET = LOWER_TIME_OFFSET + UPPER_TIME_OFFSET;
 const float FieldPiece::WEIGHT = 1.0f;
 std::vector<Vector2> FieldPiece::basePoints = std::vector<Vector2>();
 
-//float FieldPiece::baceColor[3] = { 18.0f / 255.0f, 34.0f / 255.0f ,83.0f / 255.0f };
-//float FieldPiece::bonusColor[3] = { 188.0f / 255.0f, 143.0f / 255.0f ,36.0f / 255.0f };
-
 FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_direction)
 	:virtualityPlanePosition(arg_position),
 	 dir(arg_direction),
@@ -31,6 +28,7 @@ FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_dir
 	position = virtualityPlanePosition;
 
 	Create(OBJLoader::GetModel("fieldPiece"));
+	//Create(OBJLoader::GetModel("fieldPiece_bonus"));
 
 	Initialize();
 }
@@ -294,7 +292,13 @@ void FieldPiece::ChangeColorForRidden()
 
 	if (isBonus)
 	{
-		color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		this->object->SetModel(OBJLoader::GetModel("fieldPiece_bonus"));
+		//color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		return;
+	}
+	else
+	{
+		this->object->SetModel(OBJLoader::GetModel("fieldPiece"));
 		return;
 	}
 
