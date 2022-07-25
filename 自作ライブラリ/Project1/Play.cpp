@@ -101,13 +101,13 @@ void Play::Initialize()
 	Field* field = new Field();
 	objectManager->Add(field, false);	
 
-	Player* player = new Player(Vector3(0, -5, 10));
+	Player* player = new Player(Vector3(0, -5, -10));
 	objectManager->Add(player);	
 	
-	StandardEnemy* testEnemy = new StandardEnemy(Vector3(-10, -5, -10), EnemyAILabel::POSITIVE, "GamePlay_Enemy");
+	StandardEnemy* testEnemy = new StandardEnemy(Vector3(-10, -5, 10), EnemyAILabel::POSITIVE, "GamePlay_Enemy");
 	objectManager->Add(testEnemy);	
 
-	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, -10), EnemyAILabel::POSITIVE, "GamePlay_Enemy2");
+	StandardEnemy* testEnemy2 = new StandardEnemy(Vector3(10, -5, 10), EnemyAILabel::POSITIVE, "GamePlay_Enemy2");
 	objectManager->Add(testEnemy2);
 
 	camera->Initialize();

@@ -17,8 +17,8 @@
 #include "ObjectRegistType.h"
 #include "IActionState.h"
 
-const int Field::PIECE_LAYER_NUM = 6;
-const float Field::RADIUS = 45.0f;
+const int Field::PIECE_LAYER_NUM = 5;
+const float Field::RADIUS = 45.0f / 6.0f * PIECE_LAYER_NUM;
 std::vector<Vector2> Field::edges = std::vector<Vector2>();
 
 Field::Field()

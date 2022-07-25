@@ -932,7 +932,7 @@ void BaseGameActor::OnFall(ActionStateLabel& arg_label)
 
 void BaseGameActor::EndFall()
 {
-	camera->SetShake(10, 1);
+	camera->SetShake(10, 3);
 	BaseGameActor* mostForcedActor = nullptr;
 	for (auto m : weightInfluenceMap)
 	{
