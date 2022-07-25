@@ -67,7 +67,7 @@ void PlayStart::CameraZoomOut()
 	ActorManager* actorManager = ActorManager::GetInstance();
 	auto fields = actorManager->GetFields();
 
-	const float cameraDistance_end = 100.0f;
+	const float cameraDistance_end = 70.0f;
 	const XMFLOAT3 cameraTarget_end = fields[0]->GetPosition();
 	const float easingCount_end = 120.0f;
 

@@ -34,7 +34,7 @@ void InGameCamera::Initialize()
 	}
 	SetPhi(DirectX::XMConvertToRadians(-90));
 	SetTheta(120);
-	SetDistance(100);
+	SetDistance(70);
 	Update();
 }
 

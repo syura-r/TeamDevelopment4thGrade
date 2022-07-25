@@ -494,20 +494,23 @@ bool StandardEnemy::IsChangeMoveToTackle()
 
 bool StandardEnemy::IsChangeMoveToCut()
 {
-	int rnd = std::rand() % 30;
-	if (cutPower != 6)
-	{
-		if (rnd != 0)
-		{
-			return false;
-		}
-	}
-
-	if (!IsExistPiecesWithinSawRange())
+	//cutPower確認
+	if (cutPower == 0)
 	{
 		return false;
 	}
-	
+
+	//ただの乱数
+	int rnd = std::rand() % 30;
+	if (cutPower != 6)
+	{
+		rnd = std::rand() % 5;
+	}
+	if (rnd != 0)
+	{
+		return false;
+	}
+	//cutPowerの量による判定
 	int randRatio = (1 + cutPowerUpperLimit - cutPower) * 10;
 	if (randRatio <= 0)
 	{
@@ -518,8 +521,16 @@ bool StandardEnemy::IsChangeMoveToCut()
 	{
 		return false;
 	}
+
+	//切れるパネルが範囲内にあるか
+	if (!IsExistPiecesWithinSawRange())
+	{
+		return false;
+	}
+	
+	
 	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
 	//---切り抜き判断系---
 	//enemyAI->StartCutKillActorInFever();
-	return (cutPower >= cutPowerLowerLimit) && cutPower > 0 && info->ridingPiece;
+	return cutPower >= cutPowerLowerLimit && info->ridingPiece;
 }
