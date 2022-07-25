@@ -44,5 +44,8 @@ private:
 	BaseGameActor* parentObj;
 
 	DirectX::XMFLOAT4 effectColor;
+
+	//Ø‚é‘ÎÛ‚Ìî•ñ
+
 };
 

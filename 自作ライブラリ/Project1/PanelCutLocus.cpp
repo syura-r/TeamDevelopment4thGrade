@@ -152,6 +152,11 @@ int PanelCutLocus::GetMaxNumLine()
 {
 	if (BaseGameActor::IsExtendVerticaly())
 	{
+		if (static_cast<BaseGameActor*>(parentObject)->IsInFever())
+		{
+			return baseInfo[cutPower].size();
+		}
+
 		return baseInfoVerticaly[cutPower].size();
 	}
 	return baseInfo[cutPower].size();
