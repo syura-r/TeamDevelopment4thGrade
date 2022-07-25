@@ -127,11 +127,14 @@ void Play::Initialize()
 	scoreRanking->Initialize();
 	playstart->Initialize();
 
-	Audio::StopBGM("BGM_Play");
-	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
+	nowPlayingBGMName = "BGM_Play";
+	Audio::StopBGM(nowPlayingBGMName);
+	Audio::PlayBGM(nowPlayingBGMName, 0.1f * Audio::volume_bgm);
 
 	Update();
 	playstart->SetIsActive(true);
+
+	limit30trigger = false;
 }
 
 void Play::Update()
@@ -149,13 +152,14 @@ void Play::Update()
 	//やり直す
 	if (pause->GetRestart())
 	{
+		Audio::StopBGM(nowPlayingBGMName);
 		Initialize();
 		return;
 	}
 	//タイトルにもどる
 	if (pause->GetToTitle())
 	{
-		Audio::StopBGM("BGM_Play");
+		Audio::StopBGM(nowPlayingBGMName);
 		Audio::AllStopSE();
 		next = Title;
 		KillCountToEnding();
@@ -166,7 +170,7 @@ void Play::Update()
 	if (pause->GetActivePause())
 	{
 		//BGMの音量変更
-		Audio::VolumeChangeBGM("BGM_Play", 0.1f * Audio::volume_bgm);
+		Audio::VolumeChangeBGM(nowPlayingBGMName, 0.1f * Audio::volume_bgm);
 		return;
 	}
 
@@ -174,7 +178,7 @@ void Play::Update()
 #ifdef _DEBUG
 	if (Input::TriggerKey(DIK_E))//終了処理
 	{
-		Audio::StopBGM("BGM_Play");
+		Audio::StopBGM(nowPlayingBGMName);
 		Audio::AllStopSE();
 		KillCountToEnding();
 		ShutDown();
@@ -189,7 +193,7 @@ void Play::Update()
 
 		if (gameEndCount >= 60)
 		{
-			Audio::StopBGM("BGM_Play");
+			Audio::StopBGM(nowPlayingBGMName);
 			Audio::AllStopSE();
 
 			KillCountToEnding();
@@ -197,6 +201,19 @@ void Play::Update()
 		}
 
 		return;
+	}
+
+	//残り30秒でBGMの変更
+	if (timeLimit->GetNowTime() >= 90 * 60)
+	{
+		if (!limit30trigger)
+		{
+			limit30trigger = true;
+			Audio::PlaySE("SE_Limit30", 1.0f * Audio::volume_se);
+			Audio::StopBGM(nowPlayingBGMName);
+			nowPlayingBGMName = "BGM_PlayLimit";
+			Audio::PlayBGM(nowPlayingBGMName, 0.1f * Audio::volume_bgm);
+		}
 	}
 
 

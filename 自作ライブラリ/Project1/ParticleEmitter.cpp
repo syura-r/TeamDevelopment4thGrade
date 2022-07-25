@@ -20,6 +20,7 @@ void ParticleEmitter::SetObjectManager(ObjectManager* arg_objManager)
 
 void ParticleEmitter::CutEffect(const Vector3& arg_pos, const Vector3& arg_vec)
 {
+    
     for (int i = 0; i < 75; i++)
     {
         //”ò‚ñ‚Å‚¢‚­•ûŒü
@@ -110,6 +111,7 @@ void ParticleEmitter::CutEffect(const Vector3& arg_pos, const Vector3& arg_vec)
 
         particleManager->Add(particle, "particle");
     }
+    
 }
 
 void ParticleEmitter::ShockEffect(const Vector3& arg_pos, const Vector3& arg_color)
