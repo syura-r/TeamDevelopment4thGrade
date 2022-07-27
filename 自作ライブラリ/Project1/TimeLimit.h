@@ -57,5 +57,10 @@ private:
 	bool isMoveStart = false;
 	float easeMoveCount = 0.0f;
 
+	//ƒ‰ƒXƒg10•b”Å
+	bool isRedTime = false;
+	const int redTime = 10;
+	NumberSprite* redNumber_sprite;
+
 };
 
