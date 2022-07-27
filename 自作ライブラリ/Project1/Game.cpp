@@ -207,7 +207,9 @@ void Game::RoadAsset()
 		Audio::LoadFile("SE_GetItemL3", "SE/GamePlay_SE_GetItem_L3.wav");
 		Audio::LoadFile("SE_Limit30", "SE/GamePlay_SE_Limit30.wav");
 		Audio::LoadFile("SE_Cheers", "SE/GamePlay_SE_CheersVoice.wav");
-		
+		Audio::LoadFile("SE_Count10", "SE/GamePlay_SE_Count10.wav");
+		Audio::LoadFile("SE_Finish", "SE/GamePlay_SE_Finish.wav");
+
 		break;
 	case 5:
 		//FBXアニメーションの登録
