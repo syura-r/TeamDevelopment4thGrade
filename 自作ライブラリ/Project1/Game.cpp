@@ -157,6 +157,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("Fade_TriY", "Fade_TriY.png");
 		Texture::LoadTexture("GamePlay_UI_Ready", "GamePlay_UI_Ready.png");
 		Texture::LoadTexture("GamePlay_UI_GO", "GamePlay_UI_GO.png");
+		Texture::LoadTexture("GamePlay_UI_Finish", "GamePlay_UI_Finish.png");
 		Texture::LoadTexture("GamePlay_UI_FeverTimeText", "GamePlay_UI_FeverTimeText.png");
 
 		Texture::LoadTexture("FeverPlayerEffectWhite", "GamePlay_SPeffect_White.png");

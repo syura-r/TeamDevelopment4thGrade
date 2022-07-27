@@ -251,6 +251,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlaneCollider.cpp" />
     <ClCompile Include="Play.cpp" />
+    <ClCompile Include="PlayEnd.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="PlayStart.cpp" />
@@ -382,6 +383,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="PlaneCollider.h" />
     <ClInclude Include="Play.h" />
+    <ClInclude Include="PlayEnd.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayStart.h" />
     <ClInclude Include="PointLight.h" />

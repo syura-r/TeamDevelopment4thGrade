@@ -63,6 +63,7 @@ Play::Play()
 	lockonMarker = new LockonMarker();
 	scoreRanking = new ScoreRanking();
 	playstart = new PlayStart(camera.get());
+	playend = new PlayEnd();
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
@@ -82,6 +83,7 @@ Play::~Play()
 	PtrDelete(lockonMarker);
 	PtrDelete(scoreRanking);
 	PtrDelete(playstart);
+	PtrDelete(playend);
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
@@ -126,6 +128,7 @@ void Play::Initialize()
 	lockonMarker->Initialize();
 	scoreRanking->Initialize();
 	playstart->Initialize();
+	playend->Initialize();
 
 	Audio::StopBGM("BGM_Play");
 	Audio::PlayBGM("BGM_Play", 0.1f * Audio::volume_bgm);
@@ -137,7 +140,8 @@ void Play::Initialize()
 void Play::Update()
 {
 	playstart->Update();
-	if (playstart->GetIsActive())
+	playend->Update();
+	if (playstart->GetIsActive() || playend->GetIsActive())
 		return;
 
 	pause->Update();
@@ -185,15 +189,20 @@ void Play::Update()
 	timeLimit->Update();
 	if (timeLimit->GetLimit())
 	{
-		gameEndCount++;
+		//gameEndCount++;
 
-		if (gameEndCount >= 60)
+		//if (gameEndCount >= 60)
+		if (playend->GetIsFinishEnd())
 		{
 			Audio::StopBGM("BGM_Play");
-			Audio::AllStopSE();
 
 			KillCountToEnding();
 			ShutDown();
+		}
+		else
+		{
+			playend->SetIsActive(true);
+			Audio::AllStopSE();
 		}
 
 		return;
@@ -321,6 +330,7 @@ void Play::PostDraw()
 	}
 	lockonMarker->Draw();
 	playstart->Draw();
+	playend->Draw();
 	pause->Draw();
 }
 
