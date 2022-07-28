@@ -477,6 +477,9 @@
     <ClCompile Include="TransitionOneLine.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="AreaEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -869,6 +872,9 @@
     <ClInclude Include="TransitionOneLine.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="AreaEffect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shader\BasicPixelShader.hlsl">
@@ -1038,6 +1044,9 @@
     </FxCompile>
     <FxCompile Include="Resources\Shader\PieChartPS.hlsl">
       <Filter>シェーダファイル\OBJ</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\UVScrollingPS.hlsl">
+      <Filter>シェーダファイル\Effect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,10 @@ DropPointGetUI::~DropPointGetUI()
 
 void DropPointGetUI::Initialize()
 {
+		for (int i = 0; i < ui.size(); i++)
+	{
+		delete ui[i]->sprite;
+	}
 	ui.clear();
 }
 

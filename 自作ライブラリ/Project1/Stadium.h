@@ -16,8 +16,8 @@ private:
     int speedChangeTimer;
 	struct ConstBufferData
 	{
-        float uvOffset;
-        XMFLOAT3 pad;
+        XMFLOAT2 uvOffset = { 0,0 };
+        XMFLOAT2 pad;
 
 	};
     ComPtr<ID3D12Resource> constBuff; // 定数バッファ

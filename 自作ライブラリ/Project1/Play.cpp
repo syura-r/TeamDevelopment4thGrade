@@ -29,7 +29,7 @@
 #include "IEnemyAI.h"
 
 #include "FieldPiece.h"
-
+#include"AreaEffect.h"
 Play::Play()
 {
 	next = Ending;
@@ -324,6 +324,8 @@ void Play::PreDraw()
 		scoreRanking->Draw_OBJ();
 		stadium->Draw();
 		ParticleManager::GetInstance()->DrawFeverCutEffect();
+		AreaEffect::AreaEffectsDraw();
+
 }
 
 void Play::PostDraw()
