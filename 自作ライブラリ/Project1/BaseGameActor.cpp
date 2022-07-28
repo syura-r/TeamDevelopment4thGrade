@@ -93,7 +93,6 @@ BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	panelCutLocus->SetParentObject(this);
 	weightInfluenceMap.clear();
 
-	areaEffect = new AreaEffect(position);
 }
 
 BaseGameActor::~BaseGameActor()

@@ -24,6 +24,7 @@
 #include "IActionState.h"
 #include "ActionStateMove.h"
 #include "EnemyAIPositiv.h"
+#include "AreaEffect.h"
 
 const float INTERVAL_ACTIONTIMER = 10.0f;
 
@@ -60,6 +61,7 @@ StandardEnemy::StandardEnemy(const Vector3& arg_pos, const EnemyAILabel& arg_AIL
 	enemyAILabel = arg_AILabel;		// ©ƒ‰ƒxƒ‹‚É‚æ‚Á‚Ä‰½‚ğŒÄ‚Ô‚©Œˆ‚ß‚é‚æ‚¤‚É‚·‚é
 	enemyAI = EnemyAIPositiv::GetInstance();
 
+	areaEffect = new AreaEffect(position, effectColor);
 
 	Initialize();
 }

@@ -4,7 +4,7 @@ class AreaEffect :
     public Object
 {
 public:
-	AreaEffect(const Vector3& pos);
+	AreaEffect(const Vector3& pos, const XMFLOAT4& arg_color);
 	void Initialize() override;
 	void Update() override;
 	void Draw();

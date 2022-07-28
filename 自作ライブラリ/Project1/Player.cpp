@@ -28,6 +28,7 @@
 #include "IActionState.h"
 #include "ActionStateFall.h"
 #include "ActionStateMove.h"
+#include "AreaEffect.h"
 
 Player::Player(const Vector3& arg_pos)
 	:BaseGameActor(arg_pos)
@@ -55,6 +56,7 @@ Player::Player(const Vector3& arg_pos)
 	effectColor = { 0.1f, 0.1f, 0.8f, 1 };
 	//effectColor = { 0.96f, 0.53f, 0.54f, 1 };
 	//effectColor = { 0.51f, 0.92f, 0.60f, 1 };
+	areaEffect = new AreaEffect(position, actorColor);
 
 
 	Initialize();

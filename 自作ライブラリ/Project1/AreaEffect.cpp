@@ -1,14 +1,14 @@
 #include "AreaEffect.h"
 #include "OBJLoader.h"
 std::vector<AreaEffect*> AreaEffect::effects = {};
-AreaEffect::AreaEffect(const Vector3& pos)
+AreaEffect::AreaEffect(const Vector3& pos, const XMFLOAT4& arg_color)
 {
 	//エフェクト部分の作成
 	Create(OBJLoader::GetModel("Area"));
 
 	position = pos;
 	scale = { 3,10,3 };
-	color = { 0.3f,0.9f,0.1f,1 };
+	color = arg_color;
 	HRESULT result;
 	result = DirectXLib::GetInstance()->GetDevice()->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
