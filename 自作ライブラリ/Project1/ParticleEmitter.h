@@ -33,6 +33,8 @@ public:
     //各色フィーバーエフェクト
     static void FeverEffectColor(const Vector3& arg_position, const DirectX::XMFLOAT4& arg_color);
 
+    static void DeadEffect(const Vector3& arg_position, const DirectX::XMFLOAT4& arg_color);
+
 private:
     static float GetRandom(float arg_min, float arg_max);
 };

@@ -161,6 +161,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_FeverTimeText", "GamePlay_UI_FeverTimeText.png");
 
 		Texture::LoadTexture("FeverPlayerEffectWhite", "GamePlay_SPeffect_White.png");
+		Texture::LoadTexture("DeadEffect", "GamePlay_UV_DeadEffect.png");
 
 		break; 
 	case 2:
@@ -183,6 +184,7 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
 		OBJLoader::LoadModelFile("Crown", "Result_Crown.obj", false);
 		OBJLoader::LoadModelFile("Area", "Area.obj", true);
+		OBJLoader::LoadModelFile("DeadEffect", "GamePlay_DeadEffect.obj", false);
 
 		break;
 	case 4:
@@ -215,7 +217,9 @@ void Game::RoadAsset()
 		Audio::LoadFile("SE_GetItemL3", "SE/GamePlay_SE_GetItem_L3.wav");
 		Audio::LoadFile("SE_Limit30", "SE/GamePlay_SE_Limit30.wav");
 		Audio::LoadFile("SE_Cheers", "SE/GamePlay_SE_CheersVoice.wav");
-		
+		Audio::LoadFile("SE_Count10", "SE/GamePlay_SE_Count10.wav");
+		Audio::LoadFile("SE_Finish", "SE/GamePlay_SE_Finish.wav");
+
 		break;
 	case 5:
 		//FBXアニメーションの登録
@@ -251,6 +255,7 @@ void Game::CreatePipeline()
 	case 1:
 		PipelineState::CreatePipeline("FBX", FBX);
 		PipelineState::CreatePipeline("BasicObj", BasicObj);
+
 		break;
 	case 2:
 		PipelineState::CreatePipeline("Particle", PARTICLE, ADD);

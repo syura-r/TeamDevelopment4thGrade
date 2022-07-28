@@ -87,6 +87,8 @@ Play::~Play()
 	PtrDelete(stadium);
 	PtrDelete(screenResource);
 	PtrDelete(screenCamera);
+
+	ParticleManager::GetInstance()->ClearDeadEffect();
 }
 
 void Play::Initialize()
@@ -140,6 +142,11 @@ void Play::Initialize()
 	playstart->SetIsActive(true);
 
 	limit30trigger = false;
+
+	countDownTime = 0;
+	finishSoundTrigger = false;
+
+	ParticleManager::GetInstance()->ClearDeadEffect();
 }
 
 void Play::Update()
@@ -196,6 +203,12 @@ void Play::Update()
 	if (timeLimit->GetLimit())
 	{
 		//gameEndCount++;
+		if (!finishSoundTrigger)
+		{
+			Audio::PlaySE("SE_Finish", 1.5f);
+			finishSoundTrigger = true;
+		}
+		gameEndCount++;
 
 		//if (gameEndCount >= 60)
 		if (playend->GetIsFinishEnd())
@@ -228,6 +241,15 @@ void Play::Update()
 		}
 	}
 
+	//残り10秒のカウントダウンサウンド
+	if (timeLimit->GetNowTime() >= 110 * 60 && !timeLimit->GetLimit())
+	{
+		if (countDownTime % 60 == 0)
+		{
+			Audio::PlaySE("SE_Count10", 1.0f);
+		}
+		countDownTime++;
+	}
 
 	// ゲームパッドの右スティックでのカメラ操作
 	if (!camera->IsShake() && (Input::CheckPadRStickLeft() || Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown()) )
@@ -300,6 +322,8 @@ void Play::Update()
 		ShutDown();
 		return;
 	}*/
+
+	ParticleManager::GetInstance()->UpdateDeadEffect();
 }
 
 void Play::PreDraw()
@@ -310,15 +334,15 @@ void Play::PreDraw()
 
 	objectManager->DrawReady();
 #ifdef _DEBUG
-		if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
-		{
-			ImGui::Begin("Light");
-			ImGui::SliderFloat3("LightDir", lightDir, -1.0f, 1.0f);
+	if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
+	{
+		ImGui::Begin("Light");
+		ImGui::SliderFloat3("LightDir", lightDir, -1.0f, 1.0f);
 
-			ImGui::End();
-			Object3D::GetLightCamera()->SetLightDir({ lightDir[0],lightDir[1] ,lightDir[2] });
-			LevelEditor::GetInstance()->Draw();
-		}
+		ImGui::End();
+		Object3D::GetLightCamera()->SetLightDir({ lightDir[0],lightDir[1] ,lightDir[2] });
+		LevelEditor::GetInstance()->Draw();
+	}
 #endif
 
 		screenResource->PreDraw(1,0,0,480,270,0,0,480,270);
@@ -337,7 +361,7 @@ void Play::PreDraw()
 		stadium->Draw();
 		ParticleManager::GetInstance()->DrawFeverCutEffect();
 		AreaEffect::AreaEffectsDraw();
-
+		ParticleManager::GetInstance()->DrawDeadEffect();
 }
 
 void Play::PostDraw()

@@ -20,7 +20,7 @@
 #include "ScoreRanking.h"
 #include "PlayStart.h"
 #include "PlayEnd.h"
-
+#include "ModelParticle.h"
 
 class TouchAbleObject;
 class Stadium;
@@ -89,5 +89,8 @@ private:
 
 	std::string nowPlayingBGMName;
 	bool limit30trigger;
+
+	int countDownTime;
+	bool finishSoundTrigger;
 };
 
