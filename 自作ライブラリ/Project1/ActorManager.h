@@ -39,6 +39,8 @@ public:
 	std::vector<BaseGameActor*>& GetBaseGameActors();
 	std::vector<FeverInItem*>& GetFeverInItems();
 
+	bool isInFeverSomeone();
+
 private:
 	static ActorManager* instance;
 	ActorManager();

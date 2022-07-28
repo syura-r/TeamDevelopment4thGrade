@@ -322,3 +322,15 @@ std::vector<FeverInItem*>& ActorManager::GetFeverInItems()
 {
 	return feverInItems;
 }
+
+bool ActorManager::isInFeverSomeone()
+{
+	for (auto a : baseGameActors)
+	{
+		if (a->IsInFever())
+		{
+			return true;
+		}
+	}
+	return false;
+}

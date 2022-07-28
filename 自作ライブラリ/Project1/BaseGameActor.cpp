@@ -36,6 +36,8 @@ int BaseGameActor::MIN_CUTPOWER = 1;
 bool BaseGameActor::IS_ACTIVE_ACTORLEVEL = true;
 bool BaseGameActor::IS_EXTEND_VERTICALY = true;
 
+const float InFeverSec = 5.0f;
+
 BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 :startPos(arg_pos),
 	 RADIUS(1.0f),
@@ -841,7 +843,7 @@ void BaseGameActor::CompleteCut()
 
 	if (field->IsNewFeverPlayer())
 	{
-		InFever(5 * 60);
+		InFever(InFeverSec * 60);
 	}
 
 	CuttingInfo* info = field->GetCuttingInfo(this);
