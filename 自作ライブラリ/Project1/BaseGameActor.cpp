@@ -38,7 +38,7 @@ bool BaseGameActor::IS_EXTEND_VERTICALY = true;
 
 BaseGameActor::BaseGameActor(const Vector3& arg_pos)
 	 :startPos(arg_pos),
-	 RADIUS(0.3f),
+	 RADIUS(1.0f),
 	 weight(10),
 	 prePos(arg_pos),
 	 virtualityPlanePosition(arg_pos),
@@ -371,7 +371,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 
 		//¡“–‚½‚Á‚Ä‚¢‚é‚©
 		float cross = Vector2::Cross(AO, normalAB);
-		if (fabsf(cross) > RADIUS)
+		if (fabsf(cross) > (RADIUS * 0.3f))
 		{
 			continue;
 		}
@@ -389,7 +389,7 @@ void BaseGameActor::StayInTheField(ActionStateLabel& arg_label)
 			break;
 		}
 
-		if (Vector2::Length(AO) < RADIUS || Vector2::Length(BO) < RADIUS)
+		if (Vector2::Length(AO) < (RADIUS * 0.3f) || Vector2::Length(BO) < (RADIUS * 0.3f))
 		{
 			virtualityPlanePosition = preVirtualityPlanePosition;
 			arg_label = ActionStateLabel::WITHSTAND;
@@ -431,7 +431,7 @@ void BaseGameActor::StayOnRemainPieces(ActionStateLabel& arg_label, FieldPiece* 
 	}
 
 	Field* field = ActorManager::GetInstance()->GetFields()[0];
-	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, RADIUS);
+	FieldPiece* piece = field->IsRideGottenPanel(virtualityPlanePosition, preVirtualityPlanePosition, (RADIUS * 0.3f));
 
 	if (piece)
 	{
@@ -457,7 +457,7 @@ void BaseGameActor::StayOnRemainPieces(ActionStateLabel& arg_label, FieldPiece* 
 		{
 			bool isFall = true;
 
-			if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - p->GetVirtualityPlanePosition())) > RADIUS + FieldPiece::GetLowerTimeOffset())
+			if (Vector2::Length(LocusUtility::Dim3ToDim2XZ(virtualityPlanePosition - p->GetVirtualityPlanePosition())) > (RADIUS * 0.3f) + FieldPiece::GetLowerTimeOffset())
 			{
 				continue;
 			}
@@ -1018,6 +1018,8 @@ void BaseGameActor::EndSpawn()
 	position = LocusUtility::RotateForFieldTilt(virtualityPlanePosition, field->GetAngleTilt(), field->GetPosition());
 	field->ChangeIsCutableWithAround(respawnPiece, true);
 	respawnPiece = nullptr;
+	pHitActor = nullptr;
+	hitCount = 0;
 }
 
 void BaseGameActor::HitCheckActor(BaseGameActor* arg_actor)
@@ -1060,12 +1062,21 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 
 	{
 		Vector3 myVel = velocity;
-		Vector3 OthersVel = arg_actor->GetVelocity();
+		Vector3 othersVel = arg_actor->GetVelocity();
+
+		velocity = othersVel;
+		arg_actor->velocity = myVel;
+		if (velocity == Vector3())
+		{
+			myVel = -othersVel;
+		}
+		else if (arg_actor->velocity == Vector3())
+		{
+			othersVel = -myVel;
+		}
 
 		blownTime = 25;
-		velocity = OthersVel;
 		arg_actor->blownTime = 25;
-		arg_actor->velocity = myVel;
 	}
 
 	if (actionState->GetLabel() == ActionStateLabel::CUT)
