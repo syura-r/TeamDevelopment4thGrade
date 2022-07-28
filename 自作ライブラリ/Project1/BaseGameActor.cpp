@@ -700,6 +700,7 @@ void BaseGameActor::OnBlown(ActionStateLabel& arg_label)
 void BaseGameActor::EndBlown()
 {
 	blownTime = 0;
+	pHitActor = nullptr;
 }
 
 void BaseGameActor::StartWithstand()
@@ -1069,22 +1070,27 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 	ParticleEmitter::ShockEffect((arg_actor->GetPosition() + position) / 2.0f, Vector3(255.0f, 255.0f, 255.0f));
 
 	{
-		Vector3 myVel = velocity;
-		Vector3 othersVel = arg_actor->GetVelocity();
+		Vector3 myVel = Vector3::Normalize(velocity);
+		Vector3 othersVel = Vector3::Normalize(arg_actor->GetVelocity());
+		float dotVal = Vector2::Dot(LocusUtility::Dim3ToDim2XZ(myVel), LocusUtility::Dim3ToDim2XZ(othersVel));
+		if (dotVal >= 0.9f)
+		{
+			myVel = Vector3(myVel.z, 0, -myVel.x);
+			myVel.Normalize();
+			othersVel = Vector3(-othersVel.z, 0, othersVel.x);
+			othersVel.Normalize();
+		}
 
 		velocity = othersVel;
 		arg_actor->velocity = myVel;
 		if (velocity == Vector3())
 		{
-			myVel = -othersVel;
+			velocity = -othersVel;
 		}
 		else if (arg_actor->velocity == Vector3())
 		{
-			othersVel = -myVel;
+			arg_actor->velocity = -myVel;
 		}
-
-		blownTime = 25;
-		arg_actor->blownTime = 25;
 	}
 
 	if (actionState->GetLabel() == ActionStateLabel::CUT)
@@ -1100,10 +1106,12 @@ void BaseGameActor::HitActor(BaseGameActor* arg_actor)
 	actionState = ActionStateBlown::GetInstance();
 	pHitActor = arg_actor;
 	hitCount = 0;
+	blownTime = 25;
 	arg_actor->ChangeActionState(arg_actor->GetActionState(), ActionStateBlown::GetInstance());
 	arg_actor->actionState = ActionStateBlown::GetInstance();
 	arg_actor->pHitActor = this;
 	arg_actor->hitCount = 0;
+	arg_actor->blownTime = 25;
 }
 
 void BaseGameActor::HitCheckEnergyItem(EnergyItem* arg_energyItem)
