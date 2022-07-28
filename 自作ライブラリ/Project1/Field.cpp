@@ -83,7 +83,7 @@ void Field::Initialize()
 	setBonusPanelTimer->Reset();
 	bonusPanelCount = 0;
 	SetBonusPanel();
-	feverNolma = 50;
+	feverNolma = 35;
 	gottenCount = 0;
 	previousGottenCount = 0;
 }

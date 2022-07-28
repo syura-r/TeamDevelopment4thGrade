@@ -134,6 +134,8 @@ void Play::Initialize()
 	Audio::StopBGM(nowPlayingBGMName);
 	Audio::PlayBGM(nowPlayingBGMName, 0.1f * Audio::volume_bgm);
 
+
+	Input::Update();
 	Update();
 	playstart->SetIsActive(true);
 

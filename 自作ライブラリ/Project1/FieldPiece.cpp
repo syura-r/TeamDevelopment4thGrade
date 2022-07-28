@@ -21,7 +21,7 @@ FieldPiece::FieldPiece(const Vector3& arg_position, const PieceDirection arg_dir
 	 isBlockade(false),
 	 cutterPos(Vector3()),
 	 isBonus(false),
-	 reviveTimer(new Timer(15 * 60)),
+	 reviveTimer(new Timer(20 * 60)),
 	 isCutable(true)
 {
 	SetPoints();

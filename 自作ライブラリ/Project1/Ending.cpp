@@ -142,34 +142,18 @@ void Ending::SelectMenu()
 {
 	bool isSelectMove = false;//選択を変えたか
 
-	if (Input::TriggerPadLStickLeft())
+	if (Input::TriggerPadLStickLeft() || Input::TriggerKey(DIK_A))
 	{
 		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		selectState = SelectState::ToTitle;
 		isSelectMove = true;
 	}
-	else if (Input::TriggerPadLStickRight())
+	else if (Input::TriggerPadLStickRight() || Input::TriggerKey(DIK_D))
 	{
 		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		selectState = SelectState::Restart;
 		isSelectMove = true;
 	}
-	//#ifdef _DEBUG
-	if (Input::TriggerKey(DIK_A) ||
-		Input::TriggerKey(DIK_LEFT))
-	{
-		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
-		selectState = SelectState::ToTitle;
-		isSelectMove = true;
-	}
-	else if (Input::TriggerKey(DIK_D) ||
-		Input::TriggerKey(DIK_RIGHT))
-	{
-		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
-		selectState = SelectState::Restart;
-		isSelectMove = true;
-	}
-	//#endif
 
 
 	//カーソル位置
@@ -229,7 +213,7 @@ void Ending::SelectMenu()
 	bool isEnd = actors[0]->GetIsAddPanelEnd() &&
 		actors[1]->GetIsAddPanelEnd() &&
 		actors[2]->GetIsAddPanelEnd();
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) && isEnd)
+	if ((Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE)) && isEnd)
 	{
 		switch (selectState)
 		{
@@ -246,25 +230,6 @@ void Ending::SelectMenu()
 		Audio::StopBGM("BGM_Result");
 		ShutDown();
 	}
-	//#ifdef _DEBUG
-	if (Input::TriggerKey(DIK_SPACE) && isEnd)
-	{
-		switch (selectState)
-		{
-		case ToTitle:
-			next = Title;
-			break;
-		case Restart:
-			next = Play;
-			break;
-		default:
-			break;
-		}
-		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
-		Audio::StopBGM("BGM_Result");
-		ShutDown();
-	}
-	//#endif
 }
 
 void Ending::FlashMenu()

@@ -72,7 +72,7 @@ void Pause::Initialize()
 void Pause::Update()
 {
 	//ポーズのオンオフ
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_START))
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_START) || Input::TriggerKey(DIK_ESCAPE))
 	{
 		activeFlag = !activeFlag;
 
@@ -231,13 +231,13 @@ void Pause::Select()
 {
 	bool isSelectMove = false;//選択を変えたか
 	int select = selectState;
-	if (Input::TriggerPadLStickUp() && selectState > 0)
+	if ((Input::TriggerPadLStickUp() || Input::TriggerKey(DIK_W)) && selectState > 0)
 	{
 		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
 		select--;
 	}
-	else if (Input::TriggerPadLStickDown() && selectState < selectMax - 1)
+	else if ((Input::TriggerPadLStickDown() || Input::TriggerKey(DIK_S)) && selectState < selectMax - 1)
 	{
 		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
@@ -296,13 +296,13 @@ void Pause::SelectSub_Sound()
 {
 	bool isSelectMove = false;//選択を変えたか
 	int select = selectState_sound;
-	if (Input::TriggerPadLStickUp() && selectState_sound > 0)
+	if ((Input::TriggerPadLStickUp() || Input::TriggerKey(DIK_W)) && selectState_sound > 0)
 	{
 		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
 		select--;
 	}
-	else if (Input::TriggerPadLStickDown() && selectState_sound < selectMax_sound - 1)
+	else if ((Input::TriggerPadLStickDown() || Input::TriggerKey(DIK_S)) && selectState_sound < selectMax_sound - 1)
 	{
 		Audio::PlaySE("SE_Select", 1.0f * Audio::volume_se);
 		isSelectMove = true;
@@ -319,11 +319,11 @@ void Pause::SelectSub_Sound()
 	{
 	case BGM:
 		//音量変更
-		if (Input::CheckPadLStickLeft() && stock_volume_bgm > 0.0f)
+		if ((Input::CheckPadLStickLeft() || Input::DownKey(DIK_A)) && stock_volume_bgm > 0.0f)
 		{
 			stock_volume_bgm -= volumeOneScale;
 		}
-		else if (Input::CheckPadLStickRight() && volumeMax > stock_volume_bgm)
+		else if ((Input::CheckPadLStickRight() || Input::DownKey(DIK_D)) && volumeMax > stock_volume_bgm)
 		{
 			stock_volume_bgm += volumeOneScale;
 		}
@@ -331,11 +331,11 @@ void Pause::SelectSub_Sound()
 
 	case SE:
 		//音量変更
-		if (Input::CheckPadLStickLeft() && stock_volume_se > 0.0f)
+		if ((Input::CheckPadLStickLeft() || Input::DownKey(DIK_A)) && stock_volume_se > 0.0f)
 		{
 			stock_volume_se -= volumeOneScale;
 		}
-		else if (Input::CheckPadLStickRight() && volumeMax > stock_volume_se)
+		else if ((Input::CheckPadLStickRight() || Input::DownKey(DIK_D)) && volumeMax > stock_volume_se)
 		{
 			stock_volume_se += volumeOneScale;
 		}
@@ -355,7 +355,7 @@ void Pause::SelectSub_Sound()
 
 void Pause::Decision()
 {
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
 	{
 		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
 

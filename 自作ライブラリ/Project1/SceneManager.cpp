@@ -89,12 +89,12 @@ void SceneManager::Update()
 		}
 		return;
 	}
+
+	currentScene->Update();
 	if (currentScene->GetIsEnd())
 	{
 		transitionTriangle.get()->IsClose();
 	}
-
-	currentScene->Update();
 }
 
 void SceneManager::Change(Scene::SCENE name)

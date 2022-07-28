@@ -147,7 +147,7 @@ void Title::PanelPadding()
 {
 	int count_panel = 0;
 	const float panelSize_X = 1.7f * 4.0f;
-	const float panelSize_Y = 1.4f * 4.0f;
+	const float panelSize_Y = 1.5f * 4.0f;
 	Vector3 startPosition_panel = { -panelSize_X * (panelsNum_X / 2),-panelSize_Y * (panelsNum_Y / 2),0 };
 
 	for (int i = 0; i < panelsNum_Y; i++)
@@ -162,14 +162,14 @@ void Title::PanelPadding()
 				if (k != 0)
 				{
 					panels[count_panel]->rotation.x = -90.0f;
-					panels[count_panel]->position.y += 0.9f;
+					panels[count_panel]->position.y += 1.0f;
 				}
 				//ãŒü‚«
 				else
 				{
 					panels[count_panel]->rotation.x = 90.0f;
 					panels[count_panel]->rotation.z = 180.0f;
-					panels[count_panel]->position.y -= 0.9f;
+					panels[count_panel]->position.y -= 1.0f;
 				}
 
 				count_panel++;
