@@ -154,6 +154,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_FeverTimeText", "GamePlay_UI_FeverTimeText.png");
 
 		Texture::LoadTexture("FeverPlayerEffectWhite", "GamePlay_SPeffect_White.png");
+		Texture::LoadTexture("DeadEffect", "GamePlay_UV_DeadEffect.png");
 
 		break; 
 	case 2:
@@ -176,6 +177,8 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("lava", "GamePlay_Magma.obj", false);
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);
 		OBJLoader::LoadModelFile("Crown", "Result_Crown.obj", false);
+		OBJLoader::LoadModelFile("DeadEffect", "GamePlay_DeadEffect.obj", false);
+
 		break;
 	case 4:
 		//FBXÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›

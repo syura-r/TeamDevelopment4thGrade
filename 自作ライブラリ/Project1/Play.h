@@ -87,5 +87,8 @@ private:
 
 	std::string nowPlayingBGMName;
 	bool limit30trigger;
+
+	int countDownTime;
+	bool finishSoundTrigger;
 };
 

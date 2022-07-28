@@ -57,7 +57,7 @@ Play::Play()
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
-	timeLimit = new TimeLimit(120 * 60);//制限時間の設定はここ
+	timeLimit = new TimeLimit(15 * 60);//制限時間の設定はここ
 	feverUI = new FeverUI();
 	levelGauge = new LevelGauge();
 	lockonMarker = new LockonMarker();
@@ -135,6 +135,9 @@ void Play::Initialize()
 	playstart->SetIsActive(true);
 
 	limit30trigger = false;
+
+	countDownTime = 0;
+	finishSoundTrigger = false;
 }
 
 void Play::Update()
@@ -189,6 +192,11 @@ void Play::Update()
 	timeLimit->Update();
 	if (timeLimit->GetLimit())
 	{
+		if (!finishSoundTrigger)
+		{
+			Audio::PlaySE("SE_Finish", 1.5f);
+			finishSoundTrigger = true;
+		}
 		gameEndCount++;
 
 		if (gameEndCount >= 60)
@@ -216,6 +224,15 @@ void Play::Update()
 		}
 	}
 
+	//残り10秒のカウントダウンサウンド
+	if (timeLimit->GetNowTime() >= 5 * 60 && !timeLimit->GetLimit())
+	{
+		if (countDownTime % 60 == 0)
+		{
+			Audio::PlaySE("SE_Count10", 1.0f);
+		}
+		countDownTime++;
+	}
 
 	// ゲームパッドの右スティックでのカメラ操作
 	if (!camera->IsShake() && (Input::CheckPadRStickLeft() || Input::CheckPadRStickUp() || Input::CheckPadRStickRight() || Input::CheckPadRStickDown()) )
