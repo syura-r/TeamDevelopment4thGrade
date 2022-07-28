@@ -188,6 +188,7 @@ void Game::RoadAsset()
 		//WAVファイルの読み込み
 		Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
 		Audio::LoadFile("BGM_Play", "BGM/GamePlay_BGM.wav");
+		Audio::LoadFile("BGM_PlayLimit", "BGM/GamePlay_BGM_Limit30.wav");
 		Audio::LoadFile("BGM_Result", "BGM/Result_BGM.wav");
 		Audio::LoadFile("SE_Decision", "SE/Allscene_SE_Decision.wav");
 		Audio::LoadFile("SE_Select", "SE/Allscene_SE_Select.wav");
@@ -204,7 +205,9 @@ void Game::RoadAsset()
 		Audio::LoadFile("SE_FeverCut", "SE/GamePlay_FeverCut.wav");
 		Audio::LoadFile("SE_GetItemL2", "SE/GamePlay_SE_GetItem_L2.wav");
 		Audio::LoadFile("SE_GetItemL3", "SE/GamePlay_SE_GetItem_L3.wav");
-
+		Audio::LoadFile("SE_Limit30", "SE/GamePlay_SE_Limit30.wav");
+		Audio::LoadFile("SE_Cheers", "SE/GamePlay_SE_CheersVoice.wav");
+		
 		break;
 	case 5:
 		//FBXアニメーションの登録

@@ -84,5 +84,8 @@ private:
 	LockonMarker* lockonMarker = nullptr;
 	ScoreRanking* scoreRanking = nullptr;
 	PlayStart* playstart = nullptr;
+
+	std::string nowPlayingBGMName;
+	bool limit30trigger;
 };
 

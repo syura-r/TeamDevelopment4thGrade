@@ -923,6 +923,7 @@ void BaseGameActor::OnFall(ActionStateLabel& arg_label)
 		if (!isPlayedFallSound)
 		{
 			Audio::PlaySE("SE_Fall", 1.0f * Audio::volume_se);
+			Audio::PlaySE("SE_Cheers", 0.3f * Audio::volume_se);
 			isPlayedFallSound = true;
 		}
 		//isEndGame = true;

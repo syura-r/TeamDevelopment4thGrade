@@ -15,6 +15,7 @@ public:
 	void Draw();
 
 	bool GetLimit() { return timer->IsTime(); }
+	int GetNowTime() { return timer->GetTime(); }
 
 private:
 	void Alarm(const int arg_nowTime);
