@@ -1530,7 +1530,7 @@ bool BaseGameActor::IsChangeMoveToTackle()
 bool BaseGameActor::IsChangeMoveToCut()
 {
 	CuttingInfo* info = ActorManager::GetInstance()->GetFields()[0]->GetCuttingInfo(this);
-	return Input::TriggerPadButton(XINPUT_GAMEPAD_A) && cutPower > 0 && info->ridingPiece;
+	return (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE)) && cutPower > 0 && info->ridingPiece;
 }
 
 bool BaseGameActor::IsExistPiecesWithinSawRange()
