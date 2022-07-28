@@ -765,11 +765,11 @@ int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount, BaseGameActor
 
 	SetBonusPanel();
 
-	if (!ActorManager::GetInstance()->isInFeverSomeone())
-	{
+	//if (!ActorManager::GetInstance()->isInFeverSomeone())
+	//{
 		previousGottenCount = gottenCount;
 		gottenCount += returnVal;
-	}
+	//}
 
 	return returnVal;
 }
