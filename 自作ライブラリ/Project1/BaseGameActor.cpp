@@ -217,7 +217,7 @@ void BaseGameActor::Update()
 			if (feverTimer->GetTime() % 3 == 0)
 			{
 				//ParticleEmitter::FeverEffect(position);
-				ParticleEmitter::FeverEffectColor(position, effectColor);
+				ParticleEmitter::FeverEffectColor(position, actorColor);
 			}
 
 		}
@@ -924,6 +924,7 @@ void BaseGameActor::OnFall(ActionStateLabel& arg_label)
 		{
 			Audio::PlaySE("SE_Fall", 1.0f * Audio::volume_se);
 			Audio::PlaySE("SE_Cheers", 0.3f * Audio::volume_se);
+			ParticleEmitter::DeadEffect(position, effectColor);
 			isPlayedFallSound = true;
 		}
 		//isEndGame = true;

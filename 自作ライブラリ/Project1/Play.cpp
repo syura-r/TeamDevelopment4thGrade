@@ -57,7 +57,7 @@ Play::Play()
 	objectManager->AddObjectsAtOnce();
 
 	pause = new Pause();
-	timeLimit = new TimeLimit(15 * 60);//制限時間の設定はここ
+	timeLimit = new TimeLimit(120 * 60);//制限時間の設定はここ
 	feverUI = new FeverUI();
 	levelGauge = new LevelGauge();
 	lockonMarker = new LockonMarker();
@@ -138,6 +138,8 @@ void Play::Initialize()
 
 	countDownTime = 0;
 	finishSoundTrigger = false;
+
+	ParticleManager::GetInstance()->ClearDeadEffect();
 }
 
 void Play::Update()
@@ -225,7 +227,7 @@ void Play::Update()
 	}
 
 	//残り10秒のカウントダウンサウンド
-	if (timeLimit->GetNowTime() >= 5 * 60 && !timeLimit->GetLimit())
+	if (timeLimit->GetNowTime() >= 110 * 60 && !timeLimit->GetLimit())
 	{
 		if (countDownTime % 60 == 0)
 		{
@@ -305,6 +307,8 @@ void Play::Update()
 		ShutDown();
 		return;
 	}*/
+
+	ParticleManager::GetInstance()->UpdateDeadEffect();
 }
 
 void Play::PreDraw()
@@ -315,32 +319,34 @@ void Play::PreDraw()
 
 	objectManager->DrawReady();
 #ifdef _DEBUG
-		if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
-		{
-			ImGui::Begin("Light");
-			ImGui::SliderFloat3("LightDir", lightDir, -1.0f, 1.0f);
+	if (DrawMode::GetDrawImGui() && !Object3D::GetDrawShadow())
+	{
+		ImGui::Begin("Light");
+		ImGui::SliderFloat3("LightDir", lightDir, -1.0f, 1.0f);
 
-			ImGui::End();
-			Object3D::GetLightCamera()->SetLightDir({ lightDir[0],lightDir[1] ,lightDir[2] });
-			LevelEditor::GetInstance()->Draw();
-		}
+		ImGui::End();
+		Object3D::GetLightCamera()->SetLightDir({ lightDir[0],lightDir[1] ,lightDir[2] });
+		LevelEditor::GetInstance()->Draw();
+	}
 #endif
 
-		screenResource->PreDraw(1,0,0,480,270,0,0,480,270);
-		Object3D::SetCamera(screenCamera);
-		Sprite3D::SetCamera(screenCamera);
-		Object3D::SetScreenDraw(true);
-		objectManager->PreDraw();
-		scoreRanking->Draw_OBJ();
-		Object3D::SetScreenDraw(false);
-		Sprite3D::SetCamera(camera.get());
-		Object3D::SetCamera(camera.get());
-		screenResource->PostDraw();
+	screenResource->PreDraw(1, 0, 0, 480, 270, 0, 0, 480, 270);
+	Object3D::SetCamera(screenCamera);
+	Sprite3D::SetCamera(screenCamera);
+	Object3D::SetScreenDraw(true);
+	objectManager->PreDraw();
+	scoreRanking->Draw_OBJ();
+	Object3D::SetScreenDraw(false);
+	Sprite3D::SetCamera(camera.get());
+	Object3D::SetCamera(camera.get());
+	screenResource->PostDraw();
 
-		objectManager->PreDraw();
-		scoreRanking->Draw_OBJ();
-		stadium->Draw();
-		ParticleManager::GetInstance()->DrawFeverCutEffect();
+	objectManager->PreDraw();
+	scoreRanking->Draw_OBJ();
+	stadium->Draw();
+	ParticleManager::GetInstance()->DrawFeverCutEffect();
+
+	ParticleManager::GetInstance()->DrawDeadEffect();
 }
 
 void Play::PostDraw()

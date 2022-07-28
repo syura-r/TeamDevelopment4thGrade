@@ -23,3 +23,18 @@ private:
     Vector3 addScale;
     float speed;
 };
+
+//フィールドピース用パーティクル
+class DeadEffectParticle : public Object
+{
+public:
+    DeadEffectParticle(const Vector3& arg_position, const DirectX::XMFLOAT4& arg_color);
+    ~DeadEffectParticle();
+    void Initialize() override;
+    void Update() override;
+    void Draw() override;
+
+private:
+    int timer;
+    float addscale;
+};

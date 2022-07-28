@@ -94,3 +94,51 @@ float PieceParticle::GetRandom(float arg_min, float arg_max)
     std::uniform_real_distribution<float> genRandFloat(arg_min, arg_max);
     return genRandFloat(mt64);
 }
+
+DeadEffectParticle::DeadEffectParticle(const Vector3& arg_position, const DirectX::XMFLOAT4& arg_color)
+{
+    position = arg_position;
+    position.y += 50;
+    color = arg_color;
+    Create(OBJLoader::GetModel("DeadEffect"));
+    Initialize();
+
+    scale = Vector3(10, 100, 10);
+    timer = 0;
+    addscale = 10;
+}
+
+DeadEffectParticle::~DeadEffectParticle()
+{
+}
+
+void DeadEffectParticle::Initialize()
+{
+    Object::Update();
+}
+
+void DeadEffectParticle::Update()
+{
+    timer++;
+    if (timer >= 30)
+    {
+        //Dead();
+    }
+
+    addscale += 5;
+    scale.y += addscale;
+    scale.x -= 0.25f;
+    scale.z -= 0.25f;
+    if (scale.x <= 0.0f)
+    {
+        scale.x = 0.0f;
+        scale.z = 0.0f;
+    }
+    //color.w -= 0.05f;
+    Object::Update();
+}
+
+void DeadEffectParticle::Draw()
+{
+    Object::Draw();
+}

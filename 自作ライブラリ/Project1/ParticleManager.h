@@ -13,6 +13,7 @@
 #include "ComputeShade.h"
 
 class FeverCutEffect;
+class DeadEffectParticle;
 class ParticleManager
 {
 private:
@@ -47,6 +48,12 @@ public:
 
 	void EffectSort();
 
+	void AddDeadEffect(DeadEffectParticle* arg_effect);
+	void DeleteDeadEffect();
+	void UpdateDeadEffect();
+	void DrawDeadEffect();
+	void ClearDeadEffect();
+
 private:
 	ParticleManager() = default;
 	ParticleManager(const ParticleManager&) = delete;
@@ -73,4 +80,5 @@ private:
 	std::vector<OutputData> verts;
 	std::vector<ParticleParameter> params;
 	std::vector<FeverCutEffect*> feverCutEffects;
+	std::vector<DeadEffectParticle*> deadEffects;
 };

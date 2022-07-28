@@ -314,6 +314,11 @@ void ParticleEmitter::FeverEffectColor(const Vector3& arg_position, const Direct
     particleManager->Add(particle, "FeverPlayerEffectWhite");
 }
 
+void ParticleEmitter::DeadEffect(const Vector3& arg_position, const DirectX::XMFLOAT4& arg_color)
+{
+    particleManager->AddDeadEffect(new DeadEffectParticle(arg_position, arg_color));
+}
+
 float ParticleEmitter::GetRandom(float arg_min, float arg_max)
 {
     std::random_device rnd;

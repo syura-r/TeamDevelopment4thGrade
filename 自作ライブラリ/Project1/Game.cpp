@@ -248,6 +248,7 @@ void Game::CreatePipeline()
 	case 1:
 		PipelineState::CreatePipeline("FBX", FBX);
 		PipelineState::CreatePipeline("BasicObj", BasicObj);
+
 		break;
 	case 2:
 		PipelineState::CreatePipeline("Particle", PARTICLE, ADD);
