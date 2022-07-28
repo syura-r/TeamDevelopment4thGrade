@@ -160,8 +160,9 @@ void FeverUI::Draw()
 	}
 
 	const float numberSpaceAddSize = 85.0f;
-	position.x += numberSpaceAddSize;//文字画像の数字の配置する位置まで
+	Vector2 numPos = position;
+	numPos.x += numberSpaceAddSize;//文字画像の数字の配置する位置まで
 	std::string nuwNum = std::to_string((int)drawNum);
 	int digit = nuwNum.size();//0で埋めないため
-	numsp->Draw(digit, "GamePlay_UI_Number", position);
+	numsp->Draw(digit, "GamePlay_UI_Number", numPos);
 }
