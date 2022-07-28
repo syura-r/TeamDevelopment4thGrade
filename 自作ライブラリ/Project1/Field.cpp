@@ -852,7 +852,7 @@ FieldPiece* Field::GetRespawnPiece(const ObjectRegistType arg_type)
 				rowRnd = pieces[colRnd].size() - 3;
 			}
 		}
-	} while (!pieces[colRnd][rowRnd]->IsActive());
+	} while (!pieces[colRnd][rowRnd]->IsActive() || !pieces[colRnd][rowRnd]->IsCutable());
 
 	ChangeIsCutableWithAround(pieces[colRnd][rowRnd], false);
 	return pieces[colRnd][rowRnd];
