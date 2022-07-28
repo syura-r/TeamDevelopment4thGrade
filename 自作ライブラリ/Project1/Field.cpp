@@ -765,9 +765,9 @@ int Field::CutPanel(PanelCutLocus* arg_locus, int& arg_bonusCount, BaseGameActor
 
 	SetBonusPanel();
 
+	previousGottenCount = gottenCount;
 	//if (!ActorManager::GetInstance()->isInFeverSomeone())
 	//{
-		previousGottenCount = gottenCount;
 		gottenCount += returnVal;
 	//}
 
@@ -894,6 +894,10 @@ bool Field::IsNewFeverPlayer()
 {
 	int nowRate = gottenCount / feverNolma;
 	if (nowRate == 0)
+	{
+		return false;
+	}
+	if (ActorManager::GetInstance()->isInFeverSomeone())
 	{
 		return false;
 	}
