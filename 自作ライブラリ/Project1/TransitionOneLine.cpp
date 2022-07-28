@@ -20,6 +20,7 @@ void TransitionOneLine::Initialize()
 	isActive = false;
 	transition = Transition::CLOSE;
 	timer = 0;
+	texName_tri = "Fade_Tri";
 	position_triangle = {
 		positon_triangle_X_start,
 		1080.0f / (linesCount_all * 2) * (2 * linesCount + 1),
@@ -65,7 +66,7 @@ void TransitionOneLine::Update()
 
 void TransitionOneLine::Draw()
 {
-	triangle->DrawSprite("Fade_Tri", position_triangle, 0.0f, scale_triangle);
+	triangle->DrawSprite(texName_tri, position_triangle, 0.0f, scale_triangle);
 	square->DrawSprite("white1x1", position_triangle, 0.0f, scale_square, { 0,0,0,1 }, anchar_square);
 }
 
@@ -74,4 +75,13 @@ void TransitionOneLine::StartTransition(const Transition arg_transition)
 	isActive = true;
 	transition = arg_transition;
 	timer = 0;
+
+	if ((int)rand() % 2)
+	{
+		texName_tri = "Fade_Tri";
+	}
+	else
+	{
+		texName_tri = "Fade_TriY";
+	}
 }

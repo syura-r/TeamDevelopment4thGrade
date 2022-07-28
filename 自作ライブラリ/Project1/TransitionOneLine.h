@@ -32,6 +32,8 @@ private:
 	const int limitTime = 120;//
 
 	Sprite* triangle = nullptr;
+	std::string texName_tri;
+
 	Sprite* square = nullptr;
 
 	Vector2 position_triangle;

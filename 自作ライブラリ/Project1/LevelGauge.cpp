@@ -5,25 +5,28 @@
 LevelGauge::LevelGauge()
 {
 	sp_back = new Sprite();
-	sp_frame = new Sprite();
-	sp_gauge = new Sprite();
+	for (int i = 0; i < nextLevelCount; i++)
+	{
+		sp_tri[i] = new Sprite();
+	}
 	sp_levelText = new Sprite();
 }
 
 LevelGauge::~LevelGauge()
 {
 	delete sp_back;
-	delete sp_frame;
-	delete sp_gauge;
+	for (int i = 0; i < nextLevelCount; i++)
+	{
+		delete sp_tri[i];
+	}
 	delete sp_levelText;
 }
 
 void LevelGauge::Initialize()
 {
-	colorGauge = { 1,1,1,1 };
+	color_tri_all = colorBlank;
 
 	level = 1;
-	nextLevelCount = 5;
 	gaugeCount = 0;
 
 	newlevel = false;
@@ -42,7 +45,6 @@ void LevelGauge::Update()
 	//ボーナスパネル切り抜き量
 	gaugeCount = player->GetBonusCount() - (nextLevelCount * (level - 1));
 
-	//colorGauge = { 1,1,1.0f - (0.3f * level),1 };
 
 	if (level >= maxLevel)
 	{
@@ -62,19 +64,26 @@ void LevelGauge::Update()
 
 void LevelGauge::Draw()
 {
-	Vector2 texSize = { 180,540 };
-	Vector2 position = { texSize.x / 2,1080.0f - texSize.y + 37.0f };
+	const Vector2 texSize = { 180,560 };
+	const Vector2 position_space = { 10, 10 };
+	const Vector2 position = { texSize.x / 2 + position_space.x, 1080.0f - (texSize.y / 2) - position_space.y };
 
 	sp_levelText->DrawSprite("GamePlay_UI_Level" + std::to_string(level), position);
 
-	position.y = 1080.0f;
-	const int step = maxGaugeStep / nextLevelCount * gaugeCount;//何段表示するか
-	const float stepSize = 30.0f;//1段の大きさ
-	const float spaceSize = 25.0f;//余白の大きさ
-	sp_gauge->SpriteSetTextureRect("GamePlay_UI_Levelgauge", 0.0f, texSize.y - (stepSize * step + spaceSize), texSize.x, stepSize * step + spaceSize);
-	sp_gauge->DrawSprite("GamePlay_UI_Levelgauge", position, 0.0f, { 1.0f,1.0f }, colorGauge, { 0.5f, 1.0f });
-	position.y = 1080.0f - (texSize.y / 2.0f);
-	sp_frame->DrawSprite("GamePlay_UI_Leveledge", position);
+	for (int i = 0; i < nextLevelCount; i++)
+	{
+		Vector4 color = colorBlank;
+		if (i < gaugeCount)
+		{
+			color = colorYellow;
+		}
+		if(newlevel)
+		{
+			color = color_tri_all;
+		}
+		sp_tri[i]->DrawSprite("GamePlay_UI_Leveltri_" + std::to_string(i + 1), position, 0.0f, { 1.0f,1.0f }, color);
+	}
+
 	sp_back->DrawSprite("GamePlay_UI_Levelback", position);
 }
 
@@ -97,18 +106,18 @@ void LevelGauge::NewLevelAction()
 	}
 	if (intervalCount % 2)
 	{
-		colorGauge = { 1,1,1,1 };
+		color_tri_all = colorBlank;
 	}
 	else
 	{
-		colorGauge = { 1,1,0,1 };
+		color_tri_all = colorYellow;
 	}
 
 	//終了
 	if (timer_newLevelAction >= timerLimit)
 	{
 		timer_newLevelAction = 0;
-		colorGauge = { 1,1,1,1 };
+		color_tri_all = colorBlank;
 		newlevel = false;
 	}
 }

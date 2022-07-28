@@ -19,6 +19,7 @@
 #include "LockonMarker.h"
 #include "ScoreRanking.h"
 #include "PlayStart.h"
+#include "PlayEnd.h"
 
 
 class TouchAbleObject;
@@ -84,6 +85,7 @@ private:
 	LockonMarker* lockonMarker = nullptr;
 	ScoreRanking* scoreRanking = nullptr;
 	PlayStart* playstart = nullptr;
+	PlayEnd* playend = nullptr;
 
 	std::string nowPlayingBGMName;
 	bool limit30trigger;

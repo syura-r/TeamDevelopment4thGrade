@@ -139,8 +139,13 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_UI_Level5", "LevelGauge/GamePlay_UI_Level5.png");
 		Texture::LoadTexture("GamePlay_UI_Level6", "LevelGauge/GamePlay_UI_Level6.png");
 		Texture::LoadTexture("GamePlay_UI_Levelback", "LevelGauge/GamePlay_UI_Levelback.png");
-		Texture::LoadTexture("GamePlay_UI_Leveledge", "LevelGauge/GamePlay_UI_Leveledge.png");
+		//Texture::LoadTexture("GamePlay_UI_Leveledge", "LevelGauge/GamePlay_UI_Leveledge.png");
 		Texture::LoadTexture("GamePlay_UI_Levelgauge", "LevelGauge/GamePlay_UI_Levelgauge.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_1", "LevelGauge/GamePlay_UI_Leveltri_1.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_2", "LevelGauge/GamePlay_UI_Leveltri_2.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_3", "LevelGauge/GamePlay_UI_Leveltri_3.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_4", "LevelGauge/GamePlay_UI_Leveltri_4.png");
+		Texture::LoadTexture("GamePlay_UI_Leveltri_5", "LevelGauge/GamePlay_UI_Leveltri_5.png");
 		Texture::LoadTexture("GamePlay_UI_Maker", "GamePlay_UI_Maker.png");
 		Texture::LoadTexture("GamePlay_CircleCover", "GamePlay_CircleCover.png");
 		Texture::LoadTexture("GamePlay_Score_Rank", "ScoreRanking/GamePlay_Score_Rank.png");
@@ -149,8 +154,10 @@ void Game::RoadAsset()
 		Texture::LoadTexture("GamePlay_Score_Enemy", "ScoreRanking/GamePlay_Score_Enemy.png");
 		Texture::LoadTexture("GamePlay_Score_Enemy2", "ScoreRanking/GamePlay_Score_Enemy2.png");
 		Texture::LoadTexture("Fade_Tri", "Fade_Tri.png");
+		Texture::LoadTexture("Fade_TriY", "Fade_TriY.png");
 		Texture::LoadTexture("GamePlay_UI_Ready", "GamePlay_UI_Ready.png");
 		Texture::LoadTexture("GamePlay_UI_GO", "GamePlay_UI_GO.png");
+		Texture::LoadTexture("GamePlay_UI_Finish", "GamePlay_UI_Finish.png");
 		Texture::LoadTexture("GamePlay_UI_FeverTimeText", "GamePlay_UI_FeverTimeText.png");
 
 		Texture::LoadTexture("FeverPlayerEffectWhite", "GamePlay_SPeffect_White.png");
@@ -171,7 +178,6 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("fieldEdge", "GamePlay_Edge.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece", "GamePlay_Triangle.obj", false);
 		OBJLoader::LoadModelFile("fieldPiece_bonus", "GamePlay_BonusTriangle.obj", false);
-		OBJLoader::LoadModelFile("fieldPiece_title", "GamePlay_BonusTriangle.obj", false);
 		OBJLoader::LoadModelFile("stadium", "stadium.obj", false);
 		OBJLoader::LoadModelFile("lava", "GamePlay_Magma.obj", false);
 		OBJLoader::LoadModelFile("Saw", "gamePlay_Saw.obj", false);

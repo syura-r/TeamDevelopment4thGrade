@@ -142,8 +142,12 @@ void BaseGameActor::Initialize()
 	inputStartCount = 0;
 	nextInputStartCount = 40;
 	notWithstandCount = 0;
+
+	Field* field = ActorManager::GetInstance()->GetFields()[0];
+	field->DecideCuttingInfo(this, virtualityPlanePosition, direction);
+	CuttingInfo* info = field->GetCuttingInfo(this);
+	panelCutLocus->Move(info->cuttingStartPos, info->cuttingAngle);
 	panelCutLocus->SetCutPower(MIN_CUTPOWER);
-	panelCutLocus->Move(Vector3(), 0);
 	cutPower = MIN_CUTPOWER;
 	gottenPanel = 0;
 	bonusCount = 0;
@@ -898,6 +902,7 @@ void BaseGameActor::ForcedWeight(const int arg_num, BaseGameActor* arg_actor)
 
 void BaseGameActor::StartFall()
 {
+	SuspendCut();
 	fallEasingCount = 0;
 	isPlayedFallSound = false;
 	isInFever = false;

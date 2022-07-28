@@ -14,6 +14,8 @@ TimeLimit::TimeLimit(const unsigned int arg_limit)
 	seconds_sprite = new NumberSprite(seconds);
 
 	alarm_sprite = new Sprite();
+
+	redNumber_sprite = new NumberSprite(seconds);
 }
 
 TimeLimit::~TimeLimit()
@@ -23,6 +25,7 @@ TimeLimit::~TimeLimit()
 	delete colon_sprite;
 	delete seconds_sprite;
 	delete alarm_sprite;
+	delete redNumber_sprite;
 }
 
 void TimeLimit::Initialize()
@@ -34,6 +37,7 @@ void TimeLimit::Initialize()
 	timeLeft = 0;
 	isMoveStart = false;
 	easeMoveCount = 0.0f;
+	isRedTime = false;
 }
 
 void TimeLimit::Update()
@@ -51,17 +55,22 @@ void TimeLimit::Update()
 	Alarm((timer->GetLimit() - timer->GetTime()) / 60);
 
 	//終了間際に色を変える
-	const int redTime = 10;
-	if (nowTime <= redTime)
+	isRedTime = nowTime <= redTime;
+	if (isRedTime)
 	{
 		color.x = 1.0f;
-		color.y = 0.2f;
-		color.z = 0.2f;
+		color.y = 0.1f;
+		color.z = 0.1f;
 	}
 }
 
 void TimeLimit::Draw()
 {
+	if (minute < 1 && seconds < 1)
+	{
+		return;
+	}
+
 	//画像サイズ（数字1つ分）
 	const Vector2 numberTexSize = { 47.0f, 86.0f };
 	//画面サイズ
@@ -69,6 +78,14 @@ void TimeLimit::Draw()
 
 	//座標
 	Vector2 position = { windowSize.x / 2, windowSize.y / 4};
+
+	if (isRedTime)
+	{
+		std::string nuwNum = std::to_string((int)seconds);
+		redNumber_sprite->Draw(nuwNum.size(), "GamePlay_UI_Number", position, { 2,2 }, color);
+		return;
+	}
+
 
 	position.x -= numberTexSize.x;//分の中心にずらす
 	position.y -= numberTexSize.y / 2;
