@@ -1,5 +1,6 @@
 #pragma once
 #include "NumberSprite.h"
+#include "Vector.h"
 
 class FeverUI
 {
@@ -16,5 +17,12 @@ private:
 
 	Sprite* sp;
 	NumberSprite* numsp;
+
+	std::string texName;
+
+	bool isInFever;
+	Vector2 position;
+	Vector2 scale;
+	Vector4 color;
 };
 
