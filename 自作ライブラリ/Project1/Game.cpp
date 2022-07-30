@@ -219,6 +219,7 @@ void Game::RoadAsset()
 		Audio::LoadFile("SE_Cheers", "SE/GamePlay_SE_CheersVoice.wav");
 		Audio::LoadFile("SE_Count10", "SE/GamePlay_SE_Count10.wav");
 		Audio::LoadFile("SE_Finish", "SE/GamePlay_SE_Finish.wav");
+		Audio::LoadFile("SE_SceneTransition", "SE/Allscene_SE_Transition.wav");
 
 		break;
 	case 5:

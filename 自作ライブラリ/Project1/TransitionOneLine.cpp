@@ -1,5 +1,6 @@
 #include "TransitionOneLine.h"
 #include "Easing.h"
+#include "Audio.h"
 
 TransitionOneLine::TransitionOneLine(const int arg_linesCount_all, const int arg_linesCount)
 {
@@ -38,6 +39,12 @@ void TransitionOneLine::Update()
 		return;
 	}
 
+	if (!isSoundPlayed)
+	{
+		Audio::PlaySE("SE_SceneTransition", 1.0f * Audio::volume_se);
+		isSoundPlayed = true;
+	}
+
 	//ç∂Ç©ÇÁâEÇ÷à⁄ìÆ
 	position_triangle.x = Easing::EaseOutQuart(
 		positon_triangle_X_start, positon_triangle_X_end,
@@ -73,6 +80,7 @@ void TransitionOneLine::Draw()
 void TransitionOneLine::StartTransition(const Transition arg_transition)
 {
 	isActive = true;
+	isSoundPlayed = false;
 	transition = arg_transition;
 	timer = 0;
 

@@ -54,9 +54,13 @@ void Title::Initialize()
 	Sprite3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());
 
+	logoPosition = { 0.0f, logoPositionY_down, -20.0f };
+	isLogoPositionUp = true;
+	logoEasingCount = 0;
+
 	for (int i = 0; i < panelsNum_ALL; i++)
 	{
-		panels[i]->Initialize(/*(int)GetRandom(0.0f, 8.0f)*/1);
+		panels[i]->Initialize();
 	}
 	//敷き詰め
 	PanelPadding();
@@ -86,22 +90,16 @@ void Title::Update()
 	else
 	{
 		//シーン切り替え開始
-		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A))
+		if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
 		{
 			Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
 			isSceneChange = true;
 			velocity_pupUp = velocity_init;
 		}
-
-		//#ifdef _DEBUG
-		if (Input::TriggerKey(DIK_SPACE))
-		{
-			Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
-			isSceneChange = true;
-			velocity_pupUp = velocity_init;
-		}
-		//#endif
 	}
+
+	//
+	LogoMove();
 
 	//各更新
 	for (int i = 0; i < panelsNum_ALL; i++)
@@ -123,11 +121,10 @@ void Title::PreDraw()
 		panels[i]->object->Draw();
 	}
 
-	const Vector3 pos_logo = { 0.0f, 0.0f, -20.0f };
 	const Vector3 pos_start = { 0.0f, -0.8f, -20.0f };
 	const float scale_logo = 1.0f / 16.0f;
 	const float scale_start = 1.0f / 22.0f;
-	titleLogo->DrawSprite("titlelogo", pos_logo, 0.0f, { scale_logo, scale_logo });
+	titleLogo->DrawSprite("titlelogo", logoPosition, 0.0f, { scale_logo, scale_logo });
 	titleStart->DrawSprite("titlestart", pos_start, 0.0f, { scale_start, scale_start });
 }
 
@@ -215,6 +212,25 @@ bool Title::ZoomIn()
 	return cameraDistance <= endDistance;
 }
 
+void Title::LogoMove()
+{
+	const int limit = 120;
+	if (isLogoPositionUp)
+	{
+		logoPosition.y = Easing::EaseOutSine(logoPositionY_down, logoPositionY_up, limit, logoEasingCount);
+	}
+	else
+	{
+		logoPosition.y = Easing::EaseOutSine(logoPositionY_up, logoPositionY_down, limit, logoEasingCount);
+	}
+	logoEasingCount++;
+	if (logoEasingCount >= limit)
+	{
+		logoEasingCount = 0;
+		isLogoPositionUp = !isLogoPositionUp;
+	}
+}
+
 Title::Panel::Panel()
 {
 	object = Object3D::Create(OBJLoader::GetModel("fieldPiece"), position, scale, rotation, color);
@@ -225,19 +241,10 @@ Title::Panel::~Panel()
 	delete object;
 }
 
-void Title::Panel::Initialize(const int num_color)
+void Title::Panel::Initialize()
 {
 	position = { 0,0,-15 };
 	scale = { 4,4,4, };
 	rotation = { 0,0,0 };
 	color = { 1,1,1,1 };
-	//const Vector4 blue = { 0.25f, 0.58f, 1.0f, 1.0f };
-	//const Vector4 yellow = { 0.9f, 0.9f, 0.1f, 1.0f };
-
-	//color = blue;
-	////ランダムでボーナスパネルの色に
-	//if (num_color <= 0)
-	//{
-	//	color = yellow;
-	//}
 }

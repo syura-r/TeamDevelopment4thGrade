@@ -20,6 +20,8 @@ private:
 
 	std::string texName;
 
+	void FeverColor();
+
 	bool isInFever;
 	Vector2 position;
 	Vector2 scale;

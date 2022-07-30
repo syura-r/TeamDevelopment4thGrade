@@ -65,7 +65,7 @@ void LevelGauge::Update()
 void LevelGauge::Draw()
 {
 	const Vector2 texSize = { 180,560 };
-	const Vector2 position_space = { 10, 10 };
+	const Vector2 position_space = { 40, 30 };
 	const Vector2 position = { texSize.x / 2 + position_space.x, 1080.0f - (texSize.y / 2) - position_space.y };
 
 	sp_levelText->DrawSprite("GamePlay_UI_Level" + std::to_string(level), position);

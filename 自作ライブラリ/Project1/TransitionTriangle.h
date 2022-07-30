@@ -26,6 +26,6 @@ private:
 
 	//スタートのタイミングを測るタイマー
 	int timer;
-	const int gapTime = 20;//どのくらい遅らせるか
+	const int gapTime = 15;//どのくらい遅らせるか
 };
 

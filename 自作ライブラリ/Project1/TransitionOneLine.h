@@ -27,9 +27,11 @@ private:
 	int linesCount;//全体の何本目か
 
 	bool isActive;
+	bool isSoundPlayed;
+
 	Transition transition;//開くか閉じるか
 	int timer;//イージング用
-	const int limitTime = 120;//
+	const int limitTime = 60;//
 
 	Sprite* triangle = nullptr;
 	std::string texName_tri;

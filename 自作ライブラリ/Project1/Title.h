@@ -44,6 +44,13 @@ private:
 	std::unique_ptr<LightGroup> lightGroup;
 
 	Sprite3D* titleLogo = nullptr;
+	Vector3 logoPosition;
+	const float logoPositionY_up = 0.2f;
+	const float logoPositionY_down = 0.1f;
+	bool isLogoPositionUp;
+	int logoEasingCount;
+	void LogoMove();
+
 	Sprite3D* titleStart = nullptr;
 
 	struct Panel
@@ -51,7 +58,7 @@ private:
 		Panel();
 		~Panel();
 
-		void Initialize(const int num_color);
+		void Initialize();
 
 		Object3D* object = nullptr;
 		Vector3 position = { 0,0,0 };
