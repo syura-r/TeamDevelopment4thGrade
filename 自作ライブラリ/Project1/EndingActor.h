@@ -1,6 +1,7 @@
 #pragma once
 #include "Object3D.h"
 #include "NumberSprite.h"
+#include "Crown.h"
 
 class EndingActor
 {
@@ -29,6 +30,8 @@ private:
 	Vector3 scale = { 0.9f, 0.9f, 0.9f };
 	Vector3 rotation = { 0,180,0 };
 	Vector4 color = { 1,1,1,1 };
+
+	Crown* crown = nullptr;
 
 	//スコア数値
 	NumberSprite* numberSprite = nullptr;

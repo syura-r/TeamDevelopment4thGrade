@@ -14,7 +14,6 @@ ScoreRanking::ScoreRanking()
 	for (int i = 0; i < 3; i++)
 	{
 		crowns[i] = new Crown();
-		crowns[i]->obj = Object3D::Create(OBJLoader::GetModel("Crown"), crowns[i]->pos, crowns[i]->scale, crowns[i]->rotation, crowns[i]->color);
 	}
 }
 
@@ -27,7 +26,6 @@ ScoreRanking::~ScoreRanking()
 
 	for (int i = 0; i < 3; i++)
 	{
-		delete crowns[i]->obj;
 		delete crowns[i];
 	}
 }
@@ -43,7 +41,7 @@ void ScoreRanking::Initialize()
 
 	for (int i = 0; i < 3; i++)
 	{
-		crowns[i]->obj->Update();
+		crowns[i]->Initialize(7.0f);
 	}
 }
 
@@ -58,40 +56,25 @@ void ScoreRanking::Update()
 	green_UI->Update();
 
 	TopSearch();
-	ActorManager* actorManager = ActorManager::GetInstance();
-	Vector3 addPosition = {0,7,0};
-	if (blue_UI->rank ==1)
-	{
-		crowns[0]->pos = actorManager->GetPlayer()->GetPosition() + addPosition;
-	}
-	if (red_UI->rank == 1)
-	{
-		crowns[1]->pos = actorManager->GetStandardEnemies()[0]->GetPosition() + addPosition;
-	}
-	if (green_UI->rank == 1)
-	{
-		crowns[2]->pos = actorManager->GetStandardEnemies()[1]->GetPosition() + addPosition;
-	}
 
-	for (int i = 0; i < 3; i++)
-	{
-		crowns[i]->obj->Update();
-	}
+	ActorManager* actorManager = ActorManager::GetInstance();
+	crowns[0]->Update(blue_UI->rank, actorManager->GetPlayer()->GetPosition());
+	crowns[1]->Update(red_UI->rank, actorManager->GetStandardEnemies()[0]->GetPosition());
+	crowns[2]->Update(green_UI->rank, actorManager->GetStandardEnemies()[1]->GetPosition());
 }
 
 void ScoreRanking::Draw_OBJ()
 {
-	PipelineState::SetPipeline("BasicObj");
-
 	for (int i = 0; i < 3; i++)
 	{
-		if (crowns[i]->isDisplay)
-			crowns[i]->obj->Draw();
+		crowns[i]->Draw();
 	}
 }
 
 void ScoreRanking::Draw_UI()
 {
+	PipelineState::SetPipeline("Sprite");
+
 	blue_UI->Draw(position_base.x);
 	red_UI->Draw(position_base.x);
 	green_UI->Draw(position_base.x);
@@ -128,19 +111,17 @@ void ScoreRanking::TopSearch()
 		}
 	}
 
-	//”½‰f
-	for (int i = 0; i < 3; i++)
-	{
-		crowns[i]->isDisplay = isTops[i];
-	}
+	//1ˆÊ‚©‚»‚êˆÈŠO‚©
 	if (isTops[0])
 		blue_UI->rank = 1;
 	else
 		blue_UI->rank = 0;
+
 	if (isTops[1])
 		red_UI->rank = 1;
 	else
 		red_UI->rank = 0;
+
 	if (isTops[2])
 		green_UI->rank = 1;
 	else

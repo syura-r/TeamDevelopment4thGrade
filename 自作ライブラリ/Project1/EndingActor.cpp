@@ -5,12 +5,14 @@
 EndingActor::EndingActor(const std::string& arg_modelName)
 {
 	object = Object3D::Create(FBXManager::GetModel(arg_modelName), position, scale, rotation, color);
+	crown = new Crown();
 	numberSprite = new NumberSprite(score_draw);
 }
 
 EndingActor::~EndingActor()
 {
 	delete object;
+	delete crown;
 	delete numberSprite;
 	ResetPanel();
 }
@@ -26,6 +28,8 @@ void EndingActor::Initialize(const int arg_score, const int arg_ranking)
 	const float position_2dx[3] = { 960.0f, 650.0f, 1270.0f };
 	position = { position_3dx[arg_ranking - 1], 0.0f, 0.0f };
 	position_2d = { position_2dx[arg_ranking - 1], 200.0f };
+
+	crown->Initialize(3.0f);
 
 	numberRoll_interval = 0;
 	isNumberRoll = true;
@@ -55,6 +59,7 @@ void EndingActor::Update()
 	}
 
 	object->Update();
+	crown->Update(ranking, position);
 	for (auto& it : panels)
 	{
 		it->object->Update();
@@ -67,6 +72,7 @@ void EndingActor::Draw()
 	object->Draw(true);
 
 	PipelineState::SetPipeline("BasicObj");
+	crown->Draw();
 	for (auto& it : panels)
 	{
 		it->object->Draw();

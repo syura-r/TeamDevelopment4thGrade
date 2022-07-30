@@ -1,7 +1,7 @@
 #pragma once
 #include "Sprite.h"
 #include "NumberSprite.h"
-#include "Object3D.h"
+#include "Crown.h"
 
 class ScoreRanking
 {
@@ -52,16 +52,6 @@ private:
 	ActorScoreUI* green_UI = nullptr;
 
 	//‰¤Š¥
-	struct Crown
-	{
-		Object3D* obj;
-		Vector3 pos = { 0.0f,0.0f,0.0f };
-		Vector3 scale = { 2,2,2 };
-		Vector3 rotation = { 0,0,0 };
-		Vector4 color = { 1,1,1,1 };
-
-		bool isDisplay = false;
-	};
 	Crown* crowns[3];
 };
 

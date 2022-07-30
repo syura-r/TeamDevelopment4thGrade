@@ -192,6 +192,7 @@
     <ClCompile Include="CollisionPrimitive.cpp" />
     <ClCompile Include="ComputeWrapper.cpp" />
     <ClCompile Include="ConsoleWindow.cpp" />
+    <ClCompile Include="Crown.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -317,6 +318,7 @@
     <ClInclude Include="CollisionTypes.h" />
     <ClInclude Include="ComputeWrapper.h" />
     <ClInclude Include="ConsoleWindow.h" />
+    <ClInclude Include="Crown.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectionalLight.h" />

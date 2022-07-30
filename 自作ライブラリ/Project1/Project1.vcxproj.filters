@@ -479,9 +479,12 @@
     </ClCompile>
     <ClCompile Include="AreaEffect.cpp">
       <Filter>ソース ファイル</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="PlayEnd.cpp">
       <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="Crown.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -872,14 +875,17 @@
     <ClInclude Include="TransitionTriangle.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-	<ClInclude Include="TransitionOneLine.h">
-		<Filter>ヘッダー ファイル\Scene</Filter>
-	</ClInclude>
+    <ClInclude Include="TransitionOneLine.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="AreaEffect.h">
       <Filter>ヘッダー ファイル</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="PlayEnd.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="Crown.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

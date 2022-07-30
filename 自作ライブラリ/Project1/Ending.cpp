@@ -253,19 +253,6 @@ void Ending::FlashMenu()
 			isUP_alphaChange = !isUP_alphaChange;
 		}
 	}
-
-	//”½‰f
-	//switch (selectState)
-	//{
-	//case ToTitle:
-	//	alpha_title = alpha_select;
-	//	break;
-	//case Restart:
-	//	alpha_restart = alpha_select;
-	//	break;
-	//default:
-	//	break;
-	//}
 }
 
 void Ending::RankingSearch()
