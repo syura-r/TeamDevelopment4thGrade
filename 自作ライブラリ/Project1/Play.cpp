@@ -205,7 +205,7 @@ void Play::Update()
 		//gameEndCount++;
 		if (!finishSoundTrigger)
 		{
-			Audio::PlaySE("SE_Finish", 1.5f);
+			Audio::PlaySE("SE_Finish", 1.5f * Audio::volume_se);
 			finishSoundTrigger = true;
 		}
 		gameEndCount++;
@@ -246,7 +246,7 @@ void Play::Update()
 	{
 		if (countDownTime % 60 == 0)
 		{
-			Audio::PlaySE("SE_Count10", 1.0f);
+			Audio::PlaySE("SE_Count10", 1.0f * Audio::volume_se);
 		}
 		countDownTime++;
 	}
@@ -386,7 +386,16 @@ void Play::TimeUpdate()
 
 void Play::KillCountToEnding()
 {
-	Ending::score_player = actorManager->GetPlayer()->GetTotalCutCount();
-	Ending::score_enemy_red = actorManager->GetStandardEnemies()[0]->GetTotalCutCount();
-	Ending::score_enemy_green = actorManager->GetStandardEnemies()[1]->GetTotalCutCount();
+	Player* player = actorManager->GetPlayer();
+	StandardEnemy* redEnemy = actorManager->GetStandardEnemies()[0];
+	StandardEnemy* greenEnemy = actorManager->GetStandardEnemies()[1];
+
+	//スコア（切り取り枚数）
+	Ending::score_player = player->GetTotalCutCount();
+	Ending::score_enemy_red = redEnemy->GetTotalCutCount();
+	Ending::score_enemy_green = greenEnemy->GetTotalCutCount();
+	//色
+	Ending::numberColor_player = player->GetActorColor();
+	Ending::numberColor_enemy_red = redEnemy->GetActorColor();
+	Ending::numberColor_enemy_green = greenEnemy->GetActorColor();
 }

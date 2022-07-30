@@ -41,7 +41,7 @@ void CircularSaw::Initialize()
 		speed *= 5;
 
 		ParticleEmitter::FeverCut(nowCuttingLocus->GetLine(0), effectColor);
-		Audio::PlaySE("SE_FeverCut", Audio::volume_se);
+		Audio::PlaySE("SE_FeverCut", 1.0f * Audio::volume_se);
 	}
 	length = 0;
 	currentLineNum = 0;
@@ -90,7 +90,7 @@ void CircularSaw::Update()
 		if (parentObj->IsInFever())
 		{
 			ParticleEmitter::FeverCut(nowCuttingLocus->GetLine(currentLineNum), effectColor);
-			Audio::PlaySE("SE_FeverCut", Audio::volume_se);
+			Audio::PlaySE("SE_FeverCut", 1.0f * Audio::volume_se);
 		}
 	}
 

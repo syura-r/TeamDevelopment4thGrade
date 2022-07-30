@@ -551,7 +551,7 @@ void BaseGameActor::InFever(const int arg_feverFrame)
 {
 	isInFever = true;
 	feverTimer->SetLimit(arg_feverFrame, true);
-	Audio::PlaySE("SE_InFever", Audio::volume_se);
+	Audio::PlaySE("SE_InFever", 1.0f * Audio::volume_se);
 }
 
 void BaseGameActor::StartMove()

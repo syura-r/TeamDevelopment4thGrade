@@ -7,6 +7,10 @@ int Ending::score_player = 0;
 int Ending::score_enemy_red = 0;
 int Ending::score_enemy_green = 0;
 
+DirectX::XMFLOAT4 Ending::numberColor_player = { 1,1,1,1 };
+DirectX::XMFLOAT4 Ending::numberColor_enemy_red = { 1,1,1,1 };
+DirectX::XMFLOAT4 Ending::numberColor_enemy_green = { 1,1,1,1 };
+
 Ending::Ending()
 {
 	next = Title;
@@ -25,14 +29,14 @@ Ending::Ending()
 	sp_title = new Sprite();
 	sp_restart = new Sprite();
 
-	const std::string modelName[actorsCount] = {
+	const std::string modelNames[actorsCount] = {
 		"GamePlay_Player",
 		"GamePlay_Enemy",
 		"GamePlay_Enemy2"
 	};
 	for (int i = 0; i < actorsCount; i++)
 	{
-		actors[i] = new EndingActor(modelName[i]);
+		actors[i] = new EndingActor(modelNames[i]);
 	}
 	basePanel_object = Object3D::Create(OBJLoader::GetModel("fieldPiece"), basePanel_position, basePanel_scale, basePanel_rotation, basePanel_color);
 	stadium = new Stadium();
@@ -76,9 +80,21 @@ void Ending::Initialize()
 	alpha_restart = 1.0f;
 
 	RankingSearch();
-	actors[0]->Initialize(score_player, ranking[0]);
-	actors[1]->Initialize(score_enemy_red, ranking[1]);
-	actors[2]->Initialize(score_enemy_green, ranking[2]);
+
+	const int scores[actorsCount] = {
+		score_player,
+		score_enemy_red,
+		score_enemy_green
+	};
+	const Vector4 numberColors[actorsCount] = {
+		{ numberColor_player.x, numberColor_player.y, numberColor_player.z, numberColor_player.w },
+		{ numberColor_enemy_red.x, numberColor_enemy_red.y, numberColor_enemy_red.z, numberColor_enemy_red.w },
+		{ numberColor_enemy_green.x, numberColor_enemy_green.y, numberColor_enemy_green.z, numberColor_enemy_green.w }
+	};
+	for (int i = 0; i < actorsCount; i++)
+	{
+		actors[i]->Initialize(scores[i], ranking[i], numberColors[i]);
+	}
 
 	stadium->Initialize();
 	stadium->SetPosition({ 0.0f,-40.0f,0.0f });
@@ -99,9 +115,7 @@ void Ending::Update()
 		if (actors[i]->GetRanking() == 1)
 			camera.get()->SetTarget(actors[i]->GetPosition());
 		//”’l•\Ž¦
-		if (actors[0]->GetIsAddPanelEnd() &&
-			actors[1]->GetIsAddPanelEnd() &&
-			actors[2]->GetIsAddPanelEnd())
+		if (actors[i]->GetIsAddPanelEnd())
 		{
 			actors[i]->SetIsNumberRoll(false);
 		}

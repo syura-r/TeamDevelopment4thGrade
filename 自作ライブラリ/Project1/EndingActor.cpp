@@ -17,11 +17,12 @@ EndingActor::~EndingActor()
 	ResetPanel();
 }
 
-void EndingActor::Initialize(const int arg_score, const int arg_ranking)
+void EndingActor::Initialize(const int arg_score, const int arg_ranking, const Vector4& arg_numberColor)
 {
 	score = arg_score;
 	score_draw = 0.0f;
 	ranking = arg_ranking;
+	numberColor = arg_numberColor;
 
 	//”z’uˆÊ’u
 	const float position_3dx[3] = { 0.0f, -9.7f, 9.7f };
@@ -83,7 +84,7 @@ void EndingActor::Draw()
 	int digit = nuwNum.size();//0‚Å–„‚ß‚È‚¢‚½‚ß
 	if (digit <= 0)
 		digit = 1;
-	numberSprite->Draw(digit, "GamePlay_UI_Number", position_2d);
+	numberSprite->Draw(digit, "GamePlay_UI_Number", position_2d, { 1.0f,1.0f }, numberColor);
 }
 
 void EndingActor::AddPanel()

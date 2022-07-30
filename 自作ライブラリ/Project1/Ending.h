@@ -21,6 +21,10 @@ public:
 	static int score_enemy_red;
 	static int score_enemy_green;
 
+	static DirectX::XMFLOAT4 numberColor_player;
+	static DirectX::XMFLOAT4 numberColor_enemy_red;
+	static DirectX::XMFLOAT4 numberColor_enemy_green;
+
 private:
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;

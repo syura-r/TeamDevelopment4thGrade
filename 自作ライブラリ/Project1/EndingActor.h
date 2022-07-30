@@ -9,7 +9,7 @@ public:
 	EndingActor(const std::string& arg_modelName);
 	~EndingActor();
 
-	void Initialize(const int arg_score, const int arg_ranking);
+	void Initialize(const int arg_score, const int arg_ranking, const Vector4& arg_numberColor);
 	void Update();
 	void Draw();
 
@@ -35,6 +35,7 @@ private:
 
 	//スコア数値
 	NumberSprite* numberSprite = nullptr;
+	Vector4 numberColor = { 1,1,1,1 };
 	Vector2 position_2d = { 0.0f, 0.0f };
 	int numberRoll_interval = 0;
 	bool isNumberRoll = false;
