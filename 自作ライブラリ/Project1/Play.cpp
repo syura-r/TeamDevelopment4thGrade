@@ -56,7 +56,7 @@ Play::Play()
 
 	objectManager->AddObjectsAtOnce();
 
-	gameTime = 40;
+	gameTime = 120;
 	limit30Time = gameTime - 30;
 	limit10Time = gameTime - 10;
 
