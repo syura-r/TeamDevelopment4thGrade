@@ -363,12 +363,15 @@ void Ending::Drumroll()
 		//
 		// DrumRoll.wav PLAYSTART
 		//
+		Audio::PlaySE("SE_DrumRoll", 1.0f, true);
 	}
 
 	if (drumrollTime_now >= drumrollTime)
 	{
 		drumrollTime_now = 0;
 		isDrumrollEnd = true;
+		Audio::StopSE("SE_DrumRoll");
+		Audio::PlaySE("SE_RollFinish", 1.0f);
 	}
 
 	drumrollTime_now++;
