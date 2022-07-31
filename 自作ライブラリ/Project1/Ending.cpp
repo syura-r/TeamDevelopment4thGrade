@@ -94,10 +94,19 @@ void Ending::Initialize()
 	for (int i = 0; i < actorsCount; i++)
 	{
 		actors[i]->Initialize(scores[i], ranking[i], numberColors[i]);
+
+		//1位をカメラで追う
+		if (actors[i]->GetRanking() == 1)
+		{
+			camera.get()->SetTarget(actors[i]->GetPosition());
+		}
 	}
 
 	stadium->Initialize();
 	stadium->SetPosition({ 0.0f,-40.0f,0.0f });
+
+	drumrollTime_now = 0;
+	isDrumrollEnd = false;
 
 	Audio::PlayBGM("BGM_Result", 0.1f * Audio::volume_bgm);
 }
@@ -107,17 +116,23 @@ void Ending::Update()
 	SelectMenu();
 	FlashMenu();
 
+	//ドラムロールの時間を計る
+	Drumroll();
+
 	for (int i = 0; i < actorsCount; i++)
 	{
 		actors[i]->Update();
 
-		//1位をカメラで追う
-		if (actors[i]->GetRanking() == 1)
-			camera.get()->SetTarget(actors[i]->GetPosition());
-		//数値表示
-		if (actors[i]->GetIsAddPanelEnd())
+		//ドラムロールおわり
+		if (isDrumrollEnd)
 		{
 			actors[i]->SetIsNumberRoll(false);
+
+			//1位をカメラで追う
+			if (actors[i]->GetRanking() == 1)
+			{
+				camera.get()->SetTarget(actors[i]->GetPosition());
+			}
 		}
 	}
 
@@ -324,5 +339,21 @@ void Ending::RankingSearch()
 			break;
 		}
 	}
+}
+
+void Ending::Drumroll()
+{
+	if (isDrumrollEnd)
+	{
+		return;
+	}
+
+	if (drumrollTime_now >= drumrollTime)
+	{
+		drumrollTime_now = 0;
+		isDrumrollEnd = true;
+	}
+
+	drumrollTime_now++;
 }
 

@@ -80,5 +80,12 @@ private:
 
 	//背景ステージ
 	Stadium* stadium = nullptr;
+
+
+	//ドラムロールを入れる時間
+	const int drumrollTime = 120;
+	int drumrollTime_now = 0;
+	bool isDrumrollEnd = false;
+	void Drumroll();
 };
 

@@ -50,9 +50,24 @@ private:
 		Vector4 color = { 0.25f,0.58f,1,1 };
 	};
 	std::vector<Panel*> panels;
+
+
+	//パネル増減の変化量
+	int changePanelNum = 0;
+	//パネル増減の目標値
+	int changeTargetPanelNum = 0;
+	//パネル増減の次の目標値を決めるタイミングか
+	bool isUpDownNext = true;
+	//パネル増減の目標値を決める
+	int ChangeTargetPanelNum();
+
+	void UpDownPanel();
+	int upDownIntervalTimer = 0;
 	void AddPanel();
-	void ResetPanel();
+	void SubPanel();
+
 	bool isAddPanelEnd = false;
 
+	void ResetPanel();
 };
 
