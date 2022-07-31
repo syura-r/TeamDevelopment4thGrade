@@ -92,5 +92,9 @@ private:
 
 	int countDownTime;
 	bool finishSoundTrigger;
+
+	int gameTime;
+	int limit30Time;
+	int limit10Time;
 };
 
