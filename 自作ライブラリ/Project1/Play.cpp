@@ -56,8 +56,12 @@ Play::Play()
 
 	objectManager->AddObjectsAtOnce();
 
+	gameTime = 120;
+	limit30Time = gameTime - 30;
+	limit10Time = gameTime - 10;
+
 	pause = new Pause();
-	timeLimit = new TimeLimit(120 * 60);//制限時間の設定はここ
+	timeLimit = new TimeLimit(gameTime * 60);//制限時間の設定はここ
 	feverUI = new FeverUI();
 	levelGauge = new LevelGauge();
 	lockonMarker = new LockonMarker();
@@ -67,7 +71,6 @@ Play::Play()
 
 	screenResource = new TextureResource("screen.png", false, true, { 480,270 });
 	stadium = new Stadium();
-
 
 	ParticleEmitter::SetObjectManager(objectManager);
 }
@@ -229,7 +232,7 @@ void Play::Update()
 	}
 
 	//残り30秒でBGMの変更
-	if (timeLimit->GetNowTime() >= 90 * 60)
+	if (timeLimit->GetNowTime() >= limit30Time * 60)
 	{
 		if (!limit30trigger)
 		{
@@ -242,7 +245,7 @@ void Play::Update()
 	}
 
 	//残り10秒のカウントダウンサウンド
-	if (timeLimit->GetNowTime() >= 110 * 60 && !timeLimit->GetLimit())
+	if (timeLimit->GetNowTime() >= limit10Time * 60 && !timeLimit->GetLimit())
 	{
 		if (countDownTime % 60 == 0)
 		{
