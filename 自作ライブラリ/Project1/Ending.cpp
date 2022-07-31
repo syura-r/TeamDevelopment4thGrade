@@ -136,6 +136,16 @@ void Ending::Update()
 		}
 	}
 
+	bool isAllRollEnd = actors[0]->GetIsAddPanelEnd() &&
+		actors[1]->GetIsAddPanelEnd() &&
+		actors[2]->GetIsAddPanelEnd();
+	if (isAllRollEnd)
+	{
+		//
+		// DrumRoll.wav STOP
+		//
+	}
+
 	basePanel_object->Update();
 	stadium->Update();
 
@@ -346,6 +356,13 @@ void Ending::Drumroll()
 	if (isDrumrollEnd)
 	{
 		return;
+	}
+
+	if (drumrollTime_now == 1)
+	{
+		//
+		// DrumRoll.wav PLAYSTART
+		//
 	}
 
 	if (drumrollTime_now >= drumrollTime)

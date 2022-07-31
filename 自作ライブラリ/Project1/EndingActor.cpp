@@ -169,6 +169,9 @@ void EndingActor::UpDownPanel()
 	if (!isNumberRoll && changeTargetPanelNum == panels.size())
 	{
 		isAddPanelEnd = true;
+		//
+		// RollFinish.wav
+		//
 	}
 }
 
